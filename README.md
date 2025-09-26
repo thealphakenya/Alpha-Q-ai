@@ -597,7 +597,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/your-username/qmoi-enhanced.git
+git clone https://github.com/thealphakenya/qmoi-enhanced.git
 cd qmoi-enhanced
 
 # Install dependencies
