@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - uses: actions/checkout@v4
+
+      # 2. Setup Node.js with npm cache
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Cache node_modules (optional, speeds up CI)
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      # 4. Install dependencies without postinstall scripts
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps --ignore-scripts
+
+      # 5. Run build
+      - name: Build
+        run: npm run build --if-present
+
+      # 6. Run tests
+      - name: Test
+        run: npm test --if-present
