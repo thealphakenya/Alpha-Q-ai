@@ -1,6 +1,46 @@
 # QMOI Enhanced Always Fix All System
 
-## 🚀 Overview
+## � Repository Sync & Collaboration
+
+This repository (`Alpha-Q-ai`) is designed to work in close collaboration with the [`qmoi-enhanced`](https://github.com/thealphakenya/qmoi-enhanced) repository, both maintained by [thealphakenya](https://github.com/thealphakenya).
+
+### How They Work Together
+
+- **Alpha-Q-ai**: The main automation, orchestration, and AI system, providing advanced error fixing, automation, and monitoring features.
+- **qmoi-enhanced**: The core engine and shared library for enhanced automation, parallel error fixing, and advanced system features. It acts as a foundation and is regularly updated with improvements that are then integrated into Alpha-Q-ai.
+
+### Sync & Backup Workflow
+
+1. **Code Sync**: Changes and enhancements in `qmoi-enhanced` are regularly merged or pulled into `Alpha-Q-ai` to ensure both systems benefit from the latest features and fixes.
+2. **Automated Backups**: Both repositories support automated backup routines, including cloud and Hugging Face Hub backups for models, configs, and critical data.
+3. **Cross-Repo Automation**: Automation scripts and CI/CD workflows are designed to keep both repos in sync, with regular pushes to both `Alpha-Q-ai` and `qmoi-enhanced`.
+4. **Manual & Scheduled Sync**: Developers can trigger manual syncs or rely on scheduled jobs to keep the codebases aligned.
+
+#### Example: Syncing with `qmoi-enhanced`
+
+```bash
+# Add qmoi-enhanced as a remote if not already
+git remote add qmoi-enhanced https://github.com/thealphakenya/qmoi-enhanced.git
+# Fetch latest changes
+git fetch qmoi-enhanced
+# Merge or cherry-pick as needed
+git merge qmoi-enhanced/main
+# Push updates to Alpha-Q-ai
+git push origin main
+```
+
+#### Automated Backup Example
+
+```bash
+# Backup models or data to Hugging Face
+python ai_self_update.py --backup path/to/model.pt --repo thealphakenya/qmoi-model-backup --token $HF_TOKEN
+# Backup projects
+python ai_self_update.py --backup path/to/project.zip --repo thealphakenya/qmoi-projects-backup --token $HF_TOKEN
+```
+
+> **Note:** Always ensure both repos are up to date before deploying or running automation workflows. See the [qmoi-enhanced README](https://github.com/thealphakenya/qmoi-enhanced#readme) for more details on the shared engine and advanced features.
+
+## �🚀 Overview
 
 QMOI Enhanced Always Fix All System is a comprehensive automation platform that provides intelligent error detection, fixing, and testing capabilities. This system works like a developer would, automatically identifying and resolving issues across all aspects of your application. Now enhanced with advanced parallel processing, auto-evolution, master-only controls, and comprehensive health monitoring.
 
