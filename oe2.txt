@@ -1,3 +1,10 @@
+## Push attempt result: 2026-09-23
+
+- Commit created locally: `0808b0b0` (`Add remote-first autonomous control plane`).
+- `git push origin main` was rejected with `non-fast-forward` because `origin/main` advanced beyond the local branch.
+- This is recorded as `PUSH_BLOCKED_NON_FAST_FORWARD`; no success or remote-SHA claim is made.
+- Recovery action: fetch/prune remote refs, inspect divergence, rebase the local commit onto the current remote `main`, rerun validation, and retry a normal push. Force-push is prohibited.
+
 ## Control-plane supervisor milestone: 2026-09-23
 
 - Added `scripts/control_plane_supervisor.py` as the deterministic supervisor for the completion engine, checkpoints, locks, remote state, authentication, live activity, Q-versioning, synchronization, lifecycle runner, workspace broker, and CLI.
