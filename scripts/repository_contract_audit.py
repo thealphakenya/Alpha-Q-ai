@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
@@ -47,6 +48,40 @@ def _candidate_apps(root: Path, source_files: Iterable[str]) -> list[str]:
     return sorted(names, key=str.casefold)
 
 
+def _remote_state(repository: Path) -> dict[str, Any]:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(repository), "ls-remote", "--heads", "origin", "main", "autosync-backup"],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {"status": "REMOTE_STATUS_UNAVAILABLE", "reachable": False, "error": str(exc)}
+    if result.returncode != 0:
+        return {
+            "status": "REMOTE_STATUS_UNAVAILABLE",
+            "reachable": False,
+            "error": result.stderr.strip() or "git ls-remote failed",
+        }
+    refs = {}
+    for line in result.stdout.splitlines():
+        sha, separator, ref = line.partition("\t")
+        if separator and ref.startswith("refs/heads/"):
+            refs[ref.removeprefix("refs/heads/")] = sha
+    main_sha = refs.get("main")
+    backup_sha = refs.get("autosync-backup")
+    return {
+        "status": "REMOTE_VERIFIED" if main_sha and backup_sha else "REMOTE_STATUS_UNKNOWN",
+        "reachable": True,
+        "refs": refs,
+        "main_sha": main_sha,
+        "backup_sha": backup_sha,
+        "backup_matches_main": bool(main_sha and backup_sha and main_sha == backup_sha),
+    }
+
+
 def audit_repository_contract(root: Path | str, source_roots: Iterable[str] = CANONICAL_ROOTS) -> dict[str, Any]:
     """Return evidence for inventory docs and source-tree contract inputs."""
     repository = Path(root).resolve()
@@ -75,6 +110,7 @@ def audit_repository_contract(root: Path | str, source_roots: Iterable[str] = CA
         }
 
     existing_roots = [name for name, record in roots.items() if record["exists"]]
+    remote = _remote_state(repository)
     return {
         "generated": utc_now(),
         "repository": str(repository),
@@ -83,6 +119,7 @@ def audit_repository_contract(root: Path | str, source_roots: Iterable[str] = CA
         "missing_inventory_files": missing_inventory,
         "source_roots": roots,
         "available_source_roots": existing_roots,
+        "remote_state": remote,
         "parity_proven": False,
         "status": "READY" if not missing_inventory and existing_roots else "BLOCKED",
         "blockers": (

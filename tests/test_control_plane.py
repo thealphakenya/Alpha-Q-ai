@@ -98,6 +98,8 @@ def test_repository_contract_audit_records_inventory_and_source_manifest(tmp_pat
     assert report["inventory_files"]["API.md"]["sha256"]
     assert report["source_roots"]["Alpha-Q-ai-2025"]["source_file_count"] == 1
     assert report["source_roots"]["Alpha-Q-ai-2025"]["candidate_apps"] == ["qcity"]
+    assert "remote_state" in report
+    assert report["remote_state"]["reachable"] is False
 
 
 def test_repository_contract_audit_fail_closes_missing_surfaces(tmp_path):
