@@ -1,11 +1,23 @@
 ## Active continuation checkpoint: 2026-09-24
 
+- Credential and documentation automation milestone: enhanced `scripts/ollama_autonomous_agent.py` with secret-safe credential/environment discovery, `CREDENTIAL_READINESS.md` generation, runtime-presence reporting without values, automatic `ALLMDFILESREFS.md` inclusion, and synchronized credential UI/frontend/backend/merge/style/universal-auth guidance. Added a fail-closed `HIST` projection contract requiring remote success before materializing `qmoi-enhanced-history-14`, `Alpha-Q-ai-2025`, branch, and artifact history. Full repository validation now passes (`243 passed`); all `16` workflows validate, focused authorization/merge tests pass, compilation passes, and `git diff --check` passes. Credentials are never invented, printed, copied, or silently activated.
+- Authorization and dispatch enhancement milestone: documented the user-reported `thealphakenya` Actions/repository owner context and the verified `thevictorkenya` repository permissions for both repositories; added `CROSS_REPO_PERMISSION_MATRIX.md` and `.github/workflows/cross-repo-auth-preflight.yml`; changed `ollama-master-orchestrator.yml` to prefer `secrets.MY_CUSTOM_TOKEN` with `github.token` as a validated fallback; and updated `github.md` plus the 208-topic master plan with the exact preflight, dispatch, protected-branch, and 403 rules. Workflow validation now passes all `16` workflows, focused control-plane/merge tests pass (`18 passed`), Python compilation passes, and `git diff --check` passes. Secret existence/value remains unverifiable from this Codespace token and is never printed or copied.
+- Authorization verification at `2026-09-24T17:20Z`: GitHub identifies `thevictorkenya` with repository permissions `push=true`, `pull=true`, `triage=true`, but the active Codespaces `GITHUB_TOKEN` exposes no OAuth scopes. The autonomous workflow is active and readable, yet workflow dispatch, Actions permissions, and main-branch protection endpoints each return `HTTP 403: Resource not accessible by integration`. Repository write access therefore does not constitute authorization for target-owned workflow dispatch or protected-branch completion. The remaining remote prerequisite is a user-owned GitHub token/login with workflow-dispatch and required protected-branch permissions; no secret was requested, printed, or stored.
+- Latest remote continuation check: target `main` advanced to `b045a596a58384ca577aa569fdbecad44f2dd249`; live-activity and PR-realtime tracker workflows are succeeding, but the latest `Ollama Autonomous Agent & Live Tracker` run `36030922073` remains failed and no successful rerun contains the local history-fallback fix. `autosync-backup` remains `6d925c33f0093035755772137d863618b3818ab0`; local divergence remains `11` remote commits ahead and `2` local commits ahead. The fix is validated locally but still requires authorized publication before remote completion can be retried.
+- Remote completion run `36030057083` finished `failure` at remote SHA `a41fc1dc446b3f13eeaa68a85c512b04de04c5d8`. Pre-flight, feature, and platform jobs passed; the test job failed on two remote-checkout-only cases, so final reporting failed and the autonomous-agent trigger was skipped. Root cause: `build_cross_repository_merge_plan()` assumed `qmoi-enhanced-history-14` was materialized, causing a missing-history lookup failure in a light checkout; the cross-repository coverage assertion also failed because the history directory was absent. The fix adds a diagnostic fallback while keeping `base_available=false` and `ready_for_apply=false` until the real snapshot exists. Local focused regression validation passed (`11 passed`), and the full suite now passes (`242 passed`), but this fix is not yet present on the failed remote SHA.
+- Fresh continuation validation at `2026-09-24T16:52Z`: full repository tests passed (`241 passed`); control-plane and repository-contract audits both report `READY`, with all four inventory files present. Remote verification now reports `origin/main=b497241eb618d5c824fecaeee37b2a32acf0484c`, `origin/autosync-backup=6d925c33f0093035755772137d863618b3818ab0`, divergence `8` remote commits ahead and `2` local commits ahead, `backup_matches_main=false`, and `parity_proven=false`. Hosted telemetry advanced `origin/main`; no remote completion claim is made.
+- Scope correction: the local merge-sync preparer generated an oversized documentation projection (268 files and roughly 5.3 million added lines). That generated expansion was discarded because it was not a reviewable production change; the pre-existing evidence artifacts plus the focused agent, test, and ledger changes were preserved. `git diff --check` is clean again.
+- Local merge continuation completed with `python scripts/ollama_autonomous_agent.py merge-sync --base-path .`: result `status=ready`, `auto_push=false`, and no remote mutation. The inventory/preparation path covered the available `qmoi-enhanced-history-14` and `Alpha-Q-ai-2025` sources, but this remains plan/evidence preparation only; remote branch parity, backup synchronization, and target-owned apply/merge evidence are still required.
+- Continuation audit refreshed at `2026-09-24T16:31Z`: control-plane audit is `READY`; repository-contract audit is `READY` with required inventory files present, but `parity_proven=false` and `backup_matches_main=false`. Focused control-plane and autonomous-agent validation passed (`106 passed` combined). Remote refs remain `origin/main=eebbb1c3c7cf25bd98af0f94c56bb66879aba6db` and `origin/autosync-backup=6d925c33f0093035755772137d863618b3818ab0`, with local divergence `7` remote commits ahead and `2` local commits ahead.
+- Target-owned `ollama-autonomous-agent.yml` dispatch was attempted with bounded full-mode production replacement and merge-validation inputs, but GitHub returned `HTTP 403: Resource not accessible by integration`. No remote autonomous run, mutation, parity, backup synchronization, or production-success claim is recorded. A user-owned token/integration with workflow-dispatch permission is required before resubmission.
+- Production replacement evidence milestone: enhanced `scripts/ollama_autonomous_agent.py` so every production scan refreshes both `production.md` and `productionenhanced.md` with timestamps, clear versus blocked status, unresolved marker findings, and verified replacement records. A scan alone can no longer be represented as a completed implementation; replacement records require implementation and validation evidence. Focused autonomous-agent validation passed (`98 passed`), control-plane validation passed (`8 passed`), Python compilation passed, and `git diff --check` passed. This is local evidence only; remote merge, backup parity, cross-repository parity, security closure, and 208-topic completion remain unproven.
 - The current ledger instructions are active: continue the 208-topic master plan, preserve truthful evidence, update `oe2.txt` at every milestone, and keep remote execution authoritative for mutation, validation, PR/check/merge, synchronization, Q-version publication, and final verdicts.
 - The current merge-control obligation includes inventory and evidence for APIs, endpoints, routes, ports, apps, platforms, memory synchronization, Vercel deployment state, Alpha-Q-ai-2025, qmoi-enhanced-history-14, branches, PRs, and duplicate/variant paths. No parity or full-history merge is claimed until independently verified.
 - Actual Git state at this checkpoint: local `main` is clean and exactly synchronized with `origin/main` at `b41e05e221ef89728f95c2c5507d281b4639ad9d`. `origin/autosync-backup` remains at `6d925c33f0093035755772137d863618b3818ab0`, so backup synchronization is still unproven. The prior ahead/behind and unstaged-change note is historical evidence, not current state.
 - The previously recorded remote audit snapshots (`5536ef9d`, `d6036d4a`) are historical. A fresh audit must be generated against the current remote before any new synchronization claim; `backup_matches_main` remains expected to be false until the target-owned backup workflow completes.
 - Current-state correction published and verified: focused control-plane tests passed (`8 passed`), local `HEAD` exactly matched `origin/main` at `eb593761c5283eb769162b3c5833eea7a701b6c8`, and the worktree was clean. GitHub again reported the existing `394`-vulnerability inventory, which remains a security blocker.
 - The follow-up ledger-only push was rejected with `PUSH_BLOCKED_NON_FAST_FORWARD` because hosted automation advanced `origin/main` between verification and push. No force-push was attempted; fetch/prune and safe rebase remain the only recovery path.
+- Final bounded retry state: after another clean rebase and focused control-plane pass (`8 passed`), the normal push was rejected again as hosted telemetry advanced. Read-only verification now reports local `a5d5dc0fb05d8e84d262abc63d0d653835da6697`, `origin/main=b408443acd444c8952de0ec9142b2ceefde6bee3`, divergence `ahead 2/behind 1`, and `origin/autosync-backup=6d925c33f0093035755772137d863618b3818ab0`. This checkpoint is intentionally local and unpushed; force-push is prohibited.
 - The remote backup audit change was safely rebased as `340ce448`; focused control-plane checks passed (`8 passed`). A refreshed report observed `origin/main=d6036d4a7b5efa285130a9a3d3a89212dd2cd14a`, `origin/autosync-backup=6d925c33f0093035755772137d863618b3818ab0`, and `backup_matches_main=false`; the timestamped report is explicitly not a parity or synchronization claim.
 - Final remote backup-audit publication verified: the rebased audit commits pushed normally, local `HEAD` exactly matches `origin/main` at `adeedb9dfd6c010bffd9cf222eaf6c0fd1383b0e`, and the worktree is clean. GitHub again reports `394` vulnerabilities, so security remains a separate production blocker.
 - Remote-state audit validation completed: full repository tests passed (`240 passed`); Python compilation, workflow validation, and `git diff --check` passed. The audit remains evidence-only and does not mutate branches or claim parity.
@@ -118,6 +130,224 @@ As you continue, also check and enhance the merge features, enhance how it alway
 - [x] Current deduplicated final projection for both destinations is `376,854` files and `102,372` directories, using the unique-path union formula; duplicate analysis found `314,940` identical paths and `55,645` variant paths.
 - [!] These are plan-only forecasts. The final repositories cannot be declared merged until every variant path is reviewed, feature tests pass, and after-merge metrics are generated for both independently published destinations.
 # oe2.txt
+
+## Release, publication, and validation continuation mandate (2026-09-24)
+
+These user requirements are live ledger requirements, not completion claims.
+Every item needs current artifact evidence, tests, provenance, and, for remote
+work, a target-owned URL/SHA and authorization result before it can be marked
+complete. Refresh this section at every milestone.
+
+### Required release behavior
+
+- [ ] Reconcile every release source and feature in Alpha-Q-ai, `Alpha-Q-ai-2025`,
+   `qmoi-enhanced-history-14`, and the final QMOI/Alpha repositories.
+- [ ] Unify Q.O.Q.N, app, platform, package, web, model, and documentation
+   releases behind an idempotent release contract.
+- [ ] Discover every app/platform/version pair, build real artifacts, record
+   hashes/provenance, validate installation and runtime behavior, then publish.
+- [ ] Validate existing releases and create verified replacements for failed
+   artifacts without deleting failed evidence prematurely.
+- [ ] Generate `RELEASES.md` and `ALLVALIDATIONS.md` in every available repo and
+   history projection from evidence, not assumptions.
+- [ ] Audit `UNIVERSAL.md`/`UNIVERSALS.md` in active and historical trees;
+   remove replaced files only after provenance and reference validation.
+- [ ] Add an `ALL` category to `ALLMDFILESREFS.md` for aggregate release,
+   validation, merge, build, install, download, autodoc, universal, and platform
+   files, with operational cross-references.
+- [ ] Regenerate API, endpoint, route, port, app, platform, memory, Vercel, and
+   deployment inventories in `API.md`, `ENDPOINTS.md`, `ROUTES.md`, `ALLPORTS.md`,
+   and the Alpha history projection.
+- [ ] Preserve distinct app identity/icons in `Alpha-Q-ai-2025`; shared behavior
+   must not silently overwrite product identity.
+- [ ] Keep release, build, install, download, QLTS, autodoc, style, universal,
+   merge, and validation instructions discoverable and cross-linked.
+
+### Validation scope and ten required improvements per system
+
+Each system must implement or evidence these ten improvements: (1)
+deterministic versioned inputs, (2) schema/type checks, (3) positive tests, (4)
+negative/boundary tests, (5) artifact/hash provenance, (6) install/upgrade/
+rollback checks, (7) security/secret checks, (8) cross-platform and
+cross-repository checks, (9) external-resource checks with offline fallback,
+and (10) machine-readable evidence with freshness, ownership, and fail-closed
+publication status.
+
+- [ ] Code/unit validation for Python, TS/JS, UI, and shared libraries.
+- [ ] Build/artifact validation for every app, package, architecture, and OS.
+- [ ] Install/download validation including clean install, upgrade, uninstall,
+   offline behavior, links, permissions, and startup.
+- [ ] App/platform feature validation with missing-feature discovery/remediation.
+- [ ] Release/API/route/port validation against implementation and deployed state.
+- [ ] Security/dependency validation including static, secret, license,
+   permissions, and vulnerability gates.
+- [ ] Cross-repository/merge validation with duplicate-path classification and
+   independently proven post-merge parity.
+- [ ] Deployment/Vercel/remote-publication validation including authorization,
+   protected branches, checks, health, assets, and exact SHA.
+- [ ] Documentation/memory/autodoc validation for markdown, indexes, histories,
+   and generated reports.
+- [ ] Q.O.Q.N/model/runtime/QLTS validation for compatibility, health, telemetry,
+   and reproducible evidence.
+
+### Authorization, divergence, and remaining work
+
+- [ ] Use target-owned workflows authenticated by a user-owned token or scoped
+   GitHub App with workflow, contents, PR, release, and protected-branch rights.
+- [ ] Use merge queue/PR required checks or a scoped GitHub App/OIDC deployment
+   identity when direct dispatch is unavailable.
+- [ ] Recover divergence by fetch, classify telemetry, rebase, rerun validation,
+   push normally, and verify the exact remote SHA; never force-push or discard
+   remote commits silently.
+- [ ] When offline, create signed immutable plans/drafts and resume idempotently
+   after authorization is restored.
+- [ ] Current blocker: the Codespaces integration token returned HTTP 403 for
+   target-owned dispatch/protected operations. No remote publication, parity,
+   release, or full-history completion may be claimed without fresh evidence.
+- [ ] Obtain independently verifiable histories before claiming all-files and
+   all-directories parity; implement canonical release/validation ledgers;
+   add tests for missing artifacts, failed installs, duplicates, 403, divergence,
+   stale evidence, and successful publication.
+- [ ] Run focused/full tests, compilation, workflow validation, index audits,
+   artifact checks, and `git diff --check` after every implementation.
+- [ ] Create ordered Q.0.0.N evidence file/directory pairs and FULLTREE reports
+   only from actual repository state, recording counts and timestamps in MERGE.md.
+- [ ] Refresh this ledger with timestamps, commands, counts, blockers, and
+   remote identifiers after every validation or publication attempt.
+
+No script or historical report alone proves completion. Final completion
+requires current local evidence, current target-owned remote evidence, and exact
+repository SHA verification.
+
+## Release ledger implementation milestone (2026-09-24)
+
+## Remote completion runbook (2026-09-24)
+
+- [x] Added `remotecompletion.md` with the complete remote-completion scope,
+   current authorization facts, SHA/divergence evidence, blocked operations,
+   failure interpretation, evidence requirements, and final completion gate.
+- [x] Recorded the current distinction between authenticated CLI identity
+   (`thevictorkenya`), repository permissions (`pull/push/triage` on both
+   repositories), and the previously observed HTTP 403 limitation on
+   target-owned dispatch/protected operations.
+- [x] Documented five authorized alternatives: user-owned CLI credential,
+   scoped GitHub App, target-owned PR/merge queue, authorized repository
+   dispatch, and offline signed handoff resumed by a target workflow.
+- [x] Documented the remote completion sequence covering authorization,
+   divergence recovery, dual-repository Markdown inventory, metrics, validation,
+   PR/check/merge, release publication, backup parity, and final SHA checks.
+- [!] Current refreshed evidence: local `main` is
+   `a5d5dc0fb05d8e84d262abc63d0d653835da6697`, remote `main` is
+   `60d329124102a03ab9cc40a20b7dc0c5919e8754`, backup is
+   `6d925c33f0093035755772137d863618b3818ab0`, and divergence is remote ahead
+   `16` / local ahead `2`.
+- [!] Remote completion remains blocked until an authorized target-owned
+   lifecycle produces fresh cross-repository, check, merge/publication, backup,
+   and final-SHA evidence. No secret values were requested, stored, or printed.
+- [x] `remotecompletion.md` was indexed and metricized in
+   `ALLMDFILESREFS.md`; runbook completeness checks passed, and `git diff --check`
+   passed. Workspace diagnostics report no issues in the runbook, ledger, or
+   implementation; existing test-import resolution warnings remain separate
+   from executable test results.
+
+## Canonical markdown ALL-category correction and automation (2026-09-24)
+
+- [x] Corrected the requirement to use `ALLMDFILESREFS.md` everywhere; this is
+   the only canonical markdown inventory filename.
+- [x] Enhanced `refresh_markdown_category_index()` to generate `Category ALL`
+   containing every discovered active and available historical markdown path,
+   aggregate-document feature contracts, source scope, ownership, and evidence
+   rules.
+- [x] Added automatic aggregate-file classification: exact contracts such as
+   `API.md`, `ENDPOINTS.md`, `ROUTES.md`, `ALLPORTS.md`, `ALLROUTES.md`,
+   `ALLAUTO.md`, `ALLBACKEND.md`, `ALLFRONTEND.md`, `ALLPLATFORMSDEVICE.md`,
+   `RELEASES.md`, and `ALLVALIDATIONS.md`, plus any markdown filename containing
+   `ALL`, are listed with their intended all-feature responsibility.
+- [x] Extended the inventory to enumerate every locally available branch,
+   remote-tracking ref, and tag with `git ls-tree`; Git-history entries are
+   represented as `git-ref/<ref>/<path>` and remain distinct from materialized
+   files.
+- [x] Removed exclusive category routing: each Markdown file can belong to any
+   number of matching categories, while `Category ALL` remains additive.
+- [x] Added a bidirectional Markdown synchronization plan that compares hashes,
+   missing paths, and variant paths across available repository roots and
+   fail-closes when the peer checkout or authorized remote workflow is absent.
+- [x] Declared refresh triggers for every push, pull request, pre-merge audit,
+   pre-release audit, daily schedule, and manual dispatch.
+- [x] Added `.github/workflows/markdown-inventory-refresh.yml` as the
+   repository-owned hook; it refreshes, verifies, tests, and safely commits the
+   canonical inventory on allowed events.
+- [x] Refreshed `ALLMDFILESREFS.md`: `37,419` Category ALL entries now cover
+   `2,365` materialized paths plus `35,054` Markdown paths from `20` local Git
+   refs; aggregate-document candidates remain classified by feature contract.
+- [!] Current sync evidence sees only this checkout (`2,364` materialized paths),
+   so automatic cross-repository copying is blocked until the target-owned peer
+   workflow has authorized access to both repositories.
+- [x] Added per-file metrics to `ALLMDFILESREFS.md`: source/provenance, byte
+   count, line count, SHA-256 for materialized files, Git object id for history
+   entries, and validation status/checks.
+- [x] Current metrics evidence: `37,419` records, `2,365` materialized files,
+   `35,054` Git-history records, `2,263` locally validated records, and `102`
+   records needing review for empty, heading, or unresolved-marker findings.
+- [!] Remote-completion alternatives are recorded: (1) a user-owned PAT or
+   `gh` login with workflow/contents/PR/release/protected-branch rights, (2) a
+   scoped GitHub App with OIDC deployment credentials, (3) a target-owned PR or
+   merge queue with required checks, (4) repository-dispatch from an authorized
+   workflow, or (5) an offline signed bundle/artifact handoff resumed by the
+   target workflow. None bypasses authorization or permits a false completion
+   claim.
+- [ ] Remote completion sequence: materialize both repositories, refresh both
+   inventories and metrics, compare missing/variant paths, validate every
+   Markdown file and category, run repository tests/checks, publish via the
+   target-owned workflow, then verify the final remote SHAs and both ledgers.
+- [x] Metrics continuation validation: `ALLMDFILESREFS.md` contains one metrics
+   record per Category ALL entry with provenance, size, lines, hash/object id,
+   and validation status; the autonomous-agent suite passed (`100 passed`),
+   workflows validated, compilation passed, and `git diff --check` passed.
+- [!] Independent remote inventories and the complete second-repository tree
+   remain evidence-gated; this local count must not be presented as full remote
+   parity.
+- [x] Post-change validation: autonomous-agent tests passed (`100 passed`), all
+   workflows validated (`17` valid), stale alternate naming search returned no
+   active matches, and `git diff --check` passed.
+- [x] Aggregate-contract continuation validation: the focused and complete
+   autonomous-agent suite passed (`100 passed`), workflow validation passed,
+   changed modules compiled, and the refreshed inventory contains the explicit
+   API/endpoint/route/port and filename-based `ALL` contract classifications.
+- [x] Git-history continuation validation: `ALLMDFILESREFS.md` contains actual
+   `git-ref/refs/...` entries; the autonomous-agent suite passed (`100 passed`),
+   workflows validated, compilation passed, and `git diff --check` passed.
+- [x] Multi-category and synchronization validation: the autonomous-agent suite
+   passed (`100 passed`), workflow validation passed, unlimited membership is
+   emitted in `Category ALL`, and the current bidirectional sync plan correctly
+   reports the unavailable peer repository as blocked.
+
+- [x] Added the requested release/publication/validation mandate and remaining
+   work register to this ledger.
+- [x] Added local generation of root `RELEASES.md` and `ALLVALIDATIONS.md` to
+   `scripts/qmoi_release_autofix.py`; generated ledgers are evidence-only and
+   fail closed for unresolved findings, remote authorization, and parity.
+- [x] Added regression coverage for the ledger contract; focused release tests
+   pass (`8 passed`).
+- [x] Fixed the release scanner so binary or unreadable artifacts cannot crash
+   evidence generation.
+- [x] Generated current root ledgers from this checkout.
+- [!] Current local release status is `needs-review` with `108` suspicious-
+   pattern findings; publication remains `blocked` and cross-repository parity
+   remains `unproven`.
+- [ ] Remaining: classify/remediate findings, build and validate real artifacts
+   for every app/platform, obtain authorized target-owned remote evidence, and
+   update both repositories' ledgers only from fresh proof.
+- [x] Post-implementation validation: full repository suite passed (`244 passed`),
+   changed Python modules compiled successfully, and `git diff --check` passed.
+
+## Continuation checkpoint: 2026-09-24
+
+- Verified current remote contract: `git ls-remote --heads origin main autosync-backup` reports `origin/main=eebbb1c3c7cf25bd98af0f94c56bb66879aba6db` and `origin/autosync-backup=6d925c33f0093035755772137d863618b3818ab0`.
+- Verified local divergence: `git rev-list --left-right --count origin/main...HEAD` currently shows `6` commits on the remote ahead and `2` commits local ahead, so no push or parity claim is valid yet.
+- The repo remains in a remote-first state: local audit and validation tooling may inspect and submit, but GitHub-hosted workflow results remain the authoritative mutation and completion gate.
+- The current non-negotiable rule remains: do not claim success, merge completion, backup parity, or production readiness until the target-owned remote lifecycle has produced fresh evidence and the required checks are green.
+- Immediate evidence gates to rerun after this ledger update: control-plane audit, repository-contract audit, and the relevant test suite on the current branch state.
 
 ## Working mandate
 

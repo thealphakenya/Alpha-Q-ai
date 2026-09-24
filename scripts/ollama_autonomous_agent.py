@@ -361,6 +361,42 @@ def sanitize_command_metadata(
     )
 
 
+def collect_credential_requirements(root: Path | str | None = None) -> list[dict[str, Any]]:
+    """Inventory credential names and sources without reading secret values."""
+    target = Path(root) if root is not None else REPOSITORY_ROOT
+    names: dict[str, dict[str, Any]] = {}
+    patterns = (
+        re.compile(r"secrets\.([A-Z][A-Z0-9_]{2,})"),
+        re.compile(r"(?:os\.getenv|os\.environ\.get)\(\s*[\"']([A-Z][A-Z0-9_]{2,})"),
+        re.compile(r"process\.env\.([A-Z][A-Z0-9_]{2,})"),
+        re.compile(r"\$\{([A-Z][A-Z0-9_]{2,})\}"),
+    )
+    allowed_suffixes = {".py", ".js", ".ts", ".tsx", ".jsx", ".yml", ".yaml", ".md", ".sh", ".ps1", ".json", ".toml"}
+    for path in sorted(target.rglob("*")):
+        if not path.is_file() or ".git" in path.parts or path.suffix.lower() not in allowed_suffixes:
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        for pattern in patterns:
+            for match in pattern.finditer(text):
+                name = match.group(1)
+                entry = names.setdefault(name, {"name": name, "sources": set()})
+                entry["sources"].add(path.relative_to(target).as_posix())
+    names.setdefault("MY_CUSTOM_TOKEN", {"name": "MY_CUSTOM_TOKEN", "sources": set()})
+    result = []
+    for name, entry in sorted(names.items()):
+        result.append({
+            "name": name,
+            "sources": sorted(entry["sources"]),
+            "runtime_present": bool(os.environ.get(name)),
+            "value_recorded": False,
+            "provisioning": "github_secret_or_external_vault",
+        })
+    return result
+
+
 def configure_github_git_auth() -> dict[str, Any]:
     """Refresh Git's GitHub helper from an existing gh login without handling secrets."""
     result: dict[str, Any] = {
@@ -2541,6 +2577,12 @@ class CrossRepositoryAutonomyManager:
             "Alpha-Q-ai": root_map.get("Alpha-Q-ai", repo_root.parent / "Alpha-Q-ai"),
             "Alpha-Q-ai-2025": history_root,
         }
+        history_snapshot_root = source_roots["qmoi-enhanced-history-14"]
+        history_snapshot_available = history_snapshot_root.is_dir()
+        if not history_snapshot_available:
+            # Keep planning and diagnostics available in light checkouts, but
+            # retain a false base gate until the immutable history is present.
+            source_roots["qmoi-enhanced-history-14"] = source_roots["qmoi-enhanced"]
         markdown_audit = self.audit_all_markdown_sources(list(source_roots.values()))
         metrics: dict[str, dict[str, Any]] = {}
         all_paths: set[str] = set()
@@ -2577,6 +2619,13 @@ class CrossRepositoryAutonomyManager:
 
         return {
             "base_repository": HISTORY_SNAPSHOT_DIRECTORY,
+            "history_projection": {
+                "directory": "HIST",
+                "status": "blocked_until_remote_success",
+                "required_sources": [HISTORY_SNAPSHOT_DIRECTORY, "Alpha-Q-ai-2025"],
+                "preserve_branch_and_artifact_history": True,
+                "copy_policy": "target-owned workflow only after parity, security, and final production gates pass",
+            },
             "source_order": [
                 HISTORY_SNAPSHOT_DIRECTORY,
                 "qmoi-enhanced",
@@ -2584,9 +2633,9 @@ class CrossRepositoryAutonomyManager:
                 "Alpha-Q-ai-2025",
             ],
             "metrics": metrics,
-            "base_available": metrics[HISTORY_SNAPSHOT_DIRECTORY]["exists"],
+            "base_available": history_snapshot_available,
             "ready_for_apply": (
-                metrics[HISTORY_SNAPSHOT_DIRECTORY]["exists"]
+                history_snapshot_available
                 and metrics["Alpha-Q-ai"]["exists"]
                 and metrics["Alpha-Q-ai-2025"]["exists"]
                 and len(metrics["Alpha-Q-ai-2025"]["paths"]) > 0
@@ -5683,6 +5732,62 @@ All timestamps use UTC ISO-8601 format.
 
         return report
 
+    def refresh_credential_readiness(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Write safe credential readiness evidence and update canonical docs."""
+        target = Path(root) if root is not None else self.root_dir
+        requirements = collect_credential_requirements(target)
+        manifest = target / "CREDENTIAL_READINESS.md"
+        lines = [
+            "# Credential and environment readiness",
+            "",
+            "This manifest contains credential names and source paths only. Secret values are never read, generated, logged, or written here.",
+            "",
+            "## Autonomous policy",
+            "- Discover environment and GitHub secret names automatically.",
+            "- Validate presence and source metadata without exposing values.",
+            "- Use GitHub-managed secrets or an approved external vault for provisioning.",
+            "- Refuse live account creation, payment, trading, or deployment when required credentials are missing or unverified.",
+            "- Record `AUTH_BLOCKED` rather than inventing credentials or claiming success.",
+            "",
+            "## Requirements",
+        ]
+        for requirement in requirements:
+            status = "present-in-runtime" if requirement["runtime_present"] else "not-present-in-runtime-or-externally-managed"
+            sources = ", ".join(requirement["sources"][:8]) or "workflow secret or external vault"
+            lines.append(f"- `{requirement['name']}`: {status}; sources: {sources}; value_recorded=false")
+        manifest.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+        documentation = {
+            "ALLUI.md": "- Credential UI must show readiness state, source category, masking, rotation status, and `AUTH_BLOCKED` remediation without rendering secret values.",
+            "ALLFRONTEND.md": "- Frontend credential flows must use masked readiness/status views and never accept secrets into repository documentation or telemetry.",
+            "ALLBACKEND.md": "- Backend credential flows must resolve GitHub-managed secrets or approved vault references, validate them, and fail closed before protected operations.",
+            "MERGE.md": "- Credential, environment, UI, and universal-auth changes require source/target ownership, validation, and secret-safe evidence before merge.",
+            "STYLES.md": "- Credential settings UI uses masked values, explicit readiness states, accessible errors, and non-secret remediation links.",
+            "UNIVERSALS.md": "- Identity, authorization, credential readiness, and protected-flow gates apply consistently across all apps and platforms.",
+        }
+        for filename, statement in documentation.items():
+            path = target / filename
+            if not path.exists():
+                continue
+            text = path.read_text(encoding="utf-8", errors="replace")
+            heading = "## Credential and environment readiness"
+            if heading not in text:
+                path.write_text(text.rstrip() + f"\n\n{heading}\n\n{statement}\n", encoding="utf-8")
+
+        inventory_path = target / "ALLMDFILESREFS.md"
+        if inventory_path.exists():
+            inventory_text = inventory_path.read_text(encoding="utf-8", errors="replace")
+            if "CREDENTIAL_READINESS.md" not in inventory_text:
+                inventory_path.write_text(
+                    inventory_text.rstrip() + "\n- CREDENTIAL_READINESS.md\n",
+                    encoding="utf-8",
+                )
+
+        return {"manifest": manifest, "requirements": requirements, "value_recorded": False}
+
     def build_runtime_status_snapshot(
         self,
     ) -> dict[str, Any]:
@@ -5704,6 +5809,7 @@ All timestamps use UTC ISO-8601 format.
 
         clone_documents = self.refresh_clone_platform_documents(self.root_dir)
         production_documents = self.refresh_production_manifests(self.root_dir)
+        credential_readiness = self.refresh_credential_readiness(self.root_dir)
 
         financial_documents = self.refresh_financial_manager_catalog(self.root_dir)
 
@@ -5722,6 +5828,11 @@ All timestamps use UTC ISO-8601 format.
             "production_manifests": {
                 name: str(path)
                 for name, path in production_documents.items()
+            },
+            "credential_readiness": {
+                "manifest": str(credential_readiness["manifest"]),
+                "requirements": len(credential_readiness["requirements"]),
+                "value_recorded": credential_readiness["value_recorded"],
             },
             "financial_manager_catalog": {
                 "status": financial_documents["status"],
@@ -6057,6 +6168,124 @@ All timestamps use UTC ISO-8601 format.
             "updated_catalog": str(allmd),
         }
 
+    def _git_markdown_inventory(self, root: Path) -> dict[str, Any]:
+        """Enumerate Markdown paths from every locally available Git ref."""
+        try:
+            refs_result = subprocess.run(
+                ["git", "-C", str(root), "for-each-ref", "--format=%(refname)", "refs/heads", "refs/remotes", "refs/tags"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=30,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            return {"status": "unavailable", "refs": [], "paths": [], "error": str(exc)}
+        if refs_result.returncode != 0:
+            return {
+                "status": "unavailable",
+                "refs": [],
+                "paths": [],
+                "error": refs_result.stderr.strip() or "git ref enumeration failed",
+            }
+
+        refs = [line.strip() for line in refs_result.stdout.splitlines() if line.strip()]
+        paths: list[str] = []
+        records: list[dict[str, Any]] = []
+        failed_refs: list[dict[str, str]] = []
+        for ref in refs:
+            try:
+                tree_result = subprocess.run(
+                    ["git", "-C", str(root), "ls-tree", "-r", "-l", ref],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    timeout=30,
+                )
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                failed_refs.append({"ref": ref, "error": str(exc)})
+                continue
+            if tree_result.returncode != 0:
+                failed_refs.append({"ref": ref, "error": tree_result.stderr.strip() or "git tree enumeration failed"})
+                continue
+            for line in tree_result.stdout.splitlines():
+                metadata, separator, path = line.partition("\t")
+                fields = metadata.split()
+                if not separator or len(fields) < 4 or not path.lower().endswith(".md"):
+                    continue
+                inventory_path = f"git-ref/{ref}/{path}"
+                paths.append(inventory_path)
+                records.append({
+                    "path": inventory_path,
+                    "source": ref,
+                    "bytes": int(fields[3]) if fields[3].isdigit() else None,
+                    "lines": None,
+                    "object_id": fields[2],
+                    "validation_status": "inventory-only",
+                    "validation_reason": "Git history path is indexed but not materialized for content validation",
+                })
+
+        return {
+            "status": "ready" if not failed_refs else "partial",
+            "refs": refs,
+            "paths": sorted(set(paths)),
+            "records": records,
+            "failed_refs": failed_refs,
+        }
+
+    def build_markdown_sync_plan(
+        self,
+        root: Path | str | None = None,
+        peer_roots: Sequence[Path | str] | None = None,
+    ) -> dict[str, Any]:
+        """Compare Markdown manifests across available repository roots."""
+        target = Path(root or self.root_dir).resolve()
+        candidates = [
+            target,
+            target.parent / "qmoi-enhanced",
+            target.parent / "Alpha-Q-ai",
+        ]
+        candidates.extend(Path(item).resolve() for item in (peer_roots or []))
+        roots = []
+        seen: set[Path] = set()
+        for candidate in candidates:
+            if candidate in seen or not candidate.is_dir():
+                continue
+            seen.add(candidate)
+            roots.append(candidate)
+
+        manifests: dict[str, dict[str, str]] = {}
+        for repo_root in roots:
+            manifest: dict[str, str] = {}
+            for path in repo_root.rglob("*.md"):
+                if path.is_file() and ".git" not in path.parts:
+                    manifest[path.relative_to(repo_root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+            manifests[str(repo_root)] = manifest
+
+        all_paths = sorted({path for manifest in manifests.values() for path in manifest})
+        missing_by_root = {
+            repo: [path for path in all_paths if path not in manifest]
+            for repo, manifest in manifests.items()
+        }
+        variants: list[str] = []
+        for path in all_paths:
+            hashes = {manifest[path] for manifest in manifests.values() if path in manifest}
+            if len(hashes) > 1:
+                variants.append(path)
+        return {
+            "status": "ready" if len(manifests) >= 2 else "blocked",
+            "direction": "bidirectional",
+            "source_of_truth": "target-owned repository workflow",
+            "repositories": sorted(manifests),
+            "markdown_path_count": len(all_paths),
+            "missing_by_repository": missing_by_root,
+            "variant_paths": variants,
+            "authorization_required": True,
+            "blockers": [] if len(manifests) >= 2 else [
+                "a second repository checkout is unavailable; remote workflow evidence is required"
+            ],
+            "mutation_policy": "plan_and_verify_locally; copy, commit, merge, and publish remotely",
+        }
+
     def refresh_markdown_category_index(
         self,
         root: Path | str | None = None,
@@ -6127,20 +6356,69 @@ All timestamps use UTC ISO-8601 format.
         for relative_path in full_relative_files:
             name = Path(relative_path).name
             lower_name = name.lower()
-            bucket = None
+            matching_labels: list[str] = []
             for label, tokens in category_rules:
                 if any(token.lower() == lower_name or token.lower() in lower_name.replace("-", "_") for token in tokens):
-                    bucket = label
-                    break
-                if any(token.lower() in lower_name.replace("-", "_") for token in tokens):
-                    bucket = label
-                    break
-            if bucket is None:
+                    matching_labels.append(label)
+                elif any(token.lower() in lower_name.replace("-", "_") for token in tokens):
+                    matching_labels.append(label)
+            if not matching_labels:
                 generated.append(relative_path)
-                bucket = "Category K — Auto-generated markdown coverage"
-            if bucket not in assignments:
-                assignments[bucket] = []
-            assignments[bucket].append(relative_path)
+                matching_labels = ["Category K — Auto-generated markdown coverage"]
+            for bucket in matching_labels:
+                if bucket not in assignments:
+                    assignments[bucket] = []
+                assignments[bucket].append(relative_path)
+
+        all_category_label = "Category ALL — Complete cross-repository markdown and feature coverage"
+        aggregate_contracts = {
+            "API.md": "all APIs",
+            "ENDPOINTS.md": "all endpoints",
+            "ROUTES.md": "all routes",
+            "ALLROUTES.md": "all routes",
+            "ALLPORTS.md": "all ports",
+            "ALLAUTO.md": "all automation",
+            "ALLBACKEND.md": "all backend features",
+            "ALLFRONTEND.md": "all frontend features",
+            "ALLPLATFORMSDEVICE.md": "all platform and device support",
+            "ALLMDFILESREFS.md": "all markdown files and category references",
+            "RELEASES.md": "all release evidence",
+            "ALLVALIDATIONS.md": "all validation evidence",
+        }
+        aggregate_contracts = {
+            name.upper(): purpose for name, purpose in aggregate_contracts.items()
+        }
+        git_inventory = self._git_markdown_inventory(target)
+        sync_plan = self.build_markdown_sync_plan(target)
+        all_category_files = sorted(set(full_relative_files) | set(git_inventory["paths"]))
+        markdown_metrics: list[dict[str, Any]] = []
+        for relative_path in full_relative_files:
+            path = target / relative_path
+            data = path.read_bytes()
+            text = data.decode("utf-8", errors="replace")
+            has_heading = any(line.lstrip().startswith("#") for line in text.splitlines())
+            has_unresolved_marker = bool(re.search(r"\b(?:TODO|FIXME|TBD|PLACEHOLDER)\b", text, re.IGNORECASE))
+            markdown_metrics.append({
+                "path": relative_path,
+                "source": relative_path.split("/", 1)[0] if "/" in relative_path else target.name,
+                "bytes": len(data),
+                "lines": len(text.splitlines()),
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "validation_status": "validated" if data and has_heading and not has_unresolved_marker else "needs-review",
+                "validation_checks": {
+                    "nonempty": bool(data),
+                    "has_heading": has_heading,
+                    "unresolved_markers": has_unresolved_marker,
+                },
+            })
+        markdown_metrics.extend(git_inventory.get("records", []))
+        aggregate_files: dict[str, str] = {}
+        for relative_path in all_category_files:
+            name = Path(relative_path).name.upper()
+            if name in aggregate_contracts:
+                aggregate_files[relative_path] = aggregate_contracts[name]
+            elif "ALL" in Path(relative_path).stem.upper():
+                aggregate_files[relative_path] = "aggregate markdown contract identified by filename"
 
         allmd_path = target / "ALLMDFILESREFS.md"
         index_text = allmd_path.read_text(encoding="utf-8") if allmd_path.exists() else "# ALLMDFILESREFS.md - Complete Reference of All .md Files in Both Repositories\n\n"
@@ -6167,6 +6445,57 @@ All timestamps use UTC ISO-8601 format.
                             section = section.rstrip() + f"\n- {item}"
                             index_text = index_text.replace(match.group(0), section, 1)
 
+        all_header = f"### {all_category_label}"
+        all_block = [
+            all_header,
+            "",
+            "Refresh cadence: every push, pull request, pre-merge audit, pre-release audit, daily scheduled run, and manual dispatch.",
+            "Owner: scripts/ollama_autonomous_agent.py::refresh_markdown_category_index",
+            "Hook surfaces: .github/workflows/markdown-inventory-refresh.yml, merge planning, release readiness, and validation gates.",
+            "Source scope: active repository, qmoi-enhanced-history-14, Alpha-Q-ai-2025 when materialized, and independently verified remote inventories.",
+            "Feature contracts: API.md contains all APIs; ENDPOINTS.md all endpoints; ROUTES.md all routes; ALLPORTS.md all ports; ALLROUTES.md all routes; ALLAUTO.md all automation; ALLBACKEND.md all backend features; ALLFRONTEND.md all frontend features; ALLPLATFORMSDEVICE.md all platform/device support; RELEASES.md all releases; ALLVALIDATIONS.md all validation evidence.",
+            "Automatic contract selection: exact aggregate names and any markdown filename containing ALL are classified below; every other discovered markdown file is also listed for complete cross-repository coverage.",
+            "Category membership: a markdown file may appear in unlimited categories whenever its filename, content, or feature responsibilities match; no category assignment is exclusive.",
+            "Completeness rule: every discovered markdown path is listed below; missing history or remote access remains explicitly unproven rather than silently omitted.",
+            "",
+            "Files:",
+        ]
+        all_block.extend(f"- {item}" for item in all_category_files)
+        all_block.extend([
+            "",
+            "Metrics (path | source/ref | bytes | lines | content hash/object id | validation):",
+        ])
+        for metric in markdown_metrics:
+            digest = metric.get("sha256") or metric.get("object_id") or "unavailable"
+            all_block.append(
+                f"- `{metric['path']}` | `{metric.get('source', 'unknown')}` | "
+                f"{metric.get('bytes', 'unknown')} | {metric.get('lines', 'unknown')} | "
+                f"`{digest}` | `{metric.get('validation_status', 'unknown')}`"
+            )
+        all_block.extend([
+            "",
+            "Aggregate files and feature contracts:",
+        ])
+        all_block.extend(f"- {item}: {purpose}" for item, purpose in sorted(aggregate_files.items()))
+        all_block.extend([
+            "",
+            "Supporting references:",
+            "- scripts/ollama_autonomous_agent.py",
+            "- scripts/repository_contract_audit.py",
+            "- scripts/merge_inventory.py",
+            "- scripts/qmoi_release_autofix.py",
+            "- .github/workflows/markdown-inventory-refresh.yml",
+            "",
+            "Purpose:",
+            "- Keep every aggregate markdown contract complete, synchronized, testable, and evidence-backed across both repositories and their available history projections.",
+        ])
+        all_section = "\n".join(all_block) + "\n"
+        if all_header in index_text:
+            pattern = re.compile(rf"{re.escape(all_header)}\n.*?(?=\n### Category |\Z)", re.DOTALL)
+            index_text = pattern.sub(all_section.rstrip(), index_text, count=1)
+        else:
+            index_text = index_text.rstrip() + "\n\n" + all_section
+
         allmd_path.write_text(index_text.rstrip() + "\n", encoding="utf-8")
 
         return {
@@ -6175,16 +6504,46 @@ All timestamps use UTC ISO-8601 format.
             "generated_categories": sorted(set(generated)),
             "updated_files": [allmd_path.name],
             "category_map": {label: sorted(set(files)) for label, files in assignments.items() if files},
+            "all_category": {
+                "label": all_category_label,
+                "files": all_category_files,
+                "metrics": markdown_metrics,
+                "aggregate_files": aggregate_files,
+                "git_history": git_inventory,
+                "sync_plan": sync_plan,
+                "refresh_triggers": [
+                    "push",
+                    "pull_request",
+                    "pre_merge",
+                    "pre_release",
+                    "daily_schedule",
+                    "workflow_dispatch",
+                ],
+            },
             "count": len(ordered_files),
+            "multi_category_files": sorted(
+                path for path, labels in (
+                    (path, [label for label, files in assignments.items() if path in files])
+                    for path in full_relative_files
+                )
+                if len(labels) > 1
+            ),
         }
 
     def refresh_production_manifests(
         self,
         root: Path | str | None = None,
+        replacements: Sequence[Mapping[str, object]] | None = None,
     ) -> dict[str, Path]:
-        """Scan for shallow, minimal, or non-production implementations and refresh the production manifests."""
+        """Refresh production evidence after a scan or verified replacement.
+
+        A marker scan is evidence of work still required, not evidence that a
+        replacement happened. Callers may pass replacement records only after
+        the implementation and its validation have been independently checked.
+        """
         target = Path(root) if root is not None else self.root_dir
         target.mkdir(parents=True, exist_ok=True)
+        replacement_records = [dict(record) for record in (replacements or [])]
 
         markers = [
             "TODO",
@@ -6236,15 +6595,18 @@ All timestamps use UTC ISO-8601 format.
                 })
 
         production_path = target / "production.md"
+        scan_status = "blocked_pending_replacements" if entries else "clear"
         production_lines = [
             "# production.md",
             "",
-            "This file tracks non-production or shallow implementations that must be upgraded to production-ready implementations.",
+            f"Production implementation evidence status: {scan_status}.",
+            f"Last scan: {utc_iso()}.",
             "",
             "## Required replacement policy",
             "- Replace placeholders, stubs, TODOs, and ERROR markers with real production-grade implementations.",
             "- Upgrade minimal or shallow implementations to fully validated, secure, and observable production behavior.",
             "- Re-run the validation and monitoring loops after each replacement before considering the repo production-safe.",
+            "- A marker scan never counts as a replacement; each completed replacement requires implementation and validation evidence.",
             "",
             "## Files flagged for production replacement",
         ]
@@ -6255,18 +6617,33 @@ All timestamps use UTC ISO-8601 format.
         else:
             production_lines.append("- No non-production implementation markers were detected.")
 
+        production_lines.extend(["", "## Verified replacement records"])
+        if replacement_records:
+            for record in replacement_records:
+                production_lines.append(
+                    f"- {record.get('path', '<unknown>')}: "
+                    f"status={record.get('status', 'unverified')}; "
+                    f"implementation={record.get('implementation_evidence', '<missing>')}; "
+                    f"validation={record.get('validation_evidence', '<missing>')}"
+                )
+        else:
+            production_lines.append("- None supplied; detected markers remain unresolved.")
+
         production_path.write_text("\n".join(production_lines) + "\n", encoding="utf-8")
 
         enhanced_path = target / "productionenhanced.md"
         enhanced_lines = [
             "# productionenhanced.md",
             "",
-            "This file records the production replacement work performed by the Ollama autonomous agent.",
+            f"Production replacement evidence status: {scan_status}.",
+            f"Last updated: {utc_iso()}.",
+            "This file records only verified production replacement work performed by the Ollama autonomous agent.",
             "",
             "## Production replacement policy",
             "- Scan every file and directory for placeholder, stub, minimal, shallow, or error-driven implementations.",
             "- Replace non-production implementations with verified, production-grade implementations that include validation, observability, security, and operational resilience.",
             "- Refresh this file after every major autonomous upgrade so the repository keeps an accurate production ledger.",
+            "- Never mark a file production-ready from a scan alone; retain unresolved findings until implementation and validation evidence exist.",
             "",
             "## Enhancements",
             "- Added autonomous non-production scanning across the live repository state.",
@@ -6281,6 +6658,18 @@ All timestamps use UTC ISO-8601 format.
                 enhanced_lines.append(f"- {entry['path']}")
         else:
             enhanced_lines.append("- No production replacement entries were detected in the current repository state.")
+
+        enhanced_lines.extend(["", "## Verified replacement records"])
+        if replacement_records:
+            for record in replacement_records:
+                enhanced_lines.append(
+                    f"- {record.get('path', '<unknown>')}: "
+                    f"{record.get('status', 'unverified')} | "
+                    f"implementation: {record.get('implementation_evidence', '<missing>')} | "
+                    f"validation: {record.get('validation_evidence', '<missing>')}"
+                )
+        else:
+            enhanced_lines.append("- None supplied; no replacement is claimed.")
 
         enhanced_path.write_text("\n".join(enhanced_lines) + "\n", encoding="utf-8")
 

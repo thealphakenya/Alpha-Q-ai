@@ -94,6 +94,63 @@ they must never appear in code, `.env.example`, logs, artifacts, Q-version
 evidence, telemetry, or live messages. Run `gh auth status` and the relevant
 Actions/contents/pull-request API checks without printing token values.
 
+### Current authorization identity and dispatch plan (2026-09-24)
+
+The coordinated GitHub owner/account is `thealphakenya`, covering both
+`thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`. The current
+Codespace session is associated with `thevictorkenya`, which has verified
+`pull`, `push`, and `triage` repository permissions on both repositories.
+Those repository permissions do not by themselves grant Actions
+administration, workflow dispatch, or protected-branch administration. The
+current Codespaces `GITHUB_TOKEN` has returned `403 Resource not accessible by
+integration` for Actions-permission, branch-protection, and manual workflow
+dispatch requests.
+
+Both repositories are expected to hold the GitHub-managed secret
+`MY_CUSTOM_TOKEN`. Its value must never be read, printed, copied into the
+Codespace, or placed in a file. Workflows that dispatch another workflow must
+resolve credentials in this order:
+
+```text
+repository secret MY_CUSTOM_TOKEN
+-> same-repository github.token fallback
+-> AUTH_BLOCKED with endpoint and required permission
+```
+
+The fallback is not a success shortcut. The dispatch response must be checked,
+the target run ID and SHA recorded, and the downstream run must reach a
+terminal success state. The orchestrator now follows this contract in
+`.github/workflows/ollama-master-orchestrator.yml`; PR validation already uses
+the same secret-first resolution.
+
+The autonomous agent also maintains `CREDENTIAL_READINESS.md` and keeps its
+reference in `ALLMDFILESREFS.md`. Credential-related UI, frontend, backend,
+merge, style, and universal-auth documentation is refreshed with masked
+readiness states and `AUTH_BLOCKED` remediation. The planned `HIST/` directory
+in each repository is a post-success projection only: it may contain the
+materialized `qmoi-enhanced-history-14`, `Alpha-Q-ai-2025`, branch, and artifact
+history only after target-owned remote parity, security, protected-branch, and
+final production gates pass.
+
+Required user-owned authorization preflight, run from a trusted terminal with
+the authorized account, is:
+
+```bash
+gh auth status -h github.com
+gh api repos/thealphakenya/Alpha-Q-ai --jq '{full_name,permissions}'
+gh api repos/thealphakenya/qmoi-enhanced --jq '{full_name,permissions}'
+gh workflow run ollama-autonomous-agent.yml -R thealphakenya/qmoi-enhanced \
+   --ref main -f mode=validate -f auto_heal=true -f auto_fix=false \
+   -f force_agent=true -f max_iterations=1 -f max_per_iteration=1 \
+   -f max_recovery_attempts=1 -f reason='authorization preflight'
+```
+
+If the final command returns 403, authorization is `AUTH_BLOCKED`; changing
+workflow YAML permissions cannot grant account or repository administration
+that the credential does not possess. A user-owned GitHub App installation or
+fine-grained token authorized for both repositories and the required Actions,
+contents, pull-request, checks, and protected-branch operations is required.
+
 ### Monitoring and recovery
 
 GitHub Actions is the remote execution authority. Every request and stage

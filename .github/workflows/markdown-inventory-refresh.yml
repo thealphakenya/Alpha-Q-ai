@@ -1,0 +1,65 @@
+name: Markdown Inventory Refresh
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - '**/*.md'
+      - 'scripts/ollama_autonomous_agent.py'
+      - '.github/workflows/markdown-inventory-refresh.yml'
+  pull_request:
+    paths:
+      - '**/*.md'
+      - 'scripts/ollama_autonomous_agent.py'
+      - '.github/workflows/markdown-inventory-refresh.yml'
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Refresh ALL markdown category
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from scripts.ollama_autonomous_agent import OllamaAutonomousAgent
+
+          root = Path.cwd()
+          result = OllamaAutonomousAgent(base_path=root).refresh_markdown_category_index(root)
+          print({
+              'status': result['status'],
+              'count': result['count'],
+              'all_category_count': len(result['all_category']['files']),
+              'triggers': result['all_category']['refresh_triggers'],
+          })
+          PY
+
+      - name: Check generated inventory
+        run: |
+          test -s ALLMDFILESREFS.md
+          grep -q 'Category ALL' ALLMDFILESREFS.md
+          python -m pytest tests/test_ollama_autonomous_agent.py -q
+
+      - name: Commit refreshed inventory
+        if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name 'QMOI Markdown Inventory Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add ALLMDFILESREFS.md
+          git diff --cached --quiet || git commit -m 'Refresh ALL markdown inventory [skip ci]'
+          git push

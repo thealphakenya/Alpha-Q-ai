@@ -61,6 +61,26 @@ def test_release_guard_auto_fix_adds_package_scripts(tmp_path: Path):
     assert "created vercel.json" in " ".join(result["fixes"])
 
 
+def test_release_guard_writes_truthful_release_and_validation_ledgers(tmp_path: Path):
+    for name, content in {
+        "README.md": "# QMOI\n",
+        "BUILD.md": "Build\n",
+        "INSTALL.md": "Install\n",
+        "DOWNLOAD.md": "Download\n",
+        "requirements.txt": "pytest\n",
+        "package.json": json.dumps({"name": "qmoi", "version": "1.2.5"}),
+    }.items():
+        (tmp_path / name).write_text(content, encoding="utf-8")
+
+    result = QMOIReleaseAutofix(tmp_path).auto_fix_repo()
+
+    assert result["ledgers"]["status"] == "written"
+    releases = (tmp_path / "RELEASES.md").read_text(encoding="utf-8")
+    validations = (tmp_path / "ALLVALIDATIONS.md").read_text(encoding="utf-8")
+    assert "blocked-unverified" in releases
+    assert "Cross-repository parity: `unproven`" in validations
+
+
 def test_security_autofix_uplifts_known_vulnerable_python_deps(tmp_path: Path):
     req = tmp_path / "requirements.txt"
     req.write_text(
