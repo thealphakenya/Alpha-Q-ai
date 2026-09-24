@@ -129,11 +129,22 @@ class TestCrossRepositoryAutonomyManager:
         assert plan["all_alpha_history_paths_included"] is True
         assert any(path.endswith("/MERGE.md") for path in plan["merge_documents"])
         assert plan["base_repository"] == "qmoi-enhanced-history-14"
+        assert plan["history_projection"]["directory"] == "HIST"
+        assert plan["history_projection"]["status"] == "blocked_until_remote_success"
         assert "base_available" in plan
         assert "ready_for_apply" in plan
         assert "memory indexes, tracker state, and synchronization evidence" in plan[
             "required_merge_inputs"
         ]
+
+    def test_cross_repository_plan_fails_closed_without_history_snapshot(self):
+        manager = CrossRepositoryAutonomyManager()
+        with patch("ollama_autonomous_agent.HISTORY_SNAPSHOT_DIRECTORY", "missing-history"):
+            plan = manager.build_cross_repository_merge_plan()
+
+        assert plan["metrics"]["qmoi-enhanced-history-14"]["exists"] is True
+        assert plan["base_available"] is False
+        assert plan["ready_for_apply"] is False
 
     def test_markdown_audit_reports_index_and_truth_status(self, tmp_path):
         root = tmp_path / "source"
@@ -303,6 +314,11 @@ class TestMarkdownCategoryIndex:
         history.mkdir()
 
         (repo / "README.md").write_text("# root\n", encoding="utf-8")
+        (repo / "API.md").write_text("# APIs\n", encoding="utf-8")
+        (repo / "ENDPOINTS.md").write_text("# Endpoints\n", encoding="utf-8")
+        (repo / "ROUTES.md").write_text("# Routes\n", encoding="utf-8")
+        (repo / "ALLPORTS.md").write_text("# Ports\n", encoding="utf-8")
+        (repo / "QMOI_MODEL_CARD.md").write_text("# Model\n", encoding="utf-8")
         (repo / "FINANCIALMANAGER.md").write_text("# finance\n", encoding="utf-8")
         (repo / "QMOIAUTOPROJECTS.md").write_text("# autoproject\n", encoding="utf-8")
         (repo / "docs").mkdir()
@@ -318,6 +334,46 @@ class TestMarkdownCategoryIndex:
         assert "LEGACY_WALLET_NOTE.md" in result["all_markdown_files"]
         assert result["generated_categories"]
         assert "ALLMDFILESREFS.md" in result["updated_files"]
+        assert set(result["all_category"]["files"]) == {
+            "README.md",
+            "API.md",
+            "ENDPOINTS.md",
+            "ROUTES.md",
+            "ALLPORTS.md",
+            "QMOI_MODEL_CARD.md",
+            "FINANCIALMANAGER.md",
+            "QMOIAUTOPROJECTS.md",
+            "docs/CUSTOM_RELEASE_NOTES.md",
+            "qmoi-enhanced-history-14/LEGACY_WALLET_NOTE.md",
+        }
+        assert set(result["all_category"]["refresh_triggers"]) == {
+            "push",
+            "pull_request",
+            "pre_merge",
+            "pre_release",
+            "daily_schedule",
+            "workflow_dispatch",
+        }
+        index = (repo / "ALLMDFILESREFS.md").read_text(encoding="utf-8")
+        assert "Category ALL" in index
+        assert "docs/CUSTOM_RELEASE_NOTES.md" in index
+        assert "qmoi-enhanced-history-14/LEGACY_WALLET_NOTE.md" in index
+        assert result["all_category"]["aggregate_files"]["API.md"] == "all APIs"
+        assert result["all_category"]["aggregate_files"]["ENDPOINTS.md"] == "all endpoints"
+        assert result["all_category"]["aggregate_files"]["ALLPORTS.md"] == "all ports"
+        api_metric = next(item for item in result["all_category"]["metrics"] if item["path"] == "API.md")
+        assert api_metric["source"] == "repo"
+        assert api_metric["bytes"] > 0
+        assert len(api_metric["sha256"]) == 64
+        assert api_metric["validation_status"] == "validated"
+        history_metric = next(
+            item for item in result["all_category"]["metrics"]
+            if item["path"] == "qmoi-enhanced-history-14/LEGACY_WALLET_NOTE.md"
+        )
+        assert history_metric["source"] == "qmoi-enhanced-history-14"
+        assert history_metric["validation_status"] == "validated"
+        assert "QMOI_MODEL_CARD.md" in result["multi_category_files"]
+        assert result["all_category"]["sync_plan"]["status"] == "blocked"
 
 
 class TestPlatformValidator:
@@ -461,6 +517,48 @@ class TestFeatureTester:
         assert "README.md" in production_text
         assert (tmp_path / "production.md").exists()
         assert "TODO" in (tmp_path / "production.md").read_text(encoding="utf-8")
+
+    def test_production_manifests_record_verified_replacements(self, tmp_path):
+        """Both production manifests must record implementation and validation evidence."""
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        (tmp_path / "service.py").write_text("return_real_service()\n", encoding="utf-8")
+
+        agent.refresh_production_manifests(
+            root=tmp_path,
+            replacements=[{
+                "path": "service.py",
+                "status": "verified",
+                "implementation_evidence": "service.py real provider adapter",
+                "validation_evidence": "pytest tests/test_service.py -q",
+            }],
+        )
+
+        production_text = (tmp_path / "production.md").read_text(encoding="utf-8")
+        enhanced_text = (tmp_path / "productionenhanced.md").read_text(encoding="utf-8")
+        assert "Production implementation evidence status: clear" in production_text
+        assert "service.py" in production_text
+        assert "service.py real provider adapter" in production_text
+        assert "pytest tests/test_service.py -q" in enhanced_text
+        assert "status=verified" not in enhanced_text
+        assert "verified |" in enhanced_text
+
+    def test_credential_readiness_discovers_names_without_values(self, tmp_path, monkeypatch):
+        """Credential automation records readiness metadata but never secret values."""
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        (tmp_path / ".github" / "workflows").mkdir(parents=True)
+        (tmp_path / ".github" / "workflows" / "deploy.yml").write_text(
+            "env:\n  API_KEY: ${{ secrets.MY_CUSTOM_TOKEN }}\n", encoding="utf-8"
+        )
+        monkeypatch.setenv("MY_CUSTOM_TOKEN", "secret-value-must-not-be-recorded")
+
+        result = agent.refresh_credential_readiness(tmp_path)
+
+        requirement = next(item for item in result["requirements"] if item["name"] == "MY_CUSTOM_TOKEN")
+        assert requirement["runtime_present"] is True
+        assert requirement["value_recorded"] is False
+        manifest = (tmp_path / "CREDENTIAL_READINESS.md").read_text(encoding="utf-8")
+        assert "MY_CUSTOM_TOKEN" in manifest
+        assert "secret-value-must-not-be-recorded" not in manifest
 
     def test_qmoi_space_features_complete(self):
         """Test QMOI Space has all required features."""

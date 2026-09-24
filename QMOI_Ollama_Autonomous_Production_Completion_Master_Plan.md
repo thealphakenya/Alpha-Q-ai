@@ -2175,6 +2175,13 @@ CROSS-REPOSITORY OPERATIONS
    OR appropriately scoped fine-grained credential
 ```
 
+Record the current identity and capability boundary as evidence: the
+`thealphakenya` account owns both coordinated repositories, while the current
+Codespace session is `thevictorkenya` with repository push access. A Codespaces
+`GITHUB_TOKEN` with repository push access is not proof of Actions dispatch or
+protected-branch administration. The preflight must test the exact operation
+and preserve `AUTH_BLOCKED` on a 403.
+
 ## 118. Prefer GitHub App authentication for cross-repository automation
 
 Create a dedicated GitHub App/service identity for the two repositories where practical.
@@ -2241,6 +2248,12 @@ GitHub's API documentation confirms that workflow dispatch can require Actions w
 
 The implementation must test the exact API path being used rather than assuming one permission model applies to every operation.
 
+For same-repository workflow chaining, use the repository-managed
+`MY_CUSTOM_TOKEN` first and `github.token` only as a validated fallback. The
+dispatching workflow must record the target run ID, target SHA, endpoint,
+credential role without the secret, and terminal conclusion. A successful API
+response that never yields a successful target run is not completion.
+
 ## 122. Do not rely on the source repository's GITHUB_TOKEN for target writes
 
 A source workflow's ordinary `GITHUB_TOKEN` should not be assumed to have write authority over the other repository.
@@ -2287,6 +2300,13 @@ Return:
 AUTH_READY
 AUTH_BLOCKED
 ```
+
+The preflight must run separately for both repositories and cover identity,
+repository access, workflow visibility, workflow dispatch, Actions permission,
+contents write, pull-request write, checks read, branch-rule compatibility,
+and artifact access. The known secret name is `MY_CUSTOM_TOKEN`; only GitHub
+Actions may resolve its value. Codespace tooling must never attempt to read or
+echo that secret.
 
 before beginning mutation.
 
@@ -2387,6 +2407,11 @@ branch synchronization
 workflow dispatch
 artifact access
 ```
+
+The matrix must include both directions (`Alpha-Q-ai -> qmoi-enhanced` and
+`qmoi-enhanced -> Alpha-Q-ai`) and distinguish repository push access from
+Actions dispatch and protected-branch administration. Repository push alone
+must remain insufficient for `AUTH_READY`.
 
 ## 128. Automated permission verification
 
