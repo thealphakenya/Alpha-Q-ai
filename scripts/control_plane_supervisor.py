@@ -29,6 +29,7 @@ REQUIRED_COMPONENTS = {
     "remote_state": "scripts/remote_state.py",
     "sync_contract": "scripts/sync_contract.py",
     "workspace_sync": "scripts/workspace_sync.py",
+    "repository_contract_audit": "scripts/repository_contract_audit.py",
     "cli": "scripts/qmoictl.py",
 }
 RUNTIME_DIRECTORIES = (

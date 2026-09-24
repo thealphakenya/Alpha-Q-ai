@@ -1,0 +1,123 @@
+{
+  "available_source_roots": [
+    "Alpha-Q-ai-2025",
+    "qmoi-enhanced-history-14"
+  ],
+  "blockers": [],
+  "generated": "2026-09-24T15:40:15.541262Z",
+  "inventory_files": {
+    "ALLPORTS.md": {
+      "bytes": 1574,
+      "exists": true,
+      "lines": 29,
+      "path": "ALLPORTS.md",
+      "sha256": "e69ee200285d1f18b5bfb1c6a0b60de7f2c50ed4d8059dc821c4ac2853e3175e"
+    },
+    "API.md": {
+      "bytes": 3603,
+      "exists": true,
+      "lines": 114,
+      "path": "API.md",
+      "sha256": "37d204ccfa32e9796b87814db435809147d0a3cbbac8fca3321334ad2569bc85"
+    },
+    "ENDPOINTS.md": {
+      "bytes": 2327,
+      "exists": true,
+      "lines": 91,
+      "path": "ENDPOINTS.md",
+      "sha256": "9ed1b9a317121e20ce4f99a850977e277a73616120e6ec81bf05048ed11e33c9"
+    },
+    "ROUTES.md": {
+      "bytes": 1672,
+      "exists": true,
+      "lines": 77,
+      "path": "ROUTES.md",
+      "sha256": "e48a649e64acace1dbaa45cdd10462d9801816e3f230fa5a0ea4b6a4e2a61b4d"
+    }
+  },
+  "missing_inventory_files": [],
+  "next_actions": [
+    "compare inventory contents and source manifests in target-owned remote workflow",
+    "record duplicate and variant path decisions before any merge mutation"
+  ],
+  "parity_proven": false,
+  "remote_only": true,
+  "repository": "/workspaces/Alpha-Q-ai",
+  "source_roots": {
+    "Alpha-Q-ai-2025": {
+      "candidate_apps": [
+        "api",
+        "app",
+        "backend",
+        "components",
+        "coverage",
+        "cypress",
+        "dashboard",
+        "earnvault",
+        "hooks",
+        "huggingface_space",
+        "ml",
+        "models",
+        "routes",
+        "ssh-backend",
+        "types",
+        "whatsapp-qmoi-bot"
+      ],
+      "exists": true,
+      "inventory_files": [
+        "API.md"
+      ],
+      "source_file_count": 954,
+      "source_files_sha256": "2439d6f9310df1698fccfe9b3fb12441d2bf355127e81456748caeb68d687143"
+    },
+    "qmoi-enhanced-history-14": {
+      "candidate_apps": [
+        ".venv",
+        "__mocks__",
+        "__tests__",
+        "_archive_qmoi-enhanced",
+        "api",
+        "app",
+        "app.backup.20260121144720",
+        "backend",
+        "backups",
+        "cypress",
+        "dashboard",
+        "earnvault",
+        "examples",
+        "hooks",
+        "huggingface_space",
+        "k6",
+        "ml",
+        "models",
+        "pages",
+        "payments",
+        "prisma",
+        "public",
+        "pwa_apps",
+        "qmoi",
+        "qmoi-space",
+        "qmoi-space-pwa",
+        "routes",
+        "server",
+        "services",
+        "src.backup.20260121144720",
+        "ssh-backend",
+        "tools",
+        "types",
+        "utils",
+        "whatsapp-qmoi-bot"
+      ],
+      "exists": true,
+      "inventory_files": [
+        "API.md",
+        "ENDPOINTS.md",
+        "ROUTES.md",
+        "ALLPORTS.md"
+      ],
+      "source_file_count": 3565,
+      "source_files_sha256": "9597c8df8b5b9b90ee14d4bc6691f74e6a129cccdaa1b9462662dff82e969aed"
+    }
+  },
+  "status": "READY"
+}

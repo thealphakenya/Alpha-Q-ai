@@ -8,6 +8,7 @@ from scripts.live_activity_events import LiveActivity
 from scripts.q_version_manager import QVersionManager
 from scripts.sync_contract import build_sync_contract
 from scripts.control_plane_supervisor import ControlPlaneSupervisor
+from scripts.repository_contract_audit import audit_repository_contract
 
 
 def make_root(tmp_path: Path) -> Path:
@@ -80,3 +81,29 @@ def test_control_plane_audit_is_ready_for_complete_repository():
     assert report.status == "READY"
     assert report.remote_only is True
     assert not report.blockers
+
+
+def test_repository_contract_audit_records_inventory_and_source_manifest(tmp_path):
+    for name in ("API.md", "ENDPOINTS.md", "ROUTES.md", "ALLPORTS.md"):
+        (tmp_path / name).write_text(f"# {name}\n", encoding="utf-8")
+    source = tmp_path / "Alpha-Q-ai-2025" / "qcity"
+    source.mkdir(parents=True)
+    (source / "app.tsx").write_text("export const app = true;\n", encoding="utf-8")
+
+    report = audit_repository_contract(tmp_path)
+
+    assert report["status"] == "READY"
+    assert report["remote_only"] is True
+    assert report["parity_proven"] is False
+    assert report["inventory_files"]["API.md"]["sha256"]
+    assert report["source_roots"]["Alpha-Q-ai-2025"]["source_file_count"] == 1
+    assert report["source_roots"]["Alpha-Q-ai-2025"]["candidate_apps"] == ["qcity"]
+
+
+def test_repository_contract_audit_fail_closes_missing_surfaces(tmp_path):
+    report = audit_repository_contract(tmp_path)
+
+    assert report["status"] == "BLOCKED"
+    assert len(report["missing_inventory_files"]) == 4
+    assert report["parity_proven"] is False
+    assert report["blockers"]
