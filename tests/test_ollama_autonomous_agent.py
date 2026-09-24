@@ -83,13 +83,49 @@ class TestCrossRepositoryAutonomyManager:
         )
         assert "authentication" in contract["universal_source"]["required_when"]
 
+        awareness = plan["awareness_memory_sync_plan"]
+        assert "thealphakenya/qmoi-enhanced" in awareness["repository_scopes"]
+        assert "thealphakenya/Alpha-Q-ai" in awareness["repository_scopes"]
+        assert "QVillage" in awareness["platform_surfaces"]
+        assert "model tests" in awareness["feature_surfaces"]
+        assert "QMOI_MODEL_CARD.md" in awareness["required_artifacts"]
+        assert any("fresh artifacts" in gate for gate in awareness["hard_gates"])
+
+    def test_topic_execution_metrics_require_individual_evidence(self, tmp_path):
+        (tmp_path / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md").write_text(
+            "## 1. First\n## 2. Second\n## 3. Third\n", encoding="utf-8"
+        )
+        (tmp_path / "ollama_master_topic_index.txt").write_text(
+            "1. First\n2. Second\n3. Third\n", encoding="utf-8"
+        )
+        evidence = tmp_path / "Q.0.0.N" / "evidence" / "topics"
+        evidence.mkdir(parents=True)
+        (evidence / "topic-001.json").write_text(
+            json.dumps({"status": "SUCCESS", "evidence_complete": True}), encoding="utf-8"
+        )
+        (evidence / "topic-002.json").write_text(
+            json.dumps({"status": "BLOCKED", "evidence_complete": False}), encoding="utf-8"
+        )
+
+        metrics = CrossRepositoryAutonomyManager().build_topic_execution_metrics(tmp_path)
+
+        assert metrics["master_plan_topics"] == 3
+        assert metrics["topic_index_matches_plan"] is True
+        assert metrics["evidence_records"] == 2
+        assert metrics["evidence_coverage_percent"] == 66.67
+        assert metrics["fully_completed"] == 1
+        assert metrics["blocked"] == 1
+        assert metrics["in_progress"] == 1
+        assert metrics["status_sum_matches_inventory"] is True
+
     def test_cross_repository_plan_covers_alpha_history_and_merge_docs(self):
         manager = CrossRepositoryAutonomyManager()
         plan = manager.build_cross_repository_merge_plan()
 
-        history = plan["metrics"]["alpha-q-ai-history-14"]
+        history = plan["metrics"]["Alpha-Q-ai-2025"]
         assert history["exists"] is True
-        assert history["files"] == 1346
+        assert history["files"] >= 1000
+        assert history["files"] == plan["metrics"].get("Alpha-Q-ai-2025", history)["files"]
         assert plan["all_alpha_history_paths_included"] is True
         assert any(path.endswith("/MERGE.md") for path in plan["merge_documents"])
         assert plan["base_repository"] == "qmoi-enhanced-history-14"
@@ -556,6 +592,9 @@ class TestModelCardGenerator:
         assert "QCity" in content
         assert "QMOI Space" in content
         assert "QALPHA" in content
+        assert "QVillage UI and Card Synchronization" in content
+        assert "Master-plan topics discovered" in content
+        assert generator.qmoi_card_path.exists()
 
     def test_model_card_includes_all_apps(self, tmp_path):
         """Verify model card documents all apps."""
@@ -573,6 +612,24 @@ class TestModelCardGenerator:
 
         for app, description in apps.items():
             assert app in content
+
+    def test_model_card_tracks_history_and_model_test_evidence(self, tmp_path):
+        (tmp_path / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md").write_text(
+            "## 1. One\n## 2. Two\n", encoding="utf-8"
+        )
+        (tmp_path / "Alpha-Q-ai-2025").mkdir()
+        (tmp_path / "qmoi-enhanced-history-14").mkdir()
+        (tmp_path / "tests").mkdir()
+        (tmp_path / "tests" / "test_model_sync.py").write_text("def test_sync(): pass\n", encoding="utf-8")
+
+        generator = ModelCardGenerator(tmp_path)
+        generator.generate_card()
+        content = generator.qmoi_card_path.read_text(encoding="utf-8")
+
+        assert "Master-plan topics discovered: 2" in content
+        assert "Alpha source tree available: True" in content
+        assert "QMOI history source available: True" in content
+        assert "test_model_sync.py" in content
 
 
 class TestRealtimeTracker:

@@ -1,0 +1,208 @@
+1. 1. Complete autonomous lifecycle
+2. 2. Q.0.0.(numbering) should become part of the completion protocol
+3. 3. The Q.0.0.N document should explicitly prove completion
+4. 4. Self-healing is essential
+5. 5. The Master Orchestrator should supervise failures
+6. 6. Human intervention should be unnecessary for ordinary operations
+7. 7. Production readiness must be a gate, not a statement
+8. 8. Most importantly: eliminate "green wrapper" success
+9. 9. The ultimate invariant
+10. 10. Repository architecture
+11. 11. Thorough Ollama-agent inspection
+12. 12. Autonomous Agent execution contract
+13. 13. Git commit and push must be first-class verified operations
+14. 14. PR lifecycle must be autonomous
+15. 15. Merge operations must be real merge operations
+16. 16. autosync-backup must be synchronized and verified
+17. 17. Cross-repository synchronization
+18. 18. QMOI live activity stream
+19. 19. Ollama Autonomous Agent live activity stream
+20. 20. Fix the live activity stream architecture in both repositories
+21. 21. Live activity must be genuinely observable
+22. 22. Live activity must work in both repositories
+23. 23. Live stream freshness verification
+24. 24. Master Orchestrator heartbeat/watchdog
+25. 25. Checkpoint and resume
+26. 26. Idempotency
+27. 27. Concurrency control
+28. 28. GitHub permissions and security
+29. 29. Pull-request safety
+30. 30. Workflow architecture
+31. 31. Master Orchestrator responsibilities
+32. 32. Autonomous Agent responsibilities
+33. 33. Deterministic completion engine
+34. 34. No-change completion
+35. 35. Change detection
+36. 36. File integrity
+37. 37. Documentation synchronization
+38. 38. Test architecture
+39. 39. Failure injection
+40. 40. Fail-closed required gates
+41. 41. Evidence architecture
+42. 42. Telemetry schema
+43. 43. Current status file
+44. 44. Live stream UI contract
+45. 45. Define "live" precisely
+46. 46. Remote workflow observability
+47. 47. Cross-repository live activity
+48. 48. QMOI and Ollama event separation
+49. 49. Monitoring correctness tests
+50. 50. Orchestrator/live-stream integration
+51. 51. Q-version directory synchronization
+52. 52. Q-version collision protection
+53. 53. Final remote verification
+54. 54. Final repository inspection
+55. 55. Production-ready invariant
+56. 56. Cross-repository invariant
+57. 57. No hidden incomplete stages
+58. 58. Copilot Chat execution mode
+59. 59. Copilot must inspect before modifying
+60. 60. Do not rewrite working systems unnecessarily
+61. 61. Keep workflows thin
+62. 62. Permissions must match operations
+63. 63. Merge policy integration
+64. 64. GitHub API failure handling
+65. 65. Artifact retention
+66. 66. Operator documentation
+67. 67. Monitoring dashboard
+68. 68. Alerts
+69. 69. Resource and timeout controls
+70. 70. Graceful interruption
+71. 71. Git conflict recovery
+72. 72. Failed-check recovery
+73. 73. Failed-merge recovery
+74. 74. Cross-repository divergence recovery
+75. 75. Live-stream failure behavior
+76. 76. QMOI versus GitHub activity
+77. 77. Ollama versus QMOI activity
+78. 78. Event correlation
+79. 79. Final end-to-end test
+80. 80. Final acceptance test
+81. 81. Final success contract
+82. 82. Final evidence chain
+83. 83. Repository-specific principle
+84. 84. Preserve existing functionality
+85. 85. Upgrade existing liveactivitystream.md
+86. 86. Live-stream proof requirement
+87. 87. Q-version live-activity record
+88. 88. Production verification independent of the LLM
+89. 89. No mock production evidence
+90. 90. No stale success artifacts
+91. 91. CURRENT_STATUS freshness
+92. 92. Master Orchestrator final responsibility
+93. 93. Immutable terminal state
+94. 94. Rerunnable verification
+95. 95. Dry-run
+96. 96. Audit mode
+97. 97. Repair mode
+98. 98. Resume mode
+99. 99. Implementation sequence
+100. 100. Required implementation checklist
+101. 101. Final success ceremony
+102. 102. Expected successful lifecycle
+103. 103. Definition of done
+104. 104. Final instruction to Copilot Chat/Agent
+105. 105. Bidirectional workspace/repository architecture
+106. 106. Workspace should be a control surface, not the Git transport
+107. 107. Two-way repository bridge
+108. 108. Alpha-Q-ai Codespace → qmoi-enhanced
+109. 109. qmoi-enhanced Codespace → Alpha-Q-ai
+110. 110. Automatic source publication
+111. 111. Automatic source commit
+112. 112. Automatic patch mode
+113. 113. Workspace intent boundaries
+114. 114. Automatic local synchronization
+115. 115. Never use blind force-push
+116. 116. Cross-repository synchronization contract
+117. 117. GitHub Actions authentication architecture
+118. 118. Prefer GitHub App authentication for cross-repository automation
+119. 119. Fine-grained credential fallback
+120. 120. Separate credential roles
+121. 121. Cross-repository dispatch
+122. 122. Do not rely on the source repository's GITHUB_TOKEN for target writes
+123. 123. 403 prevention preflight
+124. 124. 403 diagnostics
+125. 125. 403 self-healing boundary
+126. 126. Repository Actions permission gate
+127. 127. Cross-repository permission matrix
+128. 128. Automated permission verification
+129. 129. Workspace bootstrap
+130. 130. Automatic background synchronization
+131. 131. Explicit synchronization modes
+132. 132. Workspace status dashboard
+133. 133. Remote-first development model
+134. 134. Bidirectional synchronization graph
+135. 135. Shared-path ownership
+136. 136. Avoid repository contamination
+137. 137. Preserve the existing merge inventory contract
+138. 138. Codespace light/full/audit modes
+139. 139. Automatic sibling-repository materialization
+140. 140. One workspace, two repository control plane
+141. 141. Avoid nested Git repository mistakes
+142. 142. Automatic remote tracking
+143. 143. Automatic branch synchronization
+144. 144. Branch sync must be direction-aware
+145. 145. Branch divergence gate
+146. 146. Autosync-backup relationship
+147. 147. Automatic backup synchronization
+148. 148. Cross-repository backup synchronization
+149. 149. Automatic PR origin tracking
+150. 150. PR deduplication
+151. 151. Merge queue/race protection
+152. 152. Source/target SHA proof
+153. 153. Automatic workspace result callback
+154. 154. Cross-repository event stream
+155. 155. 403 visibility in live activity
+156. 156. Cross-repository health endpoint/state
+157. 157. Cross-repository health gate
+158. 158. End-to-end Alpha → QMOI test
+159. 159. End-to-end QMOI → Alpha test
+160. 160. No-manual-Git acceptance criterion
+161. 161. User safety gate
+162. 162. Secret-safe synchronization
+163. 163. Existing `.env.example` and historical-secret audit
+164. 164. Token rotation proof
+165. 165. GitHub App token lifecycle
+166. 166. Credential fallback order
+167. 167. Permission configuration documentation
+168. 168. GitHub Actions settings verification
+169. 169. Protected branch compatibility
+170. 170. Direct push only where permitted
+171. 171. Remote workflow dispatch fallback
+172. 172. No 403 masking
+173. 173. Permission propagation handling
+174. 174. Cross-repository operation lock
+175. 175. Idempotent cross-repository request
+176. 176. Cross-repository queue
+177. 177. Cross-repository cancellation
+178. 178. Automatic recovery from Codespace shutdown
+179. 179. Workspace-independent completion
+180. 180. Reconnect behavior
+181. 181. Automatic remote-state refresh
+182. 182. No automatic destructive checkout
+183. 183. Conflict UX
+184. 184. Cross-repository dry run
+185. 185. Cross-repository audit
+186. 186. Cross-repository verification
+187. 187. Synchronization evidence
+188. 188. Cross-repository Q-version
+189. 189. Cross-repository live stream
+190. 190. Workspace UI completion indicator
+191. 191. Permission test matrix
+192. 192. 403 regression test
+193. 193. Remote-write regression test
+194. 194. Bidirectional regression test
+195. 195. Autosync regression test
+196. 196. Cross-repository branch-sync regression test
+197. 197. Merge regression test
+198. 198. Final bidirectional invariant
+199. 199. Final cross-repository success contract
+200. 200. Final architecture objective
+201. 201. Additional required files
+202. 202. Additional required implementation components
+203. 203. Final Copilot instruction for this extension
+204. 204. Final no-manual-command invariant
+205. 205. Final authorization invariant
+206. 206. Final 403 invariant
+207. 207. Final two-repository production invariant
+208. 208. Thoroughly ensure that Alpha-Q-ai repo should have all the contents it already has plus all the directories and files in Alpha-Q-ai-2025 and all these together used as base of all files and directories in Alpha-Q-ai repo before merging. qmoi-enhanced repo should also have all the files it currently has plus all the files and directories in qmoi-enhanced-history-14 and all these used as base contents of everything in qmoi-enhanced repo before merging begins.Also remember to update MERGE.md , ollama master orchestrator and all other files and features based on all these. Ollama autonomous agent should also enhanced and automated further how it sets up all automations in all repos and ensuring qmoi is incharge of all automations and should always ensure a automations are always successful.

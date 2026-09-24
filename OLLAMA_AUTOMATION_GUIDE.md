@@ -10,6 +10,19 @@
 
 The QMOI Ollama Autonomous Agent is a sophisticated system that automates all aspects of build, test, validation, and deployment across 6 platforms (Windows, macOS, Linux, iOS, Android, Web) for 4 apps (QMOIAIUI, QCity, QMOI Space, QALPHA).
 
+## 208-topic continuity and execution matrix
+
+The master plan in `QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md` contains 208 numbered topics. These are treated as a production execution queue, not as documentation placeholders. Each topic must be handled through the same evidence chain:
+
+- inspect and classify
+- implement or reconcile
+- validate and self-heal as needed
+- verify branch, merge, and remote state
+- record evidence and live activity
+- continue until the final Q.0.0.N gate is satisfied
+
+The live continuation ledger in `oe2.txt` and the exact numbered index in `ollama_master_topic_index.txt` are the authoritative task trackers for the remaining work. The agent must never skip a numbered item merely because it appears redundant or historical.
+
 ## GitHub-hosted setup and production contract
 
 The autonomous agent is designed to run as a GitHub-hosted production system and must not be treated as a local terminal-only utility. The authoritative execution environment is GitHub Actions.

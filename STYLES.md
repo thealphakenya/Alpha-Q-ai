@@ -1633,7 +1633,7 @@ Implementation: UIColor.systemBlue (etc.)
 
 ---
 
-## Merged source: ../Alpha-Q-ai/alpha-q-ai-history-14/STYLES.md
+## Merged source: ../Alpha-Q-ai/Alpha-Q-ai-2025/STYLES.md
 
 # STYLES.md: Comprehensive Platform-Specific Styling System
 

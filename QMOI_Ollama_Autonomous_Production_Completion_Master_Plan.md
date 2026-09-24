@@ -6,6 +6,18 @@
 **Coordination branch:** `autosync-backup`\
 **Completion marker:** `Q.0.0.N`
 
+**Canonical Alpha source policy:** `Alpha-Q-ai-2025` is the only accepted
+name for the materialized Alpha source tree. All merge planners, audits,
+inventories, documentation, evidence, automation, and generated path lists
+must use that name; no legacy Alpha-history identifier may be reintroduced.
+Before any merge, Alpha-Q-ai's existing tree and every file and
+directory in `Alpha-Q-ai-2025` are jointly treated as its base. Likewise,
+qmoi-enhanced's existing tree and every file and directory in
+`qmoi-enhanced-history-14` are jointly treated as its base. The pre-merge
+qmoi-enhanced contents are the research and implementation reference for
+Alpha-Q-ai changes, while ownership, conflict, authorization, and validation
+gates remain mandatory.
+
 > **Implementation contract:** This document is for GitHub Copilot
 > Chat/Agent or another repository automation operator. Inspect the
 > actual repositories before modifying them. Do not treat existing
@@ -72,6 +84,52 @@ The agent must discover existing Q versions in **both** repositories,
 select the next valid number, prevent collisions, use the same logical
 number for the coordinated cycle, and create the Q-version artifacts in
 both repositories.
+
+The complete topic inventory for this master plan has been verified at
+exactly 208 headings. The canonical execution ledger is stored in
+`ollama_master_topic_index.txt` and must remain synchronized with this
+plan. Every topic is treated as a production task with the same
+standard evidence envelope: inspect, implement, validate, self-heal,
+verify remote state, and publish final evidence. No topic is considered
+complete without live repository evidence.
+
+The continuation contract for each numbered topic is:
+
+``` text
+inspect → implement → validate → repair if needed → verify evidence → record status → continue
+```
+
+The live continuity tasks remaining from `oe2.txt` are also tracked as
+obligations that must be reconciled with this 208-topic plan before any
+final success claim is made.
+
+The live ledger records mutually exclusive topic metrics. Until individual
+evidence envelopes prove every required gate for a topic, that topic remains
+`IN PROGRESS`; aggregate tests or documentation do not count as full
+completion. The current snapshot records 208 discovered topics, 0 fully
+proven topics, and 208 active topics, with remote merge, authorization, and
+security conditions tracked as separate blockers. The autonomous merge-audit
+path computes plan/index parity, evidence coverage, unproven-topic lists, and
+status-count integrity, and writes the machine-readable result to
+`ollamatracks/topic_metrics.json`.
+
+The model responsibility extension is part of the same gate: Ollama and QMOI
+must inspect current and materialized historical sources before changing model
+behavior, discover and run applicable model tests, refresh both
+`MODEL_CARD.md` and `QMOI_MODEL_CARD.md`, and synchronize the same evidence to
+the QVillage model UI. Model-card or QVillage updates must expose timestamps,
+execution identity, test status, source/merge evidence, and blocked or stale
+states; they must never manufacture production health from missing evidence.
+
+QMOI awareness and memory synchronization is likewise a cross-surface
+responsibility. The Master Orchestrator must inventory both repositories,
+materialized history, platform adapters, applications, model inference/tests,
+automation, workflows, live activity, security, finance, deployment, and
+runtime state; refresh the memory and awareness artifacts with correlated
+execution IDs, branches, SHAs, and timestamps; and plan additive improvements
+across existing features before promotion. Missing, stale, blocked, or
+unavailable sources remain explicit failures and cannot be reported as
+synchronized consciousness or healthy automation.
 
 Recommended structure:
 
@@ -3554,6 +3612,54 @@ PRODUCTION_READY=true
 ```
 
 and never merely because the individual workflows themselves are green.
+
+### Remote-first execution addendum
+
+All autonomous production mutations must run independently on an authenticated
+target-repository runner. A Codespace or local checkout is a submission,
+inspection, and read-only observation surface; it is not the authority for
+push, pull-request creation, merge, branch synchronization, Q-version
+publication, or the final verdict. The target repository workflow must acquire
+its own repository-scoped `GITHUB_TOKEN` or preflighted GitHub App identity,
+re-fetch immutable source SHAs, enforce protected-branch policy, persist
+checkpoints, and publish evidence and live activity remotely.
+
+The local control plane must expose only these remote-safe operations:
+
+``` text
+remote-submit  -> target workflow dispatch -> queued remote execution
+remote-observe -> remote workflow/run/artifact lookup
+status         -> current remote/local evidence without mutation
+verify        -> deterministic fail-closed evidence evaluation
+```
+
+The target runner owns tests, security, build/runtime validation, PR/check/
+merge policy, backup synchronization, cross-repository verification, Q-version
+generation, and final production readiness. A missing token, unavailable
+remote state, HTTP 403, stale heartbeat, or absent artifact remains
+`AUTH_BLOCKED`, `REMOTE_STATUS_UNAVAILABLE`, `STALE`, or
+`BLOCKED_REQUIRES_HUMAN`; it must never be converted into `SUCCESS`,
+`WAITING`, or `NO_CHANGES_REQUIRED`. See
+`REMOTE_EXECUTION_ARCHITECTURE.md` and the target-owned
+`.github/workflows/cross-repository-sync.yml` contract.
+
+The executable target-runner contract is implemented by
+`scripts/remote_lifecycle.py`. It must acquire the repository-scoped
+execution lock, emit correlated JSONL events through
+`scripts/live_activity_events.py`, checkpoint every stage through
+`scripts/checkpoint_manager.py`, run deterministic validation and security
+checks, verify `main` and `autosync-backup` from remote state, and invoke the
+single completion engine. The runner must return a non-success terminal state
+when cross-repository, authorization, security, Q-version, live-activity, or
+remote-SHA evidence is missing. Its JSON result, checkpoint, event stream,
+current state, topic metrics, and execution evidence are uploaded by the
+target-owned workflow for remote observation after Codespace shutdown.
+
+Remote execution is therefore independently resumable and observable: local
+commands may submit, inspect, and verify evidence, but may not substitute
+local test results or local Git state for the target runner's authoritative
+result. A green dispatch, a passing local suite, or a generated checkpoint is
+never sufficient for `PRODUCTION_READY=true`.
 
 
 ## 208. Thoroughly ensure that Alpha-Q-ai repo should have all the contents it already has plus all the directories and files in Alpha-Q-ai-2025 and all these together used as base of all files and directories in Alpha-Q-ai repo before merging. qmoi-enhanced repo should also have all the files it currently has plus all the files and directories in qmoi-enhanced-history-14 and all these used as base contents of everything in qmoi-enhanced repo before merging begins.Also remember to update MERGE.md , ollama master orchestrator and all other files and features based on all these. Ollama autonomous agent should also enhanced and automated further how it sets up all automations in all repos and ensuring qmoi is incharge of all automations and should always ensure a automations are always successful. 

@@ -158,7 +158,7 @@ QMOI automation must remain resilient, readable, and auditable at every layer. T
 
 ---
 
-## Merged source: ../Alpha-Q-ai/alpha-q-ai-history-14/UNIVERSALS.md
+## Merged source: ../Alpha-Q-ai/Alpha-Q-ai-2025/UNIVERSALS.md
 
 # UNIVERSALS.md - Universal QMOI Standards
 

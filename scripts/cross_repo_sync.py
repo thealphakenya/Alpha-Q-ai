@@ -95,6 +95,11 @@ def audit(qmoi: Path, alpha: Path, backup_branch: str) -> dict[str, Any]:
 
 
 def push_fast_forward(target: Path, source: Path, target_branch: str, source_branch: str) -> None:
+    if target_branch == "main":
+        raise RuntimeError(
+            "refusing direct cross-repository main push; submit cross-repository-sync.yml "
+            "to the target repository so its own workflow creates and merges the PR"
+        )
     source_sha = run_git(source, "rev-parse", f"origin/{source_branch}")
     target_ref = f"refs/remotes/origin/{target_branch}"
     target_sha = run_git(target, "rev-parse", target_ref, check=False)
@@ -119,7 +124,7 @@ def main() -> int:
     parser.add_argument("--direction", choices=("audit", "qmoi-to-alpha", "alpha-to-qmoi"), default="audit")
     parser.add_argument("--backup-branch", default=DEFAULT_BACKUP_BRANCH)
     parser.add_argument("--apply", action="store_true", help="Push the source main commit to the target backup branch")
-    parser.add_argument("--promote", action="store_true", help="After backup sync, also promote to target main")
+    parser.add_argument("--promote", action="store_true", help="Deprecated and refused: target main requires its own workflow/PR")
     parser.add_argument("--report", type=Path, help="Write the audit JSON report")
     args = parser.parse_args()
 
@@ -134,6 +139,8 @@ def main() -> int:
         parser.error("--apply requires --direction qmoi-to-alpha or alpha-to-qmoi")
     if args.promote and not args.apply:
         parser.error("--promote requires --apply")
+    if args.promote:
+        parser.error("--promote is intentionally unavailable; use scripts/qmoictl.py remote-submit")
 
     if args.apply:
         source, target = (qmoi, alpha) if args.direction == "qmoi-to-alpha" else (alpha, qmoi)

@@ -253,8 +253,8 @@ qmoi-enhanced-history-14 base
   -> reviewed additive projection into Alpha-Q-ai
 ```
 
-The Alpha target also contains `alpha-q-ai-history-14/`, a complete 1,346-file
-archive of the verified historical Alpha source used for comparison and
+The Alpha target also contains `Alpha-Q-ai-2025/`, the complete materialized
+Alpha source used for comparison and
 recovery. It was recorded in target commit
 `cb5b11129b0912b0c344939a98b8a105ebb76502`. This archive is evidence for the
 available materialized source; it is not mislabeled as an April remote commit.
@@ -270,7 +270,7 @@ before creating or changing a feature.
 
 Every merge execution must run the cross-repository plan exposed by
 `CrossRepositoryAutonomyManager.build_cross_repository_merge_plan()`. The plan
-walks every file and directory in `Alpha-Q-ai/alpha-q-ai-history-14`, the live
+walks every file and directory in `Alpha-Q-ai/Alpha-Q-ai-2025`, the live
 Alpha tree, `qmoi-enhanced-history-14`, and the current QMOI tree. It also
 includes every `MERGE.md` or merge-named Markdown file, tests, workflows,
 routes, APIs, ports, automation, memory indexes, tracker state, `STYLES.md`,
@@ -300,7 +300,7 @@ The autonomous Markdown audit now runs before merge planning across four roots:
 | `qmoi-enhanced` | 3,660 | complete |
 | `qmoi-enhanced-history-14` | 3,559 | complete |
 | `Alpha-Q-ai` | 196 | complete |
-| `alpha-q-ai-history-14` | 97 | complete |
+| `Alpha-Q-ai-2025` | current materialized tree | complete |
 
 The four-root inventory contains 7,512 Markdown files and zero paths missing
 from their local `ALLMDFILESREFS.md` indexes. The audit also checks empty files,
@@ -1936,7 +1936,7 @@ git commit -m "Merge branch..."
 
 ---
 
-## Merged source: ../Alpha-Q-ai/alpha-q-ai-history-14/MERGE.md
+## Merged source: ../Alpha-Q-ai/Alpha-Q-ai-2025/MERGE.md
 
 # MERGE.md - Merge Procedures and Guidelines
 

@@ -1,133 +1,70 @@
 # QMOI Model Card
 
-**Generated:** 2026-08-14T22:11:25.845754  
-**Version:** 1.2.3  
-**Status:** Production Ready
+**Generated:** 2026-09-24T00:00:21.361782Z
+**Status:** Evidence-tracked; production status requires the final completion gate.
 
 ## Overview
 
-QMOI is a unified multi-app, multi-platform suite:
-- **QMOIAIUI:** Conversational AI Interface
-- **QCity:** File Manager  
-- **QMOI Space:** Media Player
-- **QALPHA:** Integrated Development Environment
+QMOI (Quantum Multi Orchestra Intelligence) is the autonomous intelligence
+platform validated by the QMOI repository automation contract.
 
-## Platform Support
+## Applications
 
-### Desktop
-- ✓ Windows 10+ (x64, ARM64)
-- ✓ macOS 12+ (Intel, Apple Silicon)
-- ✓ Linux (Ubuntu, Fedora, Debian, Arch)
+### QMOIAIUI
 
-### Mobile
-- ✓ iOS 14+
-- ✓ Android 11+
+Conversational AI interface.
 
-### Web
-- ✓ Progressive Web App (PWA)
-- ✓ Chrome 90+, Firefox 88+, Safari 15+, Edge 90+
+### QCity
 
-## Build & Test Metrics
+File Manager.
 
-### Compilation Status
-- Windows: ✓ Pass
-- macOS: ✓ Pass
-- Linux: ✓ Pass
-- iOS: ✓ Pass
-- Android: ✓ Pass
-- Web: ✓ Pass
+### QMOI Space
 
-### Test Results
-- Unit Tests: 1,250+ pass
-- Integration Tests: 350+ pass
-- E2E Tests: 85+ pass
-- Code Coverage: 87%
+Media Player.
 
-### Platform Validation
-- File Handlers: 50+ types validated
-- Accessibility: WCAG 2.1 AA compliant
-- Performance: All benchmarks passed
-- Security: No vulnerabilities detected
+### QALPHA
 
-## Apps & Features
+IDE.
 
-### QMOIAIUI (Conversational AI)
-- Conversation management
-- Multiple model support
-- Parameter tuning
-- Voice I/O
-- Export functionality
-- Memory persistence
-- Accessibility features
+## Model and Merge Evidence
 
-### QCity (File Manager)
-- Folder tree navigation
-- Multiple view modes (grid, list, detail)
-- Advanced search
-- Batch operations
-- Duplicate finder
-- Smart tags
-- Cloud storage integration
-- File preview
+- Master-plan topics discovered: 208
+- Active repository files inventoried: 10710
+- Alpha source tree available: True
+- QMOI history source available: True
+- Model-test paths: Alpha-Q-ai-2025/models/latest/qmoi_enhanced_advanced_model.py, Alpha-Q-ai-2025/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/QMOIMODELTESTS.md, qmoi-enhanced-history-14/__tests__/chatbot.model.test.tsx, qmoi-enhanced-history-14/__tests__/ci.no-model-selector.test.ts, qmoi-enhanced-history-14/__tests__/qmoi-model.route.test.ts, qmoi-enhanced-history-14/_archive_qmoi-enhanced/models/latest/qmoi_enhanced_advanced_model.py, qmoi-enhanced-history-14/_archive_qmoi-enhanced/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/models/latest/qmoi_enhanced_advanced_model.py, qmoi-enhanced-history-14/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/tests/test_hf_model_sync.py, qmoi-enhanced-history-14/tests/test_qmoi_model_enhancer.py, qmoi-enhanced-history-14/tests/test_update_model_card.py, qmoi-enhanced-history-14/tools/issue_drafts/0604_models_latest_README.md.md, qmoi-enhanced-history-14/tools/issue_drafts/0936_qmoi-enhanced_models_latest_README.md.md
+- Model updates must compare current code with all materialized history and
+    merge inventories before changing behavior.
 
-### QMOI Space (Media Player)
-- Playback controls
-- Volume & quality selection
-- Subtitle & audio track switching
-- Playlist management
-- Picture-in-Picture mode
-- Media library browsing
-- Voice & gesture controls
-- Keyboard shortcuts
+## QVillage UI and Card Synchronization
 
-### QALPHA (IDE)
-- Code editing with syntax highlighting
-- Code completion
-- Debugger integration
-- Terminal integration
-- Git version control
-- File explorer
-- Theme support
-- Extensions
+- QVillage documentation present: True
+- Awareness contract artifact present: False
+- Memory artifacts present: MEMORY_INDEX.md, memory_index.json, QMOI_REALTIME_MEMORY_INDEX.md
+- QVillage must expose model version, health, test status, source evidence,
+    last update timestamp, and blocked or stale states.
+- Model-card refreshes must update the repository card and publish the same
+    evidence fields to the QVillage model surface only after validation passes.
+- Missing credentials, remote failures, or incomplete tests remain visible as
+    blocked evidence; they must never be represented as healthy completion.
 
-## Memory Sync Contract
+## Validation Contract
 
-This model card is generated with real-time memory indexing:
-- Tracks all source files by SHA256
-- Reuses unchanged file digests for efficiency
-- Syncs across all instances every 5 seconds
-- Enables memory-aware decision making
+The autonomous validation contract covers:
 
-## Quality Assurance
-
-All apps undergo:
-- ✓ Automated compilation checks (all platforms)
-- ✓ Comprehensive unit & integration tests
-- ✓ Platform-specific validation
-- ✓ Accessibility compliance verification
-- ✓ Performance profiling
-- ✓ Security scanning
-- ✓ Code quality analysis
-
-## Distribution
-
-Apps available on:
-- Microsoft Store (Windows)
-- Mac App Store (macOS)
-- App Store (iOS)
-- Google Play Store (Android)
-- Linux: snap, flatpak, AppImage, apt, dnf, AUR
-- Web: https://qmoi.com
-
-## Support & Documentation
-
-- Installation: [INSTALL.md](INSTALL.md)
-- Building: [BUILD.md](BUILD.md)
-- Platform Requirements: [PLATFORM_REQUIREMENTS.md](PLATFORM_REQUIREMENTS.md)
-- Downloads: [DOWNLOAD.md](DOWNLOAD.md)
-- Team Workflows: [QTEAM.md](QTEAM.md)
-
----
-
-**Generated by:** QMOI Ollama Autonomous Agent  
-**Generated at:** 2026-08-14T22:11:25.845754
+- Windows
+- macOS
+- Linux
+- iOS
+- Android
+- Web
+- Platform-specific features
+- File-handler registration
+- GitHub automation
+- Cross-repository synchronization
+- Realtime telemetry
+- Auto-healing
+- Resume checkpoints
+- Memory index generation
+- Model-card generation
+- GitHub proof contracts

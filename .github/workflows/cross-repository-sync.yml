@@ -1,0 +1,109 @@
+name: Cross-Repository Target-Owned Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      direction:
+        description: Source-to-target direction
+        required: true
+        type: choice
+        options: [alpha-to-qmoi, qmoi-to-alpha]
+      source_repository:
+        description: Repository that owns the source SHA
+        required: true
+        type: string
+      source_sha:
+        description: Immutable source SHA to validate
+        required: true
+        type: string
+      mode:
+        description: Audit only or apply through a PR
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, apply]
+      sync_id:
+        description: Idempotent synchronization identity
+        required: true
+        type: string
+      reason:
+        description: Request reason
+        required: false
+        default: remote workspace request
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  actions: read
+
+concurrency:
+  group: cross-repository-sync-${{ github.repository }}-${{ inputs.sync_id }}
+  cancel-in-progress: false
+
+jobs:
+  target-owned-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record remote request
+        env:
+          REQUEST_JSON: ${{ toJSON(inputs) }}
+        run: |
+          set -Eeuo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = json.loads(os.environ["REQUEST_JSON"])
+          payload.update({"target_repository": os.environ["GITHUB_REPOSITORY"], "run_id": os.environ["GITHUB_RUN_ID"]})
+          path = Path("ollamatracks/remote_requests") / f"{payload['sync_id']}.json"
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+
+      - name: Validate target-owned control plane
+        run: |
+          set -Eeuo pipefail
+          python -m py_compile \
+            scripts/autonomous_completion_engine.py \
+            scripts/checkpoint_manager.py \
+            scripts/execution_lock.py \
+            scripts/live_activity_events.py \
+            scripts/q_version_manager.py \
+            scripts/remote_lifecycle.py \
+            scripts/remote_state.py \
+            scripts/sync_contract.py \
+            scripts/workspace_sync.py
+
+      - name: Execute target-owned remote lifecycle
+        id: lifecycle
+        run: |
+          set -Eeuo pipefail
+          python scripts/remote_lifecycle.py \
+            --root "$GITHUB_WORKSPACE" \
+            --execution-id "remote-${GITHUB_RUN_ID}" \
+            --sync-id "${{ inputs.sync_id }}" \
+            --direction "${{ inputs.direction }}" \
+            --source-repository "${{ inputs.source_repository }}" \
+            --source-sha "${{ inputs.source_sha }}" \
+            --mode "${{ inputs.mode }}" | tee remote-verification.json
+
+      - name: Publish remote evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-repository-sync-${{ github.run_id }}
+          path: |
+            remote-verification.json
+            ollamatracks/remote_requests/${{ inputs.sync_id }}.json
+            ollamatracks/current_state.json
+            ollamatracks/events.jsonl
+            ollamatracks/checkpoints/remote-${{ github.run_id }}.json
+            ollamatracks/executions/remote-${{ github.run_id }}/execution.json
+          if-no-files-found: ignore

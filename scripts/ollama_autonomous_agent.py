@@ -1728,9 +1728,53 @@ class ModelCardGenerator:
         self.card_path = (
             self.root_dir / "MODEL_CARD.md"
         )
+        self.qmoi_card_path = self.root_dir / "QMOI_MODEL_CARD.md"
+
+    def _evidence(self) -> dict[str, Any]:
+        tracked_files = [
+            path
+            for path in self.root_dir.rglob("*")
+            if path.is_file() and ".git" not in path.parts
+        ]
+        return {
+            "generated": utc_iso(),
+            "tracked_files": len(tracked_files),
+            "master_plan_topics": self._count_master_plan_topics(),
+            "alpha_source_exists": (self.root_dir / "Alpha-Q-ai-2025").is_dir(),
+            "qmoi_history_exists": (self.root_dir / "qmoi-enhanced-history-14").is_dir(),
+            "qvillage_documented": (self.root_dir / "QVILLAGE.md").is_file(),
+            "awareness_artifact_exists": (
+                self.root_dir / "QMOI_MEMORY_AWARENESS_SYSTEM.md"
+            ).is_file(),
+            "memory_artifacts": [
+                name
+                for name in ("MEMORY_INDEX.md", "memory_index.json", "QMOI_REALTIME_MEMORY_INDEX.md")
+                if (self.root_dir / name).is_file()
+            ],
+            "model_test_paths": sorted(
+                path.relative_to(self.root_dir).as_posix()
+                for path in tracked_files
+                if "model" in path.name.lower() and "test" in str(path).lower()
+            ),
+        }
+
+    def _count_master_plan_topics(self) -> int:
+        plan = self.root_dir / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md"
+        if not plan.is_file():
+            return 0
+        return sum(
+            1
+            for line in plan.read_text(encoding="utf-8").splitlines()
+            if line.startswith("## ")
+        )
 
     def generate_card(self) -> Path:
-        content = """# QMOI Model Card
+        evidence = self._evidence()
+        model_test_paths = evidence["model_test_paths"] or ["No dedicated model-test path discovered"]
+        content = f"""# QMOI Model Card
+
+**Generated:** {evidence["generated"]}
+**Status:** Evidence-tracked; production status requires the final completion gate.
 
 ## Overview
 
@@ -1754,6 +1798,28 @@ Media Player.
 ### QALPHA
 
 IDE.
+
+## Model and Merge Evidence
+
+- Master-plan topics discovered: {evidence["master_plan_topics"]}
+- Active repository files inventoried: {evidence["tracked_files"]}
+- Alpha source tree available: {evidence["alpha_source_exists"]}
+- QMOI history source available: {evidence["qmoi_history_exists"]}
+- Model-test paths: {", ".join(model_test_paths)}
+- Model updates must compare current code with all materialized history and
+    merge inventories before changing behavior.
+
+## QVillage UI and Card Synchronization
+
+- QVillage documentation present: {evidence["qvillage_documented"]}
+- Awareness contract artifact present: {evidence["awareness_artifact_exists"]}
+- Memory artifacts present: {", ".join(evidence["memory_artifacts"]) or "none"}
+- QVillage must expose model version, health, test status, source evidence,
+    last update timestamp, and blocked or stale states.
+- Model-card refreshes must update the repository card and publish the same
+    evidence fields to the QVillage model surface only after validation passes.
+- Missing credentials, remote failures, or incomplete tests remain visible as
+    blocked evidence; they must never be represented as healthy completion.
 
 ## Validation Contract
 
@@ -1781,6 +1847,7 @@ The autonomous validation contract covers:
             self.card_path,
             content,
         )
+        safe_text_write(self.qmoi_card_path, content)
 
         return self.card_path
 
@@ -2212,6 +2279,150 @@ class CrossRepositoryAutonomyManager:
             "feature_discovery_plan": self.build_feature_discovery_plan(),
             "complete_execution_contract": self.build_complete_execution_contract(),
             "cross_repository_merge_plan": self.build_cross_repository_merge_plan(),
+            "awareness_memory_sync_plan": self.build_awareness_memory_sync_plan(),
+        }
+
+    def build_awareness_memory_sync_plan(self) -> dict[str, Any]:
+        """Define the evidence-gated awareness and memory sync surface."""
+        return {
+            "owner": "QMOI Master Orchestrator",
+            "source_of_truth": "validated repository state plus current execution telemetry",
+            "repository_scopes": [
+                QMOI_REPOSITORY,
+                ALPHA_Q_AI_REPOSITORY,
+                HISTORY_SNAPSHOT_DIRECTORY,
+                "Alpha-Q-ai-2025",
+            ],
+            "platform_surfaces": [
+                "GitHub",
+                "GitLab",
+                "Gitpod",
+                "Netlify",
+                "Vercel",
+                "Hugging Face",
+                "QVillage",
+                "Quantum",
+                "DagsHub",
+            ],
+            "feature_surfaces": [
+                *SUPPORTED_APPS,
+                "automation",
+                "model inference",
+                "model tests",
+                "live activity",
+                "workflow and merge state",
+                "security and credentials",
+                "finance and trading",
+                "deployment and runtime health",
+            ],
+            "required_artifacts": [
+                "MEMORY_INDEX.md",
+                "memory_index.json",
+                "QMOI_REALTIME_MEMORY_INDEX.md",
+                "QMOI_MEMORY_AWARENESS_SYSTEM.md",
+                "ollamatracks/CURRENT_STATUS.txt",
+                "QMOI_MODEL_CARD.md",
+                "QVILLAGE.md",
+            ],
+            "lifecycle": [
+                "inventory repositories, platform adapters, features, and active workflows",
+                "refresh memory indexes and awareness state atomically",
+                "correlate execution ID, repository, branch, SHA, platform, and feature",
+                "run model, integration, and repository validation",
+                "publish model-card and QVillage updates only from validated evidence",
+                "mark stale, blocked, unavailable, and failed sources explicitly",
+            ],
+            "hard_gates": [
+                "no memory sync success without fresh artifacts",
+                "no awareness success when a required repository or platform source is unavailable",
+                "no model improvement is promoted without tests and rollback evidence",
+                "no QVillage health claim without matching repository evidence",
+            ],
+        }
+
+    def build_topic_execution_metrics(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Compute evidence-backed, mutually exclusive master-plan metrics."""
+        repository_root = Path(root).resolve() if root is not None else Path(__file__).resolve().parent.parent
+        plan_path = repository_root / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md"
+        index_path = repository_root / "ollama_master_topic_index.txt"
+        topic_pattern = re.compile(r"^##\s+(\d+)\.\s+(.+?)\s*$")
+        topics = {
+            int(match.group(1)): match.group(2)
+            for line in plan_path.read_text(encoding="utf-8").splitlines()
+            if (match := topic_pattern.match(line))
+        } if plan_path.is_file() else {}
+        index_numbers = [
+            int(match.group(1))
+            for line in index_path.read_text(encoding="utf-8").splitlines()
+            if (match := re.match(r"^(\d+)\.\s+", line))
+        ] if index_path.is_file() else []
+        evidence_root = repository_root / "Q.0.0.N" / "evidence"
+        evidence_records: dict[int, dict[str, Any]] = {}
+        evidence_paths = sorted(evidence_root.rglob("*.json")) if evidence_root.is_dir() else []
+        for path in evidence_paths:
+            match = re.search(r"(?:topic[-_]?|/)(\d{1,3})(?:\.json|/|$)", path.as_posix())
+            if not match:
+                continue
+            number = int(match.group(1))
+            if number not in topics:
+                continue
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if isinstance(payload, dict):
+                evidence_records[number] = {
+                    "path": str(path.relative_to(repository_root)),
+                    "status": str(payload.get("status", "")).upper(),
+                    "evidence_complete": bool(payload.get("evidence_complete")),
+                }
+
+        fully_completed = sum(
+            record["status"] in {"SUCCESS", "FULLY_COMPLETED"}
+            and record["evidence_complete"]
+            for record in evidence_records.values()
+        )
+        blocked = sum(
+            record["status"] in {"BLOCKED", "FAILED", "FAILED_AT"}
+            for record in evidence_records.values()
+        )
+        not_started = sum(
+            record["status"] in {"NOT_STARTED", "NOT_APPLICABLE"}
+            for record in evidence_records.values()
+        )
+        active = max(len(topics) - fully_completed - blocked - not_started, 0)
+        proven_numbers = {
+            number for number, record in evidence_records.items()
+            if record["status"] in {"SUCCESS", "FULLY_COMPLETED"}
+            and record["evidence_complete"]
+        }
+        return {
+            "generated": utc_iso(),
+            "plan_path": str(plan_path),
+            "index_path": str(index_path),
+            "master_plan_topics": len(topics),
+            "topic_index_entries": len(index_numbers),
+            "topic_index_matches_plan": sorted(topics) == index_numbers,
+            "duplicate_index_numbers": sorted(
+                number for number in set(index_numbers) if index_numbers.count(number) > 1
+            ),
+            "missing_index_numbers": sorted(set(topics) - set(index_numbers)),
+            "evidence_records": len(evidence_records),
+            "evidence_coverage_percent": round(
+                len(evidence_records) / len(topics) * 100, 2
+            ) if topics else 0.0,
+            "fully_completed": fully_completed,
+            "in_progress": active,
+            "not_started": not_started,
+            "blocked": blocked,
+            "unproven_topics": sorted(set(topics) - proven_numbers),
+            "evidence_records_by_topic": evidence_records,
+            "status_sum_matches_inventory": (
+                fully_completed + active + not_started + blocked == len(topics)
+            ),
         }
 
     def build_feature_discovery_plan(self) -> dict[str, Any]:
@@ -2304,16 +2515,31 @@ class CrossRepositoryAutonomyManager:
         }
         if roots is not None:
             supplied = [Path(item).resolve() for item in roots]
-            root_map = {path.name: path for path in supplied}
-        alpha_root = root_map.get("Alpha-Q-ai")
-        history_root = (
-            alpha_root / "alpha-q-ai-history-14"
-            if alpha_root and (alpha_root / "alpha-q-ai-history-14").is_dir()
-            else repo_root / "alpha-q-ai-history-14"
+            for path in supplied:
+                lowered = path.name.lower()
+                if "qmoi" in lowered and "history" in lowered:
+                    root_map["qmoi-enhanced-history-14"] = path
+                elif "qmoi" in lowered and "enhanced" in lowered:
+                    root_map["qmoi-enhanced"] = path
+                elif "alpha" in lowered and "2025" in lowered:
+                    root_map["Alpha-Q-ai"] = path
+                elif path.name == "Alpha-Q-ai":
+                    root_map["Alpha-Q-ai"] = path
+        alpha_root = root_map.get("Alpha-Q-ai") or repo_root
+        history_candidates = [
+            alpha_root / "Alpha-Q-ai-2025" if alpha_root else None,
+            repo_root / "Alpha-Q-ai-2025",
+            repo_root / "Alpha-Q-ai",
+        ]
+        history_root = next(
+            (candidate for candidate in history_candidates if candidate and candidate.is_dir()),
+            repo_root / "Alpha-Q-ai-2025",
         )
         source_roots = {
-            **root_map,
-            "alpha-q-ai-history-14": history_root,
+            "qmoi-enhanced": root_map.get("qmoi-enhanced", repo_root),
+            "qmoi-enhanced-history-14": root_map.get("qmoi-enhanced-history-14", repo_root / HISTORY_SNAPSHOT_DIRECTORY),
+            "Alpha-Q-ai": root_map.get("Alpha-Q-ai", repo_root.parent / "Alpha-Q-ai"),
+            "Alpha-Q-ai-2025": history_root,
         }
         markdown_audit = self.audit_all_markdown_sources(list(source_roots.values()))
         metrics: dict[str, dict[str, Any]] = {}
@@ -2342,7 +2568,7 @@ class CrossRepositoryAutonomyManager:
                 "paths": files,
             }
 
-        alpha_history_paths = set(metrics["alpha-q-ai-history-14"]["paths"])
+        alpha_history_paths = set(metrics["Alpha-Q-ai-2025"]["paths"])
         routed_to_qmoi: list[str] = []
         routed_to_alpha: list[str] = []
         for path in sorted(alpha_history_paths):
@@ -2355,20 +2581,20 @@ class CrossRepositoryAutonomyManager:
                 HISTORY_SNAPSHOT_DIRECTORY,
                 "qmoi-enhanced",
                 "Alpha-Q-ai",
-                "alpha-q-ai-history-14",
+                "Alpha-Q-ai-2025",
             ],
             "metrics": metrics,
             "base_available": metrics[HISTORY_SNAPSHOT_DIRECTORY]["exists"],
             "ready_for_apply": (
                 metrics[HISTORY_SNAPSHOT_DIRECTORY]["exists"]
                 and metrics["Alpha-Q-ai"]["exists"]
-                and metrics["alpha-q-ai-history-14"]["exists"]
-                and len(metrics["alpha-q-ai-history-14"]["paths"]) > 0
+                and metrics["Alpha-Q-ai-2025"]["exists"]
+                and len(metrics["Alpha-Q-ai-2025"]["paths"]) > 0
                 and markdown_audit["index_complete"]
             ),
             "all_source_paths": sorted(all_paths),
             "all_alpha_history_paths_included": len(routed_to_qmoi) + len(routed_to_alpha)
-            == metrics["alpha-q-ai-history-14"]["files"],
+            == metrics["Alpha-Q-ai-2025"]["files"],
             "merge_documents": sorted(merge_documents),
             "markdown_audit": markdown_audit,
             "feature_direction": {
@@ -2383,7 +2609,7 @@ class CrossRepositoryAutonomyManager:
                 "conflicts": "block automatic overwrite; retain both owners and require reviewed resolution",
             },
             "required_merge_inputs": [
-                "all files and directories in alpha-q-ai-history-14",
+                "all files and directories in Alpha-Q-ai-2025",
                 "MERGE.md from every repository and history source",
                 "STYLES.md and UNIVERSALS.md",
                 "memory indexes, tracker state, and synchronization evidence",
@@ -2409,7 +2635,7 @@ class CrossRepositoryAutonomyManager:
             repo_root,
             repo_root / HISTORY_SNAPSHOT_DIRECTORY,
             repo_root.parent / "Alpha-Q-ai",
-            repo_root.parent / "Alpha-Q-ai" / "alpha-q-ai-history-14",
+            repo_root / "Alpha-Q-ai-2025",
         ]
         source_roots = [Path(item).resolve() for item in (roots or default_roots)]
         reports: list[dict[str, Any]] = []
@@ -2882,7 +3108,7 @@ class CrossRepositoryAutonomyManager:
                 defaults.extend(
                     [
                         alpha_root,
-                        alpha_root / "alpha-q-ai-history-14",
+                        alpha_root / "Alpha-Q-ai-2025",
                     ]
                 )
 
@@ -4316,6 +4542,8 @@ All timestamps use UTC ISO-8601 format.
 
         audit_dir = primary_root / "ollamatracks"
         audit_dir.mkdir(parents=True, exist_ok=True)
+        topic_metrics = self.cross_repo_manager.build_topic_execution_metrics(primary_root)
+        safe_json_write(audit_dir / "topic_metrics.json", topic_metrics)
         audit_path = audit_dir / "merge_audit.json"
         audit_payload = {
             "status": "ready" if merge_metrics.get("total_files", 0) > 0 else "blocked",
@@ -4325,6 +4553,7 @@ All timestamps use UTC ISO-8601 format.
             "inventory": inventory,
             "merge_plan": merge_plan,
             "cross_repository_plan": cross_repository_plan,
+            "topic_metrics": topic_metrics,
             "markdown_index_refresh": markdown_index_refresh,
             "captured_at": utc_iso(),
             "auto_push": auto_push,

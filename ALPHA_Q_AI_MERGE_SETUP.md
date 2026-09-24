@@ -28,8 +28,8 @@ The complete materialized Alpha source is recorded in
 commit, so the verified materialized source is identified by its exact Git ref
 instead of being mislabeled as an April snapshot.
 
-The directory `alpha-q-ai-history-14/` contains the complete 1,346-file
-verified historical source tree used for comparison and recovery. It is an
+The directory `Alpha-Q-ai-2025/` contains the complete materialized Alpha
+source tree used for comparison and recovery. It is an
 evidence snapshot, not a claim that the standalone remote had an April commit.
 
 
@@ -77,7 +77,7 @@ Completion requires targeted tests, the full repository validation command, and
 an explicit record of skipped or blocked checks.
 
 Each merge must execute the complete cross-repository plan: walk all files and
-directories in this repository, `alpha-q-ai-history-14`, and the
+directories in this repository, `Alpha-Q-ai-2025`, and the
 `qmoi-enhanced-history-14` base; inspect all merge Markdown, tests, workflows,
 routes, APIs, automation, and memory evidence; then classify Alpha-to-QMOI and
 QMOI-to-Alpha feature candidates by ownership, dependencies, compatibility, and

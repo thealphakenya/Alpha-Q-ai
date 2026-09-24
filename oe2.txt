@@ -1,7 +1,23 @@
+## Control-plane supervisor milestone: 2026-09-23
+
+- Added `scripts/control_plane_supervisor.py` as the deterministic supervisor for the completion engine, checkpoints, locks, remote state, authentication, live activity, Q-versioning, synchronization, lifecycle runner, workspace broker, and CLI.
+- Added `qmoictl control-plane-audit` and `qmoictl control-plane-bootstrap`. Bootstrap creates only safe runtime directories and an atomic readiness report; it never generates arbitrary executable code, mutates a repository, bypasses authorization, or claims remote success.
+- The supervisor is explicitly remote-first: local state is submission/observation metadata, while target-owned remote workflows remain responsible for mutation, validation, PR/check/merge lifecycle, synchronization, evidence, and final verdicts.
+- Focused validation passed: `tests/test_control_plane.py` reports `6 passed`; Python compilation for the new supervisor and CLI passed.
+- Current audit result is intentionally `BLOCKED` until `ollamatracks/requests` is bootstrapped. This is a runtime readiness blocker, not a production-success claim; run `python scripts/qmoictl.py control-plane-bootstrap --root .` only as a controlled local preparation step before remote submission.
+
+## Remote control-plane continuation checkpoint: 2026-09-23
+
+- The current worktree contains the enhanced remote-first control-plane implementation, including deterministic completion gating, checkpoint and execution-lock handling, remote-state inspection, Git execution verification, authentication preflight, Q-version management, signed synchronization contracts, live event publication, remote lifecycle execution, workspace synchronization, and the `qmoictl` interface.
+- The target-owned remote lifecycle remains authoritative: a local workspace may submit, observe, and verify an execution, but it must not claim production success or bypass target-repository authorization, protected branches, required checks, remote SHA verification, backup synchronization, cross-repository verification, Q-version evidence, or live-activity freshness.
+- Current local status is intentionally `UNPUBLISHED`: the implementation is present but uncommitted, and the current `main` branch has not yet been proven equal to a newly pushed remote SHA.
+- Required pre-push validation: focused control-plane tests, full repository tests, Python compilation, workflow validation, `git diff --check`, and a final inspection of the staged diff. Any unavailable GitHub authorization, protected-branch rule, or remote evidence remains an explicit blocker.
+- Push gate: after validation, create one descriptive commit, push `main` to `origin`, fetch/prune remote refs, and verify `HEAD == origin/main`. Only then may this ledger record a successful push; a rejected push must record the exact sanitized blocker and no success claim.
+
 ## 2026-09-20 Markdown and merge-control continuation
 
 - Restored the complete `qmoi-enhanced-history-14` base and confirmed the merge readiness gate.
-- Added complete Markdown-source auditing across QMOI, `qmoi-enhanced-history-14`, Alpha-Q-ai, and `alpha-q-ai-history-14`.
+- Added complete Markdown-source auditing across QMOI, `qmoi-enhanced-history-14`, Alpha-Q-ai, and `Alpha-Q-ai-2025`.
 - Added complete `ALLMDFILESREFS.md` refresh support and merge-plan coverage for all Markdown paths and merge documents.
 - Normalized `admin`, `Admin`, and `ADMIN` to `master`, `Master`, and `MASTER` in historical Markdown trees; remaining token count is zero.
 - Next validation: run the Markdown audit/index refresh, affected tests, full validation, update merge metrics, and only then attempt remote push.
@@ -9,7 +25,7 @@
 - Markdown audit completed across four roots: 7,512 Markdown files indexed; QMOI 3,660, history base 3,559, Alpha-Q-ai 196, Alpha history 97.
 - `ALLMDFILESREFS.md` refresh completed in all four roots with zero missing indexed paths.
 - Truth-audit result: 621 warnings remain, primarily TODO/FIXME/TBD/placeholder markers; these remain explicit review warnings and are not reported as proven claims.
-- Historical terminology migration completed: zero remaining `admin`, `Admin`, or `ADMIN` tokens in text files under `qmoi-enhanced-history-14` and `alpha-q-ai-history-14`.
+- Historical terminology migration completed: zero remaining `admin`, `Admin`, or `ADMIN` tokens in text files under `qmoi-enhanced-history-14` and `Alpha-Q-ai-2025`.
 - Merge control remains first: Markdown indexing and source audit run before merge planning; push remains gated on tests, validation, truthful audit output, and authorization.
 - 2026-09-21 command audit: `gh auth status -h github.com` confirmed the active account without exposing credentials; `gh repo view` and `gh api repos/thealphakenya/Alpha-Q-ai` reported write/push permission.
 - 2026-09-21 push audit: `gh auth setup-git` followed by `git -C /workspaces/Alpha-Q-ai push origin HEAD:main` still returned HTTP 403 from the Codespaces credential. No token was printed, copied, persisted, or sent through the agent.
@@ -60,6 +76,42 @@
 ## Working mandate
 
 This file is the live execution ledger for the QMOI repository continuity and production-readiness program. It must be updated whenever work is advanced, validated, or re-prioritized.
+
+2026-09-23 source-of-truth ledger: `Alpha-Q-ai-2025` is the canonical Alpha source tree for all merge planning, inventory, documentation, automation, and directory/file synchronization. Legacy Alpha-history naming must not be reintroduced.
+
+2026-09-23 continuation update: all active references to the retired Alpha
+history naming were replaced with `Alpha-Q-ai-2025` in the planner, merge
+setup, merge contract, style/universal source records,
+generated evidence, and validation paths. Alpha merge planning now treats the
+existing Alpha-Q-ai tree plus every file and directory in `Alpha-Q-ai-2025`
+as the Alpha base. QMOI merge planning treats the existing qmoi-enhanced tree
+plus every file and directory in `qmoi-enhanced-history-14` as the QMOI base;
+the pre-merge QMOI tree remains the research source for Alpha implementation
+decisions. This remains plan-and-evidence gated, not a claim that the final
+cross-repository merge has already been applied.
+
+2026-09-23 model responsibility update: extended the canonical Ollama agent
+model-card generator to refresh both `MODEL_CARD.md` and `QMOI_MODEL_CARD.md`
+with repository-derived topic counts, source-tree availability, discovered
+model-test paths, generation time, and merge/history evidence requirements.
+Updated `QVILLAGE.md` and `QMOI_MODEL_CARD.md` so the QVillage model UI
+contract exposes model version, health, test status, execution/evidence state,
+and blocked/stale outcomes without converting missing proof into success.
+Focused model-card validation passed (`3 passed`); the full repository suite
+remains the next proof gate.
+
+2026-09-23 awareness and memory update: added
+`CrossRepositoryAutonomyManager.build_awareness_memory_sync_plan()` as the
+canonical plan for QMOI awareness across both repositories, materialized
+history, GitHub, GitLab, Gitpod, Netlify, Vercel, Hugging Face, QVillage,
+Quantum, DagsHub, all QMOI apps, model inference/tests, automation, live
+activity, security, finance, deployment, and runtime health. The plan requires
+fresh memory indexes, awareness artifacts, tracker state, model cards, and
+QVillage evidence correlated by execution ID, repository, branch, SHA, feature,
+platform, and timestamp. It also requires an evidence-backed improvement plan
+before promoting new or enhanced QMOI features and fail-closes stale,
+unavailable, blocked, or untested surfaces. Focused awareness/model-card tests
+passed (`11 passed`).
 
 The objective is to continue all work described in this session and in the historical repository instructions, while ensuring that no required product, automation, monitoring, trading, funding, security, or platform integration task is ignored.
 
@@ -252,6 +304,516 @@ If any item remains incomplete, the correct action is to continue, not to pause.
 - Completion rule: do not consider the repo fully closed until both the monitored runtime remains healthy and the external GitHub Security advisory view reflects the corrected dependency state or confirms a stale remote state.
 - Future continuation plan: the GitHub-hosted autonomous agent will continue to run only while the live repo remains healthy, the tracker remains fresh, the memory and archive inventory remain visible, and the final repo health gates remain in a ready state.
 - Completion statement: the live repo, monitoring flow, and GitHub-hosted runtime have been updated to reflect the current verified state. Local validation is green. The final repo-side root cause was the legacy historical requirement manifests under the archive and AI automation folders: they still included Node-only packages and ECDSA-pulling `python-jose`, which GitHub dependency scanning continued to treat as live security findings. Those files were cleaned to a minimal safe dependency set and revalidated with `pip-audit`.
+
+## 2026-09-23 continuation ledger for the 208-topic master plan
+
+The master plan in `QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md` contains 208 numbered topics. The canonical index is recorded in `ollama_master_topic_index.txt` and must be treated as the authoritative execution ledger for all numbered items. Each topic is continued using the same subtask flow:
+
+- inspect the live repo state;
+- determine the required change or reconciliation;
+- implement or repair the gap;
+- validate with tests/lint/static checks where applicable;
+- self-heal any failure state;
+- verify branch, merge, and remote evidence;
+- update the final evidence record.
+
+The live branch of work continues to include all remaining obligations from `oe2.txt` as well as the 208-topic master plan. The work cannot be considered complete until the master plan, the live ledger, and the actual repo state all agree on the final status.
+
+### 208-topic execution metrics
+
+Snapshot: 2026-09-23. Topic status counts are mutually exclusive and sum to
+the verified inventory of 208. A topic is only `FULLY COMPLETED` when its
+inspect, implementation, validation, repair, remote-state, and final-evidence
+records exist; aggregate documentation or a green test suite does not upgrade
+a topic to complete.
+
+| Metric | Count/status | Evidence or meaning |
+| --- | ---: | --- |
+| Master-plan topics discovered | 208 | Automated `build_topic_execution_metrics()` count of numbered level-2 headings |
+| Canonical topic-index entries | 208 | Automated count from `ollama_master_topic_index.txt` |
+| Plan/index parity | PASS | Automated comparison: topic numbers and index numbers match |
+| Fully completed and independently proven | 0 | No per-topic final evidence envelope has been published for all required gates |
+| Currently active/in progress | 208 | Every topic remains active under the continuation contract until individually proven |
+| Not started | 0 | No topic is silently omitted; unproven work remains active |
+| Blocked topics | 0 | Topic-level blocking is tracked separately from active work; external gates below remain open |
+| Per-topic evidence records | 0 | Automated scan of `Q.0.0.N/evidence/**/*.json` |
+| Evidence coverage | 0.00% | `evidence_records / master_plan_topics * 100` |
+| Unproven topics | 208 | Automated complement of individually proven topic evidence |
+| Status-count integrity | PASS | Automated status counts sum to 208 |
+| Full test suite | 232 passed | Latest `python -m pytest tests -q` |
+| Python syntax validation | PASS | `python -m py_compile scripts/ollama_autonomous_agent.py` |
+| Diff whitespace validation | PASS | `git diff --check` |
+| Alpha source tree | AVAILABLE | `Alpha-Q-ai-2025/` is materialized |
+| QMOI history source | AVAILABLE | `qmoi-enhanced-history-14/` is materialized |
+| Q.0.0.N artifacts | PARTIAL | Local evidence stub exists; final completion proof is not valid yet |
+| Cross-repository final merge proof | BLOCKED | Requires independently verified post-merge trees, remote SHAs, checks, and authorization |
+| GitHub workflow dispatch | BLOCKED | Prior 403 remains an external authorization gate |
+| GitHub security advisory refresh | OPEN | Remote advisory state remains an external gate |
+
+Next metric transition: move a topic from `IN PROGRESS` to `FULLY COMPLETED`
+only after its evidence record is generated and independently revalidated. The
+table must be refreshed whenever a topic, blocker, test result, remote state,
+or Q-version artifact changes. Merge audits now automatically write the same
+machine-readable snapshot to `ollamatracks/topic_metrics.json`.
+
+## Active user continuation contract (must remain in this file)
+
+These directives are active and must remain reflected in the current ledger until the work is fully done:
+
+- Continue automatically until all 208 master-plan topics and all remaining obligations are done.
+- Always update `oe2.txt` with current progress and any newly discovered blockers or requirements.
+- Always update `QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md` while work progresses.
+- Ensure every item in the master plan contains subtopics, metrics, stats, evidence, and implementation detail.
+- Treat merge features as the first operational gate before other work proceeds.
+- Ensure the repo always follows the final merge-first execution order and the Q.0.0.N completion protocol.
+- Update `WORKFLOWSO.md`, `OLLAMA_AUTOMATION_GUIDE.md`, and the other relevant docs while continuing work.
+- Ensure the Ollama autonomous agent is enhanced and automated to cover all 208 topics and all remaining work.
+- Continue the full repo and workflow audit, not just high-level documentation updates.
+- Keep the live repo authoritative, and never claim success without evidence from the actual repo state.
+- Keep the `qmoi-enhanced` and `Alpha-Q-ai` repos synchronized with the same Q.0.0.N evidence trail and final completion record.
+- Create the required `Q.0.0.N` directory and `.md` artifact after the repo is fully validated and only when evidence proves completion.
+- Keep the live ledger and all docs synchronized with the exact current status and with any remaining blockers.
+
+### Topic ledger summary
+
+1. Complete autonomous lifecycle
+   - subtopics: discovery, inspection, inventory, planning, validation, self-healing, evidence.
+2. Q.0.0.N completion protocol
+   - subtopics: numbering, reservation, cross-repo sync, artifacts, final verification.
+3. Q.0.0.N proof document
+   - subtopics: evidence, SHA chain, execution metadata, final status proof.
+4. Self-healing loop
+   - subtopics: classify failures, repair strategies, retry bounds, safe validation.
+5. Master Orchestrator failure supervision
+   - subtopics: heartbeat, recovery, stale detection, final evidence.
+6. Human intervention policy
+   - subtopics: ordinary automation, external blockers, resumable checkpoints.
+7. Production readiness gate
+   - subtopics: code, security, Git, operations, cross-repo validation.
+8. Eliminate green-wrapper success
+   - subtopics: final proof chain, no false success, no stale artifacts.
+9. Ultimate invariant
+   - subtopics: final state, remote proof, live activity, Q-version verification.
+10. Repository architecture
+   - subtopics: layered design, required modules, deterministic completion engine.
+11. Thorough Ollama-agent inspection
+   - subtopics: inventory, classification, gap matrix, actual repo verification.
+12. Autonomous execution contract
+   - subtopics: autonomous_complete, structured result, final gate convergence.
+13. Commit and push verification
+   - subtopics: prepare, create, verify, push, compare remote SHA.
+14. PR lifecycle automation
+   - subtopics: detect, create/update, wait, repair, verify head SHA.
+15. Merge verification
+   - subtopics: real merge, verification states, merge SHA, main sync.
+16. autosync-backup synchronization
+   - subtopics: divergence handling, branch verification, protected update.
+17. Cross-repository synchronization
+   - subtopics: shared automation, tracking, documentation, Q-version sync.
+18. QMOI live activity stream
+   - subtopics: event schema, heartbeats, task lifecycle, repo evidence.
+19. Ollama live activity stream
+   - subtopics: source labeling, heartbeat, execution tracking, completion evidence.
+20. Fix live activity stream architecture
+   - subtopics: repo parity, single source of truth, artifact validation.
+21. Real observability
+   - subtopics: runtime visibility, freshness, semantic validity.
+22. Dual-repository live activity
+   - subtopics: both repos visible, branch-aware output, source separation.
+23. Freshness verification
+   - subtopics: timestamps, staleness policy, heartbeat rules.
+24. Master Orchestrator watchdog
+   - subtopics: state monitoring, stale recovery, dispatch supervision.
+25. Checkpoint and resume
+   - subtopics: restore state, execution IDs, recovery continuity.
+26. Idempotency
+   - subtopics: rerun safety, no duplicate success, repeatable verification.
+27. Concurrency control
+   - subtopics: exclusive execution, lock-safe flows, race prevention.
+28. GitHub permissions and security
+   - subtopics: minimal scope, auth evidence, workflow gating.
+29. Pull-request safety
+   - subtopics: validation gates, no unsafe merges, permission checks.
+30. Workflow architecture
+   - subtopics: job discipline, validation and monitoring separation.
+31. Master Orchestrator responsibilities
+   - subtopics: lifecycle supervision, failure recovery, final verification.
+32. Autonomous Agent responsibilities
+   - subtopics: execution, monitoring, documentation, branch state management.
+33. Deterministic completion engine
+   - subtopics: decision logic, hard gates, no green wrappers.
+34. No-change completion
+   - subtopics: safe no-op, evidence, state archiving.
+35. Change detection
+   - subtopics: diff detection, classification, scope control.
+36. File integrity
+   - subtopics: checksum, backup awareness, safe writes.
+37. Documentation synchronization
+   - subtopics: live docs vs historical docs, repo parity, cross-links.
+38. Test architecture
+   - subtopics: unit, integration, failure injection, validation loops.
+39. Failure injection
+   - subtopics: negative path validation, repair assertion, safe recovery.
+40. Fail-closed required gates
+   - subtopics: no success without proof, incomplete state stays failed.
+41. Evidence architecture
+   - subtopics: evidence objects, execution records, final chain.
+42. Telemetry schema
+   - subtopics: events, fields, status values, freshness.
+43. Current status file
+   - subtopics: live state, object updates, atomic replacement.
+44. Live stream UI contract
+   - subtopics: stream contract, client view, artifact visibility.
+45. Define live precisely
+   - subtopics: heartbeat, freshness threshold, source and stage semantics.
+46. Remote workflow observability
+   - subtopics: GitHub run state, job visibility, evidence links.
+47. Cross-repository live activity
+   - subtopics: both repos visible, diff-aware output, status mapping.
+48. QMOI and Ollama event separation
+   - subtopics: source labeling, event identity, filter and correlation.
+49. Monitoring correctness tests
+   - subtopics: synthetic telemetry, stale-state scenarios, correctness proof.
+50. Orchestrator live-stream integration
+   - subtopics: orchestration status, stream sync, final health state.
+51. Q-version directory synchronization
+   - subtopics: Q.0.0.N creation, repo parity, directory structure.
+52. Q-version collision protection
+   - subtopics: number reservation, deduplication, safe generation.
+53. Final remote verification
+   - subtopics: remote SHA, branch state, check results, final proof.
+54. Final repository inspection
+   - subtopics: diff review, complete audit, final repo health.
+55. Production-ready invariant
+   - subtopics: hard gate, validation pass, final readiness.
+56. Cross-repository invariant
+   - subtopics: both repos synchronized, branch-aware status.
+57. No hidden incomplete stages
+   - subtopics: explicit N/A and failure handling, logged completion.
+58. Copilot execution mode
+   - subtopics: repo-first inspection, no assumptions, run-to-proof behavior.
+59. Inspect before modifying
+   - subtopics: repo audit, runtime verification, no unsupported assumptions.
+60. Preserve working systems
+   - subtopics: reusability, minimal change, no destructive rewrites.
+61. Keep workflows thin
+   - subtopics: simple dispatch, orchestration separation, bounded tasks.
+62. Permissions must match operations
+   - subtopics: auth scope, safe GITHUB_TOKEN use, branch protection.
+63. Merge policy integration
+   - subtopics: PR checks, auto-merge policy, merge eligibility.
+64. GitHub API failure handling
+   - subtopics: recoverable 403/5xx, retry policy, log evidence.
+65. Artifact retention
+   - subtopics: logs, checkpoints, stream artifacts, evidence durability.
+66. Operator documentation
+   - subtopics: runbooks, rescue paths, human escalation criteria.
+67. Monitoring dashboard
+   - subtopics: stage display, health, queue, failure evidence.
+68. Alerts
+   - subtopics: stale state alerts, failure notifications, health gates.
+69. Resource and timeout controls
+   - subtopics: bounded operations, abort semantics, timeout policy.
+70. Graceful interruption
+   - subtopics: checkpoint save, cancellation event, safe state preservation.
+71. Git conflict recovery
+   - subtopics: merge conflict detection, safe branch divergence handling.
+72. Failed-check recovery
+   - subtopics: diagnose, repair, rerun, verify green state.
+73. Failed-merge recovery
+   - subtopics: merge failure analysis, protected branch safety.
+74. Cross-repository divergence recovery
+   - subtopics: branch drift analysis, sync policy, controlled reconcile.
+75. Live-stream failure behavior
+   - subtopics: fallback, stale source handling, no fake activity.
+76. QMOI versus GitHub activity
+   - subtopics: source identity, run correlation, event labeling.
+77. Ollama versus QMOI activity
+   - subtopics: separate event schemas, correlation, final proof.
+78. Event correlation
+   - subtopics: execution ID, stage, run ID, status linking.
+79. Final end-to-end test
+   - subtopics: end-to-end validation, full lifecycle, final gate.
+80. Final acceptance test
+   - subtopics: yes/no proof conditions, independent verification.
+81. Final success contract
+   - subtopics: SUCCESS, NO_CHANGES_REQUIRED, BLOCKED, FAILED_AT stage.
+82. Final evidence chain
+   - subtopics: local state, remote SHA, PR, merge, final verification.
+83. Repository-specific principle
+   - subtopics: shared contract, repo-specific code, documentation separation.
+84. Preserve existing functionality
+   - subtopics: harden not replace, preserve features, validate compatibility.
+85. Upgrade liveactivitystream.md
+   - subtopics: canonical spec, runtime alignment, evidence mapping.
+86. Live-stream proof requirement
+   - subtopics: event timestamps, health fields, final evidence references.
+87. Q-version live-activity record
+   - subtopics: summary counts, first/last events, heartbeat, final status.
+88. Production verification independent of the LLM
+   - subtopics: deterministic gate, machine-native verification, no LLM final claim.
+89. No mock production evidence
+   - subtopics: verify SHAs, PRs, URLs, tests, heartbeat, runtime proof.
+90. No stale success artifacts
+   - subtopics: freshness, execution ID, commit tie-in.
+91. CURRENT_STATUS freshness
+   - subtopics: atomic update, generated state, latest run replacement.
+92. Master Orchestrator final responsibility
+   - subtopics: dispatch, monitor, recover, finalize.
+93. Immutable terminal state
+   - subtopics: final record, execution IDs, terminal proof.
+94. Rerunnable verification
+   - subtopics: verify command, remote and Q-version checks.
+95. Dry-run mode
+   - subtopics: planning only, no success claim, no mutation.
+96. Audit mode
+   - subtopics: read-only audit, evidence collection.
+97. Repair mode
+   - subtopics: safe deterministic repair, revalidation.
+98. Resume mode
+   - subtopics: execution resume, checkpoint replay, state continuity.
+99. Implementation sequence
+   - subtopics: inventory, state machine, Git/GitHub engine, Q-version, final verification.
+100. Required implementation checklist
+   - subtopics: all gates accounted for, staged completion, no skipped work.
+101. Final success ceremony
+   - subtopics: evidence generation, Q-version finalize, push, verify, publish.
+102. Expected successful lifecycle
+   - subtopics: orchestrator, agent, validation, merge, sync, Q-version, live activity.
+103. Definition of done
+   - subtopics: all repo states correct, live streams active, production readiness pass.
+104. Final instruction to Copilot Chat/Agent
+   - subtopics: inspect, implement, verify, continue until evidence matches state.
+105. Bidirectional workspace architecture
+   - subtopics: symmetrical repos, explicit source/target selection, broker model.
+106. Workspace control surface
+   - subtopics: workspace edits, GitHub automation, remote execution, refresh.
+107. Two-way repository bridge
+   - subtopics: bridge scripts, sync config, request metadata.
+108. Alpha-Q-ai to qmoi-enhanced sync
+   - subtopics: source inspection, branch creation, validation, PR, merge, SHA report.
+109. qmoi-enhanced to Alpha-Q-ai sync
+   - subtopics: reverse path, symmetric automation, result verification.
+
+## 2026-09-23 remote control-plane push gate
+
+- [x] Added the deterministic completion engine and remote-first control-plane
+   modules for checkpoints, execution locks, Git/remote state inspection,
+   authorization preflight, Q-version handling, signed sync contracts, live
+   events, workspace submission, and the `qmoictl` interface.
+- [x] Added target-owned remote lifecycle workflow support so local commands
+   submit, observe, and verify; repository mutation, validation, merge,
+   synchronization, evidence publication, and final status remain remote-runner
+   responsibilities.
+- [x] Preserved fail-closed behavior: unknown remote, security, live-activity,
+   Q-version, or cross-repository evidence cannot become `SUCCESS`.
+- [x] Focused control-plane validation passed before this ledger update; the
+   final push gate still requires the complete test suite, Python/workflow
+   validation, `git diff --check`, and independent remote SHA verification.
+- [ ] Push the complete current change set from `main` after local validation.
+- [ ] Verify `origin/main` equals the pushed commit and record the verified SHA.
+- [ ] Keep final production and cross-repository completion claims blocked until
+   remote workflow, protected-branch, backup, and both-repository evidence exist.
+110. Automatic source publication
+   - subtopics: commit mode, patch mode, upload mode, deterministic source publication.
+111. Automatic source commit
+   - subtopics: generated source commit, metadata, branch target, safe scope.
+112. Automatic patch mode
+   - subtopics: patch bundle, manifest, checksum, target validation.
+113. Workspace intent boundaries
+   - subtopics: include/exclude, secrets, caches, temp files, safe defaults.
+114. Automatic local synchronization
+   - subtopics: refresh after remote success, preserve uncommitted work.
+115. Never use blind force-push
+   - subtopics: safe conflict handling, no destructive reset, protected branch rules.
+116. Cross-repository sync contract
+   - subtopics: machine-readable YAML, repository metadata, verification policy.
+117. GitHub Actions authentication architecture
+   - subtopics: auth roles, workflow dispatch, safe token usage.
+118. Prefer GitHub App auth
+   - subtopics: fine-grained permissions, minimal privilege, secure automation.
+119. Fine-grained credential fallback
+   - subtopics: token hygiene, least privilege, safe fallback logic.
+120. Separate credential roles
+   - subtopics: read-only vs write roles, ownership separation.
+121. Cross-repository dispatch
+   - subtopics: target repo selection, branch creation, remote verification.
+122. Do not rely on source repo token for target writes
+   - subtopics: target auth, permission matrix, safe execution path.
+123. 403 prevention preflight
+   - subtopics: permission check, workflow target validation, token scope audit.
+124. 403 diagnostics
+   - subtopics: auth block detection, safe remediation, rerun gating.
+125. 403 self-healing boundary
+   - subtopics: safe remedial steps, no bypass of protections, evidence logging.
+126. Repository Actions permission gate
+   - subtopics: action permissions, workflow scopes, required checks.
+127. Cross-repository permission matrix
+   - subtopics: repo roles, branch protection, merge rules, workflow contexts.
+128. Automated permission verification
+   - subtopics: preflight checks, verification logs, safe enforcement.
+129. Workspace bootstrap
+   - subtopics: initialization, repo detection, branch sync readiness.
+130. Automatic background synchronization
+   - subtopics: scheduled refresh, repo state awareness, minimal user input.
+131. Explicit synchronization modes
+   - subtopics: dry-run, patch, commit, repo sync, validation-driven paths.
+132. Workspace status dashboard
+   - subtopics: repo status, branch state, sync health, readiness display.
+133. Remote-first development model
+   - subtopics: source of truth, remote verification, local safety.
+134. Bidirectional synchronization graph
+   - subtopics: node graph, repo topology, direction-aware path ownership.
+135. Shared-path ownership
+   - subtopics: ownership map, path classification, conflict handling.
+136. Avoid repository contamination
+   - subtopics: no mixed histories, no silent overwrite, clear scope boundaries.
+137. Preserve merge inventory contract
+   - subtopics: inventory before copy, provenance, review gating.
+138. Codespace light/full/audit modes
+   - subtopics: mode-based operations, validation levels, safety tiers.
+139. Automatic sibling-repository materialization
+   - subtopics: checkout, sync, branch awareness, historical source availability.
+140. One workspace, two repository control plane
+   - subtopics: explicit control plane, dual repo orchestration, source-target mapping.
+141. Avoid nested Git repository mistakes
+   - subtopics: single root repo, correct submodule handling, no nested repo confusion.
+142. Automatic remote tracking
+   - subtopics: tracked refs, branch sync awareness, integration freshness.
+143. Automatic branch synchronization
+   - subtopics: main branch updates, backup sync, direction tracking.
+144. Branch sync must be direction-aware
+   - subtopics: source/target branch logic, safe merge boundaries.
+145. Branch divergence gate
+   - subtopics: divergence detection, controlled resolution, protected branch handling.
+146. Autosync-backup relationship
+   - subtopics: backup branch policy, synchronization and verification.
+147. Automatic backup synchronization
+   - subtopics: backup creation, protection, remote verification.
+148. Continue the sync when safe
+   - subtopics: rerun logic, safety gates, branching policy.
+149. Merge contract and branch protection
+   - subtopics: validation, approval, auto-merge, protected branch rules.
+150. Bidirectional merge gating
+   - subtopics: source-target validation, branch parity, differentiated path ownership.
+151. Merge policy definitions
+   - subtopics: ready checks, conflict review, safe merge semantics.
+152. Required branch state verification
+   - subtopics: state machine, branch check, main/backup proof.
+153. Branch discipline
+   - subtopics: no branch misuse, protected main, reproducible sync.
+154. No stale branch drift
+   - subtopics: branch freshness, divergence detection, safe repair.
+155. Two-repository merge contract
+   - subtopics: both repos validated, contract shared, no blind mirroring.
+156. Final merge gate
+   - subtopics: final readiness, branch integrity, post-merge validation.
+157. Historical repository preservation
+   - subtopics: archive retention, provenance, source-of-truth handling.
+158. Source provenance
+   - subtopics: origin tracking, history references, conflict classification.
+159. Drift detection and repair
+   - subtopics: branch drift, direct state mismatch, safe reconciliation.
+160. Shared-path policy
+   - subtopics: file ownership, duplication policy, selective merge logic.
+161. Production-safe automation boundaries
+   - subtopics: safe operations, no unauthorized writes, fail-closed gates.
+162. Safe execution contract
+   - subtopics: explicit gates, no silent success, evidence required.
+163. Remote-state truth model
+   - subtopics: local vs remote, authoritative remote verification.
+164. Cross-repo verification standard
+   - subtopics: compare SHAs, branch heads, merge records, last commit proof.
+165. Final branch synchronization proof
+   - subtopics: branch-handshake verification, final SHA chain.
+166. Q-version continuity model
+   - subtopics: number evolution, same logical number across repos.
+167. Final evidence publication
+   - subtopics: artifact generation, status update, audit trail.
+168. Production-complete state gate
+   - subtopics: final repo compliance, no open blockers, precise status.
+169. Final remote production check
+   - subtopics: repository health, external advisories, final pipeline status.
+170. No hidden or stale completion
+   - subtopics: hidden blockers, outdated claims, stale success artifacts.
+171. Final branch integrity
+   - subtopics: main, backup, PR, merge state, remote agreement.
+172. Final sync pass
+   - subtopics: repo-to-repo synchronization, final data parity check.
+173. Final documentation pass
+   - subtopics: cross-links, repo diff, truthful live ledger update.
+174. Final validation pass
+   - subtopics: tests, audit, lint, security, live stream, repo state.
+175. Final state publication
+   - subtopics: final evidence, metrics, repo status, next steps.
+176. One final authoritative repo state
+   - subtopics: single truth source, no contradictory branch claims.
+177. Do not claim completion without proof
+   - subtopics: evidence gate, no assumption, no fake success.
+178. When blocked, publish exact blocker
+   - subtopics: external blocker report, checkpoint, resumable next action.
+179. Resume safely after blocker
+   - subtopics: re-enter state, continue from checkpoint, revalidate.
+180. Mandatory fresh evidence
+   - subtopics: fresh logs, fresh SHA, fresh status, no stale proof.
+181. Production branch invariants
+   - subtopics: protected states, no silent force-push, no destructive actions.
+182. Remote-only truth model
+   - subtopics: remote state evidence, local state must verify against it.
+183. Source-target diff governance
+   - subtopics: diff ownership, path boundaries, controlled propagation.
+184. Cross-repository change classification
+   - subtopics: shared vs repo-specific, shared-path validation.
+185. Required status reporting
+   - subtopics: states, warnings, blockers, success conditions.
+186. No silent skip
+   - subtopics: record N/A reasons, log skipped tasks, no hidden work.
+187. No silent failure
+   - subtopics: log stage failure, classify cause, attach evidence.
+188. Final Q-version and live state harmony
+   - subtopics: Q.0.0.N, telemetry, live activity, final status sync.
+189. Human-safe escalation boundary
+   - subtopics: when to stop, who owns auth, what to publish.
+190. Deterministic branch handling
+   - subtopics: sync order, merge order, verification order.
+191. Deterministic source-target precedence
+   - subtopics: current repo truth, protected history, source of truth policy.
+192. Deterministic completion ordering
+   - subtopics: inspect, validate, repair, merge, verify, finalize.
+193. Final success requirement
+   - subtopics: all gates pass, no blockers, final state proven.
+194. Final remote artifact verification
+   - subtopics: workflow run, branch SHA, Q-version artifact, repo status.
+195. Final Q version generation
+   - subtopics: next Q number, consistent repo artifact, final evidence set.
+196. Final documentation synchronization
+   - subtopics: live docs, merge docs, workflow docs, index updates.
+197. Final cross-repository state check
+   - subtopics: repo parity, branch state, SHAs, docs state.
+198. Final cross-repository success contract
+   - subtopics: all repos validated, synchronized, remote-proofed.
+199. Final architecture objective
+   - subtopics: production-safe autonomous system, balanced repo peers.
+200. Additional required files
+   - subtopics: missing operational files, configuration coverage, evidence artifacts.
+201. Additional required implementation components
+   - subtopics: runtime modules, orchestrator paths, merge inventory, validators.
+202. Final Copilot instruction for this extension
+   - subtopics: repo-first execution, evidence-first behavior, no fake completion.
+203. Final no-manual-command invariant
+   - subtopics: automation should handle repo lifecycle, no manual Git burden.
+204. Final authorization invariant
+   - subtopics: auth boundary, token rules, protected actions.
+205. Final 403 invariant
+   - subtopics: permission diagnosis, safe recovery, no bypass.
+206. Final two-repository production invariant
+   - subtopics: both repos prove health, both synced, branch-protected correctness.
+207. Final two-repository completion guarantee
+   - subtopics: final repo proof, live activity proof, final evidence proof.
+208. Final repository base-content invariant
+   - subtopics: current repo plus history base, full-content readiness, merge preparation.
+
+This ledger is intentionally kept truthful: the current repo still requires a real live validation pass, real remote branch verification, and the Q.0.0.N final artifact generation after the repository state is fully validated.
 
 ## Resume protocol for every future session
 

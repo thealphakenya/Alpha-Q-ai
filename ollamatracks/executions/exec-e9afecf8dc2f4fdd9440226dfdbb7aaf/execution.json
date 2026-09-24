@@ -1,0 +1,71 @@
+{
+  "created_at": "2026-09-23T23:30:28.526822Z",
+  "errors": [
+    "discovery=UNKNOWN",
+    "inspection=UNKNOWN",
+    "validation=UNKNOWN",
+    "security=UNKNOWN",
+    "remote_main=UNKNOWN",
+    "remote_backup=UNKNOWN",
+    "q_version=UNKNOWN",
+    "live_activity=UNKNOWN",
+    "cross_repository=UNKNOWN",
+    "final_verification=UNKNOWN"
+  ],
+  "evidence": {
+    "production_ready": false,
+    "q_version": null,
+    "topic_metrics": {
+      "blocked": 0,
+      "duplicate_index_numbers": [],
+      "evidence_records": 0,
+      "fully_completed": 0,
+      "generated": "2026-09-23T23:30:28.526332Z",
+      "in_progress": 208,
+      "master_plan_topics": 208,
+      "missing_index_numbers": [],
+      "not_started": 0,
+      "status_sum_matches_inventory": true,
+      "topic_index_entries": 208,
+      "topic_index_matches_plan": true
+    }
+  },
+  "execution_id": "exec-e9afecf8dc2f4fdd9440226dfdbb7aaf",
+  "gates": {
+    "cross_repository": "UNKNOWN",
+    "discovery": "UNKNOWN",
+    "final_verification": "UNKNOWN",
+    "inspection": "UNKNOWN",
+    "live_activity": "UNKNOWN",
+    "q_version": "UNKNOWN",
+    "remote_backup": "UNKNOWN",
+    "remote_main": "UNKNOWN",
+    "security": "UNKNOWN",
+    "validation": "UNKNOWN"
+  },
+  "repository_results": {},
+  "repository_state": {
+    "branch": "main",
+    "path": "/workspaces/Alpha-Q-ai",
+    "remote_backup": "6d925c33f0093035755772137d863618b3818ab0",
+    "remote_main": "08ba62cb4d3bf84d55290782862ae8683522e3e7",
+    "sha": "86194ffaf3a5ee1486bb2661b1d2287970128c54",
+    "status": "M .github/workflows/cross-repo-autosync.yml\n M ALLMDFILESREFS.md\n M ALPHA_Q_AI_MERGE_SETUP.md\n M Alpha-Q-ai-2025/ALLMDFILESREFS.md\n M MEMORY_INDEX.md\n M MERGE.md\n M MODEL_CARD.md\n M OLLAMA_AUTOMATION_GUIDE.md\n M QMOI_MODEL_CARD.md\n M QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md\n M STYLES.md\n M UNIVERSALS.md\n M WORKFLOWSO.md\n M github_proof_contract.json\n M memory_index.json\n M oe2.txt\n M ollamatracks/CURRENT_STATUS.txt\n M ollamatracks/LAST_RECONCILIATION.txt\n M ollamatracks/LATEST_ACTIVITY.txt\n M ollamatracks/PR_STATUS.txt\n M ollamatracks/STATE.txt\n M ollamatracks/agent.log\n M ollamatracks/checkpoint.json\n M ollamatracks/monitoring_summary.json\n M ollamatracks/telemetry.jsonl\n M qmoi-enhanced-history-14/ALLMDFILESREFS.md\n M resumefromhere.txt\n M scripts/cross_repo_sync.py\n M scripts/ollama_autonomous_agent.py\n M tests/test_ollama_autonomous_agent.py\n M validation_report.json\n?? .github/workflows/cross-repository-sync.yml\n?? Q.0.0.N/\n?? REMOTE_EXECUTION_ARCHITECTURE.md\n?? ollama_master_topic_index.txt\n?? ollamatracks/checkpoints/\n?? ollamatracks/current_state.json\n?? ollamatracks/events.jsonl\n?? ollamatracks/executions/\n?? ollamatracks/topic_metrics.json\n?? scripts/autonomous_completion_engine.py\n?? scripts/checkpoint_manager.py\n?? scripts/execution_lock.py\n?? scripts/git_execution_manager.py\n?? scripts/github_auth.py\n?? scripts/live_activity_events.py\n?? scripts/q_version_manager.py\n?? scripts/qmoictl.py\n?? scripts/remote_lifecycle.py\n?? scripts/remote_state.py\n?? scripts/sync_contract.py\n?? scripts/workspace_sync.py\n?? tests/test_control_plane.py"
+  },
+  "stage": "DISCOVERY",
+  "status": "BLOCKED_REQUIRES_HUMAN",
+  "topic_metrics": {
+    "blocked": 0,
+    "duplicate_index_numbers": [],
+    "evidence_records": 0,
+    "fully_completed": 0,
+    "generated": "2026-09-23T23:30:28.526332Z",
+    "in_progress": 208,
+    "master_plan_topics": 208,
+    "missing_index_numbers": [],
+    "not_started": 0,
+    "status_sum_matches_inventory": true,
+    "topic_index_entries": 208,
+    "topic_index_matches_plan": true
+  }
+}

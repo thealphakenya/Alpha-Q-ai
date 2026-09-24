@@ -79,6 +79,22 @@ contracts remain failed and cannot be promoted to success.
 
 This document provides comprehensive documentation for all 8 GitHub Actions workflows in the qmoi-enhanced repository with ADVANCED AUTO-HEALING, AUTO-RETRY, and AUTOMATIC AGENT TRIGGERING capabilities.
 
+## 208-topic master-plan continuity contract
+
+The repository is operating under the master-plan contract documented in `QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md`. That file enumerates 208 numbered execution topics, and the complete canonical index is preserved in `ollama_master_topic_index.txt`.
+
+Every workflow, merge gate, live stream, or autonomous check must be interpreted through this contract:
+
+1. determine the topic;
+2. verify the live repo state;
+3. perform the required repository change;
+4. validate with evidence;
+5. self-heal if needed;
+6. verify remote branch and PR state;
+7. finalize the Q.0.0.N record only after all required gates pass.
+
+This workflow guide remains supportive of the live ledger in `oe2.txt`; both are required to stay synchronized with the exact current completion status.
+
 **Workflow Architecture:**
 ```
 Push → Master Orchestrator → Validation → Tests → Agent (Auto-Trigger)

@@ -1,0 +1,83 @@
+{
+  "blockers": [],
+  "bootstrap": {
+    "performed": true,
+    "platform": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.39",
+    "python": "3.14.2",
+    "runner": "remote-target-workflow"
+  },
+  "components": {
+    "checkpoint_manager": {
+      "path": "scripts/checkpoint_manager.py",
+      "present": true,
+      "readable": true
+    },
+    "cli": {
+      "path": "scripts/qmoictl.py",
+      "present": true,
+      "readable": true
+    },
+    "completion_engine": {
+      "path": "scripts/autonomous_completion_engine.py",
+      "present": true,
+      "readable": true
+    },
+    "execution_lock": {
+      "path": "scripts/execution_lock.py",
+      "present": true,
+      "readable": true
+    },
+    "git_execution_manager": {
+      "path": "scripts/git_execution_manager.py",
+      "present": true,
+      "readable": true
+    },
+    "github_auth": {
+      "path": "scripts/github_auth.py",
+      "present": true,
+      "readable": true
+    },
+    "live_activity": {
+      "path": "scripts/live_activity_events.py",
+      "present": true,
+      "readable": true
+    },
+    "q_version_manager": {
+      "path": "scripts/q_version_manager.py",
+      "present": true,
+      "readable": true
+    },
+    "remote_lifecycle": {
+      "path": "scripts/remote_lifecycle.py",
+      "present": true,
+      "readable": true
+    },
+    "remote_state": {
+      "path": "scripts/remote_state.py",
+      "present": true,
+      "readable": true
+    },
+    "sync_contract": {
+      "path": "scripts/sync_contract.py",
+      "present": true,
+      "readable": true
+    },
+    "workspace_sync": {
+      "path": "scripts/workspace_sync.py",
+      "present": true,
+      "readable": true
+    }
+  },
+  "generated": "2026-09-23T23:52:28.096467Z",
+  "next_actions": [
+    "submit or resume the target-owned remote workflow",
+    "observe remote run and verify final evidence"
+  ],
+  "remote_only": true,
+  "runtime_directories": {
+    "ollamatracks/checkpoints": true,
+    "ollamatracks/executions": true,
+    "ollamatracks/requests": true
+  },
+  "status": "READY"
+}
