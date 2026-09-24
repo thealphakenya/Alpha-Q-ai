@@ -1,5 +1,140 @@
 # GitHub Automation & Live Job Links
 
+## Canonical remote GitHub contract: 2026-09-24
+
+This section is the current operational contract for `thealphakenya/Alpha-Q-ai`
+and `thealphakenya/qmoi-enhanced`. Older dated run tables below are historical
+evidence only and must not override the current remote state returned by GitHub.
+The authoritative specification is
+`QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md` and its 208-topic
+ledger.
+
+### No-manual-command invariant
+
+For ordinary supported operations, a user working in either repository's
+Codespace must not need to manually run `pull`, `fetch`, `push`, branch sync,
+PR creation, PR merge, autosync, or cross-repository copy commands. The local
+workspace is a submission, observation, and recovery surface only. After an
+authorized request is accepted, GitHub Actions in the target repository owns
+mutation, validation, PR/check/merge policy, backup synchronization,
+cross-repository callbacks, Q-version evidence, live activity, and the final
+verdict. A local command must never turn missing remote evidence into success.
+
+### Repository and branch contract
+
+The coordinated repositories are:
+
+- `thealphakenya/Alpha-Q-ai`: Alpha source and target repository.
+- `thealphakenya/qmoi-enhanced`: QMOI source and target repository.
+
+For each repository, the remote lifecycle covers `main`,
+`autosync-backup`, authorized feature/agent branches, open PRs, required
+checks, and the repository's workflow runs. Historical and materialized
+sources, including `Alpha-Q-ai-2025` and `qmoi-enhanced-history-14`, are audit
+inputs and are never blindly force-copied into `main`. Every source, target,
+branch, PR, commit, and file inventory must be recorded with execution ID,
+timestamp, and SHA evidence.
+
+### Remote lifecycle
+
+The target-owned workflow performs this sequence:
+
+```text
+authenticated request
+-> authorization and protected-branch preflight
+-> source/target SHA and divergence inspection
+-> target-owned feature branch or existing idempotent branch
+-> validation, security, dependency, and static checks
+-> PR create/update and head-SHA verification
+-> required-check monitoring and bounded repair
+-> policy-compliant merge
+-> merge-SHA and target main verification
+-> main -> autosync-backup synchronization and remote-SHA verification
+-> cross-repository callback and inverse-direction verification
+-> Q.0.0.N evidence, live activity, and final production gate
+```
+
+Direct cross-repository pushes to target `main`, blind force-pushes,
+credential copying, and privileged execution of untrusted fork code are
+prohibited. Protected branches require their normal PR/review/check rules.
+HTTP 401/403, missing permissions, pending checks, stale runs, SHA mismatch,
+workflow dispatch failure, or unavailable artifacts remain explicit
+`AUTH_BLOCKED`, `REMOTE_VERIFY_UNKNOWN`, `BLOCKED_REQUIRES_HUMAN`, or
+`FAILED_AT_<STAGE>` states.
+
+### Safe local control-plane commands
+
+These commands submit or inspect remote work; they do not perform a local
+replacement for the target-owned lifecycle:
+
+```bash
+python scripts/qmoictl.py control-plane-audit --root .
+python scripts/qmoictl.py control-plane-bootstrap --root .
+python scripts/qmoictl.py remote-submit --root . \
+   --source-repository thealphakenya/Alpha-Q-ai \
+   --target-repository thealphakenya/qmoi-enhanced \
+   --source-sha "$(git rev-parse HEAD)" --direction alpha-to-qmoi --mode dry-run
+python scripts/qmoictl.py remote-status --root . --execution-id <EXECUTION_ID>
+python scripts/qmoictl.py remote-verify --root . --execution-id <EXECUTION_ID>
+```
+
+The same commands may be submitted from the QMOI Codespace with the inverse
+direction. `dry-run` is audit-only. Apply requests require target-repository
+authorization and are rejected when the remote runner, branch policy, checks,
+or evidence contract is unavailable.
+
+### Credential and permission contract
+
+Use GitHub App authentication where possible, with a narrowly scoped
+fine-grained token only as an explicit fallback. Preflight must prove the
+identity, target repository, operation, permission, and credential validity
+before mutation. The source repository's `GITHUB_TOKEN` must not be assumed to
+write the target repository. Secrets remain in GitHub-managed configuration;
+they must never appear in code, `.env.example`, logs, artifacts, Q-version
+evidence, telemetry, or live messages. Run `gh auth status` and the relevant
+Actions/contents/pull-request API checks without printing token values.
+
+### Monitoring and recovery
+
+GitHub Actions is the remote execution authority. Every request and stage
+publishes an execution ID, parent/correlation ID, timestamp, repository, branch,
+SHA, workflow/run ID and URL, PR number/head SHA, status, heartbeat, retry,
+error, and Q-version. The monitor must distinguish `RUNNING`, `WAITING`,
+`RETRYING`, `SELF_HEALING`, `STALE`, `RECOVERING`, `BLOCKED`, `FAILED`, and
+terminal success states. A heartbeat older than the configured freshness
+threshold is `STALE` or `OFFLINE`, never live. Resume uses checkpoints and
+idempotency keys; it must not repeat destructive operations or create duplicate
+PRs, Q-versions, sync requests, or evidence.
+
+### Verification commands and evidence
+
+Remote proof must be independently checked after every mutation. The final
+evidence records before/commit/after/verified remote SHAs, branch and remote,
+changed files, PR/check/merge state, `main` and `autosync-backup` SHAs in both
+repositories, authorization, security and dependency results, live freshness,
+Q-version paths, and cross-repository correlation. A green workflow, local
+pytest run, Ollama health check, or generated checkpoint alone is never final
+success.
+
+```bash
+git fetch --all --prune
+git rev-parse HEAD
+git rev-parse origin/main
+git rev-parse origin/autosync-backup
+python scripts/qmoictl.py control-plane-audit --root .
+python -m pytest tests -q
+python -m py_compile scripts/*.py
+python scripts/validate_workflows.py
+git diff --check
+```
+
+The final status is `SUCCESS` only when all applicable lifecycle, remote,
+security, synchronization, Q-version, live-activity, and production gates
+pass. A legitimate no-change run is `NO_CHANGES_REQUIRED`; unknown remote
+state is never promoted to success. This implements the master plan's topics
+204-207 and the related Git, GitHub, branch, PR, merge, authorization,
+cross-repository, evidence, and monitoring topics.
+
 ## Current Agent Truth Contract (2026-09-03 - VERIFIED)
 
 **Status**: ✅ GitHub-hosted Ollama autonomous agent completed successfully
