@@ -91,6 +91,8 @@ REPOSITORY_ROOT = SCRIPT_DIR.parent
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
+from scripts.command_inventory import refresh_commands_category
+
 try:
     from scripts.live_activity_stream import (
         build_merge_activity_stream,
@@ -244,9 +246,26 @@ def safe_json_write(path: Path, data: Any) -> None:
 
 
 def safe_text_write(path: Path, content: str) -> None:
-    """Write UTF-8 text while creating parent directories."""
+    """Write UTF-8 text while creating parent directories.
+
+    Generated Markdown is neutralized at the write boundary so documentation
+    describes the work and evidence, not the implementation engine that ran it.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(str(content), encoding="utf-8")
+    text = str(content)
+    if path.suffix.lower() == ".md":
+        text = sanitize_documentation_text(text)
+    path.write_text(text, encoding="utf-8")
+
+
+def sanitize_documentation_text(content: str) -> str:
+    """Remove implementation-engine attribution from generated Markdown."""
+    text = str(content)
+    text = re.sub(r"(?i)the\s+ollama\s+autonomous\s+agent", "the autonomous development agent", text)
+    text = re.sub(r"(?i)ollama\s+autonomous\s+agent", "autonomous development agent", text)
+    text = re.sub(r"(?i)ollama\s+agent", "autonomous development agent", text)
+    text = re.sub(r"(?i)ollama", "QMOI", text)
+    return text
 
 
 def flatten_feature_count(features: Mapping[str, Any]) -> int:
@@ -2765,7 +2784,7 @@ class CrossRepositoryAutonomyManager:
                 "",
             ]
             section.extend(f"- `{path}`" for path in report["paths"])
-            index_path.write_text(prefix + "\n\n" + "\n".join(section) + "\n", encoding="utf-8")
+            safe_text_write(index_path, prefix + "\n\n" + "\n".join(section) + "\n")
             updated.append(str(index_path))
         return {
             "updated_indexes": updated,
@@ -7156,6 +7175,7 @@ def main(
             "continue",
             "merge-sync",
             "github-auth",
+            "commands",
         ],
     )
 
@@ -7178,6 +7198,11 @@ def main(
     agent = OllamaAutonomousAgent(
         args.base_path
     )
+
+    if args.command == "commands":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        print(json.dumps(refresh_commands_category(root), indent=2, sort_keys=True, default=str))
+        return 0
 
     if args.command == "validate-all":
         return agent.run_validation_pipeline()

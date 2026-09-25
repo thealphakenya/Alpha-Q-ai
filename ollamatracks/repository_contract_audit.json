@@ -1,10 +1,11 @@
 {
   "available_source_roots": [
+    ".",
     "Alpha-Q-ai-2025",
     "qmoi-enhanced-history-14"
   ],
   "blockers": [],
-  "generated": "2026-09-24T16:56:33.255917Z",
+  "generated": "2026-09-25T02:13:15.576328Z",
   "inventory_files": {
     "ALLPORTS.md": {
       "bytes": 1574,
@@ -45,16 +46,32 @@
   "remote_state": {
     "backup_matches_main": false,
     "backup_sha": "6d925c33f0093035755772137d863618b3818ab0",
-    "main_sha": "b497241eb618d5c824fecaeee37b2a32acf0484c",
+    "main_sha": "1a092cd738ebbc02a57eaf215866da3ac8239a9a",
     "reachable": true,
     "refs": {
       "autosync-backup": "6d925c33f0093035755772137d863618b3818ab0",
-      "main": "b497241eb618d5c824fecaeee37b2a32acf0484c"
+      "main": "1a092cd738ebbc02a57eaf215866da3ac8239a9a"
     },
     "status": "REMOTE_VERIFIED"
   },
   "repository": "/workspaces/Alpha-Q-ai",
   "source_roots": {
+    ".": {
+      "candidate_apps": [
+        "Alpha-Q-ai-2025",
+        "qmoi-enhanced-history-14"
+      ],
+      "exists": true,
+      "inventory_files": [
+        "API.md",
+        "ENDPOINTS.md",
+        "ROUTES.md",
+        "ALLPORTS.md"
+      ],
+      "missing_inventory_files": [],
+      "source_file_count": 4565,
+      "source_files_sha256": "9de6275a18a0158a1e75278fea49ab9c5d312196b21ba5f3d20f12599d43b259"
+    },
     "Alpha-Q-ai-2025": {
       "candidate_apps": [
         "api",
@@ -77,6 +94,11 @@
       "exists": true,
       "inventory_files": [
         "API.md"
+      ],
+      "missing_inventory_files": [
+        "ENDPOINTS.md",
+        "ROUTES.md",
+        "ALLPORTS.md"
       ],
       "source_file_count": 954,
       "source_files_sha256": "2439d6f9310df1698fccfe9b3fb12441d2bf355127e81456748caeb68d687143"
@@ -126,6 +148,7 @@
         "ROUTES.md",
         "ALLPORTS.md"
       ],
+      "missing_inventory_files": [],
       "source_file_count": 3565,
       "source_files_sha256": "9597c8df8b5b9b90ee14d4bc6691f74e6a129cccdaa1b9462662dff82e969aed"
     }

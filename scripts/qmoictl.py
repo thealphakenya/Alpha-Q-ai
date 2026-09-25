@@ -12,11 +12,13 @@ from github_auth import preflight_auth
 from q_version_manager import QVersionManager
 from remote_state import read_workflow_run
 from workspace_sync import submit_remote_workflow, write_request
+from command_inventory import refresh_commands_category
+from runbook_audit import write_report
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("autonomous_complete", "status", "verify", "preflight-auth", "reserve-q", "remote-submit", "remote-observe", "control-plane-audit", "control-plane-bootstrap"))
+    parser.add_argument("command", choices=("autonomous_complete", "status", "health", "sync", "validate", "workflows", "evidence", "repair", "logs", "release", "deploy", "commands", "runbook-audit", "verify", "preflight-auth", "reserve-q", "remote-submit", "remote-observe", "control-plane-audit", "control-plane-bootstrap"))
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--execution-id", default=None)
     parser.add_argument("--target-repository", default=None)
@@ -27,6 +29,7 @@ def main() -> int:
     parser.add_argument("--mode", choices=("dry-run", "apply"), default="dry-run")
     parser.add_argument("--sync-id", default=None)
     parser.add_argument("--run-id", default=None)
+    parser.add_argument("--scope", choices=("alpha", "qmoi", "both"), default="both")
     args = parser.parse_args()
     root = args.root.resolve()
     if args.command in {"control-plane-audit", "control-plane-bootstrap"}:
@@ -67,6 +70,29 @@ def main() -> int:
         state = root / "ollamatracks" / "current_state.json"
         print(state.read_text(encoding="utf-8") if state.is_file() else json.dumps({"status": "UNKNOWN"}))
         return 0
+    if args.command == "commands":
+        result = refresh_commands_category(root)
+        print(json.dumps({"status": "LOCAL_COMMAND_INVENTORY_REFRESHED", **result}, indent=2, sort_keys=True, default=str))
+        return 0
+    if args.command == "runbook-audit":
+        report_path = write_report(root)
+        print(report_path.read_text(encoding="utf-8"))
+        return 2
+    if args.command in {"health", "workflows", "evidence", "repair", "release", "deploy", "sync", "validate", "logs"}:
+        payload = {
+            "status": "REMOTE_ACTION_REQUIRED",
+            "command": args.command,
+            "scope": args.scope,
+            "summary_only": True,
+            "remote_first": True,
+            "next_action": "Use the target-owned workflow or authorized remote command; local Codespace does not claim completion.",
+        }
+        if args.command == "logs" and not args.run_id:
+            parser.error("logs requires --run-id")
+        if args.run_id:
+            payload["run_id"] = args.run_id
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return 2
     if args.command == "preflight-auth":
         result = preflight_auth(("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"), ("contents", "pull-requests", "actions"))
         print(json.dumps(result.as_dict(), indent=2))

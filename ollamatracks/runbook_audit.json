@@ -1,0 +1,812 @@
+{
+  "completion": "BLOCKED_AUTH",
+  "counts": {
+    "BLOCKED_AUTH": 25,
+    "LOCAL_READY": 52,
+    "REMOTE_REQUIRED": 53
+  },
+  "generated_at": "2026-09-25T02:10:46.662017Z",
+  "next_action": "Resolve authorization, then execute and independently verify target-owned workflows for every REMOTE_REQUIRED or BLOCKED_AUTH item.",
+  "preflight": {
+    "Alpha_Q_ai_actions": {
+      "error_class": "403",
+      "returncode": 1
+    },
+    "Alpha_Q_ai_protection": {
+      "error_class": "403",
+      "returncode": 1
+    },
+    "qmoi_enhanced_actions": {
+      "error_class": "403",
+      "returncode": 1
+    },
+    "qmoi_enhanced_protection": {
+      "error_class": "403",
+      "returncode": 1
+    }
+  },
+  "repository": "thealphakenya/Alpha-Q-ai",
+  "requirements": [
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 1,
+      "status": "LOCAL_READY",
+      "title": "Purpose"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 2,
+      "status": "LOCAL_READY",
+      "title": "Scope"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 3,
+      "status": "LOCAL_READY",
+      "title": "Non-Negotiable Principles"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 4,
+      "status": "LOCAL_READY",
+      "title": "Completion Definition"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 5,
+      "status": "LOCAL_READY",
+      "title": "Current Evidence Baseline"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 6,
+      "status": "BLOCKED_AUTH",
+      "title": "Target Repositories"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 7,
+      "status": "BLOCKED_AUTH",
+      "title": "Identity Verification"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 8,
+      "status": "BLOCKED_AUTH",
+      "title": "Permission Verification"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 9,
+      "status": "BLOCKED_AUTH",
+      "title": "Authorization Alternatives"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 10,
+      "status": "LOCAL_READY",
+      "title": "Secret Safety"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 11,
+      "status": "LOCAL_READY",
+      "title": "404 Diagnostic Contract"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 12,
+      "status": "LOCAL_READY",
+      "title": "404-A Authentication Concealment"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 13,
+      "status": "LOCAL_READY",
+      "title": "404-B Wrong Repository"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 14,
+      "status": "LOCAL_READY",
+      "title": "404-C Wrong Endpoint"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 15,
+      "status": "BLOCKED_AUTH",
+      "title": "404-D Wrong Workflow"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 16,
+      "status": "BLOCKED_AUTH",
+      "title": "404-E Wrong Ref"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 17,
+      "status": "BLOCKED_AUTH",
+      "title": "404-F Cross-Repository Token Boundary"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 18,
+      "status": "REMOTE_REQUIRED",
+      "title": "404-G Genuine Absence"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 19,
+      "status": "LOCAL_READY",
+      "title": "HTTP Failure Matrix"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 20,
+      "status": "LOCAL_READY",
+      "title": "403 Diagnostic Contract"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 21,
+      "status": "LOCAL_READY",
+      "title": "429 and 5xx Recovery"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 22,
+      "status": "BLOCKED_AUTH",
+      "title": "Repository Dispatch"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 23,
+      "status": "BLOCKED_AUTH",
+      "title": "Workflow Dispatch"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 24,
+      "status": "BLOCKED_AUTH",
+      "title": "Workflow Terminality"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 25,
+      "status": "REMOTE_REQUIRED",
+      "title": "Concurrency"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 26,
+      "status": "REMOTE_REQUIRED",
+      "title": "Watchdog"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 27,
+      "status": "LOCAL_READY",
+      "title": "State Machine"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 28,
+      "status": "LOCAL_READY",
+      "title": "Retry State"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 29,
+      "status": "LOCAL_READY",
+      "title": "Git Safety"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 30,
+      "status": "REMOTE_REQUIRED",
+      "title": "Divergence Classification"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 31,
+      "status": "REMOTE_REQUIRED",
+      "title": "Remote Tree Authority"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 32,
+      "status": "REMOTE_REQUIRED",
+      "title": "Cross-Repository Inventory"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 33,
+      "status": "REMOTE_REQUIRED",
+      "title": "Bidirectional Sync Plan"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 34,
+      "status": "REMOTE_REQUIRED",
+      "title": "Ownership Map"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 35,
+      "status": "LOCAL_READY",
+      "title": "Markdown Inventory"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 36,
+      "status": "LOCAL_READY",
+      "title": "Markdown Review Closure"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 37,
+      "status": "REMOTE_REQUIRED",
+      "title": "API Contract Validation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 38,
+      "status": "REMOTE_REQUIRED",
+      "title": "Endpoint Validation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 39,
+      "status": "REMOTE_REQUIRED",
+      "title": "Route Validation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 40,
+      "status": "REMOTE_REQUIRED",
+      "title": "Port Validation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 41,
+      "status": "REMOTE_REQUIRED",
+      "title": "Build Validation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 42,
+      "status": "REMOTE_REQUIRED",
+      "title": "Dependency Validation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 43,
+      "status": "REMOTE_REQUIRED",
+      "title": "Security Validation"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 44,
+      "status": "LOCAL_READY",
+      "title": "Focused Tests"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 45,
+      "status": "REMOTE_REQUIRED",
+      "title": "Full Tests"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 46,
+      "status": "REMOTE_REQUIRED",
+      "title": "Installation Tests"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 47,
+      "status": "REMOTE_REQUIRED",
+      "title": "Runtime Tests"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 48,
+      "status": "REMOTE_REQUIRED",
+      "title": "Workflow Validation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 49,
+      "status": "BLOCKED_AUTH",
+      "title": "Pull Request Lifecycle"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 50,
+      "status": "BLOCKED_AUTH",
+      "title": "Required Checks"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 51,
+      "status": "BLOCKED_AUTH",
+      "title": "Ruleset Verification"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 52,
+      "status": "BLOCKED_AUTH",
+      "title": "Merge Queue"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 53,
+      "status": "REMOTE_REQUIRED",
+      "title": "Release Contract"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 54,
+      "status": "REMOTE_REQUIRED",
+      "title": "Artifact Contract"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 55,
+      "status": "REMOTE_REQUIRED",
+      "title": "Deployment Contract"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 56,
+      "status": "BLOCKED_AUTH",
+      "title": "Backup Contract"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 57,
+      "status": "LOCAL_READY",
+      "title": "Ledger Synchronization"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 58,
+      "status": "LOCAL_READY",
+      "title": "Evidence Levels"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 59,
+      "status": "LOCAL_READY",
+      "title": "Evidence Event"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 60,
+      "status": "LOCAL_READY",
+      "title": "Machine Completion Contract"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 61,
+      "status": "LOCAL_READY",
+      "title": "JSONL Evidence Ledger"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 62,
+      "status": "LOCAL_READY",
+      "title": "Failure Signature"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 63,
+      "status": "LOCAL_READY",
+      "title": "Safe Autonomous Repair"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 64,
+      "status": "LOCAL_READY",
+      "title": "Authorization Boundary"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 65,
+      "status": "LOCAL_READY",
+      "title": "Human Decision Boundary"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 66,
+      "status": "LOCAL_READY",
+      "title": "No False Completion"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 67,
+      "status": "REMOTE_REQUIRED",
+      "title": "Correlation IDs"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 68,
+      "status": "REMOTE_REQUIRED",
+      "title": "Idempotency"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 69,
+      "status": "REMOTE_REQUIRED",
+      "title": "Stale Operation Detection"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 70,
+      "status": "REMOTE_REQUIRED",
+      "title": "Lease/Ownership"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 71,
+      "status": "REMOTE_REQUIRED",
+      "title": "Resource Budget"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 72,
+      "status": "LOCAL_READY",
+      "title": "Bandwidth Budget"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 73,
+      "status": "LOCAL_READY",
+      "title": "Data Minimization"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 74,
+      "status": "REMOTE_REQUIRED",
+      "title": "Caching"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 75,
+      "status": "REMOTE_REQUIRED",
+      "title": "Generated Output Separation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 76,
+      "status": "REMOTE_REQUIRED",
+      "title": "Remote-First Tests"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 77,
+      "status": "LOCAL_READY",
+      "title": "Local Fast Feedback"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 78,
+      "status": "LOCAL_READY",
+      "title": "User Safety"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 79,
+      "status": "LOCAL_READY",
+      "title": "Locking"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 80,
+      "status": "LOCAL_READY",
+      "title": "Transaction Model"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 81,
+      "status": "LOCAL_READY",
+      "title": "Rollback Model"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 82,
+      "status": "LOCAL_READY",
+      "title": "Health Model"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 83,
+      "status": "LOCAL_READY",
+      "title": "Staleness Model"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 84,
+      "status": "REMOTE_REQUIRED",
+      "title": "Monitoring"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 85,
+      "status": "REMOTE_REQUIRED",
+      "title": "Alerts"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 86,
+      "status": "REMOTE_REQUIRED",
+      "title": "Notification Deduplication"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 87,
+      "status": "REMOTE_REQUIRED",
+      "title": "Recovery Queue"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 88,
+      "status": "REMOTE_REQUIRED",
+      "title": "Dead-Letter Queue"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 89,
+      "status": "REMOTE_REQUIRED",
+      "title": "Dependency Graph"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 90,
+      "status": "REMOTE_REQUIRED",
+      "title": "Change Impact Analysis"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 91,
+      "status": "LOCAL_READY",
+      "title": "Policy-as-Code"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 92,
+      "status": "LOCAL_READY",
+      "title": "Schema Versioning"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 93,
+      "status": "LOCAL_READY",
+      "title": "Observability"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 94,
+      "status": "REMOTE_REQUIRED",
+      "title": "Remote Evidence Bus"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 95,
+      "status": "REMOTE_REQUIRED",
+      "title": "Artifact Retention"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 96,
+      "status": "REMOTE_REQUIRED",
+      "title": "Release/Deployment Independence"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 97,
+      "status": "LOCAL_READY",
+      "title": "Codespace Independence"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 98,
+      "status": "BLOCKED_AUTH",
+      "title": "Remote Completion Watchdog"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 99,
+      "status": "BLOCKED_AUTH",
+      "title": "Final Verification"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 100,
+      "status": "LOCAL_READY",
+      "title": "Completion Report"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 101,
+      "status": "REMOTE_REQUIRED",
+      "title": "Two-Repository Completion"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 102,
+      "status": "LOCAL_READY",
+      "title": "Pre-Existing Blocker Handling"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 103,
+      "status": "BLOCKED_AUTH",
+      "title": "Dual-Codespace Architecture"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 104,
+      "status": "BLOCKED_AUTH",
+      "title": "Cross-Repository Workspace Protocol"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 105,
+      "status": "BLOCKED_AUTH",
+      "title": "Bidirectional Repository Capability"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 106,
+      "status": "LOCAL_READY",
+      "title": "Low-Bandwidth Mobile Mode"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 107,
+      "status": "LOCAL_READY",
+      "title": "Remote-First Execution"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 108,
+      "status": "BLOCKED_AUTH",
+      "title": "Codespace Lifecycle Controller"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 109,
+      "status": "BLOCKED_AUTH",
+      "title": "Cross-Repository Authentication"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 110,
+      "status": "REMOTE_REQUIRED",
+      "title": "Workspace Lock Protocol"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 111,
+      "status": "LOCAL_READY",
+      "title": "Autonomous Conflict Prevention"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 112,
+      "status": "LOCAL_READY",
+      "title": "Transactional Synchronization"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 113,
+      "status": "LOCAL_READY",
+      "title": "Lightweight Status Protocol"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 114,
+      "status": "LOCAL_READY",
+      "title": "Mobile Command Interface"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 115,
+      "status": "REMOTE_REQUIRED",
+      "title": "Codespace Recovery"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 116,
+      "status": "REMOTE_REQUIRED",
+      "title": "Autonomous Watchdog"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 117,
+      "status": "REMOTE_REQUIRED",
+      "title": "Remote Evidence Bus"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 118,
+      "status": "REMOTE_REQUIRED",
+      "title": "Cross-Repository SHA Reconciliation"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 119,
+      "status": "LOCAL_READY",
+      "title": "Artifact-on-Demand Policy"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 120,
+      "status": "REMOTE_REQUIRED",
+      "title": "Network Failure Tolerance"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 121,
+      "status": "REMOTE_REQUIRED",
+      "title": "Offline/Disconnected Operation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 122,
+      "status": "REMOTE_REQUIRED",
+      "title": "Resource-Aware Execution"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 123,
+      "status": "REMOTE_REQUIRED",
+      "title": "Prebuild Optimization"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 124,
+      "status": "REMOTE_REQUIRED",
+      "title": "Dependency Cache Strategy"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 125,
+      "status": "REMOTE_REQUIRED",
+      "title": "Remote Test Delegation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 126,
+      "status": "REMOTE_REQUIRED",
+      "title": "Automatic Environment Health Checks"
+    },
+    {
+      "next_action": "Keep evidence fresh; local readiness does not prove remote completion.",
+      "number": 127,
+      "status": "LOCAL_READY",
+      "title": "Safe User/Agent Concurrency"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 128,
+      "status": "BLOCKED_AUTH",
+      "title": "Cross-Repository PR Automation"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 129,
+      "status": "BLOCKED_AUTH",
+      "title": "Release/Deployment Independence"
+    },
+    {
+      "next_action": "Obtain authorized target-owned workflow access and collect terminal remote evidence.",
+      "number": 130,
+      "status": "BLOCKED_AUTH",
+      "title": "Final Remote Completion Controller"
+    }
+  ],
+  "schema_version": "1.0"
+}

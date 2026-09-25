@@ -1,5 +1,21 @@
 # GitHub Automation & Live Job Links
 
+## Fresh App authorization checkpoint (2026-09-25T02:10:57Z)
+
+The reported `QMOI Dual Repository Agent` installation remains documented in
+`githubapp.md`, but this Codespace has not authenticated as that App. The
+current `qmoialpha-star` credential can read both target repositories and
+reports repository `push=true`; Actions permissions, `main` branch protection,
+and a bounded `qmoi-enhanced` workflow dispatch each return
+`HTTP 403 Resource not accessible by integration`. GitHub `/app` returns `401`
+for the non-App credential and `/user/installations` returns no installations.
+
+This is `AUTH_BLOCKED`, not successful App operation. No credential value is
+stored or exposed. Remote completion, protected-branch mutation, backup parity,
+cross-repository parity, security closure, and final SHA verification require a
+GitHub-managed App installation token or authorized user-owned credential,
+followed by terminal workflow and independent SHA evidence for both repositories.
+
 ## Canonical remote GitHub contract: 2026-09-24
 
 This section is the current operational contract for `thealphakenya/Alpha-Q-ai`
@@ -94,11 +110,11 @@ they must never appear in code, `.env.example`, logs, artifacts, Q-version
 evidence, telemetry, or live messages. Run `gh auth status` and the relevant
 Actions/contents/pull-request API checks without printing token values.
 
-### Current authorization identity and dispatch plan (2026-09-24)
+### Current authorization identity and dispatch plan (2026-09-25)
 
 The coordinated GitHub owner/account is `thealphakenya`, covering both
 `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`. The current
-Codespace session is associated with `thevictorkenya`, which has verified
+Codespace `gh` session is authenticated as `qmoialpha-star`, with verified
 `pull`, `push`, and `triage` repository permissions on both repositories.
 Those repository permissions do not by themselves grant Actions
 administration, workflow dispatch, or protected-branch administration. The
@@ -746,3 +762,143 @@ All workflows cannot yet be declared successful because one reporting job is act
 - Branch sync `32644403642` is pending and branch sync `32644312057` is in progress.
 - Older PR validation `32644238115` has all validation and test jobs successful; only final status reporting remains active.
 - No active job currently reports failure.
+
+## GitHub App Probe (2026-09-25T01:34:39Z)
+
+- Correlation ID: `remote-completion-alpha-q-ai-2026-09-25-013439`.
+- This Codespace has no configured GitHub App ID, private key, or installation token; only the generic Codespaces/GitHub token environment is present.
+- `/app` returned HTTP 401 token-decoding failure and `/user/installations` returned an empty installation list. The current credential therefore cannot impersonate or mint the reported App installation.
+- Actions permissions and protected-branch endpoints still return HTTP 403 for both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`.
+- The documented App contract remains valid, but the current result is `APP_AUTH_UNAVAILABLE` and `AUTH_BLOCKED`; no dispatch, merge, release, deployment, or branch-policy bypass was attempted.
+- Next action: an installation administrator must provide the App through GitHub-managed secrets/target-owned workflow, then independently verify both repositories, workflow runs, checks, protected branches, backup parity, and final SHAs.
+
+## Secure GitHub App Credential Retrieval
+
+Use this procedure later; do not paste credential values into chat, repository files, shell history, command arguments, logs, or evidence:
+
+1. Locate the App metadata in GitHub: `Settings` -> `Developer settings` -> `GitHub Apps` -> `QMOI Dual Repository Agent`. The App ID and Client ID are identifiers, not substitutes for the private key.
+2. Confirm the installation under the App's `Install App` or `Installations` view and verify that both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced` are selected.
+3. Store the private key only as a GitHub Actions secret named `APP_PRIVATE_KEY` in each target repository, or in an approved organization-level secret scoped to both repositories. Store non-secret identifiers as Actions variables named `APP_CLIENT_ID` and, when needed, `APP_INSTALLATION_ID`.
+4. For Codespaces, prefer a target-owned workflow. If direct Codespace execution is explicitly required, use a Codespaces secret named `QMOI_APP_PRIVATE_KEY`; never write it to disk. Use `QMOI_APP_CLIENT_ID` and `QMOI_APP_INSTALLATION_ID` only as environment variables.
+5. Generate a short-lived installation token at runtime with `actions/create-github-app-token@v3`, scoped to both repositories. Never persist or print the generated token.
+6. Verify identity, repository access, Actions permissions, protected-branch/ruleset state, and workflow dispatch before mutation. A 401, 403, or ambiguous 404 remains `AUTH_BLOCKED` until independently diagnosed.
+7. After use, allow the installation token to expire; rotate the App private key only through GitHub's App settings if exposure is suspected. Do not attempt to recover a secret with `gh secret get`; GitHub does not reveal secret values.
+
+Safe checks show names and status only:
+
+```bash
+gh secret list -R thealphakenya/Alpha-Q-ai
+gh secret list -R thealphakenya/qmoi-enhanced
+gh variable list -R thealphakenya/Alpha-Q-ai
+gh variable list -R thealphakenya/qmoi-enhanced
+gh api /user/installations --jq '.installations[] | {id,app_slug,repository_selection}'
+```
+
+These commands do not retrieve secret values. The current Codespace has no App private key or installation token, so it cannot use this path until the administrator configures the GitHub-managed secrets or a target-owned token-minting workflow.
+
+
+
+Skip to content
+Developer Settings
+Registration successful. You must generate a private key in order to install your GitHub App.
+Settings Developer settings GitHub Apps QMOI Dual Repository Agent
+About
+Owned by: @thealphakenya
+
+App ID: [removed after bounded authentication probe]
+
+Using your App ID to get installation tokens? You can now use your Client ID instead.
+
+Client ID: [removed after bounded authentication probe]
+
+## Verified GitHub App authentication (2026-09-25T02:45:05Z)
+
+- Correlation ID: `remote-completion-alpha-q-ai-2026-09-25-024505`.
+- GitHub accepted a JWT signed by the uploaded private key: `/app` returned HTTP 200.
+- Installation discovery returned HTTP 200 and matched the `thealphakenya` installation.
+- A short-lived installation token was minted with HTTP 201 and held in memory only.
+- Read-only repository access returned HTTP 200 for both coordinated repositories.
+- Actions permission checks returned HTTP 200 with Actions enabled for both repositories.
+- `main` branch-protection checks returned HTTP 404 for both repositories and remain ambiguous; no protected-branch authority is claimed.
+- Result: `APP_AUTHENTICATED_READ_ONLY`. No workflow dispatch or repository mutation was attempted.
+- The App ID and Client ID were removed from this document immediately after the bounded authentication probe.
+
+GitHub Apps can use OAuth credentials to identify users. Learn more about identifying users by reading our integration developer documentation.
+
+Client secrets
+You need a client secret to authenticate as the application to the API.
+
+Basic information
+GitHub App name
+QMOI Dual Repository Agent
+The name of your GitHub App.
+
+Write
+Preview
+Autonomous development, repository management, CI/CD, workflow orchestration, monitoring, cross-repository synchronization, and automation for QMOI projects.
+Homepage URL
+https://github.com/thealphakenya
+The full URL to your GitHub App’s website.
+
+Identifying and authorizing users
+The URIs to redirect to after a user authorizes your application. You may add up to 10 redirect URIs. Wildcard matching allows tokens to be sent to all subdomains and additional paths of the redirect URI. Only enable this if you are sure you have control over all possible matches. Learn more about secure use of redirect URIs.
+Redirect URI
+e.g. https://example.com/auth
+ Allow wildcard matching
+  Request user authorization (OAuth) during installation
+  Requests that the installing user grants access to their identity during installation of your App.
+
+   Enable Device Flow
+   Allow this GitHub App to authorize users via the device flow.
+
+   Post installation
+   Setup URL (optional)
+   Users will be redirected to this URL after installing your GitHub App to complete additional setup.
+
+    Redirect on update
+    Redirect users to the 'Setup URL' after installations are updated (E.g. repositories added/removed).
+
+    Webhook
+
+    Active
+    We will deliver event details when this hook is triggered.
+    Webhook URL
+    Events will POST to this URL with a webhook.
+
+    Secret
+    Set a secret to secure your webhooks.
+
+
+     Display information
+     Drag & drop
+
+     You can also drag and drop a picture from your computer.
+
+
+     Private keys
+     Generate a private key
+     You need a private key to sign access token requests.
+
+     Learn more about private keys.
+
+     IP allow list
+     Enter the IP addresses of your GitHub App to allow organizations with IP allow lists to selectively inherit the App's IP allow list when installed. Learn more about App IP allow lists.
+
+     There are no IP addresses on the allow list yet.
+     IP address or CIDR range
+     Short description
+     Check IP address
+     Enter an IP address to check whether it is permitted by enabled entries on the IP allow list.
+
+     Footer
+     © 2026 GitHub, Inc.
+     Footer navigation
+     Terms
+     Privacy
+     Security
+     Status
+     Community
+     Docs
+     Contact
+     Manage cookies
+     Do not share my personal information

@@ -13,7 +13,7 @@ from typing import Any, Iterable
 
 INVENTORY_FILES = ("API.md", "ENDPOINTS.md", "ROUTES.md", "ALLPORTS.md")
 SOURCE_EXTENSIONS = {".py", ".ts", ".tsx", ".js", ".jsx"}
-CANONICAL_ROOTS = ("Alpha-Q-ai-2025", "qmoi-enhanced-history-14")
+CANONICAL_ROOTS = (".", "Alpha-Q-ai-2025", "qmoi-enhanced-history-14")
 
 
 def utc_now() -> str:
@@ -99,6 +99,9 @@ def audit_repository_contract(root: Path | str, source_roots: Iterable[str] = CA
     for relative in source_roots:
         source_root = repository / relative
         files = _source_files(source_root) if source_root.is_dir() else []
+        root_missing_inventory = [
+            name for name in INVENTORY_FILES if not (source_root / name).is_file()
+        ] if source_root.is_dir() else list(INVENTORY_FILES)
         roots[relative] = {
             "exists": source_root.is_dir(),
             "source_file_count": len(files),
@@ -107,6 +110,7 @@ def audit_repository_contract(root: Path | str, source_roots: Iterable[str] = CA
             "inventory_files": [
                 name for name in INVENTORY_FILES if (source_root / name).is_file()
             ],
+            "missing_inventory_files": root_missing_inventory,
         }
 
     existing_roots = [name for name, record in roots.items() if record["exists"]]

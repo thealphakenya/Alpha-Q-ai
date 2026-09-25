@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "correlation_id": "remote-completion-alpha-q-ai-2026-09-25-025709",
+  "status": "LOCAL_READY_REMOTE_BLOCKED",
+  "generated_at": "2026-09-25T02:59:48Z",
+  "repository": "thealphakenya/Alpha-Q-ai",
+  "target_repositories": [
+    "thealphakenya/Alpha-Q-ai",
+    "thealphakenya/qmoi-enhanced"
+  ],
+  "authorization": {
+    "identity_verified": true,
+    "actions_dispatch_authorized": true,
+    "required_capability": "user-owned GitHub token or scoped GitHub App with workflow, PR, contents, release, and protected-branch access",
+    "notes": "A GitHub App JWT and short-lived installation token were verified in memory. The App dispatched one exact-SHA dry-run successfully, but the target-owned run failed validation, security, remote-main, backup, and cross-repository gates. Protected-branch responses remain ambiguous HTTP 404; no mutation or completion claim is made."
+  },
+  "state": {
+    "local_validation": "ready",
+    "remote_completion": "blocked",
+    "backup_parity_proven": false,
+    "cross_repo_parity_proven": false,
+    "security_gate_status": "review_required",
+    "local_head_sha": "1e196009736b2fd6731fa43d32671f7e5010e286",
+    "origin_main_sha": "e53e05f29de76646c668df687b23c1bd7e65fb80",
+    "remote_alpha_q_ai_main_sha": "e53e05f29de76646c668df687b23c1bd7e65fb80",
+    "remote_qmoi_enhanced_main_sha": "ce54e5a41a0a0fefd3c82f3333ee929df7d6d9c8",
+    "remote_alpha_q_ai_backup_sha": "6d925c33f0093035755772137d863618b3818ab0",
+    "branch_status": "behind 9; local worktree changes preserved",
+    "worktree_dirty": true,
+    "remote_policy_proven": false
+  },
+  "validation": {
+    "full_test_suite": "249 passed in 311.17s",
+    "required_checks": "passed locally, pending remote target-owned verification",
+    "exact_final_remote_sha": null,
+    "local_verification_method": [
+      "python -m pytest tests -q",
+      "python scripts/qmoictl.py control-plane-audit",
+      "python scripts/ollama_autonomous_agent.py commands --base-path .",
+      "./scripts/q status --scope both",
+      "./scripts/q health --scope both"
+    ]
+  },
+  "latest_remote_run": {
+    "workflow": "Cross-Repository Target-Owned Sync",
+    "run_id": "36088506304",
+    "url": "https://github.com/thealphakenya/Alpha-Q-ai/actions/runs/36088506304",
+    "event": "workflow_dispatch",
+    "source_sha": "e53e05f29de76646c668df687b23c1bd7e65fb80",
+    "mode": "dry-run",
+    "status": "completed",
+    "conclusion": "failure",
+    "gates": {
+      "discovery": "PASS",
+      "inspection": "PASS",
+      "live_activity": "PASS",
+      "q_version": "PASS",
+      "validation": "FAIL",
+      "security": "FAIL",
+      "remote_main": "FAIL",
+      "remote_backup": "FAIL",
+      "cross_repository": "FAIL",
+      "final_verification": "UNKNOWN"
+    },
+    "mutation": "none; dry-run"
+  },
+  "blockers": [
+    "The GitHub token is authenticated but the required target-owned workflow and branch-protection permissions are still blocked by HTTP 403.",
+    "Backup parity and cross-repository parity are not proven remotely.",
+    "Security findings remain open and cannot be ignored under the fail-closed policy.",
+    "No final remote completion claim is allowed because a verified remote SHA is still missing."
+  ],
+  "evidence_refs": [
+    "remotecompletion.md",
+    "oe2.txt",
+    "ALLVALIDATIONS.md",
+    "MERGE.md",
+    "RELEASES.md",
+    "ALLMDFILESREFS.md",
+    "github_proof_contract.json",
+    "validation_report.json"
+  ]
+}

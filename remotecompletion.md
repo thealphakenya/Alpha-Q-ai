@@ -1,5 +1,28 @@
 # Remote Completion Runbook — Advanced Dual-Repository Autonomous Low-Bandwidth Edition
 
+## Fresh authorization and inventory checkpoint (2026-09-25T02:10:57Z)
+
+- Local control-plane audit: `READY`; focused audit regression tests: `8 passed`.
+- GitHub identity: `qmoialpha-star`; both repositories are readable and report `pull=true`, `push=true`, and `triage=true`.
+- Target-owned Actions and `main` branch-protection probes return `HTTP 403 Resource not accessible by integration` for both repositories.
+- Bounded `ollama-autonomous-agent.yml` dispatch to `thealphakenya/qmoi-enhanced` returned `HTTP 403`; no run ID, mutation, merge, release, backup, deployment, or completion claim was created.
+- GitHub App probes remain unavailable from this Codespace: `/app` returned `HTTP 401` and `/user/installations` returned an empty installation list. The reported installation is not independently usable with the current credential.
+- Current remote SHAs: Alpha-Q-ai `a5f6c1918db38debb082780c42b370e6136d1bcd`; qmoi-enhanced `7a824d0cfe507c534f8b50f0335f6c454faf8e8c`. Local `HEAD` is `1e196009736b2fd6731fa43d32671f7e5010e286`; local worktree changes remain preserved.
+- Inventory automation now audits `API.md`, `ENDPOINTS.md`, `ROUTES.md`, and `ALLPORTS.md` in the active tree, `Alpha-Q-ai-2025`, and `qmoi-enhanced-history-14`, while keeping `parity_proven=false` until a target-owned workflow verifies both repositories.
+- Completion state remains `BLOCKED_AUTH`; backup parity, cross-repository parity, protected-branch execution, security closure, and final SHA verification are not complete.
+- Next action: configure the App credentials only in GitHub-managed secrets or use an authorized user-owned credential, rerun two-repository preflight, then dispatch and independently verify terminal target-owned workflows.
+
+## Fresh GitHub App authentication checkpoint (2026-09-25T02:45:05Z)
+
+- Correlation ID: `remote-completion-alpha-q-ai-2026-09-25-024505`.
+- The uploaded private key produced an accepted App JWT: `/app` returned HTTP 200.
+- Installation discovery returned HTTP 200 and matched `thealphakenya`; a short-lived installation token was minted with HTTP 201 and was not persisted.
+- Read-only repository access returned HTTP 200 for `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`.
+- Actions permission probes returned HTTP 200 with Actions enabled for both repositories.
+- `main` branch-protection probes returned HTTP 404 for both repositories. The result is ambiguous and does not prove absence of protection or mutation authority.
+- Result: `APP_AUTHENTICATED_READ_ONLY`; no dispatch, merge, release, deployment, or branch mutation was attempted.
+- The App and client identifiers used for this probe were removed from `github.md` immediately afterward.
+
 ## Purpose
 
 This is the authoritative operational source for completing, synchronizing, validating,
@@ -11,6 +34,21 @@ monitoring and operating:
 It is designed for browser-based GitHub Codespaces, including mobile/low-bandwidth
 usage, while keeping heavy computation remote and preserving independent repository
 ownership, history, protection and evidence.
+
+## Current Evidence Snapshot (2026-09-24)
+
+The current local state is ready for a remote completion attempt, but remote completion
+is still blocked by target-owned GitHub authorization and protected-branch evidence.
+
+- Local validation: `python -m pytest tests -q` passed with `249 passed in 306.72s`.
+- Control-plane readiness: `python scripts/qmoictl.py control-plane-audit` reported `READY`.
+- Low-bandwidth mode: browser-facing workflow remains metadata-first, summary-only, and avoids automatic artifact download.
+- Workspace commands: `scripts/q` and `scripts/qmoictl.py` provide the compact command surface; `commands` refreshes the `Commands` category in `ALLMDFILESREFS.md`.
+- Documentation attribution: generated Markdown is sanitized at the agent write boundary and uses neutral developer/evidence language; implementation filenames and historical provenance are not renamed or rewritten.
+- Requirement audit: all 130 numbered sections and the complete preflight checklist are marked in the generated status sections below; the current result is `BLOCKED_AUTH` with 52 `LOCAL_READY`, 53 `REMOTE_REQUIRED`, and 25 `BLOCKED_AUTH` items.
+- Remote blocker: GitHub authenticated the session, but repository Actions permissions and main-branch protection endpoints return `HTTP 403: Resource not accessible by integration`.
+- Fresh branch state: local `HEAD` is `1e196009736b2fd6731fa43d32671f7e5010e286`; hosted `origin/main` is `34a6818c8c4c292c26ab577bcd3db36970701c55`, one commit ahead. Dirty local changes are preserved.
+- Result: no remote publication, backup parity, cross-repository parity, release, or final SHA completion claim is valid without fresh remote evidence.
 
 ## Operating Objective
 
@@ -784,30 +822,41 @@ AUTO_DOWNLOAD=false
 ## Suggested Workspace Commands
 
 ```bash
-q status
-q status alpha
-q status qmoi
-q status both
-
-q health
-q sync alpha
-q sync qmoi
-q sync both
-
-q validate alpha
-q validate qmoi
-q validate both
-
-q workflows
-q evidence
-q repair
-q logs <run-id>
-q release <repo>
-q deploy <repo>
+python scripts/qmoictl.py status --scope both
+python scripts/qmoictl.py health --scope both
+python scripts/qmoictl.py sync --scope both
+python scripts/qmoictl.py validate --scope both
+python scripts/qmoictl.py workflows --scope both
+python scripts/qmoictl.py evidence --scope both
+python scripts/qmoictl.py repair --scope both
+python scripts/qmoictl.py logs --scope both --run-id <run-id>
+python scripts/qmoictl.py release --scope alpha
+python scripts/qmoictl.py deploy --scope alpha
+python scripts/qmoictl.py commands
 ```
 
-These commands should be thin clients to remote operations and should return compact
-summaries by default.
+The short `q ...` names are provided by `scripts/q` as a thin wrapper. The canonical
+implementation is `qmoictl.py`, which returns compact
+summaries by default and fails closed with `REMOTE_ACTION_REQUIRED` until an
+authorized target-owned workflow exists. `commands` refreshes the generated
+`Commands` category in `ALLMDFILESREFS.md` from every available Markdown source.
+
+Additional local-safe commands are:
+
+```bash
+python scripts/qmoictl.py control-plane-audit
+python scripts/qmoictl.py control-plane-bootstrap
+python scripts/qmoictl.py preflight-auth
+python scripts/qmoictl.py remote-submit --target-repository <owner/repo> --direction <alpha-to-qmoi|qmoi-to-alpha> --source-repository <owner/repo> --source-sha <sha>
+python scripts/qmoictl.py remote-observe --target-repository <owner/repo> --run-id <run-id>
+python scripts/qmoictl.py verify --execution-id <execution-id>
+python scripts/ollama_autonomous_agent.py commands --base-path .
+```
+
+All command-bearing Markdown files and Markdown files with command-oriented names
+are indexed under the `Commands` category in `ALLMDFILESREFS.md`, with discovered
+command lines and SHA-256 evidence. The index is metadata-only and never executes
+a command.
 
 ## Copilot / Agent Operating Contract
 
@@ -874,3 +923,218 @@ SMALL REQUEST
 ```
 
 This is the intended low-bandwidth operating model.
+
+
+## Live Requirement Status (generated)
+
+Generated by `scripts/runbook_audit.py`; `[x] LOCAL_READY` is not remote completion.
+
+- Generated: `2026-09-25T02:10:46.662017Z`
+- Completion state: `BLOCKED_AUTH`
+- Counts: `{'REMOTE_REQUIRED': 53, 'LOCAL_READY': 52, 'BLOCKED_AUTH': 25}`
+
+- [x] **1. Purpose** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **2. Scope** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **3. Non-Negotiable Principles** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **4. Completion Definition** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **5. Current Evidence Baseline** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **6. Target Repositories** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **7. Identity Verification** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **8. Permission Verification** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **9. Authorization Alternatives** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **10. Secret Safety** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **11. 404 Diagnostic Contract** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **12. 404-A Authentication Concealment** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **13. 404-B Wrong Repository** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **14. 404-C Wrong Endpoint** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **15. 404-D Wrong Workflow** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **16. 404-E Wrong Ref** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **17. 404-F Cross-Repository Token Boundary** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **18. 404-G Genuine Absence** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **19. HTTP Failure Matrix** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **20. 403 Diagnostic Contract** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **21. 429 and 5xx Recovery** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **22. Repository Dispatch** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **23. Workflow Dispatch** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **24. Workflow Terminality** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **25. Concurrency** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **26. Watchdog** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **27. State Machine** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **28. Retry State** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **29. Git Safety** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **30. Divergence Classification** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **31. Remote Tree Authority** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **32. Cross-Repository Inventory** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **33. Bidirectional Sync Plan** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **34. Ownership Map** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **35. Markdown Inventory** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **36. Markdown Review Closure** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **37. API Contract Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **38. Endpoint Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **39. Route Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **40. Port Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **41. Build Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **42. Dependency Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **43. Security Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **44. Focused Tests** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **45. Full Tests** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **46. Installation Tests** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **47. Runtime Tests** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **48. Workflow Validation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **49. Pull Request Lifecycle** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **50. Required Checks** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **51. Ruleset Verification** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **52. Merge Queue** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **53. Release Contract** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **54. Artifact Contract** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **55. Deployment Contract** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **56. Backup Contract** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **57. Ledger Synchronization** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **58. Evidence Levels** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **59. Evidence Event** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **60. Machine Completion Contract** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **61. JSONL Evidence Ledger** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **62. Failure Signature** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **63. Safe Autonomous Repair** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **64. Authorization Boundary** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **65. Human Decision Boundary** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **66. No False Completion** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **67. Correlation IDs** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **68. Idempotency** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **69. Stale Operation Detection** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **70. Lease/Ownership** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **71. Resource Budget** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **72. Bandwidth Budget** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **73. Data Minimization** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **74. Caching** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **75. Generated Output Separation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **76. Remote-First Tests** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **77. Local Fast Feedback** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **78. User Safety** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **79. Locking** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **80. Transaction Model** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **81. Rollback Model** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **82. Health Model** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **83. Staleness Model** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **84. Monitoring** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **85. Alerts** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **86. Notification Deduplication** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **87. Recovery Queue** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **88. Dead-Letter Queue** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **89. Dependency Graph** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **90. Change Impact Analysis** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **91. Policy-as-Code** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **92. Schema Versioning** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **93. Observability** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **94. Remote Evidence Bus** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **95. Artifact Retention** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **96. Release/Deployment Independence** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **97. Codespace Independence** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **98. Remote Completion Watchdog** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **99. Final Verification** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **100. Completion Report** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **101. Two-Repository Completion** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **102. Pre-Existing Blocker Handling** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **103. Dual-Codespace Architecture** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **104. Cross-Repository Workspace Protocol** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **105. Bidirectional Repository Capability** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **106. Low-Bandwidth Mobile Mode** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **107. Remote-First Execution** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **108. Codespace Lifecycle Controller** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **109. Cross-Repository Authentication** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **110. Workspace Lock Protocol** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **111. Autonomous Conflict Prevention** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **112. Transactional Synchronization** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **113. Lightweight Status Protocol** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [x] **114. Mobile Command Interface** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **115. Codespace Recovery** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **116. Autonomous Watchdog** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **117. Remote Evidence Bus** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **118. Cross-Repository SHA Reconciliation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **119. Artifact-on-Demand Policy** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **120. Network Failure Tolerance** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **121. Offline/Disconnected Operation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **122. Resource-Aware Execution** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **123. Prebuild Optimization** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **124. Dependency Cache Strategy** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **125. Remote Test Delegation** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **126. Automatic Environment Health Checks** — `REMOTE_REQUIRED`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [x] **127. Safe User/Agent Concurrency** — `LOCAL_READY`. Keep evidence fresh; local readiness does not prove remote completion.
+- [!] **128. Cross-Repository PR Automation** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **129. Release/Deployment Independence** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+- [!] **130. Final Remote Completion Controller** — `BLOCKED_AUTH`. Obtain authorized target-owned workflow access and collect terminal remote evidence.
+
+## Live Preflight Status (generated)
+
+Each preflight item is marked from the current local/remote evidence. `BLOCKED_AUTH` and `REMOTE_REQUIRED` remain incomplete.
+
+- [!] authenticated identity verified — `REMOTE_REQUIRED`; current CLI identity is known but target capabilities are limited.
+- [!] both repository identities verified — `REMOTE_REQUIRED`; independent target access is not fully proven.
+- [!] default branches verified remotely — `REMOTE_REQUIRED`; remote authorization is incomplete.
+- [!] current remote SHAs captured — `REMOTE_REQUIRED`; branch movement must be refreshed after authorization.
+- [x] local/remote divergence classified — `LOCAL_READY`; current status reports hosted movement and preserves the dirty worktree.
+- [!] peer repository access verified — `BLOCKED_AUTH`.
+- [!] Codespace cross-repository permissions verified — `BLOCKED_AUTH`.
+- [!] Actions read/dispatch capability verified for both repositories — `BLOCKED_AUTH`; target Actions endpoints must return authorized evidence.
+- [!] PR/check/release/artifact capability verified — `REMOTE_REQUIRED`.
+- [!] rulesets/protection inspected for both repositories — `BLOCKED_AUTH`; target protection endpoints must return authorized evidence.
+- [x] workflow files and triggers verified locally — `LOCAL_READY`; remote execution remains unproven.
+- [x] correlation ID created — `LOCAL_READY`; evidence uses the active completion correlation ID.
+- [x] active user edits detected — `LOCAL_READY`; dirty changes are preserved.
+- [x] locks checked — `LOCAL_READY`; control-plane audit is READY.
+- [x] bandwidth mode selected — `LOCAL_READY`; metadata-first/mobile defaults are active.
+- [x] resource budget checked locally — `LOCAL_READY`; heavy operations remain delegated remotely.
+- [x] current evidence freshness checked — `LOCAL_READY`; generated timestamps are recorded.
+- [!] both trees independently inventoried — `REMOTE_REQUIRED`.
+- [!] ownership map loaded — `REMOTE_REQUIRED`.
+- [x] changed paths identified — `LOCAL_READY`.
+- [x] destructive changes excluded — `LOCAL_READY`.
+- [x] synchronization plan recorded — `LOCAL_READY`.
+- [x] snapshot recorded — `LOCAL_READY`.
+- [!] target branch policy identified — `BLOCKED_AUTH`.
+- [!] PR exists in target repository — `REMOTE_REQUIRED`.
+- [!] PR head SHA recorded — `REMOTE_REQUIRED`.
+- [!] required checks correspond to current SHA — `REMOTE_REQUIRED`.
+- [!] required reviews satisfied — `BLOCKED_AUTH`.
+- [!] merge queue/ruleset requirements satisfied — `BLOCKED_AUTH`.
+- [x] no unresolved local merge conflict — `LOCAL_READY`; remote merge conflict state remains unproven.
+- [x] no stale local plan condition — `LOCAL_READY`; remote freshness still requires re-read.
+- [!] merge SHA verified — `REMOTE_REQUIRED`.
+- [!] build succeeded from intended SHA — `REMOTE_REQUIRED`.
+- [!] artifact hashes recorded — `REMOTE_REQUIRED`.
+- [!] installation test passed — `REMOTE_REQUIRED`.
+- [!] runtime test passed — `REMOTE_REQUIRED`.
+- [!] release publication verified — `REMOTE_REQUIRED`.
+- [!] release assets independently retrievable — `REMOTE_REQUIRED`.
+- [!] deployment source SHA verified — `REMOTE_REQUIRED`.
+- [!] environment requirements satisfied — `REMOTE_REQUIRED`.
+- [!] deployment terminal state verified — `REMOTE_REQUIRED`.
+- [!] health endpoint/runtime evidence verified — `REMOTE_REQUIRED`.
+- [!] Alpha-Q-ai main SHA verified — `REMOTE_REQUIRED`.
+- [!] qmoi-enhanced main SHA verified — `BLOCKED_AUTH`.
+- [!] backup parity verified — `REMOTE_REQUIRED`.
+- [x] Markdown inventory fresh locally — `LOCAL_READY`; remote publication is not proven.
+- [x] validation ledger fresh locally — `LOCAL_READY`.
+- [x] release ledger freshness checked locally — `LOCAL_READY`; release publication remains unproven.
+- [x] merge ledger freshness checked locally — `LOCAL_READY`; remote merge remains unproven.
+- [x] evidence ledger structurally valid — `LOCAL_READY`.
+- [!] no mandatory gate is UNKNOWN/STALE — `REMOTE_REQUIRED`.
+- [!] all blockers resolved or explicitly terminal — `BLOCKED_AUTH`.
+- [!] final verifier independently reread remote state — `BLOCKED_AUTH`.
+
+## Target-owned dry-run checkpoint (2026-09-25T02:59:48Z)
+
+- Correlation ID: `remote-completion-alpha-q-ai-2026-09-25-025709`.
+- App-authenticated dispatch returned HTTP 204 for `Cross-Repository Target-Owned Sync` on `thealphakenya/Alpha-Q-ai`, direction `alpha-to-qmoi`, mode `dry-run`, source SHA `e53e05f29de76646c668df687b23c1bd7e65fb80`.
+- Target run: [36088506304](https://github.com/thealphakenya/Alpha-Q-ai/actions/runs/36088506304). Terminal result: `failure`.
+- Job `target-owned-sync` failed only at `Execute target-owned remote lifecycle`; request recording, control-plane validation, evidence publication, and cleanup steps completed.
+- Remote lifecycle reported `BLOCKED_REQUIRES_HUMAN` with `validation=FAIL`, `security=FAIL`, `remote_main=FAIL`, `remote_backup=FAIL`, `cross_repository=FAIL`, and `final_verification=UNKNOWN`. Discovery, inspection, live activity, and Q-version gates passed.
+- Because this was a dry-run, no repository, branch, merge, release, deployment, or backup mutation occurred. Dispatch acceptance and a failed run are not completion evidence.
+- Result: `REMOTE_COMPLETION_BLOCKED`; remediation requires resolving the reported validation/security/cross-repository evidence gates, then rerunning with fresh exact-SHA evidence.
+
+## Gate diagnosis checkpoint (2026-09-25T03:12:15Z)
+
+- Local comparison: `python -m pip_audit -r requirements.txt` reported no known vulnerabilities; syntax validation passed; and `python -m pytest tests -q` passed with `249 passed`.
+- Local Q-version evidence includes `Q.0.0.N/COMPLETION.md`; `Q.0.0.1` is absent, so no new Q-version completion claim was created.
+- These local results do not repair the target-owned run `36088506304`. Its remote validation, security, remote-main, backup, and cross-repository gates remain failed or unknown.
+- The next authorized remote step is to provide independently verified source/target evidence to the lifecycle, resolve the remote gate failures, and rerun the target-owned workflow. No apply, merge, release, deployment, or parity claim is authorized from this local evidence.

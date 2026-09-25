@@ -1,3 +1,12 @@
+## GitHub App installation contract (2026-09-25)
+
+- [x] Recorded the user-reported `QMOI Dual Repository Agent` installation in `githubapp.md`, including developer, selected repositories, reported permission families, operational uses, and evidence requirements.
+- [x] Documented how the app supports identity preflight, cross-repository inventory/merge planning, API/endpoint/route/port documentation, Actions, monitoring, backup, releases, deployments, and Vercel verification.
+- [x] Documented that permissions answer what QMOI can do while event subscriptions answer what GitHub reports, with `workflow_run`, `workflow_job`, `check_run`, `push`, `pull_request`, `security`, `deployment`, and `repository_dispatch` handling called out for monitoring and orchestration.
+- [x] Preserved fail-closed authorization behavior: an app installation does not grant itself permissions, override rulesets, satisfy environment approvals, expose secrets, or convert workflow dispatch into completion.
+- [x] Registered `githubapp.md` in `ALLMDFILESREFS.md` without retaining the broad generated inventory rewrite from the command check.
+- [!] The installation details are user-reported and are not independent remote proof. Existing evidence still records HTTP 403 for Actions and branch-protection checks; remote completion, backup parity, cross-repository parity, security closure, and final SHA verification remain blocked until an authorized app installation token or user-owned credential proves them for both repositories.
+
 ## Active continuation checkpoint: 2026-09-24
 
 - Credential and documentation automation milestone: enhanced `scripts/ollama_autonomous_agent.py` with secret-safe credential/environment discovery, `CREDENTIAL_READINESS.md` generation, runtime-presence reporting without values, automatic `ALLMDFILESREFS.md` inclusion, and synchronized credential UI/frontend/backend/merge/style/universal-auth guidance. Added a fail-closed `HIST` projection contract requiring remote success before materializing `qmoi-enhanced-history-14`, `Alpha-Q-ai-2025`, branch, and artifact history. Full repository validation now passes (`243 passed`); all `16` workflows validate, focused authorization/merge tests pass, compilation passes, and `git diff --check` passes. Credentials are never invented, printed, copied, or silently activated.
@@ -131,7 +140,101 @@ As you continue, also check and enhance the merge features, enhance how it alway
 - [!] These are plan-only forecasts. The final repositories cannot be declared merged until every variant path is reviewed, feature tests pass, and after-merge metrics are generated for both independently published destinations.
 # oe2.txt
 
+## Fresh GitHub App and remote-completion checkpoint (2026-09-25T02:10:57Z)
+
+- [x] Revalidated the active GitHub identity and readable access to both target repositories without exposing credentials.
+- [x] Enhanced the repository contract audit to cover the active tree, `Alpha-Q-ai-2025`, and `qmoi-enhanced-history-14`, including `API.md`, `ENDPOINTS.md`, `ROUTES.md`, and `ALLPORTS.md` provenance surfaces.
+- [x] Enhanced runbook authorization preflight to probe Actions and `main` branch protection independently for both repositories.
+- [x] Focused regression validation passed: `8 passed`; modified audit scripts compile and `git diff --check` passes.
+- [x] Attempted one bounded target-owned validation dispatch; GitHub returned `HTTP 403 Resource not accessible by integration` and no run was created.
+- [x] Recorded current remote SHAs: Alpha-Q-ai `a5f6c1918db38debb082780c42b370e6136d1bcd`; qmoi-enhanced `7a824d0cfe507c534f8b50f0335f6c454faf8e8c`.
+- [!] GitHub App authentication remains unavailable in the Codespace: `/app` returned `401`, `/user/installations` returned no installations, and both repositories' Actions/protection probes returned `403`.
+- [!] Remote completion is not marked done. Backup parity, cross-repository parity, protected-branch execution, security closure, terminal workflow evidence, and exact final SHAs still require authorized target-owned execution.
+- [ ] Next gate: provide authorized GitHub App/user credentials only through GitHub-managed configuration, rerun the two-repository preflight, then complete and independently verify every `REMOTE_REQUIRED` and `BLOCKED_AUTH` item.
+
+## Target-owned dry-run checkpoint (2026-09-25T02:59:48Z)
+
+- [x] App-authenticated target workflow dispatch returned HTTP 204 for `thealphakenya/Alpha-Q-ai` using exact source SHA `e53e05f29de76646c668df687b23c1bd7e65fb80`.
+- [x] Remote run [36088506304](https://github.com/thealphakenya/Alpha-Q-ai/actions/runs/36088506304) reached terminal state `failure`.
+- [x] Request recording, control-plane validation, evidence publication, and cleanup steps completed.
+- [!] `Execute target-owned remote lifecycle` failed with `validation=FAIL`, `security=FAIL`, `remote_main=FAIL`, `remote_backup=FAIL`, `cross_repository=FAIL`, and `final_verification=UNKNOWN`.
+- [x] Discovery, inspection, live activity, and Q-version gates passed.
+- [!] This was `dry-run`; no repository mutation or completion claim was made. Remote completion remains `BLOCKED_REQUIRES_HUMAN` until the failed gates have fresh evidence and a subsequent target-owned run reaches a valid terminal success state.
+
+## Gate diagnosis checkpoint (2026-09-25T03:12:15Z)
+
+- [x] Local `python -m pip_audit -r requirements.txt` passed with no known vulnerabilities reported by the command.
+- [x] Local syntax validation passed for the target lifecycle modules.
+- [x] Full local test suite passed: `249 passed`.
+- [x] Local Q-version gate has `Q.0.0.N/COMPLETION.md`.
+- [!] Local `Q.0.0.1` is absent; no new Q-version completion claim was created.
+- [!] These local results do not override remote run `36088506304`, whose target-owned validation, security, remote-main, backup, and cross-repository gates failed or remained unknown.
+- [ ] Next remote action remains blocked until independent source/target evidence is supplied to the target-owned lifecycle and the failed remote gates are rerun to terminal success.
+
+## Verified GitHub App authentication checkpoint (2026-09-25T02:45:05Z)
+
+- [x] App JWT identity accepted by GitHub: `/app` returned HTTP 200.
+- [x] Installation discovery returned HTTP 200 and matched `thealphakenya`.
+- [x] Short-lived installation token minted with HTTP 201 and kept in memory only.
+- [x] Read-only access returned HTTP 200 for both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`.
+- [x] Actions permission probes returned HTTP 200 with Actions enabled for both repositories.
+- [!] `main` branch-protection probes returned HTTP 404 for both repositories; this remains ambiguous and is not treated as proof of mutation authority.
+- [!] Result is `APP_AUTHENTICATED_READ_ONLY`; no dispatch, merge, release, deployment, or branch mutation was attempted.
+- [x] App and client identifiers were removed from `github.md` after the bounded authentication probe.
+
 ## Release, publication, and validation continuation mandate (2026-09-24)
+
+### Workspace command integration (2026-09-24 23:00Z)
+
+- [x] Added `scripts/command_inventory.py`, a metadata-only scanner for command-bearing Markdown and command-oriented Markdown filenames.
+- [x] Added the generated `Commands` category to `ALLMDFILESREFS.md`, including each discovered command and source SHA-256.
+- [x] Extended `scripts/qmoictl.py` with compact `health`, `sync`, `validate`, `workflows`, `evidence`, `repair`, `logs`, `release`, `deploy`, and `commands` surfaces.
+- [x] Preserved fail-closed behavior: remote-action commands return `REMOTE_ACTION_REQUIRED` until an authorized target-owned workflow can execute and be independently verified.
+- [x] Focused validation passed: `python -m pytest tests/test_command_inventory.py tests/test_control_plane.py -q`.
+- [x] Added `scripts/q` as a thin wrapper for the canonical `python scripts/qmoictl.py ...` interface; PATH installation remains workspace-specific.
+- [ ] Remote completion remains blocked by the existing HTTP 403 authorization gate, so command integration is locally validated but not remote-completion evidence.
+
+### Final command integration check (2026-09-24 23:13Z)
+
+- [x] Machine-readable `remote-completion.json` and `remote-evidence-ledger.jsonl` parse successfully.
+- [x] `./scripts/q commands` regenerated the `Commands` category and focused regression validation passed (`10 passed`).
+- [!] `git status` now reports local `main` one commit behind `origin/main`, consistent with hosted telemetry movement; the worktree also contains staged and unstaged user/evidence changes.
+- [ ] No rebase or publication was attempted because preserving the dirty worktree and avoiding silent remote reconciliation is required until the changes are explicitly reviewed and authorized.
+
+### 130-item runbook and preflight audit (2026-09-24)
+
+- [x] Added `scripts/runbook_audit.py` and `qmoictl runbook-audit`.
+- [x] Generated `ollamatracks/runbook_audit.json` covering all 130 numbered requirements.
+- [x] Generated live requirement and preflight status sections in `remotecompletion.md`.
+- [x] Current classification: `52 LOCAL_READY`, `53 REMOTE_REQUIRED`, `25 BLOCKED_AUTH`; completion remains `BLOCKED_AUTH`.
+- [x] Both live authorization probes returned HTTP 403 for Actions permissions and main-branch protection.
+- [ ] No requirement is falsely marked as remotely complete; target-owned workflow execution and independent SHA evidence remain outstanding.
+
+### Neutral documentation attribution (2026-09-24)
+
+- [x] Added `sanitize_documentation_text()` at the shared generated-Markdown write boundary in `scripts/ollama_autonomous_agent.py`.
+- [x] Future generated Markdown replaces engine-name attribution with neutral autonomous development/evidence language.
+- [x] Added regression coverage; focused command/documentation tests pass (`3 passed`).
+- [x] Full repository validation after the attribution change passed: `249 passed in 306.72s`; Python compilation and `git diff --check` also passed.
+- [x] Preserved executable implementation names, workflow identifiers, and historical evidence paths so provenance and runtime behavior are not falsified.
+- [ ] Existing historical Markdown still contains legacy engine references and is not mass-rewritten automatically; changing those records would alter provenance rather than describe future work.
+
+### Automatic continuation refresh (2026-09-24)
+
+- [x] Re-ran `python scripts/runbook_audit.py`; all 130 requirements remain classified as `52 LOCAL_READY`, `53 REMOTE_REQUIRED`, and `25 BLOCKED_AUTH`.
+- [x] Refreshed Actions and branch-protection preflight probes; both remain HTTP 403.
+- [!] Hosted `origin/main` is now `34a6818c8c4c292c26ab577bcd3db36970701c55`, one commit ahead of local `HEAD` `1e196009736b2fd6731fa43d32671f7e5010e286`.
+- [ ] No rebase, reset, force-push, or overwrite was performed because the worktree contains staged and unstaged changes.
+- [x] Automatic continuation reran the audit against the current user-edited `remotecompletion.md`; classifications and 403 preflight results are unchanged.
+
+### Fresh local verification (2026-09-24 22:52Z)
+
+- [x] Local repository state: `HEAD` is `1e196009736b2fd6731fa43d32671f7e5010e286` and matches `origin/main`.
+- [x] `python -m pytest tests -q` passed: `244 passed in 294.48s`.
+- [x] `python scripts/qmoictl.py control-plane-audit` reported `READY` with no blockers.
+- [x] The Codespace is in low-bandwidth-safe mode: metadata-first, remote-heavy validation, no large artifact auto-downloads, and no completion claim beyond local readiness.
+- [ ] The remaining blocker is remote-only: the authenticated GitHub token still gets HTTP 403 from the target-owned Actions/branch-protection endpoints, so final remote completion, backup parity, cross-repo parity, and protected-branch execution are not yet proven.
+
 
 These user requirements are live ledger requirements, not completion claims.
 Every item needs current artifact evidence, tests, provenance, and, for remote
@@ -1397,6 +1500,31 @@ Current hardening actions:
 - added a root `.github/dependabot.yml` configuration for automated update management
 
 This update is part of the final repo hardening pass to keep the branch aligned with the user’s instructions to fix remaining dependency and vulnerability issues in the live repo state.
+
+Continuation update (2026-09-25T01:20:33Z; correlation `remote-completion-alpha-q-ai-2026-09-25-012033`):
+- Refreshed `remote-completion.json` with current remote observations and preserved `LOCAL_READY_REMOTE_BLOCKED`.
+- `python scripts/qmoictl.py control-plane-audit` returned `READY`.
+- `python scripts/validate_workflows.py` validated all 17 workflows, false-success safeguards, critical jobs, and success-contract checks.
+- `python -m pytest tests/test_command_inventory.py tests/test_runbook_audit.py -q` passed: `5 passed`.
+- Remote reads: Alpha-Q-ai main `34a6818c8c4c292c26ab577bcd3db36970701c55`; qmoi-enhanced main `7a824d0cfe507c534f8b50f0335f6c454faf8e8c`.
+- Both Actions-permission probes and both protected-branch probes returned HTTP 403 `Resource not accessible by integration`; ruleset listing succeeded but does not establish merge authority.
+- Recent workflow reads showed successful observability runs but failed bidirectional autosync runs; these are recorded as telemetry, not completion.
+- Credential scan classified matches as historical/archive, workflow, and test review paths; no live credential value was printed or added. Security remains `REVIEW_REQUIRED`.
+- The worktree is dirty and local main is one commit behind origin/main. Existing user/generated changes remain untouched; no destructive synchronization or remote mutation was attempted.
+- Remaining gate is external authorization plus target-owned terminal proof: rotate/revoke historical credentials, supply authorized access, then verify dispatch, checks, parity, merge, backup, release, and deployment independently.
+
+GitHub App probe update (2026-09-25T01:34:39Z; correlation `remote-completion-alpha-q-ai-2026-09-25-013439`):
+- No App ID, private key, or installation token is configured in this Codespace; only generic GitHub/Codespaces token variables are present.
+- `gh api /app` returned HTTP 401 `A JSON web token could not be decoded`; `gh api /user/installations` returned an empty installation list.
+- Actions permission and protected-branch probes remain HTTP 403 for both repositories.
+- Classified as `APP_AUTH_UNAVAILABLE` and `AUTH_BLOCKED`; no remote mutation or policy bypass was attempted.
+- Administrator remediation: expose the App only through GitHub-managed secrets or a target-owned workflow, mint a short-lived installation token for both repositories, rerun preflight, and verify terminal workflow/check/parity/final-SHA evidence.
+
+Credential cleanup update (2026-09-25T01:53:10Z):
+- Removed the copied App ID, Client ID, and private-key fingerprint from `githubapp.md`.
+- No private key or installation token was present to relocate; no credential value was written to a new file.
+- Added secure retrieval instructions to `github.md`: GitHub-managed `APP_PRIVATE_KEY`, `APP_CLIENT_ID`, and optional `APP_INSTALLATION_ID`, runtime short-lived tokens, and status-only secret checks.
+- The current Codespace remains unable to use the App until an administrator configures the target-owned secret path. Existing HTTP 401/403 authorization blockers remain unchanged.
 
 
 
