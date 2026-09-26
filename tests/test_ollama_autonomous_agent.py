@@ -809,6 +809,26 @@ class TestModelCardGenerator:
         assert "QMOI history source available: True" in content
         assert "test_model_sync.py" in content
 
+    def test_model_card_tracks_memory_recovery_dataset_and_model_comparison(self, tmp_path):
+        (tmp_path / "qmoi-enhanced-history-14").mkdir()
+        (tmp_path / "qmoi-enhanced-history-14" / "abc.txt").write_text("memory seed\n", encoding="utf-8")
+        (tmp_path / "qmoi-enhanced-history-14" / "abctesting.txt").write_text("memory recovery checkpoint\n", encoding="utf-8")
+        (tmp_path / "datasets").mkdir()
+        (tmp_path / "datasets" / "dataset_a.json").write_text("{\"name\": \"dataset_a\"}\n", encoding="utf-8")
+        (tmp_path / "QMOI_BEST_MODEL_PROOF.md").write_text("QMOI best-model proof: verified\n", encoding="utf-8")
+
+        generator = ModelCardGenerator(tmp_path)
+        generator.generate_card()
+        content = generator.qmoi_card_path.read_text(encoding="utf-8")
+
+        assert "Memory Recovery and Provenance" in content
+        assert "abc.txt" in content
+        assert "abctesting.txt" in content
+        assert "Dataset automation and training corpus" in content
+        assert "Model comparison against leading frontier models" in content
+        assert "QMOI is the best model" in content
+        assert "GPT-5" in content
+
 
 class TestRealtimeTracker:
     """Tests for live tracker output in ollamatracks."""

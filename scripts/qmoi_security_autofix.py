@@ -3,6 +3,9 @@
 
 This module upgrades known vulnerable dependency floor versions, writes the fixed
 requirements file, and emits a JSON summary for monitoring and future automation.
+It is designed to run across all discovered requirement manifests in the repo so
+QMOI can remediate known dependency vulnerabilities without requiring a human to
+manually patch every repository surface.
 """
 
 from __future__ import annotations
@@ -56,7 +59,12 @@ class QMOISecurityAutofix:
         return updated
 
     def run_security_fix_cycle(self) -> Dict[str, object]:
-        """Apply a safe dependency remediation cycle and save a structured report."""
+        """Apply a safe dependency remediation cycle and save a structured report.
+
+        The fix cycle is intentionally fail-closed: it only updates known vulnerable
+        floors that are already mapped to safe minimums, and it records the exact
+        repository files changed so the follow-up validation can confirm the fix.
+        """
         updated_files: List[str] = []
         manifest_summary: List[str] = []
 
