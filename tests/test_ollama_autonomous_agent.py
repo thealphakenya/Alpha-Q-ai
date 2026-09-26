@@ -503,6 +503,86 @@ class TestFeatureTester:
         }
         assert (Path(__file__).resolve().parents[1] / "netlify.toml").exists()
 
+    def test_refresh_qstream_qstore_docs_preserves_spec_and_tracks_catalog_ui_links(self, tmp_path):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        qstream_path = tmp_path / "QSTREAM.md"
+        original_qstream = (
+            "# Existing QSTREAM specification\r\n\r\n"
+            "Keep this authored Ollama content.\r\n"
+        )
+        qstream_path.write_bytes(original_qstream.encode("utf-8"))
+
+        result = agent.refresh_qstream_qstore_documents()
+        qstore_path = result["documents"]["qstore"]
+        app_links_path = result["documents"]["app_links"]
+        vercel_links_path = result["documents"]["vercel_links"]
+        qstore_text = qstore_path.read_text(encoding="utf-8")
+        qstream_text = qstream_path.read_text(encoding="utf-8")
+
+        assert set(result["catalog_apps"]) == {
+            "qmoiaiui", "qcity", "qmoi-space", "qalpha", "qstream"
+        }
+        assert set(result["catalog_coverage"]) == set(result["catalog_apps"])
+        assert all(
+            app_coverage["platforms"] == result["platforms"]
+            and app_coverage["implementation_validation"] == "not_performed"
+            for app_coverage in result["catalog_coverage"].values()
+        )
+        assert set(result["platforms"]) == {
+            "windows", "macos", "linux", "ios", "android", "web"
+        }
+        assert "Keep this authored Ollama content." in qstream_text
+        assert qstream_path.read_bytes().startswith(original_qstream.encode("utf-8"))
+        assert qstream_text.count("BEGIN QMOI MANAGED: qstream-qmoi-integration") == 1
+        assert "https://github.com/thealphakenya/qstream" in qstream_text
+        assert "qstream" in qstore_text
+        assert "QStore UI feature coverage by platform" in qstore_text
+        assert "Per-app user access modes" in qstore_text
+        assert "### windows" in qstore_text and "### web" in qstore_text
+        assert "Implementation not verified" in qstore_text
+        assert "scripts/QMOI_autonomous_agent.py" not in qstore_text
+        assert "https://github.com/thealphakenya/qstream" in app_links_path.read_text(encoding="utf-8")
+        assert "APP_LINKS.md" in vercel_links_path.read_text(encoding="utf-8")
+        assert "https://github.com/thealphakenya/qstream" in vercel_links_path.read_text(encoding="utf-8")
+
+        qstore_path.write_text(
+            qstore_text + "\n## Maintainer notes\n\nKeep this note.\n",
+            encoding="utf-8",
+        )
+        agent.refresh_qstream_qstore_documents()
+        refreshed_qstore = qstore_path.read_text(encoding="utf-8")
+        assert "Keep this note." in refreshed_qstore
+        assert refreshed_qstore.count("BEGIN QMOI MANAGED: qstore-catalog") == 1
+
+    def test_validation_pipeline_refreshes_qstream_qstore_surfaces(self, tmp_path, monkeypatch):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        monkeypatch.setattr(agent, "validate_all_platforms", lambda: {})
+        monkeypatch.setattr(agent, "validate_all_platform_features", lambda: {})
+        monkeypatch.setattr(agent, "validate_file_handlers", lambda: {})
+        monkeypatch.setattr(agent.memory_generator, "generate_index", lambda: None)
+        monkeypatch.setattr(agent.model_card_generator, "generate_card", lambda: None)
+        monkeypatch.setattr(
+            agent,
+            "build_github_proof_contract",
+            lambda: {"status": "not_ready_for_github"},
+        )
+
+        assert agent.run_validation_pipeline() == 1
+
+        report = json.loads(
+            (tmp_path / "validation_report.json").read_text(encoding="utf-8")
+        )
+        product_surfaces = report["product_surfaces"]
+        assert product_surfaces["status"] == (
+            "documentation_refreshed_implementation_not_verified"
+        )
+        assert len(product_surfaces["catalog_coverage"]) == 5
+        assert product_surfaces["implementation_verified"] is False
+        assert all(
+            (tmp_path / filename).exists()
+            for filename in ("QSTREAM.md", "QSTORE.md", "APP_LINKS.md", "VERCELLINKS.md")
+        )
+
     def test_agent_refreshes_productionenhanced_manifest_for_nonproduction_markers(self, tmp_path):
         """The autonomous agent should scan for shallow or non-production implementations and update productionenhanced.md."""
         agent = OllamaAutonomousAgent(base_path=tmp_path)
@@ -1369,6 +1449,8 @@ class TestGitHubProofContract:
     def test_agent_builds_github_proof_contract(self, tmp_path):
         """The agent should produce a structured proof object covering all core GitHub automation requirements."""
         agent = OllamaAutonomousAgent(tmp_path)
+        for app_doc in ("QMOIAI.md", "QCITY.md", "QMOISPACE.md", "QALPHA.md"):
+            (tmp_path / app_doc).write_text("# App documentation\n", encoding="utf-8")
         proof = agent.build_github_proof_contract()
         assert proof["status"] == "ready_for_github"
         assert proof["proof"]["platform_validation_passed"] is True
@@ -1377,6 +1459,11 @@ class TestGitHubProofContract:
         assert proof["proof"]["alpha_q_ai_included"] is True
         assert proof["alpha_q_ai"]["repo"] == "thealphakenya/Alpha-Q-ai"
         assert proof["branch_sync"]["owner"] == "thealphakenya"
+        assert proof["proof"]["managed_surface_contract_valid"] is True
+        assert proof["proof"]["product_catalog_links_valid"] is True
+        assert proof["proof"]["product_catalog_app_count"] == 5
+        assert proof["proof"]["clone_platform_ui_record_count"] == 54
+        assert proof["proof"]["master_access_verified"] is False
 
 
 class TestPRSuccessContract:

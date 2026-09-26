@@ -2,15 +2,23 @@
 
 **Last Updated:** 2026-08-13  
 **Status:** Complete Platform-Specific Feature Reference  
-**Scope:** 4 Apps × 6 Platforms × 10+ Features Each
+**Core validator scope:** 4 Apps × 6 Platforms × 10+ Features Each
 
 ---
 
 ## Executive Summary
 
-This document maps ALL platform-specific features that each QMOI app must implement for each target platform. The Ollama Autonomous Agent validates every feature on every platform before PR approval.
+This document maps platform-specific features for the four applications in the legacy code validator. The autonomous development agent keeps a separate managed product catalog for QStream and QStore UI requirements; documentation coverage is not equivalent to implementation validation.
 
 **Total Features to Validate: 240+ (4 apps × 6 platforms × 10+ features)**
+
+## Additional Managed Product Surfaces
+
+- The QStore catalog in `QSTORE.md` contains QMOIAIUI, QCity, QMOI Space, QALPHA, and QStream.
+- QStore's own catalog, details, search, install/update, accessibility, privacy, error, and platform-handoff UI requirements are maintained for all six platforms in `QSTORE.md`.
+- QStream remains an external application repository (`thealphakenya/qstream`) with its full product contract in `QSTREAM.md`; the agent refreshes only the marked QMOI integration section so authored requirements are preserved.
+- `APP_LINKS.md` and `VERCELLINKS.md` track repository/documentation links. Public runtime, download, and deployment URLs remain unverified unless independently checked.
+- The legacy feature validator still returns exactly four application entries per platform. QStore catalog coverage records all five apps and six targets separately, with implementation validation explicitly unverified until source code and platform tests are available.
 
 ## Cross-platform QMOI trading bot contract
 

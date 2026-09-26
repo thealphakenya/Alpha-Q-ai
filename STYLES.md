@@ -13,6 +13,92 @@ motion, responsive, and operational-state rules above. Every new reusable UI
 pattern, platform style, or visual capability must update this document in the
 same change and record the relevant source sections in its validation evidence.
 
+## Enhanced automation and full-surface style synchronization
+
+The style system is the canonical UI contract for the active repository, all
+historical merge inputs, every clone surface, and every downstream product that
+inherits QMOI branding or UX logic. The agent must treat styling as an
+operational capability rather than a cosmetic layer. Every time it discovers a
+new platform, app, clone, or hosted surface it must automatically update the
+style contract, the universal access model, the backend/frontend inventory, and
+the link catalog in a single pass so no app or platform is left visually or
+functionally unaccounted for.
+
+The required automation flow is:
+
+- inventory every documented app, clone, and platform in `ALLFRONTEND.md`,
+  `ALLBACKEND.md`, `QSTORE.md`, `QSTREAM.md`, `APP_LINKS.md`, `VERCELLINKS.md`,
+  `QVILLAGE.md`, `QUANTUM.md`, and all discovered clone references
+- classify each surface as public, authenticated, mixed-access, or master-only
+- apply the QMOI design-token layer first, then add app-specific overrides
+- ensure each clone is enhanced beyond its source by improving states, labels,
+  accessibility, loading/error/offline handling, and brand polish
+- automatically update all relevant docs and link registries instead of leaving
+  a UI feature undocumented or unlinked
+- verify that every rendered page, documentation route, and product page has a
+  matching feature, risk-state, and identity contract
+
+This system must cover QCity, QMOI AI, QStore, QStream, QALPHA, QMOI Space,
+Quantum, QVillage, GitHub/GitLab clone surfaces, Netlify/Vercel hosting,
+Gitpod/Hugging Face mirrors, and any derived platform that is meant to be a
+real user-facing product surface. No clone may remain a raw mirror; each one
+must have its own QMOI-aware identity, improved UX states, and valid access
+classification.
+
+The style layer must also remain synchronized with memory, live state, and
+operational evidence. UI decisions must not hide wallet risk, security signals,
+workflow failures, or deployment health. When a product is in a degraded state,
+its visuals must still show the correct state clearly and preserve operational
+clarity. The active agent continues until the style surface, approval surface,
+product catalog, and link inventory are all internally consistent.
+
+## Clone, autoclone, and link-validation styling contract
+
+The autonomous agent must treat every clone and autoclone surface as a real product UI and not as a passive mirror of a source platform. Each cloned platform must be re-styled into a QMOI-native identity while preserving the source platform's useful feature map, user expectations, and operational semantics.
+
+### Required behavior for cloned and autocloned surfaces
+
+- Inventory every cloned platform and app surface before styling: GitHub, GitLab, Gitpod, Hugging Face, Netlify, Vercel, Quantum, QCity, QStore, QStream, QMOI AI, QALPHA, QVillage, and any derived clone notes.
+- Apply a shared QMOI design-token layer to all surfaces, then add app- and platform-specific overrides only where the product contract requires them.
+- Keep public, authenticated, and master-only experiences distinctly separated. Public features must remain public, and account/user-specific features must be gated behind verified identity and least-privilege authorization.
+- Ensure each clone is enhanced beyond its source by improving visual consistency, accessibility, readability, error states, loading states, empty states, onboarding flow, and customization polish.
+- Automatically set brand assets for every cloned platform: QMOI logo variants, app icons, typography defaults, spacing tokens, motion timing, and action states.
+- Record style changes in `STYLES.md` and keep `UNIVERSALS.md` aligned with any new authentication or protected-flow requirement introduced by the new UI.
+
+### Link validation and UI feature comparison
+
+The Ollama agent must validate links and UI references by comparing the documented feature set to the actual rendered or specified product behavior.
+
+- each UI link or page must be mapped to a required feature contract
+- the validation pass must compare the expected public/authenticated/master features with the actual implementation or contract documentation
+- any mismatch must be marked as `missing`, `stale`, `incomplete`, `permission-gated`, or `needs-brand-upgrade` instead of being treated as pass-by-assumption
+- platform link surfaces must validate not only the page path, but also the actual UI affordances, risk visibility, loading/error/offline handling, and account gating
+- the agent must ensure that all app and platform links carry correct labels, identity, icons, fonts, and feature quality congruent with their role and permissions
+
+### Brand and customization rules
+
+- Every app and cloned platform must receive a unique QMOI identity layer, including logo treatment, icon set, typography, motion, and UI state tokens.
+- Default branding must remain readable and consistent in public, user-scoped, and master-operator states.
+- Customization must never hide compliance evidence, risk state, deploy status, billing state, wallet state, or user safety information.
+- The branding layer covers both static assets and dynamic UI states, including hover, focus, selected, disabled, loading, empty, and error states.
+
+## Per-app and per-platform UI feature matrix
+
+The agent must refresh this matrix whenever it updates or introduces a new app, platform, clone, or user-mode UI.
+
+- QCity: workspace, file, audit, and management surfaces; public overview plus authenticated private workspace states.
+- QStore: catalog search, app install, update flow, device-aware download states, and public browse plus user-owned install actions.
+- QStream: public stream previews, authenticated creator actions, live monitoring states, and permission-gated control surfaces.
+- QMOI AI UI: public chat shell plus authenticated user history, profile, and private personalization.
+- QALPHA: public docs and view states plus private project collaboration and approvals.
+- QMOI Space: media/public content surfaces plus user-owned library and publish flows.
+- GitHub clone: repository, workflow, release, and security summaries; purely public or authenticated depending on repo visibility.
+- GitLab clone: merge request, pipeline, and artifact views; permission-gated project management.
+- Netlify/Vercel: deployment previews, production state, domain status, and publish flows.
+- Quantum: compute queue, provider state, billing, and result provenance; master/operator gates when needed.
+
+Each app or platform must declare whether it supports public, authenticated, or mixed-access behavior and whether it requires an identity check before any write, billing, deployment, or private-history action.
+
 ## Ollama autonomous agent merge and styling contract
 
 The Ollama autonomous agent must always read and reconcile the following sources before making any UI or repo-level merge decision:
@@ -2457,3 +2543,30 @@ This document defines styling conventions, user experience customizations, and a
 - Frontend docs are consolidated in ALLUI.md and ALLFRONTEND.md.
 - Shared universal patterns are maintained in UNIVERSALS.md.
 - Workflow and automation behavior remain documented in WORKFLOWS.md.
+
+<!-- BEGIN QMOI MANAGED: universal-app-platform-styles -->
+## Universal styling coverage for apps, access modes, hosting, and cloned platforms
+
+The style system is shared across all QStore catalog apps, Quantum/Vercel hosting surfaces, master-owned controls, and every cloned-platform console. Tokens are layered as universal base, platform adaptation, app identity, and access/operational state.
+
+### Access and operational state styling
+
+- Support public guest, authenticated-user, and master-operator layouts without using color alone to distinguish permissions.
+- Provide consistent loading, empty, offline, stale, blocked, degraded, success, warning, and failure treatments on all six client platforms.
+- Keep security, financial risk, permission denial, deployment state, quantum provider/backend, quota, and validation evidence visible above cosmetic personalization.
+- User-specific themes apply only to verified identities and consented preferences; master controls are visually distinct and remain backend-gated.
+- Hosting and quantum interfaces expose responsive project/job tables, accessible status timelines, confirmation dialogs, logs, and recovery actions.
+
+### Coverage contract
+
+- [ ] shared design tokens plus app-specific and platform-specific tokens
+- [ ] public guest, authenticated user, and master-operator access states
+- [ ] loading, empty, offline, stale, blocked, degraded, success, and error states
+- [ ] responsive navigation, keyboard focus, screen readers, contrast, and text scaling
+- [ ] risk/security/validation overlays that cannot be hidden by themes or personalization
+- [ ] consistent hosting, deployment, Quantum job, and cloned-platform controls
+
+Client platforms: windows, macos, linux, ios, android, web.
+Catalog apps: qmoiaiui, qcity, qmoi-space, qalpha, qstream.
+Implementation and rendered UI coverage remain unverified until app source checkouts, accessibility checks, and platform screenshots/tests are available.
+<!-- END QMOI MANAGED: universal-app-platform-styles -->

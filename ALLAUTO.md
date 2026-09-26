@@ -21,6 +21,10 @@ This file lists the automation capabilities that keep the QMOI repositories self
 - missing-file reconstruction
 - syntax repair for Python and YAML
 - checkpoint resume
+- refresh QStore app catalog and cross-platform UI requirements
+- preserve and refresh the managed QStream integration contract
+- maintain source-repository app links in APP_LINKS.md and VERCELLINKS.md
+- report catalog coverage separately from code validation of external app repositories
 
 ### Recovery Automation
 - missing file detection

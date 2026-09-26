@@ -416,6 +416,167 @@ class LinkValidator:
                     )
                 )
 
+    def validate_clone_platform_links(self) -> dict[str, Any]:
+        """Ensure every clone/autoclone platform has an explicit local link and UI reference."""
+        required_platforms = {
+            "qvillage": {
+                "files": ("QVILLAGE.md", "APP_LINKS.md", "VERCELLINKS.md"),
+                "urls": ("https://github.com/thealphakenya/qvillage", "https://qvillage.qmoi.com"),
+            },
+            "quantum": {
+                "files": ("QUANTUM.md", "APP_LINKS.md", "VERCELLINKS.md", "QMOICLONEQUANTUM.md"),
+                "urls": ("https://github.com/thealphakenya/Alpha-Q-ai", "https://quantum.qmoi.com"),
+            },
+            "qstream": {
+                "files": ("QSTREAM.md", "APP_LINKS.md"),
+                "urls": ("https://github.com/thealphakenya/qstream", "https://qstream.qmoi.com"),
+            },
+        }
+
+        missing_links: list[str] = []
+        platform_status: dict[str, list[str]] = {}
+
+        for platform, config in required_platforms.items():
+            found_urls: list[str] = []
+            for filename in config["files"]:
+                path = self.repo_path / filename
+                if not path.is_file():
+                    missing_links.append(f"{platform}:{filename}")
+                    continue
+                content = path.read_text(encoding="utf-8", errors="ignore")
+                for url in config["urls"]:
+                    if url in content:
+                        found_urls.append(url)
+            if not found_urls:
+                missing_links.append(f"{platform}:no_public_or_repo_reference")
+            platform_status[platform] = sorted(set(found_urls))
+
+        return {
+            "passed": not missing_links,
+            "required_platforms": sorted(required_platforms),
+            "missing_links": missing_links,
+            "platform_status": platform_status,
+        }
+
+    def validate_product_catalog(self) -> dict[str, Any]:
+        """Check that every QStore entry has a matching app link and local docs."""
+        qstore_path = self.repo_path / "QSTORE.md"
+        app_links_path = self.repo_path / "APP_LINKS.md"
+        required_files = (
+            "QSTORE.md",
+            "APP_LINKS.md",
+            "QSTREAM.md",
+            "VERCELLINKS.md",
+            "QUANTUM.md",
+            "QMOICLONEQUANTUM.md",
+            "QMOICLONEVERCEL.md",
+            "QUANTUMPAYED.md",
+            "VERCELPAYED.md",
+            "MASTEROWNS.md",
+            "STYLES.md",
+            "UNIVERSALS.md",
+            "UNIVERSAL.md",
+            "CLONE_PLATFORM_UI.md",
+        )
+        missing_files = [
+            name for name in required_files
+            if not (self.repo_path / name).is_file()
+        ]
+
+        errors: list[str] = []
+        if missing_files:
+            errors.append(f"Missing required product/UI docs: {', '.join(missing_files)}")
+
+        try:
+            qstore_text = qstore_path.read_text(encoding="utf-8")
+            app_links_text = app_links_path.read_text(encoding="utf-8")
+        except OSError as exc:
+            errors.append(f"Unable to read product link catalogs: {exc}")
+            qstore_text = ""
+            app_links_text = ""
+
+        def table_rows(text: str) -> dict[str, str]:
+            rows: dict[str, str] = {}
+            for line in text.splitlines():
+                match = re.match(r"\|\s*`([a-z0-9-]+)`\s+\([^|]+\)\s*\|", line, re.IGNORECASE)
+                if match:
+                    rows[match.group(1)] = line
+            return rows
+
+        qstore_rows = table_rows(qstore_text)
+        app_link_rows = table_rows(app_links_text)
+        qstore_apps = set(qstore_rows)
+        app_link_apps = set(app_link_rows)
+        for app_id in sorted(qstore_apps - app_link_apps):
+            errors.append(f"{app_id} is missing from APP_LINKS.md")
+        for app_id in sorted(app_link_apps - qstore_apps):
+            errors.append(f"{app_id} is not present in QSTORE.md")
+        if "qstream" not in qstore_apps:
+            errors.append("QStream is missing from the QStore catalog")
+
+        for app_id in sorted(qstore_apps & app_link_apps):
+            qstore_row = qstore_rows[app_id]
+            app_link_row = app_link_rows[app_id]
+            qstore_repositories = re.findall(r"https://github\.com/[^)\s]+", qstore_row)
+            app_repositories = re.findall(r"https://github\.com/[^)\s]+", app_link_row)
+            if not qstore_repositories or not app_repositories:
+                errors.append(f"{app_id} is missing a source repository URL")
+            elif qstore_repositories[0] != app_repositories[0]:
+                errors.append(f"{app_id} repository URL differs between catalogs")
+
+            local_docs = re.findall(r"\[[^\]]+\]\(([^)]+\.md)(?:#[^)]*)?\)", qstore_row)
+            if not local_docs:
+                errors.append(f"{app_id} is missing a local documentation link")
+            elif not any((self.repo_path / doc).is_file() for doc in local_docs):
+                errors.append(f"{app_id} documentation target does not exist")
+
+        expected_platforms = {"windows", "macos", "linux", "ios", "android", "web"}
+        actual_platforms = {
+            match.group(1).lower()
+            for match in re.finditer(r"^###\s+(windows|macos|linux|ios|android|web)\s*$", qstore_text, re.MULTILINE | re.IGNORECASE)
+        }
+        if actual_platforms != expected_platforms:
+            errors.append("QSTORE.md does not document all six supported client platforms")
+
+        qstream_repository = "https://github.com/thealphakenya/qstream"
+        if qstream_repository not in qstore_rows.get("qstream", ""):
+            errors.append("QStore QStream entry does not reference the canonical source repository")
+        if qstream_repository not in app_link_rows.get("qstream", ""):
+            errors.append("APP_LINKS.md QStream entry does not reference the canonical source repository")
+
+        for error in errors:
+            self.results.append(
+                LinkResult(
+                    "local://QSTORE.md",
+                    False,
+                    error=error,
+                    source_file="QSTORE.md / APP_LINKS.md",
+                    link_type="repository",
+                )
+            )
+
+        if not errors:
+            for app_id in sorted(qstore_apps):
+                self.results.append(
+                    LinkResult(
+                        f"catalog://{app_id}",
+                        True,
+                        status_code=200,
+                        source_file="QSTORE.md / APP_LINKS.md",
+                        link_type="catalog_contract",
+                    )
+                )
+
+        return {
+            "passed": not errors,
+            "apps": sorted(qstore_apps),
+            "app_count": len(qstore_apps),
+            "platforms": sorted(actual_platforms),
+            "missing_files": missing_files,
+            "errors": errors,
+            "remote_reachability_checked": False,
+        }
+
     def validate_workflows(self) -> None:
         """Check every tracked workflow's canonical GitHub URL."""
         workflow_dir = self.repo_path / ".github" / "workflows"
@@ -484,6 +645,10 @@ class LinkValidator:
         self.validate_qmoi_domains()
         print("Validating published QMOI release assets...")
         self.validate_release_assets()
+        print("Validating QMOI product and hosting catalogs...")
+        self.validate_product_catalog()
+        print("Validating clone platform link coverage...")
+        self.validate_clone_platform_links()
         print("Validating workflow links...")
         self.validate_workflows()
         print("Validating critical URLs referenced by files...")

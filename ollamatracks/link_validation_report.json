@@ -1,15 +1,15 @@
 {
-  "total_links_validated": 93,
-  "accessible": 93,
-  "inaccessible": 0,
-  "success_rate": "100.0%",
+  "total_links_validated": 185,
+  "accessible": 131,
+  "inaccessible": 54,
+  "success_rate": "70.8%",
   "results": [
     {
       "url": "https://github.com/thealphakenya/qmoi-enhanced",
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "monitor.md",
+      "source_file": "SYNC.md",
       "link_type": "reference",
       "rendered_ok": null
     },
@@ -18,7 +18,7 @@
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "zx.txt",
+      "source_file": "MONITORING_INDEX.md",
       "link_type": "reference",
       "rendered_ok": null
     },
@@ -81,15 +81,15 @@
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "QMOI_MODEL_CARD.md",
+      "source_file": "tests/test_ollama_runtime.py",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
       "url": "https://qmoi.com/ai",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (7) Failed to connect to qmoi.com port 443 after 156 ms: Couldn't connect to server",
       "source_file": "DOWNLOAD.md",
       "link_type": "reference",
       "rendered_ok": null
@@ -123,9 +123,9 @@
     },
     {
       "url": "https://qmoi.com/help/faq",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (7) Failed to connect to qmoi.com port 443 after 154 ms: Couldn't connect to server",
       "source_file": "DOWNLOAD.md",
       "link_type": "reference",
       "rendered_ok": null
@@ -329,6 +329,69 @@
       "rendered_ok": null
     },
     {
+      "url": "catalog://qalpha",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QSTORE.md / APP_LINKS.md",
+      "link_type": "catalog_contract",
+      "rendered_ok": null
+    },
+    {
+      "url": "catalog://qcity",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QSTORE.md / APP_LINKS.md",
+      "link_type": "catalog_contract",
+      "rendered_ok": null
+    },
+    {
+      "url": "catalog://qmoi-space",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QSTORE.md / APP_LINKS.md",
+      "link_type": "catalog_contract",
+      "rendered_ok": null
+    },
+    {
+      "url": "catalog://qmoiaiui",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QSTORE.md / APP_LINKS.md",
+      "link_type": "catalog_contract",
+      "rendered_ok": null
+    },
+    {
+      "url": "catalog://qstream",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QSTORE.md / APP_LINKS.md",
+      "link_type": "catalog_contract",
+      "rendered_ok": null
+    },
+    {
+      "url": "catalog://quantum",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QSTORE.md / APP_LINKS.md",
+      "link_type": "catalog_contract",
+      "rendered_ok": null
+    },
+    {
+      "url": "catalog://qvillage",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QSTORE.md / APP_LINKS.md",
+      "link_type": "catalog_contract",
+      "rendered_ok": null
+    },
+    {
       "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/auto-merge-automated-pr.yml",
       "accessible": true,
       "status_code": 200,
@@ -347,11 +410,65 @@
       "rendered_ok": null
     },
     {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/codeql.yml",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/codeql.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/cross-repo-auth-preflight.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": ".github/workflows/cross-repo-auth-preflight.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/cross-repo-autosync.yml",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/cross-repo-autosync.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/cross-repository-sync.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": ".github/workflows/cross-repository-sync.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/markdown-inventory-refresh.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": ".github/workflows/markdown-inventory-refresh.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
       "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/ollama-autonomous-agent-realtime-monitor.yml",
       "accessible": true,
       "status_code": 200,
       "error": null,
       "source_file": ".github/workflows/ollama-autonomous-agent-realtime-monitor.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/ollama-live-activity-stream.yml",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/ollama-live-activity-stream.yml",
       "link_type": "workflow",
       "rendered_ok": null
     },
@@ -383,6 +500,24 @@
       "rendered_ok": null
     },
     {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/qmoi-live-activity-stream.yml",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/qmoi-live-activity-stream.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/security-autofix.yml",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/security-autofix.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
       "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/security-merge-gates.yml",
       "accessible": true,
       "status_code": 200,
@@ -401,6 +536,15 @@
       "rendered_ok": null
     },
     {
+      "url": "https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches",
+      "accessible": true,
+      "status_code": 202,
+      "error": "Authenticated POST endpoint; structurally validated",
+      "source_file": "trigger.md",
+      "link_type": "api_endpoint",
+      "rendered_ok": null
+    },
+    {
       "url": "https://api.github.com/repos/thealphakenya/qmoi-enhanced/dispatches",
       "accessible": true,
       "status_code": 202,
@@ -410,12 +554,12 @@
       "rendered_ok": null
     },
     {
-      "url": "https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches",
+      "url": "https://github.com/{repo",
       "accessible": true,
-      "status_code": 202,
-      "error": "Authenticated POST endpoint; structurally validated",
-      "source_file": "trigger.md",
-      "link_type": "api_endpoint",
+      "status_code": null,
+      "error": null,
+      "source_file": "tests/test_ollama_runtime.py",
+      "link_type": "template",
       "rendered_ok": null
     },
     {
@@ -473,6 +617,15 @@
       "rendered_ok": null
     },
     {
+      "url": "https://github.com/{repository",
+      "accessible": true,
+      "status_code": null,
+      "error": null,
+      "source_file": "scripts/ollama_autonomous_agent.py",
+      "link_type": "template",
+      "rendered_ok": null
+    },
+    {
       "url": "https://github.com/${owner",
       "accessible": true,
       "status_code": null,
@@ -482,56 +635,83 @@
       "rendered_ok": null
     },
     {
+      "url": "https://api.github.com/repos/{self.repo_owner",
+      "accessible": true,
+      "status_code": null,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/scripts/github_actions_autofix.py",
+      "link_type": "template",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/{repo_owner",
+      "accessible": true,
+      "status_code": null,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/scripts/automation/github_actions_auto_fix.py",
+      "link_type": "template",
+      "rendered_ok": null
+    },
+    {
       "url": "https://github.com/thealphakenya/qmoi-enhanced.git",
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "zx.txt",
+      "source_file": "README.md",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/branch-sync.yml/badge.svg",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
-      "source_file": "zx.txt",
+      "url": "https://github.com/thealphakenya/qstream",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "QSTREAM.md",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/ollama-autonomous-agent.yml/badge.svg",
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/actions/runs/36088506304",
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "zx.txt",
+      "source_file": "oe2.txt",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/ollama-pr-validation.yml/badge.svg",
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai",
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "zx.txt",
+      "source_file": "SYNC.md",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://raw.githubusercontent.com/thealphakenya/qmoi-enhanced/main/ollamatracks/STATE.txt",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
-      "source_file": "zx.txt",
+      "url": "https://github.com/thealphakenya/qvillage",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "VERCELLINKS.md",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://raw.githubusercontent.com/thealphakenya/qmoi-enhanced/main/scripts/ollama_autonomous_agent.py",
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/runs/36194441268",
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "zx.txt",
+      "source_file": "remote-completion.json",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "githubapp.md",
       "link_type": "reference",
       "rendered_ok": null
     },
@@ -613,6 +793,114 @@
       "status_code": 200,
       "error": null,
       "source_file": "monitor.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/branch-sync.yml/badge.svg",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "zx.txt",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/ollama-autonomous-agent.yml/badge.svg",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "zx.txt",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/ollama-pr-validation.yml/badge.svg",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "zx.txt",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/thealphakenya/qmoi-enhanced/main/ollamatracks/STATE.txt",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "zx.txt",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://raw.githubusercontent.com/thealphakenya/qmoi-enhanced/main/scripts/ollama_autonomous_agent.py",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "zx.txt",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/issues",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "DOWNLOAD.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/releases/tag/v1.2.5",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "DOWNLOAD.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/settings/tokens",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "MONITORING_SUMMARY.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/ollama-live-activity-stream.yml",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "liveactivitystream.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/workflows/qmoi-live-activity-stream.yml",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "liveactivitystream.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions?query=branch%3Amain+event%3Aschedule",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "liveactivitystream.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://quantum.qmoi.com",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "QUANTUM.md",
       "link_type": "reference",
       "rendered_ok": null
     },
@@ -752,6 +1040,33 @@
       "rendered_ok": null
     },
     {
+      "url": "https://docs.github.com/actions",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "MERGE.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/pulls",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "GITHUB_SETUP_COMPLETE.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/runs/33779113244",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "github.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
       "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/runs/31844735339",
       "accessible": true,
       "status_code": 200,
@@ -770,56 +1085,353 @@
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/pulls",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
-      "source_file": "GITHUB_SETUP_COMPLETE.md",
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai\\n",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "tests/test_ollama_runtime.py",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/issues",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
-      "source_file": "DOWNLOAD.md",
+      "url": "https://github.com/thealphakenya/qstream\\n",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "tests/test_ollama_runtime.py",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/releases/tag/v1.2.5",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
-      "source_file": "DOWNLOAD.md",
+      "url": "https://github.com/thealphakenya/qvillage\\n-",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "tests/test_ollama_runtime.py",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/settings/tokens",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
-      "source_file": "MONITORING_SUMMARY.md",
+      "url": "https://quantum.qmoi.com.\\n",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (3) URL rejected: Bad hostname",
+      "source_file": "tests/test_ollama_runtime.py",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/Alpha-Q-ai",
-      "accessible": true,
-      "status_code": 200,
-      "error": null,
-      "source_file": "SYNC.md",
+      "url": "https://qvillage.qmoi.com.\\n",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (3) URL rejected: Bad hostname",
+      "source_file": "tests/test_ollama_runtime.py",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/runs/33779113244",
+      "url": "https://gitlab.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (56) Recv failure: Connection reset by peer",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOMATION.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://gitpod.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (56) Recv failure: Connection reset by peer",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOMATION.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/nodejs/node-gyp#on-windows",
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "github.md",
+      "source_file": "Alpha-Q-ai-2025/errors2.txt",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qcity/ai",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/API.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi/independent-qmoi.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/INDEPENDENTQMOI.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/alphaqmoi/qmoi-ai-system",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-FINAL.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/{GITHUB_REPO",
+      "accessible": false,
+      "status_code": null,
+      "error": "curl: (3) unmatched brace in URL position 30:\nhttps://api.github.com/repos/{GITHUB_REPO\n                             ^",
+      "source_file": "Alpha-Q-ai-2025/downloadqmoiaiapk.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/{REPO",
+      "accessible": false,
+      "status_code": null,
+      "error": "curl: (3) unmatched brace in URL position 30:\nhttps://api.github.com/repos/{REPO\n                             ^",
+      "source_file": "Alpha-Q-ai-2025/auto_updater.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.apk",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.appimage",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.deb",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.dmg",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.exe",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.img",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.ipa",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai\\_smarttv.apk",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://huggingface.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (56) Recv failure: Connection reset by peer",
+      "source_file": "Alpha-Q-ai-2025/QMOICLONEHUGGINGFACE.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/QMOI/QMOI/actions/workflows/auto-deploy.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/DEPLOYMENT-README.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/QMOI/QMOI/actions/workflows/auto-deploy.yml/badge.svg?branch=main&event=schedule",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/DEPLOYMENT-README.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-org/QMOI.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOIHUGGINGFACESPACESSETUPINST.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qmoi-space.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOISPACEDEV.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai#readme",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/package-watchdebug.json",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai.git",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/package-watchdebug.json",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/issues",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/package-watchdebug.json",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced/discussions",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced/issues",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced/wiki",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-repo/qmoi-system.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/MASTERGUIDE.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.qmoi.com",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/QMOICLONEGITHUB.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://qstream.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (35) OpenSSL/3.0.13: error:0A000458:SSL routines::tlsv1 unrecognized name",
+      "source_file": "scripts/link_validator.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://qvillage.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (35) OpenSSL/3.0.13: error:0A000458:SSL routines::tlsv1 unrecognized name",
+      "source_file": "scripts/link_validator.py",
       "link_type": "reference",
       "rendered_ok": null
     },
@@ -828,12 +1440,228 @@
       "accessible": true,
       "status_code": 200,
       "error": null,
-      "source_file": "scripts/autonomous_runner.py",
+      "source_file": "scripts/ollama_runtime.py",
       "link_type": "reference",
       "rendered_ok": null
     },
     {
-      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/runs/35212193142",
+      "url": "https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/codeql.yml",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/codeql.yml",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/codeql.yml",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": ".github/workflows/codeql.yml",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/config/test-config.json",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/{github_repo",
+      "accessible": false,
+      "status_code": null,
+      "error": "curl: (3) unmatched brace in URL position 30:\nhttps://api.github.com/repos/{github_repo\n                             ^",
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi-master-notifications.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qcity-unlimited/archive/main.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_unlimited_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qcity/releases/latest/download/qcity-core.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_advanced_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qcity/releases/latest/download/qcity-plugins.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_advanced_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qcity/releases/latest/download/qcity-ui.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_advanced_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/thealphakenya/Alpha-Q-ai/releases/latest",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/scripts/ota_updater.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/qmoi-ai/qmoi-advanced/hooks",
+      "accessible": false,
+      "status_code": 401,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi_hf_auto_manager.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-repo/qmoi-system/issues",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi_auto_docs.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-org/Alpha-Q-ai",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/update_model_card.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://netlify.qmoi.com",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi-qcity-enhanced-automation.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://vercel.qmoi.com",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi-qcity-enhanced-automation.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_device_manager.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://www.github.com",
+      "accessible": true,
+      "status_code": 200,
+      "error": null,
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi_automated_device_controller.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-org/q-city.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/docs/README.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/communication-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/development-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/entertainment-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/security-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/trading-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/actions/runs/36188766291",
       "accessible": true,
       "status_code": 200,
       "error": null,
@@ -842,8 +1670,495 @@
       "rendered_ok": null
     }
   ],
-  "inaccessible_links": [],
-  "blocking_inaccessible": 0,
-  "nonblocking_inaccessible": 0,
-  "timestamp": "2026-09-17T15:19:45.446341+00:00"
+  "inaccessible_links": [
+    {
+      "url": "https://qmoi.com/ai",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (7) Failed to connect to qmoi.com port 443 after 156 ms: Couldn't connect to server",
+      "source_file": "DOWNLOAD.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://qmoi.com/help/faq",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (7) Failed to connect to qmoi.com port 443 after 154 ms: Couldn't connect to server",
+      "source_file": "DOWNLOAD.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/cross-repo-auth-preflight.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": ".github/workflows/cross-repo-auth-preflight.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/cross-repository-sync.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": ".github/workflows/cross-repository-sync.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qmoi-enhanced/blob/main/.github/workflows/markdown-inventory-refresh.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": ".github/workflows/markdown-inventory-refresh.yml",
+      "link_type": "workflow",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qstream",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "QSTREAM.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qvillage",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "VERCELLINKS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai\\n",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "tests/test_ollama_runtime.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qstream\\n",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "tests/test_ollama_runtime.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/qvillage\\n-",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "tests/test_ollama_runtime.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://quantum.qmoi.com.\\n",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (3) URL rejected: Bad hostname",
+      "source_file": "tests/test_ollama_runtime.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://qvillage.qmoi.com.\\n",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (3) URL rejected: Bad hostname",
+      "source_file": "tests/test_ollama_runtime.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://gitlab.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (56) Recv failure: Connection reset by peer",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOMATION.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://gitpod.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (56) Recv failure: Connection reset by peer",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOMATION.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qcity/ai",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/API.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi/independent-qmoi.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/INDEPENDENTQMOI.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/alphaqmoi/qmoi-ai-system",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-FINAL.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/{GITHUB_REPO",
+      "accessible": false,
+      "status_code": null,
+      "error": "curl: (3) unmatched brace in URL position 30:\nhttps://api.github.com/repos/{GITHUB_REPO\n                             ^",
+      "source_file": "Alpha-Q-ai-2025/downloadqmoiaiapk.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/{REPO",
+      "accessible": false,
+      "status_code": null,
+      "error": "curl: (3) unmatched brace in URL position 30:\nhttps://api.github.com/repos/{REPO\n                             ^",
+      "source_file": "Alpha-Q-ai-2025/auto_updater.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.apk",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.appimage",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.deb",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.dmg",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.exe",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.img",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.ipa",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/thealphakenya/Alpha-Q-ai/releases/latest/download/qmoi\\_ai\\_smarttv.apk",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/README (1).md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://huggingface.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (56) Recv failure: Connection reset by peer",
+      "source_file": "Alpha-Q-ai-2025/QMOICLONEHUGGINGFACE.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/QMOI/QMOI/actions/workflows/auto-deploy.yml",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/DEPLOYMENT-README.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/QMOI/QMOI/actions/workflows/auto-deploy.yml/badge.svg?branch=main&event=schedule",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/DEPLOYMENT-README.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-org/QMOI.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOIHUGGINGFACESPACESSETUPINST.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qmoi-space.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOISPACEDEV.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced/discussions",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced/issues",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qmoi-enhanced/wiki",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/QMOI-ENHANCED-AUTOTESTS.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-repo/qmoi-system.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/MASTERGUIDE.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://qstream.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (35) OpenSSL/3.0.13: error:0A000458:SSL routines::tlsv1 unrecognized name",
+      "source_file": "scripts/link_validator.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://qvillage.qmoi.com",
+      "accessible": false,
+      "status_code": 0,
+      "error": "curl: (35) OpenSSL/3.0.13: error:0A000458:SSL routines::tlsv1 unrecognized name",
+      "source_file": "scripts/link_validator.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/{github_repo",
+      "accessible": false,
+      "status_code": null,
+      "error": "curl: (3) unmatched brace in URL position 30:\nhttps://api.github.com/repos/{github_repo\n                             ^",
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi-master-notifications.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-city/qcity-unlimited/archive/main.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_unlimited_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qcity/releases/latest/download/qcity-core.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_advanced_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qcity/releases/latest/download/qcity-plugins.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_advanced_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/qmoi-ai/qcity/releases/latest/download/qcity-ui.zip",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qcity_advanced_installer.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://api.github.com/repos/qmoi-ai/qmoi-advanced/hooks",
+      "accessible": false,
+      "status_code": 401,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi_hf_auto_manager.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-repo/qmoi-system/issues",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/qmoi_auto_docs.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-org/Alpha-Q-ai",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/scripts/update_model_card.py",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/your-org/q-city.git",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/docs/README.md",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/communication-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/development-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/entertainment-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/security-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    },
+    {
+      "url": "https://github.com/q-alpha/trading-app/releases/latest",
+      "accessible": false,
+      "status_code": 404,
+      "error": "HTTP request failed",
+      "source_file": "Alpha-Q-ai-2025/coverage/lcov-report/src/services/AppManagementService.ts.html",
+      "link_type": "reference",
+      "rendered_ok": null
+    }
+  ],
+  "blocking_inaccessible": 3,
+  "nonblocking_inaccessible": 51,
+  "timestamp": "2026-09-26T01:31:51.401189+00:00"
 }

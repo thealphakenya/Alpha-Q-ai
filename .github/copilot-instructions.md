@@ -40,3 +40,9 @@ Every operation should leave:
 - relevant SHA(s);
 - verification level; and
 - an explicit blocker or next action when remote proof is unavailable.
+
+## GitHub App credential handling
+
+- Local App identifiers are stored outside the checkout in `$HOME/.config/alpha-q-ai/github-app/credentials.env` (directory mode `700`, file mode `600`).
+- A replacement private key belongs at `$HOME/.config/alpha-q-ai/github-app/private-key.pem` with mode `600`; the previously tracked key is compromised and has been removed locally. Rotate it in GitHub App settings before further App authentication.
+- Never print, quote, commit, or paste credential values into chat or logs. Load them only into the process that needs them, use short-lived tokens, and prefer read-only requests unless an explicitly authorized operation requires more.

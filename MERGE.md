@@ -36,6 +36,39 @@ ensures the lightweight setup is active, and pushes any resulting automation or
 ledger edits back to the current branch. This keeps the working environment
 self-healing and reduction-friendly without requiring manual reruns.
 
+## Enhanced merge automation and full-platform reconciliation plan
+
+The merge system is responsible for more than file conflict resolution. It is
+also the operational mechanism by which QMOI discovers, compares, and upgrades
+all platform surfaces, historical snapshots, and clone-derived products without
+losing working features. Before any merge is applied, the agent must enumerate
+all live repos, all materialized historical sources, all clone surfaces, all
+apps, and all user-visible products, then reconcile them through a single
+source-backed plan.
+
+The required reconciliation flow is:
+
+- inventory every app, platform, clone, and hosted surface in the active repo and
+  in the materialized historical snapshots
+- compare the active path set with the historical path set and identify added,
+  updated, duplicate, and conflicting implementations
+- preserve unique features from both the active repo and `qmoi-enhanced-history-14`
+  without destructive overwrite
+- ensure duplicate app names do not collapse into a single shared icon or a
+  degraded feature set; each app must retain its own identity unless the merge
+  explicitly proves equivalence
+- synchronize the link catalog, UI docs, backend/frontend inventories, and access
+  policy before any merge is marked safe
+- verify the merged result against tests, docs, routes, API contracts, and link
+  coverage before publication is allowed
+
+This must include Alpha-Q-ai, Alpha-Q-ai-2025, qmoi-enhanced, the complete
+`qmoi-enhanced-history-14` tree, QCity, QMOI AI, Quantum, QVillage, clone
+surfaces, and any platform that appears in historical docs, link registries, or
+runtime catalogs. The merge engine is not allowed to silently omit a path or a
+feature just because the file name appears elsewhere. The plan must preserve
+provenance, retention policy, and audit evidence for every decision.
+
 ## Overview
 This document provides comprehensive procedures for merging files and features between qmoi-enhanced and Alpha-Q-ai repositories. It ensures that no implementations are degraded, features are preserved, and conflicts are resolved intelligently.
 

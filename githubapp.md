@@ -1,5 +1,23 @@
 # QMOI Dual Repository Agent
 
+## Current App authentication status (2026-09-26T01:20:00Z)
+
+- Correlation ID: `2026-09-26-github-app-authorization-gate`.
+- Historical PEM recovery: the uploaded GitHub App key was located in the reachable Git history as `qmoi-dual-repository-agent.2026-09-24.private-key (1).pem` and restored to the protected App key path at `$HOME/.config/alpha-q-ai/github-app/private-key.pem`.
+- Verified metadata: `$HOME/.config/alpha-q-ai/github-app/credentials.env` is present with mode `600` and contains the App identifiers (`APP_ID`, `CLIENT_ID`) and the configured private-key path.
+- Verified state: the restored PEM is present at the protected key path, the file has mode `600`, and a direct GitHub App JWT verification against the `/app` endpoint returned HTTP 200.
+- Result: the current workspace now has a valid installed PEM for the GitHub App identity check, and the App identity is confirmed as `QMOI Dual Repository Agent` under owner `thealphakenya`.
+- Remaining gate: complete the installation-based repository authorization checks and then continue only with read-only or target-authorized workflow validation before any remote mutation or dispatch.
+
+## Credential migration and authentication verification (2026-09-25T22:02:13Z)
+
+- Correlation ID: `026ff4e5-97d8-451f-88fe-cfedc67f6c7e`.
+- Repository/ref/SHA: `thealphakenya/Alpha-Q-ai`, `main`, `a33e627c3ac123bd47b3aafbdb30b8a973256670`.
+- Read-only authentication: `GET /app` returned HTTP 200 for `qmoi-dual-repository-agent`; `GET /repos/thealphakenya/Alpha-Q-ai/installation` returned HTTP 200 for account `thealphakenya` with selected-repository installation.
+- A five-minute App JWT existed only in process memory. No installation access token was created or saved.
+- App and Client IDs are stored outside the checkout in `$HOME/.config/alpha-q-ai/github-app/credentials.env` (directory mode `700`, file mode `600`). The replacement-key path is `$HOME/.config/alpha-q-ai/github-app/private-key.pem`.
+- Blocker: the old PEM is present in `origin/main` history. It was removed from the working tree and local credential store, but history still contains it. Rotate/delete that key in GitHub App settings and install a replacement at the path above before any further App authentication; rotation is not yet verified.
+
 ## Verified GitHub App authentication (2026-09-25T02:45:05Z)
 
 - Correlation ID: `remote-completion-alpha-q-ai-2026-09-25-024505`.
@@ -13,7 +31,7 @@
 - Result: `APP_AUTHENTICATED_READ_ONLY`. No dispatch, branch mutation, merge, release, or deployment was attempted.
 
 ## Installation record
-GitHub app private key= SHA256:/Ry04Dezpl51H1Ix5+ySowGPHmBNuxYNQCQfBIbKxWQ=
+Retired private-key fingerprint omitted; the former key appears in remote history and must not be reused.
 
 This document records the GitHub App installation reported by the repository owner
 on 2026-09-25. It is an operational record, not independent proof that every
@@ -527,4 +545,4 @@ Your setup should be
                                                                                                                                                                            Manage cookies
                                                                                                                                                                            Do not share my personal information
 
-                                                                                                                                                                           GitHub app private key= SHA256:/Ry04Dezpl51H1Ix5+ySowGPHmBNuxYNQCQfBIbKxWQ=
+                                                                                                                                                                          Retired private-key fingerprint omitted because the key is exposed in remote history.

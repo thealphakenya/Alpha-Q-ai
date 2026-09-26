@@ -1,19 +1,11 @@
-# QMOICLONEQUANTUM.md
+# QMOICLONEVERCEL.md
 
-QMOI Quantum clone automation keeps compute, model, and research-runtime surfaces aligned with the live repository and hosted automation path. The platform is treated as a first-class clone layer in the QMOI network graph.
+<!-- BEGIN QMOI MANAGED: vercel-clone-contract -->
+## Vercel-compatible integration and Quantum extensions
 
-## Active automation
-- compute and model-runtime automation remain synchronized with the live repo state.
-- deployment and validation checks are preserved within the same runtime contract.
-- clone/autoclone logic stays centrally managed and refreshed as the repo evolves.
+QMOI's Vercel integration tracks Vercel-owned deployments and links, while Quantum is a separate QMOI control-plane integration designed to provide a compatible hosting baseline plus additional compute capabilities. This is not a claim of implementation parity or a copy of Vercel internals.
 
-
-<!-- BEGIN QMOI MANAGED: quantum-clone-contract -->
-## Quantum clone capability contract
-
-The Quantum integration provides a common QMOI control surface for verified hosting and compute providers. Vercel-compatible capability is the baseline; quantum-compute extensions are independent provider capabilities and must not be inferred from the clone name.
-
-### Hosted application lifecycle
+### Compatibility inventory
 
 - [ ] Project and environment inventory with owner, repository, and source SHA.
 - [ ] Build configuration, dependency, cache, and artifact status.
@@ -26,7 +18,7 @@ The Quantum integration provides a common QMOI control surface for verified host
 - [ ] Storage, databases, queues, scheduled jobs, and integration status.
 - [ ] Access policy, approvals, audit events, and recovery controls.
 
-### Quantum and hybrid workloads
+### Quantum-only extension inventory
 
 - [ ] Capability discovery for simulator, hybrid runtime, and provider-backed QPU execution.
 - [ ] Provider adapters with explicit availability, region, queue, and maintenance state.
@@ -37,9 +29,6 @@ The Quantum integration provides a common QMOI control surface for verified host
 - [ ] Result provenance, artifact integrity, simulator-versus-hardware labeling, and replay metadata.
 - [ ] Provider outage, unsupported operation, quota, and job-failure recovery states.
 
-### Clone governance
-
-- Preserve provider ownership, API compatibility, attribution, terms, and security boundaries; do not copy proprietary internals.
-- Compare Quantum and Vercel by verified feature/capability records, not by marketing statements.
-- Any production mutation uses authorized target-owned workflows, exact SHAs, approvals, and terminal evidence.
-<!-- END QMOI MANAGED: quantum-clone-contract -->
+- Each surface is enabled only when a real provider capability is independently verified.
+- See [VERCELPAYED.md](VERCELPAYED.md), [QUANTUMPAYED.md](QUANTUMPAYED.md), [QUANTUM.md](QUANTUM.md), and [APP_LINKS.md](APP_LINKS.md).
+<!-- END QMOI MANAGED: vercel-clone-contract -->

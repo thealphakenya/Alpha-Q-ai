@@ -1,5 +1,11 @@
 # GitHub Automation & Live Job Links
 
+## Read-only GitHub App authentication check (2026-09-25T22:02:13Z)
+
+Correlation ID: `026ff4e5-97d8-451f-88fe-cfedc67f6c7e`. Against `thealphakenya/Alpha-Q-ai` at local `main` SHA `a33e627c3ac123bd47b3aafbdb30b8a973256670`, `GET /app` and the repository installation endpoint both returned HTTP 200 for `qmoi-dual-repository-agent`. The five-minute JWT was process-local; no installation token or mutation was performed. This supersedes earlier notes that this Codespace had not yet authenticated as the App.
+
+Security blocker: the private key is in `origin/main` history. The workspace copy and local reusable copy have been removed. Rotate the key in GitHub App settings before further App authentication; see [githubapp.md](githubapp.md) for the protected local paths and verification details. Rotation remains unverified.
+
 ## Fresh App authorization checkpoint (2026-09-25T02:10:57Z)
 
 The reported `QMOI Dual Repository Agent` installation remains documented in

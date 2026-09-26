@@ -313,6 +313,14 @@ W=Windows, M=macOS, L=Linux, I=iOS, A=Android, W=Web
 - Returns pass/fail for each feature
 - 4 apps × 6 platforms = 24 test configurations
 
+### Managed QStore and QStream Product Surfaces
+
+- The legacy `QMOI_APPS` feature-validation API remains a four-app compatibility contract.
+- `QSTORE_CATALOG_APPS` separately tracks those four apps plus QStream, with repository and documentation references across all six declared platforms.
+- Each validation pipeline refreshes the managed sections in `QSTORE.md`, `QSTREAM.md`, `APP_LINKS.md`, and `VERCELLINKS.md`. Existing QStream-authored content outside its markers is preserved.
+- `QSTORE.md` carries the cross-platform QStore UI requirement matrix; requirements stay unchecked until implementation and platform tests provide evidence.
+- External repositories are not claimed as implemented or validated from a documentation entry. Runtime/download links require independent remote verification.
+
 **FileHandlerValidator**
 - Validates 50+ file type registrations
 - Platform-specific registry/database checks

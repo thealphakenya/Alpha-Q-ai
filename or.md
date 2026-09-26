@@ -1,11 +1,19 @@
 # OR.md - Operations Reference & Progress Tracker (RESET 2026-08-17T23:45:00Z)
 
-## MASTER STATUS - COMPLETION PASS
-**Last Updated**: 2026-08-17T23:55:00Z
-**Current Phase**: COMPLETE - ALL REMAINING REPO & AGENT REQUIREMENTS FINALIZED
-**Priority**: Ensure every requirement in oe.md is represented in live repository files and validated
-**Target**: Complete everything in oe.md with enhanced features, all docs present, and repo fully consistent
-**Repository Canonical State**: scripts/ollama_autonomous_agent.py is the live authoritative agent; legacy enhanced references are treated as historical compatibility artifacts only
+## MASTER STATUS - APP AUTHORIZATION AND DISPATCH ARE LIVE
+**Last Updated**: 2026-09-26T02:40:00Z
+**Current Phase**: LOCAL VALIDATION GREEN; GITHUB APP IS AUTHENTICATED AND DISPATCHING TARGET-OWNED WORKFLOWS
+**Priority**: Continue with target-owned workflow validation, repository automation, and the remediating follow-up required by the live workflow outputs before any final completion claim
+**Target**: Continue the Ollama Autonomous Agent and cross-repo automation using the live GitHub App installation and the real target-owned workflow evidence
+**Repository Canonical State**: scripts/ollama_autonomous_agent.py is the live authoritative agent; the current session is now verified at the app, installation, and workflow-dispatch layers for the target repos
+
+### Immediate authorization gate
+- Verified: `gh auth status --hostname github.com` reports the active session as `qmoialpha-star` via `GITHUB_TOKEN`.
+- Verified metadata: `$HOME/.config/alpha-q-ai/github-app/credentials.env` exists and contains the GitHub App identifiers (`APP_ID`, `CLIENT_ID`) plus the configured key path. The protected private-key path is `$HOME/.config/alpha-q-ai/github-app/private-key.pem`.
+- Historical PEM recovery: the previously uploaded file was found in the current reachable Git history as `qmoi-dual-repository-agent.2026-09-24.private-key (1).pem`, restored to the protected path, and validated successfully as a PEM using `openssl pkey`.
+- Verified state: the restored key is present at the protected path with mode `600`, a JWT minted from it succeeded against the GitHub App `/app` endpoint with HTTP 200, the repository installation lookup for both target repos returned HTTP 200, and the installation token mint returned HTTP 201 for both repos.
+- Live workflow evidence: the App successfully dispatched the `Cross-Repository Auth Preflight` workflow for `thealphakenya/Alpha-Q-ai` and the resulting workflow run reported `status=completed` and `conclusion=success`.
+- Required next step: continue with the live target-owned workflow results, repository automation, and any follow-up remediation or validation implied by the successful workflow before making any final remote completion claim.
 
 ---
 
@@ -328,3 +336,11 @@ All passing tests must provide proof that:
 - Update timestamps for major milestones
 - Document any blockers or issues
 - Track test results for each section
+
+### GitHub App credentials and authentication status (2026-09-25)
+
+- App ID and Client ID are stored outside the checkout in `$HOME/.config/alpha-q-ai/github-app/credentials.env` (directory mode `700`, file mode `600`). These identifiers are mode-restricted but are not encrypted at rest.
+- The private key is not currently present locally. A rotated replacement belongs at `$HOME/.config/alpha-q-ai/github-app/private-key.pem` with mode `600`.
+- The former key appears in `origin/main` history and must be revoked/rotated in GitHub App settings. Do not reuse it; rotation has not been verified.
+- The App returned HTTP 200 for read-only identity and installation checks at `2026-09-25T22:02:13Z`, before the exposed key was removed. This is historical evidence; the App is not currently authenticated from this workspace. The active GitHub CLI user session is not the App.
+- No credential values or private-key material belong in this document, other repository files, chat, or logs.

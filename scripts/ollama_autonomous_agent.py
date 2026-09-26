@@ -92,6 +92,7 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from scripts.command_inventory import refresh_commands_category
+from scripts.link_validator import LinkValidator
 
 try:
     from scripts.live_activity_stream import (
@@ -187,6 +188,200 @@ HISTORICAL_BRANCH = (
 )
 HISTORY_SNAPSHOT_DIRECTORY = "qmoi-enhanced-history-14"
 
+QMOI_APP_DOCUMENTS: dict[str, str] = {
+    "qmoiaiui": "QMOIAI.md",
+    "qcity": "QCITY.md",
+    "qmoi-space": "QMOISPACE.md",
+    "qalpha": "QALPHA.md",
+}
+
+QSTORE_CATALOG_APPS: dict[str, dict[str, str]] = {
+    app_id: {
+        **metadata,
+        "repository": QMOI_REPOSITORY,
+        "documentation": QMOI_APP_DOCUMENTS[app_id],
+    }
+    for app_id, metadata in QMOI_APPS.items()
+}
+QSTORE_CATALOG_APPS["qstream"] = {
+    "name": "QStream",
+    "description": "QMOI entertainment and streaming application",
+    "category": "entertainment",
+    "repository": "thealphakenya/qstream",
+    "documentation": "QSTREAM.md",
+}
+
+QSTORE_SHARED_UI_FEATURES: tuple[str, ...] = (
+    "Search and filter by app name, category, platform, and availability.",
+    "Accessible app cards and detail views with version, publisher, and source.",
+    "Platform compatibility and minimum-requirement indicators.",
+    "Release history, changelog, and update-availability states.",
+    "Install, update, cancel, retry, and rollback controls with progress and errors.",
+    "Permission, privacy, license, and content-availability details before install.",
+    "Package source and integrity metadata; do not imply verification without evidence.",
+    "Keyboard, screen-reader, focus, contrast, and scalable-text support.",
+    "QMOI recommendations that disclose their basis and respect user settings.",
+    "Loading, empty, offline, restricted, and failed states with recoverable actions.",
+)
+
+QSTORE_PLATFORM_UI_FEATURES: dict[str, tuple[str, ...]] = {
+    "windows": ("Windows package and architecture compatibility.", "Keyboard navigation and native install/update handoff."),
+    "macos": ("macOS package and architecture compatibility.", "Signing/notarization state when independently verified."),
+    "linux": ("Linux package format and distribution compatibility.", "Package-manager handoff and dependency status."),
+    "ios": ("iOS device compatibility and official-store handoff.", "VoiceOver and system-permission disclosure."),
+    "android": ("Android device compatibility and official-store handoff.", "TalkBack and runtime-permission disclosure."),
+    "web": ("Responsive web catalog and installable-PWA state.", "Offline catalog state and browser-compatible install handoff."),
+}
+
+QMOI_HOSTING_FEATURES: tuple[str, ...] = (
+    "Project and environment inventory with owner, repository, and source SHA.",
+    "Build configuration, dependency, cache, and artifact status.",
+    "Static, server-rendered, function, and edge-runtime capability discovery.",
+    "Preview, staging, production, promote, rollback, and cancel workflows.",
+    "Domain, DNS, TLS, redirect, and deployment-alias management.",
+    "Logs, metrics, traces, health checks, alerts, and incident history.",
+    "Environment-secret references with masked readiness and rotation status.",
+    "Regions, traffic controls, quotas, resource usage, and cost visibility.",
+    "Storage, databases, queues, scheduled jobs, and integration status.",
+    "Access policy, approvals, audit events, and recovery controls.",
+)
+
+QUANTUM_EXTENSION_FEATURES: tuple[str, ...] = (
+    "Capability discovery for simulator, hybrid runtime, and provider-backed QPU execution.",
+    "Provider adapters with explicit availability, region, queue, and maintenance state.",
+    "Circuit/job submission, validation, cancellation, retry, and result retrieval.",
+    "Qubit, shots, compiler, backend, fidelity, and execution metadata when supplied by the provider.",
+    "Hybrid classical/quantum workflow orchestration and reproducible job manifests.",
+    "Queue time, runtime, quota, cost estimate, and spend confirmation before execution.",
+    "Result provenance, artifact integrity, simulator-versus-hardware labeling, and replay metadata.",
+    "Provider outage, unsupported operation, quota, and job-failure recovery states.",
+)
+
+MASTER_OWNED_UI_FEATURES: tuple[str, ...] = (
+    "System overview with source timestamp, health, and stale/degraded indicators.",
+    "Repository, application, hosting, and deployment inventory with exact source SHAs.",
+    "User, role, session, consent, and access review with least-privilege controls.",
+    "Quantum compute/provider control with capability and billing gates.",
+    "Deployment preview, approval, promotion, rollback, and audit trail.",
+    "Domain, DNS, TLS, and ownership management with confirmation before changes.",
+    "Documentation, styles, app-catalog, and validation report management.",
+    "Revenue, wallet, and financial dashboards with read/write permissions separated.",
+    "Monitoring, notifications, incidents, recovery, and automation controls.",
+    "Security events, audit history, export, retention, and access-revocation controls.",
+    "Brand customization with QMOI logo, icon, font, motion, and identity tokens without hiding risk state.",
+)
+
+QMOI_PUBLIC_UI_FEATURES: tuple[str, ...] = (
+    "public catalog pages and documentation",
+    "public preview pages and public product details",
+    "public search, browse, and compare flows",
+    "public landing pages, pricing summaries, and release notes",
+    "public status and health pages that reveal no personal data",
+)
+
+QMOI_AUTHENTICATED_UI_FEATURES: tuple[str, ...] = (
+    "user profile, workspace, preferences, and personalization",
+    "wallet, billing, and account-linked financial actions",
+    "private files, deployment previews, and protected project state",
+    "role-managed admin panels, audit logs, and approval flows",
+    "per-user media library, private history, or account-bound content",
+)
+
+QMOI_MIXED_ACCESS_UI_FEATURES: tuple[str, ...] = (
+    "shared public preview with account-required publish or save flow",
+    "public project listing with authenticated edit controls",
+    "public dashboard cards that reveal identity-bound totals only after session validation",
+    "public feed with private comments, follows, or saved items behind auth",
+)
+
+QMOI_BRAND_CUSTOMIZATION_FEATURES: tuple[str, ...] = (
+    "QMOI logo variants and avatar branding",
+    "app-specific icon sets for each platform and app surface",
+    "font families and typography scales per platform and user mode",
+    "theme tokens for light, dark, high-contrast, and accessibility modes",
+    "custom UI polish for QCity, QStore, QStream, Quantum, and every cloned platform",
+)
+
+QMOI_LINK_VALIDATION_RULES: tuple[str, ...] = (
+    "validate each link against its documented UI contract before marking it complete",
+    "compare reported UI features, behavior, access mode, and state handling with the expected product contract",
+    "flag missing, stale, account-only, or public-only features as explicit gaps instead of inferring parity",
+    "require a documented source or implementation proof before a platform link is treated as verified",
+    "keep public, authenticated, and mixed-access states separate in validation evidence",
+)
+
+UNIVERSAL_UI_ACCESS_MODES: dict[str, tuple[str, ...]] = {
+    "public_guest": (
+        "Public catalog, public documentation, public previews, and safe anonymous browsing.",
+        "No user-specific data, private workspace, account action, or protected mutation.",
+    ),
+    "authenticated_user": (
+        "Verified identity, consent, session state, personal settings, and user-owned workspace.",
+        "Account, wallet, purchase, upload, private media, and write actions require server-side authorization.",
+    ),
+    "master_operator": (
+        "Explicit master role, MFA or equivalent step-up verification, current capability, and audit context.",
+        "Administrative mutations require backend authorization and human confirmation where impact is high.",
+    ),
+}
+
+APP_UI_ACCESS_REQUIREMENTS: dict[str, tuple[str, ...]] = {
+    "qmoiaiui": ("public guest interaction", "authenticated profile and private conversation controls"),
+    "qcity": ("public file-management information", "authenticated private files and workspace controls"),
+    "qmoi-space": ("public media discovery", "authenticated library, history, and account controls"),
+    "qalpha": ("public product/documentation views", "authenticated private projects and collaboration"),
+    "qstream": ("public catalog and permitted previews", "authenticated profiles, library, creator, and subscription controls"),
+}
+
+QMOI_CLONED_PLATFORM_UI_FEATURES: dict[str, tuple[str, ...]] = {
+    "github": ("repository and branch inventory", "workflow/check status", "PR/release/security summaries", "permission and audit state", "QMOI-branded repo and release card customization"),
+    "gitlab": ("project and merge-request inventory", "pipeline/runner status", "registry/artifact state", "permission and audit state", "QMOI clone polish for project headers and milestone views"),
+    "gitpod": ("workspace inventory", "environment and startup status", "workspace launch/stop controls", "secret readiness without values", "custom workspace branding and startup states"),
+    "netlify": ("site/build inventory", "preview and production deploys", "forms/redirects/edge-function status", "domain and logs state", "custom site branding, icons, and fonts"),
+    "vercel": ("project/deployment inventory", "preview/promote/rollback controls", "domains/functions/edge status", "logs/analytics/usage state", "custom deployment UI and QMOI badge polish"),
+    "quantum": ("hosting project/deployment inventory", "compute backend and queue state", "hybrid job controls", "quota/cost/provenance and audit state", "QMOI compute UI tokens and custom job branding"),
+    "huggingface": ("model/space/dataset inventory", "inference and runtime status", "build/log/artifact views", "permissions and access state", "brand-safe HF surfaces and custom QMOI identity"),
+    "qvillage": ("community/content inventory", "device and sync state", "moderation/notification controls", "member privacy and access state", "custom community visual language and shared iconography"),
+    "dagshub": ("repository/dataset inventory", "experiment and ML workflow status", "artifact/metric comparisons", "permission and provenance state", "custom dataset and experiment UI branding"),
+}
+
+QMOI_PLATFORM_STYLE_MATRIX: dict[str, tuple[str, ...]] = {
+    "github": ("QMOI logo badge", "GitHub-native layout", "status cards", "release screens", "security and commit badges"),
+    "gitlab": ("QMOI icon set", "pipeline status panels", "merge-request cards", "registry audit views", "project branding"),
+    "gitpod": ("workspace launcher branding", "startup and status icons", "terminal-safe theme tokens", "workspace personalization"),
+    "netlify": ("site hero branding", "deploy card polish", "edge-route UI states", "auth-safe preview shells"),
+    "vercel": ("project naming polish", "deployment cards", "preview to production controls", "domain branding"),
+    "quantum": ("compute branding tokens", "job queue cards", "quota and billing visuals", "result provenance panels"),
+    "huggingface": ("space branding", "model cards", "inference status panels", "custom QMOI identity overlays"),
+    "qvillage": ("community avatar tokens", "member listing polish", "device sync UI branding", "member-safe content panels"),
+    "dagshub": ("experiment branding", "dataset card polish", "ML tracking visuals", "artifact provenance cards"),
+}
+
+QMOI_APP_STYLE_REQUIREMENTS: dict[str, tuple[str, ...]] = {
+    "qcity": ("QCity identity shell", "workspace file actions", "audit history visuals", "public plus private file states"),
+    "qstore": ("catalog hero branding", "search result polish", "install/update actions", "device-aware UI states"),
+    "qstream": ("live stream cards", "status overlays", "monitoring visuals", "public and authenticated stream states"),
+    "qmoi-ai-ui": ("persona branding", "chat surfaces", "profile personalization", "private vs public conversation state"),
+    "qalpha": ("project UI identity", "workflow and task views", "collaboration surfaces", "private project gating"),
+    "qmoi-space": ("media branding", "library controls", "release cards", "user-owned media access"),
+    "qvillage": ("community identity", "member interactions", "device and sync visuals", "member-safe moderation state"),
+}
+
+QMOI_LINK_VALIDATION_SYSTEM: dict[str, tuple[str, ...]] = {
+    "expected": ("page identity", "documented feature list", "access mode", "state handling", "visual/branding parity"),
+    "actual": ("source implementation or contract evidence", "UI affordance presence", "permission boundary", "error/loading/offline state", "final validation result"),
+    "classification": ("public", "authenticated", "mixed-access", "missing", "stale", "blocked"),
+}
+
+QMOI_STYLE_COVERAGE_REQUIREMENTS: tuple[str, ...] = (
+    "shared design tokens plus app-specific and platform-specific tokens",
+    "public guest, authenticated user, and master-operator access states",
+    "loading, empty, offline, stale, blocked, degraded, success, and error states",
+    "responsive navigation, keyboard focus, screen readers, contrast, and text scaling",
+    "risk/security/validation overlays that cannot be hidden by themes or personalization",
+    "consistent hosting, deployment, Quantum job, and cloned-platform controls",
+)
+
 MASTER_FILES: list[str] = [
     "API.md",
     "ENDPOINTS.md",
@@ -212,6 +407,19 @@ MASTER_FILES: list[str] = [
     "MONITORING_SUMMARY.md",
     "REAL_TIME_MONITORING_README.md",
     "QMOI_REALTIME_MEMORY_INDEX.md",
+    "QSTREAM.md",
+    "QSTORE.md",
+    "APP_LINKS.md",
+    "QUANTUM.md",
+    "QUANTUMPAYED.md",
+    "QMOICLONEQUANTUM.md",
+    "QMOICLONEVERCEL.md",
+    "VERCELPAYED.md",
+    "MASTEROWNS.md",
+    "STYLES.md",
+    "UNIVERSALS.md",
+    "UNIVERSAL.md",
+    "CLONE_PLATFORM_UI.md",
 ]
 
 
@@ -256,6 +464,44 @@ def safe_text_write(path: Path, content: str) -> None:
     if path.suffix.lower() == ".md":
         text = sanitize_documentation_text(text)
     path.write_text(text, encoding="utf-8")
+
+
+def _upsert_managed_markdown_section(
+    path: Path,
+    title: str,
+    marker_name: str,
+    body: str,
+) -> None:
+    """Replace one generated section while preserving surrounding user content."""
+    start_marker = f"<!-- BEGIN QMOI MANAGED: {marker_name} -->"
+    end_marker = f"<!-- END QMOI MANAGED: {marker_name} -->"
+    text = (
+        path.read_bytes().decode("utf-8")
+        if path.exists()
+        else f"# {title}\n"
+    )
+    newline = "\r\n" if "\r\n" in text else "\n"
+    start_count = text.count(start_marker)
+    end_count = text.count(end_marker)
+
+    if (start_count, end_count) not in {(0, 0), (1, 1)}:
+        raise ValueError(f"Malformed managed section in {path}.")
+
+    safe_body = sanitize_documentation_text(body).replace("\n", newline)
+    block = f"{start_marker}{newline}{safe_body.rstrip()}" \
+        f"{newline}{end_marker}"
+    if start_count:
+        pattern = re.compile(
+            rf"^{re.escape(start_marker)}\r?\n.*?^{re.escape(end_marker)}\r?$",
+            re.MULTILINE | re.DOTALL,
+        )
+        text = pattern.sub(lambda _: block, text, count=1)
+    else:
+        separator = "" if not text or text.endswith(("\n", "\r")) else newline
+        text = f"{text}{separator}{newline}{block}{newline}"
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(text.encode("utf-8"))
 
 
 def sanitize_documentation_text(content: str) -> str:
@@ -5005,6 +5251,10 @@ All timestamps use UTC ISO-8601 format.
 
     def run_autonomous_loop(self) -> dict[str, Any]:
         """Merge all repo histories, validate, and then finalize the update for each repo."""
+        managed_surface_contract = self.refresh_managed_surface_documents(
+            self.root_dir
+        )
+        self.results["managed_surface_contract"] = managed_surface_contract
         repo_roots = self.discover_repo_roots(include_history=True)
         merge_result = self.execute_merge_and_sync(repo_roots, auto_push=False)
         self.results["merge_audit"] = merge_result
@@ -5704,6 +5954,9 @@ All timestamps use UTC ISO-8601 format.
     def generate_validation_report(
         self,
     ) -> dict[str, Any]:
+        managed_surface_contract = self.refresh_managed_surface_documents(
+            self.root_dir
+        )
         platforms = self.validate_all_platforms()
 
         features = self.validate_all_platform_features()
@@ -5739,6 +5992,17 @@ All timestamps use UTC ISO-8601 format.
                 "apps": list(QMOI_APPS.keys()),
                 "applications_per_platform": len(QMOI_APPS),
                 "total_features": get_total_feature_count(),
+            },
+            "managed_product_surfaces": {
+                "validation": managed_surface_contract["validation"],
+                "catalog_apps": managed_surface_contract["catalog_apps"],
+                "app_access_requirements": managed_surface_contract["app_access_requirements"],
+                "client_platforms": managed_surface_contract["client_platforms"],
+                "clone_platform_ui_records": len(
+                    managed_surface_contract["clone_platform_ui_coverage"]
+                ),
+                "master_access_verified": managed_surface_contract["master_access_verified"],
+                "implementation_verified": managed_surface_contract["implementation_verified"],
             },
         }
 
@@ -6349,6 +6613,8 @@ All timestamps use UTC ISO-8601 format.
             ("Category D — Product applications, feature surfaces, and UI experience", [
                 "QMOIAI.md", "QMOIAIUI.md", "QALPHA.md", "QALPHAUI.md", "QCITY.md", "QCITYUI.md", "QMOISPACE.md", "QMOISPACEUI.md",
                 "STYLES.md", "UNIVERSALS.md", "ALLBACKEND.md", "ALLFRONTEND.md", "ALLPORTS.md", "ALLROUTES.md",
+                "QSTREAM.md", "QSTORE.md", "APP_LINKS.md", "MASTEROWNS.md", "UNIVERSAL.md",
+                "CLONE_PLATFORM_UI.md", "QMOICLONEQUANTUM.md", "QMOICLONEVERCEL.md", "QUANTUMPAYED.md",
             ]),
             ("Category I — Q Financial Manager, wallets, accounts, trading, revenue, and money-making operations", [
                 "FINANCIALMANAGER.md", "TRADINGREADME.md", "CASHON.md", "MEGAVAULT.md", "LEAHWALLET.md", "QMOITRADER.md",
@@ -6697,6 +6963,512 @@ All timestamps use UTC ISO-8601 format.
             "productionenhanced": enhanced_path,
         }
 
+    def refresh_qstream_qstore_documents(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Refresh QStore's app/UI catalog and the managed QStream/link sections."""
+        target = Path(root) if root is not None else self.root_dir
+        target.mkdir(parents=True, exist_ok=True)
+
+        catalog_lines = [
+            "| App | Category | Source repository | Documentation | Implementation status |",
+            "| --- | --- | --- | --- | --- |",
+        ]
+        for app_id, app in QSTORE_CATALOG_APPS.items():
+            repository = app["repository"]
+            documentation = app["documentation"]
+            catalog_lines.append(
+                f"| `{app_id}` ({app['name']}) | {app['category']} | "
+                f"[repository](https://github.com/{repository}) | "
+                f"[{documentation}]({documentation}) | "
+                "Implementation not verified by this workspace |"
+            )
+        catalog_lines.extend([
+            "| `qvillage` (QVillage) | community | [repository](https://github.com/thealphakenya/qvillage) | [QVILLAGE.md](QVILLAGE.md) | Implementation not verified by this workspace |",
+            "| `quantum` (Quantum) | hosting | [repository](https://github.com/thealphakenya/Alpha-Q-ai) | [QUANTUM.md](QUANTUM.md) | Implementation not verified by this workspace |",
+        ])
+
+        qstore_lines = [
+            "## Catalog ownership",
+            "",
+            "- The app catalog is generated from the active autonomous development agent's `QSTORE_CATALOG_APPS` registry.",
+            "- QStore includes every core QMOI app plus QStream; QStream's source repository is `thealphakenya/qstream`.",
+            "- Repository links identify source repositories only. They do not prove a build, download, public app URL, or deployment is available.",
+            "- The legacy four-app platform validator remains a separate compatibility contract. Catalog membership does not mean an external app implementation was checked out or tested.",
+            "",
+            "## Managed app catalog",
+            "",
+            *catalog_lines,
+            "",
+            "## QStore UI feature coverage by platform",
+            "",
+            "The agent refreshes this requirement matrix on every validation pipeline. Requirements are not implementation evidence; code-level UI tests are required before any platform is marked verified.",
+            "",
+        ]
+        for platform in PLATFORMS:
+            qstore_lines.extend([f"### {platform}", ""])
+            qstore_lines.extend(
+                f"- [ ] {feature}"
+                for feature in (
+                    *QSTORE_SHARED_UI_FEATURES,
+                    *QSTORE_PLATFORM_UI_FEATURES[platform],
+                )
+            )
+            qstore_lines.append("")
+        qstore_lines.extend([
+            "## Per-app user access modes",
+            "",
+            "These are access-state requirements for app UI generation, not claims that account systems or screens are implemented.",
+            "",
+        ])
+        for app_id, access_modes in APP_UI_ACCESS_REQUIREMENTS.items():
+            qstore_lines.append(f"### {app_id}")
+            qstore_lines.extend(f"- [ ] {mode}" for mode in access_modes)
+            qstore_lines.append("- [ ] Resolve the current server-verified identity, consent, and capability before rendering protected controls.")
+            qstore_lines.append("- Implementation status: not verified by this workspace.")
+            qstore_lines.append("")
+        qstore_lines.extend([
+            "## QStream entry",
+            "",
+            "QStream is listed in this catalog and linked to [thealphakenya/qstream](https://github.com/thealphakenya/qstream). Its product specification remains in [QSTREAM.md](QSTREAM.md). No runtime or download URL is asserted until independently verified.",
+            "",
+            "## Agent update contract",
+            "",
+            "On each validation run, the autonomous agent refreshes this managed section, the QStream integration section, and `APP_LINKS.md`. It inventories every app above across all six declared platforms and reports implementation validation as unverified unless the corresponding source checkout and tests are available.",
+        ])
+
+        qstream_lines = [
+            "## QMOI Agent and QStore Integration",
+            "",
+            "The autonomous agent preserves this specification and refreshes only the managed section below during each validation pipeline.",
+            "",
+            "- QStream is cataloged by QStore and its source repository is [thealphakenya/qstream](https://github.com/thealphakenya/qstream).",
+            "- The QStore catalog and cross-platform UI requirements are maintained in [QSTORE.md](QSTORE.md).",
+            "- Public guest and authenticated account surfaces follow the shared access contract in [UNIVERSAL.md](UNIVERSAL.md) and [UNIVERSALS.md](UNIVERSALS.md).",
+            "- QMOI product repository links are maintained in [APP_LINKS.md](APP_LINKS.md). Repository identity is not proof of a live web, app-store, or download URL.",
+            f"- Managed QStore catalog apps: {', '.join(QSTORE_CATALOG_APPS)}.",
+            f"- Platform UI coverage tracked: {', '.join(PLATFORMS)}.",
+            "- Source repositories outside the current checkout remain implementation-unverified until their exact remote SHA and target-owned checks are inspected.",
+        ]
+
+        app_link_lines = [
+            "## Managed QMOI product links",
+            "",
+            "These are source-repository and documentation references, not verified release, download, or deployment endpoints.",
+            "",
+            "| App | Source repository | Documentation | Link status |",
+            "| --- | --- | --- | --- |",
+        ]
+        for app_id, app in QSTORE_CATALOG_APPS.items():
+            repository = app["repository"]
+            documentation = app["documentation"]
+            app_link_lines.append(
+                f"| `{app_id}` ({app['name']}) | "
+                f"[thealphakenya/{repository.rsplit('/', 1)[-1]}](https://github.com/{repository}) | "
+                f"[{documentation}]({documentation}) | Repository reference; runtime link unverified |"
+            )
+        app_link_lines.extend([
+            "| `qvillage` (QVillage) | [thealphakenya/qvillage](https://github.com/thealphakenya/qvillage) | [QVILLAGE.md](QVILLAGE.md) | Master-only community link; runtime link unverified |",
+            "| `quantum` (Quantum) | [thealphakenya/Alpha-Q-ai](https://github.com/thealphakenya/Alpha-Q-ai) | [QUANTUM.md](QUANTUM.md) | Hosted-capability plan; runtime link unverified |",
+            "",
+            "| QStore catalog | This repository | [QSTORE.md](QSTORE.md) | Local catalog; distribution endpoints unverified |",
+            "",
+            "The agent refreshes this registry and checks that every QStore catalog entry has a repository and documentation reference. It must not invent or mark public URLs healthy without a remote check.",
+        ])
+
+        vercel_link_lines = [
+            "## QMOI app and product links",
+            "",
+            "- Canonical product repository references are maintained in [APP_LINKS.md](APP_LINKS.md).",
+            "- QStream source repository: [thealphakenya/qstream](https://github.com/thealphakenya/qstream).",
+            "- QVillage source reference: [thealphakenya/qvillage](https://github.com/thealphakenya/qvillage).",
+            "- Quantum source reference: [thealphakenya/Alpha-Q-ai](https://github.com/thealphakenya/Alpha-Q-ai).",
+            "- These repository references are not verified production deployments, public app URLs, or live host endpoints.",
+        ]
+
+        qstore_path = target / "QSTORE.md"
+        qstream_path = target / "QSTREAM.md"
+        app_links_path = target / "APP_LINKS.md"
+        vercellinks_path = target / "VERCELLINKS.md"
+        _upsert_managed_markdown_section(
+            qstore_path,
+            "QSTORE.md",
+            "qstore-catalog",
+            "\n".join(qstore_lines),
+        )
+        _upsert_managed_markdown_section(
+            qstream_path,
+            "QSTREAM.md",
+            "qstream-qmoi-integration",
+            "\n".join(qstream_lines),
+        )
+        _upsert_managed_markdown_section(
+            app_links_path,
+            "APP_LINKS.md",
+            "q-moi-product-links",
+            "\n".join(app_link_lines),
+        )
+        _upsert_managed_markdown_section(
+            vercellinks_path,
+            "VERCELLINKS.md",
+            "q-moi-app-links",
+            "\n".join(vercel_link_lines),
+        )
+
+        catalog_coverage = {
+            app_id: {
+                "source_repository": app["repository"],
+                "documentation": app["documentation"],
+                "documentation_present": (
+                    target / app["documentation"]
+                ).is_file(),
+                "platforms": list(PLATFORMS),
+                "implementation_validation": "not_performed",
+            }
+            for app_id, app in QSTORE_CATALOG_APPS.items()
+        }
+
+        return {
+            "documents": {
+                "qstore": qstore_path,
+                "qstream": qstream_path,
+                "app_links": app_links_path,
+                "vercel_links": vercellinks_path,
+            },
+            "catalog_apps": list(QSTORE_CATALOG_APPS),
+            "catalog_coverage": catalog_coverage,
+            "platforms": list(PLATFORMS),
+        }
+
+    def refresh_hosting_quantum_ui_documents(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Refresh guarded Quantum hosting, master UI, universal access, and styles contracts."""
+        target = Path(root) if root is not None else self.root_dir
+        target.mkdir(parents=True, exist_ok=True)
+
+        hosting_lines = [
+            "## Quantum Hosting and Compute Capability Contract",
+            "",
+            "Quantum is modeled as QMOI's Vercel-compatible hosting and compute control plane with additional provider-backed quantum-compute capabilities. This is a capability plan, not evidence that a provider, QPU, paid plan, or deployment is currently available.",
+            "",
+            "### Vercel-compatible hosting baseline",
+            "",
+            *[f"- [ ] {feature}" for feature in QMOI_HOSTING_FEATURES],
+            "",
+            "### Quantum computing extensions",
+            "",
+            *[f"- [ ] {feature}" for feature in QUANTUM_EXTENSION_FEATURES],
+            "",
+            "### Availability and safety states",
+            "",
+            "- Each capability is reported as `verified`, `declared_unverified`, `planned`, or `unavailable` with a timestamp and evidence reference.",
+            "- Simulator output, hybrid execution, and physical QPU execution must be labeled distinctly; never imply hardware access from a simulator result.",
+            "- Physical quantum hardware access is never implied by a simulator, a hosted environment, or a model card; real hardware capability requires independent provider evidence.",
+            "- Secret values remain in an approved vault. Plan entitlement, cost, quota, domain transfer, production deployment, and quantum spend require provider evidence and appropriate human approval.",
+            "- Hosting and quantum job controls are designed for all six QMOI client platforms, with role-aware views and accessible status/error states.",
+        ]
+
+        quantum_features = hosting_lines
+
+        paid_lines = [
+            "## Quantum plan and entitlement coverage",
+            "",
+            "This is an entitlement checklist. It contains no price, subscription, or provider-availability claim; all such data must come from verified provider metadata.",
+            "",
+            "| Capability | Required evidence | Current status |",
+            "| --- | --- | --- |",
+        ]
+        paid_lines.extend(
+            f"| {feature} | Provider plan/capability response and timestamp | unverified |"
+            for feature in (*QMOI_HOSTING_FEATURES, *QUANTUM_EXTENSION_FEATURES)
+        )
+        paid_lines.extend([
+            "",
+            "## Master and user controls",
+            "",
+            "- Show plan, quota, usage, and projected cost before a billable deployment or quantum job.",
+            "- Separate estimate, authorization, charge, and settlement states; no UI may claim payment or revenue without provider proof.",
+            "- Keep cancellation, refund/support route, and audit history available according to verified provider policy.",
+        ])
+
+        clone_quantum_lines = [
+            "## Quantum clone capability contract",
+            "",
+            "The Quantum integration provides a common QMOI control surface for verified hosting and compute providers. Vercel-compatible capability is the baseline; quantum-compute extensions are independent provider capabilities and must not be inferred from the clone name.",
+            "",
+            "### Hosted application lifecycle",
+            "",
+            *[f"- [ ] {feature}" for feature in QMOI_HOSTING_FEATURES],
+            "",
+            "### Quantum and hybrid workloads",
+            "",
+            *[f"- [ ] {feature}" for feature in QUANTUM_EXTENSION_FEATURES],
+            "",
+            "### Clone governance",
+            "",
+            "- Preserve provider ownership, API compatibility, attribution, terms, and security boundaries; do not copy proprietary internals.",
+            "- Compare Quantum and Vercel by verified feature/capability records, not by marketing statements.",
+            "- Any production mutation uses authorized target-owned workflows, exact SHAs, approvals, and terminal evidence.",
+        ]
+
+        clone_vercel_lines = [
+            "## Vercel-compatible integration and Quantum extensions",
+            "",
+            "QMOI's Vercel integration tracks Vercel-owned deployments and links, while Quantum is a separate QMOI control-plane integration designed to provide a compatible hosting baseline plus additional compute capabilities. This is not a claim of implementation parity or a copy of Vercel internals.",
+            "",
+            "### Compatibility inventory",
+            "",
+            *[f"- [ ] {feature}" for feature in QMOI_HOSTING_FEATURES],
+            "",
+            "### Quantum-only extension inventory",
+            "",
+            *[f"- [ ] {feature}" for feature in QUANTUM_EXTENSION_FEATURES],
+            "",
+            "- Each surface is enabled only when a real provider capability is independently verified.",
+            "- See [VERCELPAYED.md](VERCELPAYED.md), [QUANTUMPAYED.md](QUANTUMPAYED.md), [QUANTUM.md](QUANTUM.md), and [APP_LINKS.md](APP_LINKS.md).",
+        ]
+
+        vercel_paid_lines = [
+            "## Vercel plan, hosting, and entitlement verification",
+            "",
+            "Track Vercel features from live project/plan metadata. Never infer paid entitlement, deployment success, analytics access, or runtime availability from repository configuration alone.",
+            "",
+            *[f"- [ ] {feature}" for feature in QMOI_HOSTING_FEATURES],
+            "",
+            "- Record provider, account/project identity, capability response, HTTP/result state, timestamp, and exact deployment SHA.",
+            "- Show unavailable and permission-denied states without replacing them with a Quantum or local success claim.",
+            "- Use verified provider metadata before claiming an entitlement, quota, billing state, deployment status, or domain change.",
+            "- Route domain changes, production promotion, and billable actions through explicit approval and auditable workflows.",
+            "- Quantum extensions are tracked separately in [QUANTUMPAYED.md](QUANTUMPAYED.md); no Vercel feature is presumed to imply QPU capability.",
+        ]
+
+        master_lines = [
+            "## Master-owned dashboard and usable-control requirements",
+            "",
+            "This contract derives from the archived MASTEROWNS dashboard, monitoring, control-panel, Quantum/Vercel, user-management, documentation, domain, and audit requirements. It specifies required UI behavior; it does not assert that the corresponding application routes or access have been implemented.",
+            "",
+            "### Master UI feature inventory",
+            "",
+            *[f"- [ ] {feature}" for feature in MASTER_OWNED_UI_FEATURES],
+            "",
+            "### Access and actual usability gate",
+            "",
+            "- Every master-only screen and API requires a server-verified master role/capability; hiding a menu item is not authorization.",
+            "- Server-side authorization must confirm the current session, role, resource scope, and requested capability for every protected operation.",
+            "- Require MFA/step-up verification for high-impact controls, show read-versus-write capability, and require human confirmation for production, money, domain, user, or provider mutations.",
+            "- Test both direct-route and API denial for non-master sessions; test the authorized master path with a real approved identity in a controlled environment.",
+            "- Show loading, unavailable, permission-denied, stale, and audit-result states. Never imply a master can use an action until the authenticated route and backend operation are verified.",
+            "- Current implementation/access status: unverified from this repository; the autonomous agent tracks these checks but cannot grant itself master access.",
+        ]
+
+        universal_lines = [
+            "## Universal UI access modes and per-user feature creation",
+            "",
+            "All apps and cloned-platform consoles use the same public, authenticated-user, and master-operator access model. App-specific screens may add capabilities but may not weaken these checks.",
+            "",
+        ]
+        for mode, requirements in UNIVERSAL_UI_ACCESS_MODES.items():
+            universal_lines.append(f"### {mode}")
+            universal_lines.extend(f"- {requirement}" for requirement in requirements)
+            universal_lines.append("")
+        universal_lines.extend([
+            "### Per-user UI generation",
+            "",
+            "- Generate or configure account-specific UI only after verified identity, consent, tenant/user scope, and server-provided capabilities are available.",
+            "- Keep guest/public browsing useful without exposing private data; upgrade to account features only through explicit sign-in and consent.",
+            "- Personalization may adjust preferences and layout but cannot create permissions, reveal another user's data, suppress risk warnings, or trigger financial/hosting/quantum actions.",
+            "- Account creation, MFA, consent, payments, OS permission grants, production deployment, and quantum spend remain human-confirmed actions when required by policy.",
+            "- Record access-mode transitions and denial reasons without writing credentials, tokens, or private user content to docs or logs.",
+        ])
+
+        styles_lines = [
+            "## Universal styling coverage for apps, access modes, hosting, and cloned platforms",
+            "",
+            "The style system is shared across all QStore catalog apps, Quantum/Vercel hosting surfaces, master-owned controls, and every cloned-platform console. Tokens are layered as universal base, platform adaptation, app identity, and access/operational state.",
+            "",
+            "### Access and operational state styling",
+            "",
+            "- Support public guest, authenticated-user, and master-operator layouts without using color alone to distinguish permissions.",
+            "- Provide consistent loading, empty, offline, stale, blocked, degraded, success, warning, and failure treatments on all six client platforms.",
+            "- Keep security, financial risk, permission denial, deployment state, quantum provider/backend, quota, and validation evidence visible above cosmetic personalization.",
+            "- User-specific themes apply only to verified identities and consented preferences; master controls are visually distinct and remain backend-gated.",
+            "- Hosting and quantum interfaces expose responsive project/job tables, accessible status timelines, confirmation dialogs, logs, and recovery actions.",
+            "",
+            "### Coverage contract",
+            "",
+            *[f"- [ ] {requirement}" for requirement in QMOI_STYLE_COVERAGE_REQUIREMENTS],
+            "",
+            f"Client platforms: {', '.join(PLATFORMS)}.",
+            f"Catalog apps: {', '.join(QSTORE_CATALOG_APPS)}.",
+            "Implementation and rendered UI coverage remain unverified until app source checkouts, accessibility checks, and platform screenshots/tests are available.",
+        ]
+
+        clone_ui_lines = [
+            "## Cloned-platform operator UI coverage",
+            "",
+            "Every entry below is a QMOI operator-console requirement for each client platform. It does not assert that the upstream provider exposes identical features or that this repository contains a working console.",
+            "",
+            f"Client platform targets: {', '.join(PLATFORMS)}.",
+            "",
+        ]
+        clone_ui_coverage: list[dict[str, Any]] = []
+        for surface, features in QMOI_CLONED_PLATFORM_UI_FEATURES.items():
+            clone_ui_lines.append(f"### {surface}")
+            clone_ui_lines.append("")
+            clone_ui_lines.extend(f"- [ ] {feature}" for feature in features)
+            clone_ui_lines.append(f"- [ ] Responsive, accessible operator UI on: {', '.join(PLATFORMS)}.")
+            clone_ui_lines.append("- Implementation status: not verified by this workspace.")
+            clone_ui_lines.append("")
+            clone_ui_coverage.extend(
+                {
+                    "surface": surface,
+                    "client_platform": platform,
+                    "features": list(features),
+                    "implementation_validation": "not_performed",
+                }
+                for platform in PLATFORMS
+            )
+
+        managed_documents = {
+            "QUANTUM.md": ("QUANTUM.md", "quantum-hosting-contract", quantum_features),
+            "QUANTUMPAYED.md": ("QUANTUMPAYED.md", "quantum-entitlements", paid_lines),
+            "QMOICLONEQUANTUM.md": ("QMOICLONEQUANTUM.md", "quantum-clone-contract", clone_quantum_lines),
+            "QMOICLONEVERCEL.md": ("QMOICLONEVERCEL.md", "vercel-clone-contract", clone_vercel_lines),
+            "VERCELPAYED.md": ("VERCELPAYED.md", "vercel-entitlements", vercel_paid_lines),
+            "MASTEROWNS.md": ("MASTEROWNS.md", "master-owned-ui-contract", master_lines),
+            "UNIVERSAL.md": ("UNIVERSAL.md", "universal-ui-access-contract", universal_lines),
+            "UNIVERSALS.md": (
+                "UNIVERSALS.md",
+                "universal-ui-access-link",
+                [
+                    "## Shared account and UI access contract",
+                    "",
+                    "The detailed public, authenticated-user, and master-operator UI contract is maintained in [UNIVERSAL.md](UNIVERSAL.md). All apps and cloned-platform consoles must follow the same server-side authorization, consent, audit, and human-confirmation rules.",
+                    "",
+                    "The autonomous agent updates this section during every validation/runtime documentation refresh; implementation and account access still require source-level and authenticated-session verification.",
+                ],
+            ),
+            "STYLES.md": ("STYLES.md", "universal-app-platform-styles", styles_lines),
+            "CLONE_PLATFORM_UI.md": ("CLONE_PLATFORM_UI.md", "cloned-platform-ui-matrix", clone_ui_lines),
+        }
+        documents: dict[str, Path] = {}
+        for filename, (title, marker, lines) in managed_documents.items():
+            path = target / filename
+            _upsert_managed_markdown_section(
+                path,
+                title,
+                marker,
+                "\n".join(lines),
+            )
+            documents[filename] = path
+
+        return {
+            "documents": documents,
+            "hosting_features": list(QMOI_HOSTING_FEATURES),
+            "quantum_extensions": list(QUANTUM_EXTENSION_FEATURES),
+            "master_ui_features": list(MASTER_OWNED_UI_FEATURES),
+            "access_modes": list(UNIVERSAL_UI_ACCESS_MODES),
+            "style_requirements": list(QMOI_STYLE_COVERAGE_REQUIREMENTS),
+            "clone_platforms": list(QMOI_CLONED_PLATFORM_UI_FEATURES),
+            "clone_platform_ui_coverage": clone_ui_coverage,
+            "client_platforms": list(PLATFORMS),
+            "implementation_verified": False,
+            "master_access_verified": False,
+        }
+
+    def refresh_managed_surface_documents(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Refresh all managed app/hosting/UI docs and run structural link checks."""
+        target = Path(root) if root is not None else self.root_dir
+        qstore_documents = self.refresh_qstream_qstore_documents(target)
+        hosting_documents = self.refresh_hosting_quantum_ui_documents(target)
+
+        for filename, content in {
+            "QVILLAGE.md": "# QVILLAGE.md\n\nQVillage is the live QMOI community, model, and knowledge coordination surface.\n\n## Link and runtime references\n- Source repository: [thealphakenya/qvillage](https://github.com/thealphakenya/qvillage)\n- Community surface: [QVillage](https://qvillage.qmoi.com)\n\n## Active automation\n- QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.\n- memory, model, and runtime state are synchronized across repo docs and platform references.\n",
+            "QUANTUM.md": "# QUANTUM.md\n\nQMOI Quantum integration keeps the compute and model runtime path aligned with the live repo.\n\n## Link and runtime references\n- Source repository: [thealphakenya/Alpha-Q-ai](https://github.com/thealphakenya/Alpha-Q-ai)\n- Hosted capability target: [Quantum](https://quantum.qmoi.com)\n\n## Active automation\n- quantum compute and model-runtime automation are described and synchronized here.\n",
+        }.items():
+            path = target / filename
+            if not path.exists():
+                path.write_text(content + "\n", encoding="utf-8")
+
+        link_validation = LinkValidator(str(target)).validate_product_catalog()
+
+        document_paths = {
+            **qstore_documents["documents"],
+            **{
+                Path(name).stem.lower(): path
+                for name, path in hosting_documents["documents"].items()
+            },
+        }
+        document_paths.update({
+            "qvillage": target / "QVILLAGE.md",
+            "quantum": target / "QUANTUM.md",
+        })
+        missing_documents = [
+            name for name, path in document_paths.items()
+            if not path.is_file()
+        ]
+        structural_errors = list(missing_documents)
+        required_document_markers = {
+            "QUANTUM.md": ("quantum hosting and compute capability contract", "physical quantum hardware"),
+            "QUANTUMPAYED.md": ("entitlement coverage", "provider plan/capability response"),
+            "QMOICLONEQUANTUM.md": ("quantum clone capability contract", "provider"),
+            "QMOICLONEVERCEL.md": ("vercel-compatible integration", "quantum-only extension"),
+            "VERCELPAYED.md": ("vercel plan", "verified provider metadata"),
+            "MASTEROWNS.md": ("master-owned dashboard", "mfa", "server-side authorization"),
+            "UNIVERSAL.md": ("public_guest", "authenticated_user", "master_operator"),
+            "UNIVERSALS.md": ("universal.md", "server-side authorization"),
+            "STYLES.md": ("universal styling coverage", "public guest", "master-operator"),
+            "CLONE_PLATFORM_UI.md": ("cloned-platform operator ui coverage", "dagshub", "android"),
+        }
+        for filename, markers in required_document_markers.items():
+            path = target / filename
+            if not path.is_file():
+                continue
+            content = path.read_text(encoding="utf-8", errors="replace").casefold()
+            absent = [marker for marker in markers if marker.casefold() not in content]
+            if absent:
+                structural_errors.append(
+                    f"{filename} is missing required managed contract markers: {', '.join(absent)}"
+                )
+        if len(qstore_documents["catalog_apps"]) != len(QSTORE_CATALOG_APPS):
+            structural_errors.append("QStore catalog registry does not match generated app entries")
+        if len(hosting_documents["clone_platform_ui_coverage"]) != (
+            len(QMOI_CLONED_PLATFORM_UI_FEATURES) * len(PLATFORMS)
+        ):
+            structural_errors.append("Cloned-platform UI coverage matrix is incomplete")
+        if not link_validation["passed"]:
+            structural_errors.extend(link_validation["errors"])
+
+        return {
+            "documents": document_paths,
+            "catalog_apps": qstore_documents["catalog_apps"],
+            "catalog_coverage": qstore_documents["catalog_coverage"],
+            "app_access_requirements": APP_UI_ACCESS_REQUIREMENTS,
+            "client_platforms": list(PLATFORMS),
+            "hosting_features": hosting_documents["hosting_features"],
+            "quantum_extensions": hosting_documents["quantum_extensions"],
+            "master_ui_features": hosting_documents["master_ui_features"],
+            "access_modes": hosting_documents["access_modes"],
+            "style_requirements": hosting_documents["style_requirements"],
+            "clone_platforms": hosting_documents["clone_platforms"],
+            "clone_platform_ui_coverage": hosting_documents["clone_platform_ui_coverage"],
+            "master_access_verified": False,
+            "implementation_verified": False,
+            "link_validation": link_validation,
+            "validation": {
+                "passed": not structural_errors,
+                "errors": structural_errors,
+                "level": "local_structure_and_links_only",
+                "remote_reachability_checked": False,
+            },
+        }
+
     def refresh_clone_platform_documents(
         self,
         root: Path | str | None = None,
@@ -6718,9 +7490,9 @@ All timestamps use UTC ISO-8601 format.
             "HUGGINGFACEPAYED.md": """# HUGGINGFACEPAYED.md\n\nQMOI keeps Hugging Face parity for models, datasets, spaces, and automated inference workflows while preserving the source-of-truth repo contract. The autonomous agent updates this document alongside QVILLAGE and the Hugging Face integration surfaces.\n\n## Active automation\n- model and space automation is kept in sync across the repository, monitoring flow, and live runtime.\n- docs, memory, and deployment references are maintained with the current QMOI state.\n- all Hugging Face endpoints are treated as operational surfaces rather than disconnected metadata.\n""",
             "HUGGINGFACEHFPAYED.md": """# HUGGINGFACEHFPAYED.md\n\nQMOI keeps Hugging Face Hub and Spaces parity in sync with the active GitHub-hosted automation and runtime. This file tracks the production parity plan for Hugging Face-hosted surfaces and connected inference or deployment tasks.\n\n## Active automation\n- Hub and Space automation are monitored by the autonomous agent.\n- runtime status and deployment verification remain tied to the live repo contract.\n- platform docs remain updated as the repository and host surfaces evolve.\n""",
             "QVILLAGE.md": """# QVILLAGE.md\n\nQVillage is the live QMOI community, model, and knowledge coordination surface. It is treated as the master-only QMOI community layer that stays synchronized with GitHub, Hugging Face, and the live autonomous agent.\n\n## Active automation\n- QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.\n- memory, model, and runtime state are synchronized across repo docs and platform references.\n- the live state is refreshed automatically as the repository evolves.\n""",
-            "QUANTUM.md": """# QUANTUM.md\n\nQMOI Quantum integration keeps the compute and model runtime path aligned with the live repo, Vercel deployment surfaces, and GitHub automation. The autonomous agent treats Quantum as a production-capable clone and sync surface.\n\n## Active automation\n- quantum compute and model-runtime automation are described and synchronized here.\n- deployment status and runtime verification stay tied to the canonical workflow and live repo health.\n- hosted and cloned platform parity are kept in sync with the final QMOI operating model.\n""",
+            "QUANTUM.md": """# QUANTUM.md\n\nQMOI Quantum integration keeps the compute and model runtime path aligned with the live repo, Vercel deployment surfaces, and GitHub automation. The autonomous agent treats Quantum as a production-capable clone and sync surface.\n\n## Quantum hosting and compute capability contract\n\nThe platform is designed for quantum hosting and compute capability planning across local, hosted, and provider-backed environments. This covers simulated and provider-backed workloads while keeping physical quantum hardware access explicitly separate from software capability claims.\n\n## Active automation\n- quantum compute and model-runtime automation are described and synchronized here.\n- deployment status and runtime verification stay tied to the canonical workflow and live repo health.\n- hosted and cloned platform parity are kept in sync with the final QMOI operating model.\n""",
             "VERCELLINKS.md": """# VERCELLINKS.md\n\nThis document tracks the operational Vercel links, deployment targets, and public/runtime references associated with the QMOI deployment stack. The autonomous agent keeps these links aligned with the current production reality.\n\n## Active automation\n- Vercel deployment links and config state stay synchronized with the live repo state.\n- routes, URLs, and link documentation remain consistent with the GitHub-hosted runtime.\n- deployment verification uses the live workflow and link-health checks before final release.\n""",
-            "VERCELPAYED.md": """# VERCELPAYED.md\n\nQMOI keeps Vercel paid-feature parity for deployments, analytics, domains, and edge runtime behavior. The live automation path keeps the Vercel layer aligned with the GitHub-hosted and clone/autoclone strategy.\n\n## Active automation\n- deployment automation remains in the GitHub workflow and live repo contract.\n- domain, analytics, and runtime checks are part of the final verification loop.\n- clone and autoclone surfaces stay synced with the current Vercel deployment model.\n""",
+            "VERCELPAYED.md": """# VERCELPAYED.md\n\nQMOI keeps Vercel paid-feature parity for deployments, analytics, domains, and edge runtime behavior. The live automation path keeps the Vercel layer aligned with the GitHub-hosted and clone/autoclone strategy.\n\n## Vercel plan and entitlement verification\n\nThis is a Vercel plan and entitlement record. It contains no price, subscription, or deployment claim unless it is backed by verified provider metadata.\n\n## Active automation\n- deployment automation remains in the GitHub workflow and live repo contract.\n- domain, analytics, and runtime checks are part of the final verification loop.\n- clone and autoclone surfaces stay synced with the current Vercel deployment model.\n""",
             "QCITY.md": """# QCITY.md\n\nQCity remains the canonical file-management and platform coordination surface for the QMOI runtime. It coordinates GitHub, GitLab, Vercel, Netlify, Gitpod, Hugging Face, QVillage, and clone/autoclone automation without losing the live repo source-of-truth.\n\n## Active automation\n- file, repo, deployment, and sync management are centralized in QCity.\n- all clone/autoclone flows are exposed as platform automation surfaces.\n- the live runtime keeps all platform docs and generated summaries synchronized with the working repo state.\n""",
             "QMOIGITHUBAPP.md": """# QMOIGITHUBAPP.md\n\nQMOI GitHub App automation keeps the repository and workflows synchronized with the codebase and the hosted runtime. The autonomous agent treats GitHub app automation as a core operational layer for all clone and autoclone flows.\n\n## Active automation\n- actions, repo, and deployment automation remain part of the GitHub-hosted runtime.\n- repo sync and branch verification stay consistent with the live source-of-truth.\n- release and deployment gates remain part of the autonomous verification contract.\n""",
             "QMOIHUGGINGFACESPACES.md": """# QMOIHUGGINGFACESPACES.md\n\nQMOI Spaces automation keeps Hugging Face Spaces, model surfaces, and inference endpoints aligned with the live repo and QVillage runtime. The autonomous agent makes sure that the Hugging Face clone and the canonical repo remain coordinated.\n\n## Active automation\n- space deployment and runtime health remain in the live automation contract.\n- model and dataset surfaces are reflected in docs and runtime verification.\n- clone/autoclone flows keep the platform surface production-safe and synchronized.\n""",
@@ -6738,14 +7510,25 @@ All timestamps use UTC ISO-8601 format.
         }
 
         for name, body in templates.items():
+            if name in {"QUANTUM.md", "VERCELPAYED.md", "QMOICLONEQUANTUM.md"}:
+                continue
             path = target / name
             path.write_text(body + "\n", encoding="utf-8")
 
-        return {name: target / name for name in templates}
+        qstore_documents = self.refresh_qstream_qstore_documents(target)
+        hosting_documents = self.refresh_hosting_quantum_ui_documents(target)
+        return {
+            **{name: target / name for name in templates},
+            **qstore_documents["documents"],
+            **hosting_documents["documents"],
+        }
 
     def build_github_proof_contract(
         self,
     ) -> dict[str, Any]:
+        managed_surface_contract = self.refresh_managed_surface_documents(
+            self.root_dir
+        )
         platform_results = self.validate_all_platforms()
 
         feature_results = self.validate_all_platform_features()
@@ -6810,6 +7593,11 @@ All timestamps use UTC ISO-8601 format.
             "platform_feature_contract_valid": (
                 feature_contract_valid
             ),
+            "managed_surface_contract_valid": managed_surface_contract["validation"]["passed"],
+            "product_catalog_links_valid": managed_surface_contract["link_validation"]["passed"],
+            "product_catalog_app_count": len(managed_surface_contract["catalog_apps"]),
+            "clone_platform_ui_record_count": len(managed_surface_contract["clone_platform_ui_coverage"]),
+            "master_access_verified": managed_surface_contract["master_access_verified"],
         }
 
         ready = (
@@ -6819,6 +7607,7 @@ All timestamps use UTC ISO-8601 format.
             and proof["alpha_q_ai_included"]
             and proof["feature_registry_valid"]
             and proof["platform_feature_contract_valid"]
+            and proof["managed_surface_contract_valid"]
         )
 
         return {
@@ -6845,6 +7634,10 @@ All timestamps use UTC ISO-8601 format.
         self,
     ) -> int:
         """Resume safely from the latest checkpoint and continue the bounded validation loop."""
+        managed_surface_contract = self.refresh_managed_surface_documents(
+            self.root_dir
+        )
+        self.results["managed_surface_contract"] = managed_surface_contract
         checkpoint = self.load_checkpoint() or {}
         completed_steps = list(dict.fromkeys(checkpoint.get("completed_steps") or []))
 
@@ -6971,6 +7764,10 @@ All timestamps use UTC ISO-8601 format.
         )
 
         try:
+            product_surface_docs = self.refresh_managed_surface_documents(
+                self.root_dir
+            )
+
             platform_results = (
                 self.validate_all_platforms()
             )
@@ -7042,6 +7839,27 @@ All timestamps use UTC ISO-8601 format.
                 "file_handlers": handler_results,
                 "proof": contract,
                 "total_feature_count": get_total_feature_count(),
+                "product_surfaces": {
+                    "status": "documentation_refreshed_implementation_not_verified",
+                    "catalog_apps": product_surface_docs["catalog_apps"],
+                    "catalog_coverage": product_surface_docs["catalog_coverage"],
+                    "platforms": product_surface_docs["client_platforms"],
+                    "hosting_feature_count": len(product_surface_docs["hosting_features"]),
+                    "quantum_extension_count": len(product_surface_docs["quantum_extensions"]),
+                    "master_ui_feature_count": len(product_surface_docs["master_ui_features"]),
+                    "access_modes": product_surface_docs["access_modes"],
+                    "clone_platforms": product_surface_docs["clone_platforms"],
+                    "clone_platform_ui_records": len(product_surface_docs["clone_platform_ui_coverage"]),
+                    "style_requirements": product_surface_docs["style_requirements"],
+                    "master_access_verified": product_surface_docs["master_access_verified"],
+                    "link_validation": product_surface_docs["link_validation"],
+                    "structural_validation": product_surface_docs["validation"],
+                    "implementation_verified": False,
+                    "documents": {
+                        name: str(path)
+                        for name, path in product_surface_docs["documents"].items()
+                    },
+                },
             }
 
             safe_json_write(

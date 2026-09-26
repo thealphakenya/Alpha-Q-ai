@@ -269,3 +269,101 @@ def test_validate_rendered_page_flags_missing_content(monkeypatch):
     assert result.accessible is True
     assert result.rendered_ok is False
     assert "QMOI" in (result.error or "")
+
+
+def test_validate_product_catalog_covers_apps_docs_and_platforms(tmp_path):
+    from scripts.link_validator import LinkValidator
+
+    required_docs = (
+        "QSTREAM.md", "QMOIAI.md", "QCITY.md", "QMOISPACE.md", "QALPHA.md",
+        "QUANTUM.md", "QMOICLONEQUANTUM.md", "QMOICLONEVERCEL.md",
+        "QUANTUMPAYED.md", "VERCELPAYED.md", "MASTEROWNS.md", "STYLES.md",
+        "UNIVERSALS.md", "UNIVERSAL.md", "CLONE_PLATFORM_UI.md",
+        "VERCELLINKS.md",
+    )
+    for name in required_docs:
+        (tmp_path / name).write_text("# Document\n", encoding="utf-8")
+
+    app_ids = ("qmoiaiui", "qcity", "qmoi-space", "qalpha", "qstream")
+    qstore_rows = []
+    link_rows = []
+    for app_id in app_ids:
+        repo = "thealphakenya/qstream" if app_id == "qstream" else "thealphakenya/qmoi-enhanced"
+        doc = {
+            "qmoiaiui": "QMOIAI.md",
+            "qcity": "QCITY.md",
+            "qmoi-space": "QMOISPACE.md",
+            "qalpha": "QALPHA.md",
+            "qstream": "QSTREAM.md",
+        }[app_id]
+        name = app_id
+        qstore_rows.append(
+            f"| `{app_id}` ({name}) | app | [repository](https://github.com/{repo}) | [{doc}]({doc}) | unverified |"
+        )
+        link_rows.append(
+            f"| `{app_id}` ({name}) | [repository](https://github.com/{repo}) | [{doc}]({doc}) | unverified |"
+        )
+
+    platforms = "\n".join(f"### {platform}" for platform in (
+        "windows", "macos", "linux", "ios", "android", "web"
+    ))
+    (tmp_path / "QSTORE.md").write_text("\n".join(qstore_rows) + "\n" + platforms, encoding="utf-8")
+    (tmp_path / "APP_LINKS.md").write_text("\n".join(link_rows), encoding="utf-8")
+
+    report = LinkValidator(str(tmp_path)).validate_product_catalog()
+
+    assert report["passed"] is True
+    assert report["app_count"] == 5
+    assert len(report["platforms"]) == 6
+    assert report["remote_reachability_checked"] is False
+
+
+def test_validate_product_catalog_fails_closed_when_local_app_doc_is_missing(tmp_path):
+    from scripts.link_validator import LinkValidator
+
+    for name in (
+        "QSTREAM.md", "QMOIAI.md", "QCITY.md", "QMOISPACE.md", "QALPHA.md",
+        "QUANTUM.md", "QMOICLONEQUANTUM.md", "QMOICLONEVERCEL.md",
+        "QUANTUMPAYED.md", "VERCELPAYED.md", "MASTEROWNS.md", "STYLES.md",
+        "UNIVERSALS.md", "UNIVERSAL.md", "CLONE_PLATFORM_UI.md", "VERCELLINKS.md",
+    ):
+        (tmp_path / name).write_text("# Document\n", encoding="utf-8")
+    (tmp_path / "QSTORE.md").write_text(
+        "| `qstream` (QStream) | media | [repository](https://github.com/thealphakenya/qstream) | [QSTREAM.md](QSTREAM.md) | unverified |\n"
+        "\n".join(f"### {platform}" for platform in ("windows", "macos", "linux", "ios", "android", "web")),
+        encoding="utf-8",
+    )
+    (tmp_path / "APP_LINKS.md").write_text(
+        "| `qstream` (QStream) | [repository](https://github.com/thealphakenya/qstream) | [QSTREAM.md](QSTREAM.md) | unverified |",
+        encoding="utf-8",
+    )
+    (tmp_path / "QSTREAM.md").unlink()
+
+    report = LinkValidator(str(tmp_path)).validate_product_catalog()
+
+    assert report["passed"] is False
+    assert any("QSTREAM.md" in error for error in report["errors"])
+
+
+def test_validate_clone_platform_links_covers_qvillage_and_quantum(tmp_path):
+    from scripts.link_validator import LinkValidator
+
+    required_files = {
+        "QSTORE.md": "| `qstream` (QStream) | [repository](https://github.com/thealphakenya/qstream) | [QSTREAM.md](QSTREAM.md) | unverified |\n\n### windows\n### macos\n### linux\n### ios\n### android\n### web\n",
+        "APP_LINKS.md": "| `qstream` (QStream) | [repository](https://github.com/thealphakenya/qstream) | [QSTREAM.md](QSTREAM.md) | unverified |\n| `qvillage` (QVillage) | [repository](https://github.com/thealphakenya/qvillage) | [QVILLAGE.md](QVILLAGE.md) | Source reference |\n| `quantum` (Quantum) | [repository](https://github.com/thealphakenya/Alpha-Q-ai) | [QUANTUM.md](QUANTUM.md) | Hosted capability plan |",
+        "VERCELLINKS.md": "- Vercel: https://vercel.com\n- QVillage: https://github.com/thealphakenya/qvillage\n- Quantum: https://github.com/thealphakenya/Alpha-Q-ai\n",
+        "QVILLAGE.md": "# QVillage\n\nQVillage is linked at https://github.com/thealphakenya/qvillage and https://qvillage.qmoi.com.\n",
+        "QUANTUM.md": "# Quantum\n\nQuantum is linked at https://github.com/thealphakenya/Alpha-Q-ai and https://quantum.qmoi.com.\n",
+        "QSTREAM.md": "# QStream\n\nQStream source: https://github.com/thealphakenya/qstream\n",
+        "QMOICLONEVERCEL.md": "# Clone Vercel\n\nVercel clone: https://vercel.com\n",
+        "QMOICLONEQUANTUM.md": "# Clone Quantum\n\nQuantum clone: https://github.com/thealphakenya/Alpha-Q-ai\n",
+    }
+    for name, content in required_files.items():
+        (tmp_path / name).write_text(content, encoding="utf-8")
+
+    report = LinkValidator(str(tmp_path)).validate_clone_platform_links()
+
+    assert report["passed"] is True
+    assert "qvillage" in report["required_platforms"]
+    assert "quantum" in report["required_platforms"]
+    assert report["missing_links"] == []

@@ -242,6 +242,9 @@ pytest tests/test_ollama_enhanced_features.py::TestPlatformSpecificFeatures -v
 - [STYLES.md](STYLES.md) - Design systems & styling guide
 - [PLATFORM_REQUIREMENTS.md](PLATFORM_REQUIREMENTS.md) - Technical specifications
 - [OLLAMA_AUTOMATION_GUIDE.md](OLLAMA_AUTOMATION_GUIDE.md) - Agent documentation
+- [QSTORE.md](QSTORE.md) - QMOI app catalog and six-platform QStore UI requirements
+- [QSTREAM.md](QSTREAM.md) - QStream product specification and QMOI integration contract
+- [APP_LINKS.md](APP_LINKS.md) - Product source-repository link registry
 - [BUILD.md](BUILD.md) - Build procedures for all platforms
 - [INSTALL.md](INSTALL.md) - Installation guide
 - [DOWNLOAD.md](DOWNLOAD.md) - Download guide
