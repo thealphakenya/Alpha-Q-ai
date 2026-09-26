@@ -51,6 +51,18 @@ class QMOISecurityAutofix:
             "pytest==8.0.0": "pytest>=9.1.1",
             "pytest==8.1.0": "pytest>=9.1.1",
             "pytest==8.2.0": "pytest>=9.1.1",
+            "Flask==2.3.0": "Flask>=3.0.3",
+            "Flask==2.2.5": "Flask>=3.0.3",
+            "PyJWT==2.3.0": "PyJWT>=2.8.0",
+            "Werkzeug==2.3.0": "werkzeug>=3.0.1",
+            "werkzeug==2.3.0": "werkzeug>=3.0.1",
+            "cryptography==41.0.0": "cryptography>=43.0.0",
+            "cryptography==42.0.0": "cryptography>=43.0.0",
+            "pydantic==1.10.0": "pydantic>=1.10.18",
+            "fastapi==0.68.0": "fastapi>=0.109.1",
+            "aiohttp==3.8.0": "aiohttp>=3.9.5",
+            "stripe==5.0.0": "stripe>=10.0.0",
+            "coverage==7.0.0": "coverage>=7.6.1",
         }
 
         updated = text

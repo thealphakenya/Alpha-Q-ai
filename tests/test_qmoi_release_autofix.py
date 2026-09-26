@@ -97,6 +97,24 @@ def test_security_autofix_uplifts_known_vulnerable_python_deps(tmp_path: Path):
     assert "urllib3>=2.8.0" in updated
 
 
+def test_security_autofix_uplifts_common_stale_security_floors(tmp_path: Path):
+    req = tmp_path / "requirements.txt"
+    req.write_text(
+        "Flask==2.3.0\nPyJWT==2.3.0\nwerkzeug==2.3.0\ncryptography==41.0.0\n",
+        encoding="utf-8",
+    )
+
+    from scripts.qmoi_security_autofix import QMOISecurityAutofix
+
+    fix = QMOISecurityAutofix(root=tmp_path)
+    updated = fix.bump_known_vulnerable_packages(req.read_text(encoding="utf-8"))
+
+    assert "Flask>=3.0.3" in updated
+    assert "PyJWT>=2.8.0" in updated
+    assert "werkzeug>=3.0.1" in updated
+    assert "cryptography>=43.0.0" in updated
+
+
 def test_security_autofix_emits_report_for_auto_healing(tmp_path: Path):
     req = tmp_path / "requirements.txt"
     req.write_text(
