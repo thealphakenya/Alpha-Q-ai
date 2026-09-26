@@ -36,6 +36,7 @@ from ollama_autonomous_agent import (
     detect_resume_file_origin,
     update_resume_file_metadata,
 )
+from git_execution_manager import GitExecutionManager
 from realtime_workflow_monitor import WorkflowMonitor
 
 
@@ -60,6 +61,40 @@ class TestResumeFileTracking:
         origin = detect_resume_file_origin(tmp_path)
         assert origin["source"] == "manual"
         assert origin["changed"] is True
+
+
+class TestGitExecutionManager:
+    def test_verify_remote_state_fetches_latest_remote_changes(self, tmp_path):
+        remote_dir = tmp_path / "remote.git"
+        subprocess.run(["git", "init", "--bare", str(remote_dir)], check=True, stdout=subprocess.DEVNULL)
+
+        repo_a = tmp_path / "repo_a"
+        repo_b = tmp_path / "repo_b"
+        subprocess.run(["git", "clone", str(remote_dir), str(repo_a)], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run(["git", "clone", str(remote_dir), str(repo_b)], check=True, stdout=subprocess.DEVNULL)
+
+        for repo in (repo_a, repo_b):
+            subprocess.run(["git", "-C", str(repo), "config", "user.name", "QMOI Test"], check=True)
+            subprocess.run(["git", "-C", str(repo), "config", "user.email", "qmoitest@example.com"], check=True)
+
+        (repo_a / "README.md").write_text("initial\n", encoding="utf-8")
+        subprocess.run(["git", "-C", str(repo_a), "add", "README.md"], check=True)
+        subprocess.run(["git", "-C", str(repo_a), "commit", "-m", "initial commit"], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run(["git", "-C", str(repo_a), "branch", "-M", "main"], check=True)
+        subprocess.run(["git", "-C", str(repo_a), "push", "origin", "main"], check=True, stdout=subprocess.DEVNULL)
+
+        (repo_a / "fresh.txt").write_text("new remote content\n", encoding="utf-8")
+        subprocess.run(["git", "-C", str(repo_a), "add", "fresh.txt"], check=True)
+        subprocess.run(["git", "-C", str(repo_a), "commit", "-m", "add fresh file"], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run(["git", "-C", str(repo_a), "push", "origin", "main"], check=True, stdout=subprocess.DEVNULL)
+
+        manager = GitExecutionManager(repo_b)
+        branch_state = manager.verify_remote_branch("main", "", remote="origin")
+        file_state = manager.verify_remote_files("main", ["fresh.txt"], remote="origin")
+
+        assert branch_state["verified"] is True
+        assert file_state["verified"] is True
+        assert file_state["missing"] == []
 
 
 class TestCrossRepositoryAutonomyManager:

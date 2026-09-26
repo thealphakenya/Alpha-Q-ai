@@ -20,8 +20,18 @@ class GitExecutionManager:
             raise GitExecutionError(result.stderr.strip() or "git command failed")
         return result.stdout.strip()
 
+    def fetch_remote(self, remote: str = "origin", branch: str | None = None) -> str:
+        args = ["fetch", "--prune", remote]
+        if branch:
+            args.extend(["refs/heads/" + branch])
+        return self.run(*args, check=False)
+
     def prepare_commit(self) -> dict[str, Any]:
-        return {"before_sha": self.run("rev-parse", "HEAD", check=False) or None, "branch": self.run("branch", "--show-current", check=False) or None, "changed_files": self.run("status", "--short", check=False).splitlines()}
+        return {
+            "before_sha": self.run("rev-parse", "HEAD", check=False) or None,
+            "branch": self.run("branch", "--show-current", check=False) or None,
+            "changed_files": self.run("status", "--short", check=False).splitlines(),
+        }
 
     def create_commit(self, message: str, paths: Iterable[str]) -> str:
         paths = tuple(paths)
@@ -40,13 +50,22 @@ class GitExecutionManager:
         return self.run("rev-parse", "HEAD")
 
     def verify_remote_branch(self, branch: str, expected_sha: str, remote: str = "origin") -> dict[str, Any]:
-        remote_sha = self.run("ls-remote", remote, f"refs/heads/{branch}", check=False).split()[0] if self.run("ls-remote", remote, f"refs/heads/{branch}", check=False) else None
-        return {"branch": branch, "expected_sha": expected_sha, "remote_sha": remote_sha, "verified": bool(remote_sha and remote_sha == expected_sha)}
+        self.fetch_remote(remote=remote, branch=branch)
+        ls_remote = self.run("ls-remote", remote, f"refs/heads/{branch}", check=False)
+        remote_sha = ls_remote.split()[0] if ls_remote else None
+        if not remote_sha:
+            return {"branch": branch, "expected_sha": expected_sha, "remote_sha": None, "verified": False}
+        if not expected_sha:
+            return {"branch": branch, "expected_sha": expected_sha, "remote_sha": remote_sha, "verified": True}
+        return {"branch": branch, "expected_sha": expected_sha, "remote_sha": remote_sha, "verified": remote_sha == expected_sha}
 
     def verify_remote_files(self, branch: str, paths: Iterable[str], remote: str = "origin") -> dict[str, Any]:
+        self.fetch_remote(remote=remote, branch=branch)
+        remote_ref = f"refs/remotes/{remote}/{branch}"
         missing: list[str] = []
         for path in paths:
-            probe = self.run("cat-file", "-e", f"{remote}/{branch}:{path}", check=False)
-            if not probe and self.run("ls-tree", "-r", "--name-only", f"{remote}/{branch}", check=False).find(path) < 0:
+            probe = self.run("cat-file", "-e", f"{remote_ref}:{path}", check=False)
+            tracked = self.run("ls-tree", "-r", "--name-only", remote_ref, check=False)
+            if not probe and path not in tracked.splitlines():
                 missing.append(path)
         return {"branch": branch, "paths": list(paths), "missing": missing, "verified": not missing}
