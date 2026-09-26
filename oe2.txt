@@ -40,8 +40,9 @@ Status: LOCAL VALIDATION GREEN; GITHUB APP IS AUTHENTICATED, INSTALLED, AND DISP
 - Fresh focused proof regression command: `pytest tests/test_ollama_autonomous_agent.py -k test_agent_builds_github_proof_contract -q`
   returned `1 passed, 101 deselected in 14.11s`.
 - Broader adjacent validation (`pytest tests/test_ollama_autonomous_agent.py tests/test_ollama_runtime.py -q`)
-  reached the expected progress marker but did not complete within the active shell timeout; no code failure was
-  surfaced, and this remains a runtime/environment-limited validation gap rather than a proven product regression.
+  returned `120 passed in 225.24s (0:03:45)`.
+- Normal branch publication succeeded: `git push origin main` completed successfully after fetch/rebase, and the current repo HEAD and `origin/main` both resolve to `0f9cb950fff1df00b9d8329b8d5ca976b18690bf`.
+- Local generated and user-preserved worktree edits remain present in the worktree after the push; they were restored from the temporary stash without overriding the preserved content, so the remote branch is synchronized while the local uncommitted files remain available for continued work.
 - The live remote continuation state remains active and authenticated in the repo root, but the final target-owned
   workflow conclusions and exact remote SHAs remain the authoritative completion gate. No remote completion claim is
   made beyond the validated local proof regression and the active remote workflow observation.
