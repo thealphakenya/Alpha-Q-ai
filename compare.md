@@ -68,6 +68,40 @@ The autonomous agent must inspect and keep synchronized all relevant docs, featu
 | Model Card/UI Sync | model version, health, status, evidence timestamp, QVillage UI parity | [QVILLAGE.md](QVILLAGE.md), model card update pipeline |
 | Evolution Tracking | progression state, milestone coverage, auto-upgrade readiness | [MODELEVOLUTIONO.md](MODELEVOLUTIONO.md) |
 
+### Automated metric coverage and accuracy contract
+
+The autonomous agent must never treat comparison metrics or trading metrics as a summary-only checklist. Every metric in this file and in [Qtrade.md](Qtrade.md) must be validated through a closed-loop evidence contract:
+
+1. Map each metric to a source-of-truth data stream, benchmark, log, adapter, or document.
+2. Compute the metric from fresh evidence; if evidence is missing, stale, or unverified, mark it `blocked` instead of `pass`.
+3. Validate the metric against the expected range, direction, and calibration standard for the category.
+4. Require a confidence check for any model or signal claim; high confidence without historical calibration is a failure state.
+5. Publish the same verified value to the model card, QVillage UI, and the comparison ledger so all surfaces stay consistent.
+6. Record any stale, missing, or contradictory source and require a human review before promoting the value to a best-in-class claim.
+7. Keep [compare.md](compare.md) and [Qtrade.md](Qtrade.md) in sync after every new model update, trade strategy change, or platform feature addition.
+
+The agent must explicitly cover every category below without omission:
+
+- Model intelligence: reasoning, logical reasoning, mathematical reasoning, planning, calibration, contradiction detection, self-correction, hallucination rate.
+- Knowledge quality: breadth, depth, freshness, uncertainty handling, factuality, citation quality, source grounding, and ability to say `I don't know`.
+- Coding quality: generation accuracy, debugging, refactoring, repository understanding, test generation, security remediation, dependency management, CI/CD support, Git/GitHub skill, and autonomous task completion.
+- Instruction following: long-form instruction compliance, style adherence, constraint tracking, nested instruction handling, and multi-step workflow execution.
+- Context and memory: token retention, long-context comprehension, cross-file reasoning, long-term memory accuracy, and retrieval consistency.
+- Accuracy and reliability: repeatability, calibration, error detection rate, false positive and false negative rates, and answer consistency.
+- Speed and efficiency: latency, compute cost, token cost, total task completion time, and performance per dollar or watt.
+- Tool-use competence: API correctness, browser/tool reliability, file operations, terminal operation, Git usage, and autonomous recovery from failure.
+- Trading intelligence: market regime detection, trend detection, momentum, mean reversion, volatility, liquidity, order-book analysis, news/event awareness, regime switching, and no-trade accuracy.
+- Profitability: net profit, gross profit, realized and unrealized P&L, profit factor, win rate, expectancy, Sharpe, Sortino, Calmar, return on capital, and strategy/asset/exchange performance.
+- Risk management: maximum drawdown, VaR, expected shortfall, leverage, liquidation distance, exposure limits, stop-loss quality, risk per trade, and portfolio concentration.
+- Execution quality: slippage, spread, latency, partial fill handling, order rejection handling, implementation shortfall, and execution fallback quality.
+- Exchange capability: authentication, API health, market data reliability, balance sync, position sync, fee awareness, rate-limit handling, emergency shutdown, and reconciliation.
+- Capital management: available capital, reserve capital, idle capital, position sizing, diversification, and capital utilization under safe constraints.
+- Funding safety: whitelisted accounts, daily/monthly transfer limits, wallet validation, financial controls, and audit logging.
+- Model-card/UI sync: versioning, timestamping, evidence-backed status, and cross-surface parity between the repo, model card, and QVillage UI.
+- Evolution tracking: milestone completion, migration readiness, and safe auto-upgrade monitoring.
+
+This is the required automation standard for every metric in this file and every metric in [Qtrade.md](Qtrade.md): if the metric is not fresh, validated, and source-backed, it is not part of the final QMOI claim.
+
 ### Required autonomous workflow
 
 1. Inventory all trading and model references from repository docs and active runtime surfaces.

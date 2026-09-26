@@ -24,6 +24,29 @@ Position-sizing decisions
 Strategy selection
 Strategy switching
 Ability to recognize when not to trade
+
+### Automated coverage and accuracy rules for every trading metric
+
+The autonomous system must not treat any trading metric as optional or estimated. Every metric in this file must be covered by a dedicated accuracy gate before the system can claim a trade strategy or exchange integration is mature.
+
+For every trading metric and sub-metric below, the agent must:
+
+- map it to a fresh source-of-truth dataset or execution log;
+- compute the metric from actual evidence, not inferred values;
+- reject stale or missing data by marking the metric `blocked`;
+- validate it against a confidence threshold and risk threshold before scaling capital;
+- publish the verified value to the model card and trading ledger;
+- update the platform surface and QVillage UI only after the same evidence is reflected there;
+- keep this file and [compare.md](compare.md) synchronized with every strategy or model change.
+
+The following controls are mandatory for all trading features:
+
+- no-trade intelligence is required on every strategy and must be evaluated as a first-class metric;
+- strategy selection must be gated by regime quality, liquidity quality, and execution confidence;
+- risk-adjusted return must be required before any strategy receives automated scaling or increased leverage;
+- exchange-specific validation must be performed before enabling market order routing or funding actions;
+- every capital and funding action must pass identity, account, balance, risk, and policy checks before execution.
+
 2. Profitability
 Track actual results rather than merely model confidence:
 Net profit

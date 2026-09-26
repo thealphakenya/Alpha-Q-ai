@@ -9,6 +9,7 @@
 - Remote `origin/main` SHA: `ea2c878dc5e742668de6d05db340e951a69a8100` from `git ls-remote --heads origin main`.
 - Push status: `git push origin main` succeeded for the current branch.
 - Current GitHub workflow evidence: the push triggered `Security and Merge Gates` (`failure`), `Markdown Inventory Refresh` (`failure`), `QMOI Bidirectional Cross-Repository Autosync` (`failure`), `Ollama PR Validation - 293+ Platform Features` (`in_progress`), and `QMOI Live Activity Stream` (`success`).
+- Expanded automation scope: [compare.md](compare.md) and [Qtrade.md](Qtrade.md) now explicitly require a fail-closed, source-backed validation loop for every comparison metric and every trading metric before QMOI may claim improvement, trading profitability, or model superiority.
 - Current state: `PUSHED_LOCAL_VALIDATION_GREEN_REMOTE_COMPLETION_PENDING`. The branch is published successfully, the local validation remains green, but remote completion remains blocked until the target-owned workflow failures are investigated and the final exact remote checks complete. No final remote completion claim is made.
 
 ## 2026-09-26 local doc sync and trading-model review

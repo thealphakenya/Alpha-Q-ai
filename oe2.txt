@@ -1,5 +1,17 @@
 ## Continuation checkpoint (2026-09-26)
 
+Status: LOCAL VALIDATION GREEN; METRIC-COVERAGE EXPANSION AND TRADING AUTOMATION ENHANCED; REMOTE COMPLETION IS STILL PENDING FINAL TARGET-OWNED WORKFLOW CONCLUSIONS AND EXACT SHAS.
+
+- Expanded the autonomous agent contract in [compare.md](compare.md) and [Qtrade.md](Qtrade.md) so every metric in the comparison framework and every trading requirement are explicitly covered without omission.
+- Added a fail-closed metric coverage rule: missing, stale, or uncalibrated data must be marked `blocked` rather than treated as a successful result.
+- Added mandatory automation checks for every compare.md category and every Qtrade.md metric family, including confidence calibration, no-trade intelligence, execution quality, risk-adjusted return, exchange capability, capital management, and funding safety.
+- Kept [QMOI_MODEL_CARD.md](QMOI_MODEL_CARD.md), [QVILLAGE.md](QVILLAGE.md), and the compare/trading docs synchronized so all surfaces reflect the same validated evidence.
+- The current branch remains validated locally but still requires remote workflow proof before any final completion claim is made.
+
+- Local validation is green: `python scripts/ollama_autonomous_agent.py validate-all` returned `{"status": "ready_for_github", "platforms": 6, "apps": 4, "feature_count": 404}`.
+- Local test validation passed: `pytest tests/test_ollama_autonomous_agent.py -q` returned `104 passed in 100.62s`.
+- The repository remains in the same safe evidence gate: local green, remote completion still pending, and no automatic claim of remote completion is made.
+
 Status: PUSHED AND LOCAL VALIDATION GREEN; REMOTE COMPLETION IS STILL PENDING FINAL TARGET-OWNED WORKFLOW CONCLUSIONS AND EXACT SHAS.
 
 - Local validation is green: `python scripts/ollama_autonomous_agent.py validate-all` returned `{"status": "ready_for_github", "platforms": 6, "apps": 4, "feature_count": 404}`.
