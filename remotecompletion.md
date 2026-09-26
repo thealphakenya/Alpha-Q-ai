@@ -7,14 +7,17 @@
 - Verified remote state: the restored GitHub App key is active, `GET /app` returned HTTP 200,
   installation discovery returned HTTP 200 for both target repos, and installation token mint
   returned HTTP 201 for both repos.
-- The App is now dispatching target-owned workflows for `thealphakenya/Alpha-Q-ai` and
-  `thealphakenya/qmoi-enhanced`; the latest observed runs include `QMOI Live Activity Stream`
-  (`in_progress`), `Ollama PR Validation - 293+ Platform Features` (`in_progress`), and
-  `QMOI Bidirectional Cross-Repository Autosync` (`pending`) for the primary repo, while the
-  enhanced repo shows in-flight and completed workflow activity after the push.
+- Fresh remote workflow check confirms the App is actively dispatching and processing evidence on
+  both repos. On `thealphakenya/Alpha-Q-ai`, the latest run list shows `Push on main` as
+  `in_progress`, `QMOI Live Activity Stream` as `completed success`, and `Ollama Live Activity Stream`
+  as `completed success`; `Ollama Autonomous Agent - PR Realtime Tracker` is still `in_progress`.
+  On `thealphakenya/qmoi-enhanced`, recent activity includes `Branch Sync Monitor & Auto-Update`
+  as `completed skipped`, `Workflow Status Tracker` as `completed success`, and a prior
+  `QMOI Bidirectional Cross-Repository Autosync` as `completed failure`.
 - Local repo state is green and the current branch has been pushed to `origin/main`; no local-only
   completion claim is made. The next required proof is terminal workflow conclusion plus exact
-  remote SHAs for the final trusted state.
+  remote SHAs for the final trusted state, especially for the cross-repo autosync and live tracker
+  flows that are still in transition.
 - The style, universal access, merge, and clone-platform automation plan remains active and
   synchronized across `STYLES.md`, `UNIVERSALS.md`, `MERGE.md`, `ALLFRONTEND.md`,
   `ALLBACKEND.md`, `APP_LINKS.md`, `QSTORE.md`, `QSTREAM.md`, and the managed platform inventory.
