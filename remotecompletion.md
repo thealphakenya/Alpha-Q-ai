@@ -2,28 +2,30 @@
 
 ## Continuation status — 2026-09-26
 
-- Local implementation remains in a validated state: the targeted QMOI validation
-  path passed, the repo-level agent validation remains green, and the managed-doc
-  style/local proof contract is intact.
-- Verified today: the active GitHub session is user-authenticated as
-  `qmoialpha-star` via `GITHUB_TOKEN`, not the GitHub App. The App credential file
-  exists, but the required replacement private key is missing.
-- The remaining blocker is external GitHub App authorization and target-owned
-  workflow proof. No remote completion claim is valid without a fresh authorized
-  installation token and exact remote SHA.
-- The style, universal access, merge, and clone-platform automation plan remains
-  active and synchronized across `STYLES.md`, `UNIVERSALS.md`, `MERGE.md`,
-  `ALLFRONTEND.md`, `ALLBACKEND.md`, and the link catalog suite.
-- The system continues to inventory all cloned and hosted surfaces, including
-  QCity, QMOI AI, Quantum, QVillage, QStore, QStream, GitHub/GitLab/Netlify/
-  Vercel/Hugging Face/Gitpod-derived surfaces, and any additional platform found
-  in the historical merge inventory.
-- The active agent must continue until every app has an identity, feature
-  contract, access class, link, and style layer that are internally consistent.
-- Next remote action: rotate the compromised App private key in GitHub settings,
-  install the replacement at `$HOME/.config/alpha-q-ai/github-app/private-key.pem`
-  with mode `600`, verify `/app` and repository installation read-only,
-  then continue the remote automation and push flow.
+- Current local validation is green: `python scripts/ollama_autonomous_agent.py validate-all`
+  returned `{"status": "ready_for_github", "platforms": 6, "apps": 4, "feature_count": 404}`.
+- Verified remote state: the restored GitHub App key is active, `GET /app` returned HTTP 200,
+  installation discovery returned HTTP 200 for both target repos, and installation token mint
+  returned HTTP 201 for both repos.
+- The App is now dispatching target-owned workflows for `thealphakenya/Alpha-Q-ai` and
+  `thealphakenya/qmoi-enhanced`; the latest observed runs include `QMOI Live Activity Stream`
+  (`in_progress`), `Ollama PR Validation - 293+ Platform Features` (`in_progress`), and
+  `QMOI Bidirectional Cross-Repository Autosync` (`pending`) for the primary repo, while the
+  enhanced repo shows in-flight and completed workflow activity after the push.
+- Local repo state is green and the current branch has been pushed to `origin/main`; no local-only
+  completion claim is made. The next required proof is terminal workflow conclusion plus exact
+  remote SHAs for the final trusted state.
+- The style, universal access, merge, and clone-platform automation plan remains active and
+  synchronized across `STYLES.md`, `UNIVERSALS.md`, `MERGE.md`, `ALLFRONTEND.md`,
+  `ALLBACKEND.md`, `APP_LINKS.md`, `QSTORE.md`, `QSTREAM.md`, and the managed platform inventory.
+- The system continues to inventory all cloned and hosted surfaces, including QCity, QMOI AI,
+  Quantum, QVillage, QStore, QStream, GitHub/GitLab/Netlify/Vercel/Hugging Face/Gitpod-derived
+  surfaces, and any additional platform found in the historical merge inventory.
+- The active agent must continue until every app has an identity, feature contract, access class,
+  link, and style layer that are internally consistent.
+- Current remote status: `AUTHORIZED_REMOTE_CONTINUATION_ACTIVE` — the App is valid and dispatching,
+  but remote completion remains evidence-gated until the final workflows finish and the exact remote
+  SHAs are confirmed.
 
 ## Remote Completion Runbook — Advanced Dual-Repository Autonomous Low-Bandwidth Edition
 

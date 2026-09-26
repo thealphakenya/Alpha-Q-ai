@@ -1,6 +1,6 @@
 # QMOI Model Card
 
-**Generated:** 2026-09-26T01:42:24.951681Z
+**Generated:** 2026-09-26T01:45:11.580719Z
 **Status:** Evidence-tracked; production status requires the final completion gate.
 
 ## Overview
