@@ -1,6 +1,6 @@
 # QMOI Model Card
 
-**Generated:** 2026-09-26T03:12:40.514504Z
+**Generated:** 2026-09-26T04:21:48.271091Z
 **Status:** Evidence-tracked; production status requires the final completion gate.
 
 ## Overview
@@ -46,7 +46,7 @@ The autonomous agent continuously updates model datasets, dataset manifests, and
 ## Model and Merge Evidence
 
 - Master-plan topics discovered: 208
-- Active repository files inventoried: 10834
+- Active repository files inventoried: 10842
 - Alpha source tree available: True
 - QMOI history source available: True
 - Model-test paths: Alpha-Q-ai-2025/models/latest/qmoi_enhanced_advanced_model.py, Alpha-Q-ai-2025/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/QMOIMODELTESTS.md, qmoi-enhanced-history-14/__tests__/chatbot.model.test.tsx, qmoi-enhanced-history-14/__tests__/ci.no-model-selector.test.ts, qmoi-enhanced-history-14/__tests__/qmoi-model.route.test.ts, qmoi-enhanced-history-14/_archive_qmoi-enhanced/models/latest/qmoi_enhanced_advanced_model.py, qmoi-enhanced-history-14/_archive_qmoi-enhanced/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/models/latest/qmoi_enhanced_advanced_model.py, qmoi-enhanced-history-14/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/tests/test_hf_model_sync.py, qmoi-enhanced-history-14/tests/test_qmoi_model_enhancer.py, qmoi-enhanced-history-14/tests/test_update_model_card.py, qmoi-enhanced-history-14/tools/issue_drafts/0604_models_latest_README.md.md, qmoi-enhanced-history-14/tools/issue_drafts/0936_qmoi-enhanced_models_latest_README.md.md
@@ -80,8 +80,6 @@ Best-model claim is pending independent benchmark validation; no proven top-rank
     evidence fields to the QVillage model surface only after validation passes.
 - Missing credentials, remote failures, or incomplete tests remain visible as
     blocked evidence; they must never be represented as healthy completion.
-- Trading-state visibility: Binance, Bitget, CashOn, and any other verified exchange must be shown with safe/sandbox/live status, risk gating, and audit trail state.
-- Comparison-state visibility: the QVillage and model-card views must reflect the same benchmark, safety, and risk-adjusted-trading metrics described in the repository comparison framework.
 
 ## Model-card UI and evolution plan
 
@@ -89,24 +87,6 @@ Best-model claim is pending independent benchmark validation; no proven top-rank
 - ensure public and authenticated states remain separate and validated
 - show memory recovery, dataset lineage, and security automation visibly rather than burying them behind hidden metadata
 - list the benchmark gate, validation status, and the strongest known QMOI advantages in a single view
-
-## Trading, comparison, and evolution enhancement contract
-
-QMOI's autonomous enhancement loop must maintain four synchronized layers at all times:
-
-1. model capability and comparison evidence
-2. trading platform safety and execution quality
-3. dataset and memory provenance
-4. QVillage/UI visibility of the same evidence
-
-The automation loop is considered valid only when:
-
-- [compare.md](compare.md) remains aligned with the model card and benchmark evidence
-- [Qtrade.md](Qtrade.md) remains aligned with the real risk, execution, and capital rules
-- [MODELEVOLUTIONO.md](MODELEVOLUTIONO.md) tracks the production and automation milestones without overstating completion
-- [QVILLAGE.md](QVILLAGE.md) displays the same status truthfully and visibly
-
-The agent must continue to improve QMOI across trading, surveillance, and model evolution while preserving safety, fail-safe controls, and evidence-backed behavior.
 
 ## Validation Contract
 
