@@ -1,5 +1,22 @@
 # Remote Completion Runbook — Advanced Dual-Repository Autonomous Low-Bandwidth Edition
 
+## Fresh continuation evidence — 2026-09-26 03:35 UTC
+
+- Local repo state: `git status --short --branch` shows `main...origin/main [behind 6]`.
+- Local validation: `pytest tests/test_ollama_autonomous_agent.py -q` returned `104 passed in 100.46s`.
+- Repo-level validation: `python scripts/ollama_autonomous_agent.py validate-all` returned `{"status": "ready_for_github", "platforms": 6, "apps": 4, "feature_count": 404}`.
+- Local HEAD: `56b960996b8ef2162776b690fec34023a257a4ef`.
+- Remote `origin/main` SHA: `8465da0d3c151ce336db62f04c5bd5f6f46cb5c9` from `git ls-remote --heads origin main`.
+- Recent GitHub workflow observation: both target repos show `Push on main` as `in_progress`, while their live tracker streams are `completed success` on recent runs. This confirms the workflow path is live, but it does not prove the final remote completion state.
+- Current state: `LOCAL_READY_REMOTE_COMPLETION_PENDING`. The local validation remains green, the repo remains behind `origin/main` by six commits, and remote completion remains gated on the final target-owned workflow conclusion plus exact final SHAs. No final remote completion claim is made.
+
+## 2026-09-26 local doc sync and trading-model review
+
+- Updated the operational comparison and trading framework in [compare.md](compare.md), [Qtrade.md](Qtrade.md), [QVILLAGE.md](QVILLAGE.md), and [QMOI_MODEL_CARD.md](QMOI_MODEL_CARD.md) to keep the model-card, trading-risk, and QVillage UI states synchronized.
+- The current QMOI enhancement standard now explicitly covers: Bitget, Binance, CashOn, risk-adjusted trading metrics, model-card evidence gates, QVillage UI parity, dataset and memory provenance, and the requirement to keep [compare.md](compare.md) and [Qtrade.md](Qtrade.md) current after every substantive change.
+- The automation loop remains safety-first: no live-money action, no model-card claim without evidence, no QVillage green state without matching repo truth, and no claim of best-in-class status without benchmark or validation proof.
+- Local evidence status: documentation and trading-model synchronization are complete for the current working branch. The remaining gate is branch publication and final remote workflow verification. This is not a remote completion claim.
+
 ## Continuation status — 2026-09-26
 
 - Current local validation is green: `python scripts/ollama_autonomous_agent.py validate-all`

@@ -1,6 +1,6 @@
 # QMOI Model Card
 
-**Generated:** 2026-09-26T02:43:12.544272Z
+**Generated:** 2026-09-26T03:12:40.514504Z
 **Status:** Evidence-tracked; production status requires the final completion gate.
 
 ## Overview
@@ -46,7 +46,7 @@ The autonomous agent continuously updates model datasets, dataset manifests, and
 ## Model and Merge Evidence
 
 - Master-plan topics discovered: 208
-- Active repository files inventoried: 10831
+- Active repository files inventoried: 10834
 - Alpha source tree available: True
 - QMOI history source available: True
 - Model-test paths: Alpha-Q-ai-2025/models/latest/qmoi_enhanced_advanced_model.py, Alpha-Q-ai-2025/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/QMOIMODELTESTS.md, qmoi-enhanced-history-14/__tests__/chatbot.model.test.tsx, qmoi-enhanced-history-14/__tests__/ci.no-model-selector.test.ts, qmoi-enhanced-history-14/__tests__/qmoi-model.route.test.ts, qmoi-enhanced-history-14/_archive_qmoi-enhanced/models/latest/qmoi_enhanced_advanced_model.py, qmoi-enhanced-history-14/_archive_qmoi-enhanced/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/models/latest/qmoi_enhanced_advanced_model.py, qmoi-enhanced-history-14/models/latest/qmoi_enhanced_model.py, qmoi-enhanced-history-14/tests/test_hf_model_sync.py, qmoi-enhanced-history-14/tests/test_qmoi_model_enhancer.py, qmoi-enhanced-history-14/tests/test_update_model_card.py, qmoi-enhanced-history-14/tools/issue_drafts/0604_models_latest_README.md.md, qmoi-enhanced-history-14/tools/issue_drafts/0936_qmoi-enhanced_models_latest_README.md.md
