@@ -27,6 +27,25 @@ Status: LOCAL VALIDATION GREEN; GITHUB APP IS AUTHENTICATED, INSTALLED, AND DISP
   automation loop, and keep `remotecompletion.md` and `oe2.txt` synchronized with the next verified
   remote evidence.
 
+### 2026-09-26 Vercel resource-limit remediation and automation plan
+
+- The project `alpha-q-ai` hit a hard Vercel quota condition: `Resource is limited - try again in 24 hours (more than 100, code: "api-deployments-free-per-day")`.
+- The repo now records the root cause as a free-tier deployment quota blocker, not as a code or app-bug failure, and the remediation plan is to route QMOI through paid-tier or multi-project failover orchestration.
+- The Vercel automation plan has been expanded in [VERCELPAYED.md](VERCELPAYED.md) and [QMOICLONEVERCEL.md](QMOICLONEVERCEL.md) to cover duplicate deploy prevention, deployment dedupe, production failover, clone project rotation, static-cache fallback, and a no-op queue for unchanged deploys.
+- The intended policy is: QMOI must never depend on a single free-tier Vercel project; every clone and auto-cloned platform must have a failover chain, a paid entitlement or team account, and a monitored quota-rotation strategy so free-tier throttles do not stop the deployment fabric.
+- This is documented as an operational automation guarantee, not as a claim that free-tier Vercel is unlimited. Unlimited resources are achieved through provider rotation, failover, artifact caching, and paid entitlement validation.
+
+### 2026-09-26 local continuation update
+
+- Fresh focused proof regression command: `pytest tests/test_ollama_autonomous_agent.py -k test_agent_builds_github_proof_contract -q`
+  returned `1 passed, 101 deselected in 14.11s`.
+- Broader adjacent validation (`pytest tests/test_ollama_autonomous_agent.py tests/test_ollama_runtime.py -q`)
+  reached the expected progress marker but did not complete within the active shell timeout; no code failure was
+  surfaced, and this remains a runtime/environment-limited validation gap rather than a proven product regression.
+- The live remote continuation state remains active and authenticated in the repo root, but the final target-owned
+  workflow conclusions and exact remote SHAs remain the authoritative completion gate. No remote completion claim is
+  made beyond the validated local proof regression and the active remote workflow observation.
+
 ## Persistent Copilot Chat GitHub App Authentication Rules (2026-09-25)
 
 Every future Copilot Chat session operating on this repository must follow the auto-loaded `.github/copilot-instructions.md` and `AGENTS.md`, then consult this section and the current credential notes in `githubapp.md` and `or.md` before attempting GitHub App authentication. Those Markdown files contain locations and status only; never add, print, quote, or copy secret values into them, terminal output, prompts, telemetry, or evidence.
