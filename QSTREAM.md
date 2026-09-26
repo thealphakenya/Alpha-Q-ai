@@ -4279,3 +4279,17 @@ The platform should be able to tell the difference between:
 That distinction is what makes the search and availability system trustworthy.
 
 Qstream — Entertainment powered by QMOI.
+
+<!-- BEGIN QMOI MANAGED: qstream-qmoi-integration -->
+## QMOI Agent and QStore Integration
+
+The autonomous agent preserves this specification and refreshes only the managed section below during each validation pipeline.
+
+- QStream is cataloged by QStore and its source repository is [thealphakenya/qstream](https://github.com/thealphakenya/qstream).
+- The QStore catalog and cross-platform UI requirements are maintained in [QSTORE.md](QSTORE.md).
+- Public guest and authenticated account surfaces follow the shared access contract in [UNIVERSAL.md](UNIVERSAL.md) and [UNIVERSALS.md](UNIVERSALS.md).
+- QMOI product repository links are maintained in [APP_LINKS.md](APP_LINKS.md). Repository identity is not proof of a live web, app-store, or download URL.
+- Managed QStore catalog apps: qmoiaiui, qcity, qmoi-space, qalpha, qstream.
+- Platform UI coverage tracked: windows, macos, linux, ios, android, web.
+- Source repositories outside the current checkout remain implementation-unverified until their exact remote SHA and target-owned checks are inspected.
+<!-- END QMOI MANAGED: qstream-qmoi-integration -->
