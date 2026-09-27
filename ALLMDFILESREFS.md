@@ -192,6 +192,16 @@ The agent must confirm that every required markdown file is accounted for in thi
 - Directories: .github, scripts, tests, QMOItracks, and the repo root itself
 - Generated/runtime files: `QMOI_agent.log`, `resumefromhere.txt`, and memory index artifacts must remain present but are considered runtime outputs rather than authoritative source files
 
+### Qtrade directory tree coverage and adjacency rule
+The file `Qtrade.md` is located in the repository root. Because the repository root is the common directory for this file, every Markdown file in that root and in all descendant directories under the same root path is counted as part of the active Qtrade adjacency inventory.
+
+This means the complete root-level tree under the same directory as `Qtrade.md` is included in the canonical inventory for both the active repo and its mirrored historical repo content. The coverage includes:
+- all root-level Markdown files such as `Qtrade.md`, `compare.md`, `TRADINGREADME.md`, `FINANCIALMANAGER.md`, `MODEL_CARD.md`, and related trading docs
+- all Markdown files in the repo root subdirectories, including `.github`, `scripts`, `tests`, `QMOItracks`, and any active runtime or helper folders under the same parent directory
+- all materialized historical or snapshot files under the available `qmoi-enhanced-history-14` mirror, which is treated as the current workspace embodiment of the `qmoi-enhanced` repository for merge, inventory, and automation parity checks
+
+This inventory is therefore present in both the live `Alpha-Q-ai` repo (this workspace) and the materialized `qmoi-enhanced` archive mirror (`qmoi-enhanced-history-14`) as an authoritative coverage record. The canonical live repo remains the source of truth, while the mirrored archive remains a parity snapshot used for historical comparison and merge validation.
+
 ### autonomous development agent Artifact Inventory
 | Artifact | Role | Notes |
 |---------|------|-------|

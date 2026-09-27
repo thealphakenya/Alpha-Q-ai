@@ -29,6 +29,14 @@ This repository must continue to operate in a browser-safe, low-bandwidth, remot
 
 This contract is intentionally designed to support a low-bundle, long-session browser workflow while preserving repository fidelity, merge safety, automation coverage, and valid remote-first completion gates.
 
+## Qtrade directory adjacency and markdown inventory rule (2026-09-27)
+
+The file `Qtrade.md` resides in the repository root. The same directory and all descendant directories under that root are therefore part of the same markdown inventory boundary. Every `.md` file in that entire root tree must be recorded in `ALLMDFILESREFS.md`, whether it is a root doc, a docs subfolder file, a runtime/generated doc, a .github markdown file, a script helper file, or a historical snapshot file.
+
+This rule is now enforced for both the live `Alpha-Q-ai` repository in this workspace and the materialized `qmoi-enhanced` mirror represented here by `qmoi-enhanced-history-14`. All Markdown coverage is treated as repo-aware and source-backed; live files stay canonical, and mirrored historical files remain valid parity references and merge inputs.
+
+The user specifically required: all `.md` files in the same directory as `Qtrade.md` and all `.md` files in every subdirectory under that same root must appear in the canonical markdown inventory; the inventory must remain available in both repo states; and no markdown file in the active tree should be omitted from `ALLMDFILESREFS.md` or the repo evidence docs.
+
 ## Automation-safe low-bandwidth plan (2026-09-27)
 
 The low-bandwidth mode must be treated as a UX and sync optimization, not as a way to disable or weaken automation. The following rules preserve all intended automation features while keeping the browser and Codespace light:

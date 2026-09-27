@@ -16,6 +16,8 @@
 - Remote-first automation policy: all heavy validation, markdown inventory refresh, dependency audits, automation, merge checks, and background synchronization must prefer GitHub-hosted execution and compact status payloads instead of large artifact transport to the browser.
 - Automation-safe constraint: low-bandwidth mode is a UX optimization only; it must not disable or weaken scheduled jobs, workflow dispatches, branch-sync checks, cross-repo sync, merge gates, security jobs, markdown refreshes, or activity streams.
 - Browser safety rule: the user should be able to work in either repo for long sessions with minimal data usage while Copilot Chat, editor responsiveness, file access, and repo automation remain fully functional.
+- Qtrade inventory rule: `Qtrade.md` is located in the repo root, and every Markdown file in that same root directory plus every descendant directory under it is part of the canonical inventory boundary for `ALLMDFILESREFS.md`; this includes all live docs and the mirrored `qmoi-enhanced` materialization available in `qmoi-enhanced-history-14`.
+- Repo mirror rule: the canonical live repo remains `Alpha-Q-ai` in this workspace; the available `qmoi-enhanced` mirror is represented by the materialized history directory `qmoi-enhanced-history-14` and must remain synchronized in inventory coverage, metadata, and merge parity checks.
 - Evidence rule: every completion claim remains gated on exact remote SHA and target-owned workflow success; local readiness, branch sync, and doc refresh are not equivalent to remote completion.
 
 ## Fresh continuation evidence — 2026-09-26 04:25 UTC
