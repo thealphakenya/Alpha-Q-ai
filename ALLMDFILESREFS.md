@@ -3,6 +3,35 @@
 ## Overview
 This document provides a comprehensive index of all markdown (.md) files in both the qmoi-enhanced and Alpha-Q-ai repositories. Files are categorized by repository and function for easy reference and validation.
 
+## Markdown inventory metrics and merge/access model
+
+The current workspace inventory reflects the live repository tree plus the materialized historical and snapshot scopes that the autonomous agent reviewed during merge and sync work.
+
+### Verified markdown counts in the current workspace
+- Live repository root: 120 `.md` files
+- `Alpha-Q-ai-2025` snapshot: 2,456 `.md` files
+- `qmoi-enhanced-history-14` historical materialization: 2,045 `.md` files
+- Raw scope sum (root + snapshot + history): 4,621 `.md` files
+- Total workspace enumeration from `find . -type f -iname '*.md'`: 4,630 `.md` files
+- Overlap / normalization delta: 9 files, which represents the difference between the summed scoped counts and the full workspace enumeration because some historical and live paths overlap or are reconciled during merge inventory generation
+
+### Repository-level totals used for parity and merge coverage
+- `Alpha-Q-ai` live repo root and active tree: included in the workspace total and treated as the authoritative live branch for the current branch state
+- `Alpha-Q-ai-2025`: authoritative secondary snapshot for app/platform/docs inventory and historical comparison
+- `qmoi-enhanced-history-14`: historical materialization used to compare merge state, historical docs, and previous repository evolution
+- All histories and directories: represented by the full workspace walk and the materialized historical scope; every `.md` file is categorized as live, snapshot, archive, or duplicate/reconciliation candidate
+
+### Ollama autonomous agent merge and file-access model
+The Ollama autonomous agent is documented as a repository-aware merge and inventory engine. In its authorized operating mode, it can traverse the active repository tree, the embedded app snapshot directories, the historical archive materialization, and the relevant Git history refs, then classify each Markdown document by path, repo scope, and source ownership while preserving the canonical live files as the source of truth.
+
+The inventory policy is:
+- live repository files remain canonical unless a merge policy explicitly reconciles a historical document into the active tree
+- snapshot and historical files are counted for parity and comparison but are not treated as the final live source unless intentionally merged
+- duplicate or overlapping `.md` paths are recorded in the inventory, not silently deleted or overwritten
+- every merge and update operation must preserve evidence, branch safety, and the final authoritative repo files
+
+This means the final `qmoi-enhanced` and `Alpha-Q-ai` records are expected to reflect the sum of all inventory sources while keeping the canonical active repo tree authoritative for production use.
+
 ## Key/Mask, Credential, and Validation Registry
 
 The repository uses a mask/key registry to make markdown and credential validation deterministic, transparent, and safer across repo history, runtime outputs, and branch syncs. Each file, credential, and mask should be traceable to a repository, path, ownership, validation result, and evidence source.

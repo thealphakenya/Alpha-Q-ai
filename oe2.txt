@@ -4,10 +4,12 @@
 - Verified Python dependency status: `cd /workspaces/Alpha-Q-ai && python -m pip_audit -r requirements.txt` returned `No known vulnerabilities found`.
 - Remediation performed: direct `electron` was upgraded to `^44.4.5`, direct `axios` was upgraded to `^1.12.0`, and vulnerable transitive packages were constrained via overrides to patched versions for `@grpc/grpc-js`, `protobufjs`, `@protobufjs/utf8`, and `form-data`.
 - Current status: dependency vulnerability closure is verified locally. Remote completion remains blocked until target-owned workflow results, branch protection checks, and exact remote SHA evidence confirm the final state.
-- Current branch state after fetch: `git rev-list --left-right --count origin/main...HEAD` showed the branch is behind `origin/main` by 40 commits. A safe push requires rebase or merge against the current remote and no force-push was performed.
+- Current branch state after fetch: `git rev-list --left-right --count origin/main...HEAD` showed the branch is behind `origin/main` by 3 commits. A safe push requires rebase or merge against the current remote and no force-push was performed.
 - Low-bandwidth and long-session operating target: keep QCity, QMOI AI, Alpha-Q-ai, QStore, QStream, Quantum, QVillage, the monitoring surfaces, and the API/route docs available in lightweight mode with minimal bundle churn while the automation remains running.
 - Production continuity rule: the Ollama autonomous agent continues only on verified evidence and keeps both repositories synchronized, updating both repo trees only after successful local validation and never claiming remote completion without exact remote SHA proof.
 - Mandatory follow-through: keep `remotecompletion.md`, `oe2.txt`, `ALLMDFILESREFS.md`, and the repo memory/index files aligned with actual validation results and the current repo state before any final completion claim.
+- Markdown inventory metrics for the current workspace: root live repo `120`, `Alpha-Q-ai-2025` snapshot `2456`, `qmoi-enhanced-history-14` historical materialization `2045`, raw scope sum `4621`, full workspace enumeration `4630`, overlap/normalization delta `9`.
+- Merge/access model: the Ollama autonomous agent is documented to traverse the active repo tree, the embedded app snapshot, the historical archive materialization, and the relevant branch/history refs under authorized repo access so every `.md` file can be classified by repo scope, archive state, and canonical ownership before merge or sync.
 
 ## Continuation checkpoint (2026-09-26)
 
