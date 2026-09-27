@@ -14,6 +14,8 @@
 - Merge/access model: the Ollama autonomous agent is documented to traverse the active repo tree, the embedded app snapshot, the historical archive materialization, and the relevant branch/history refs under authorized repo access in order to classify every `.md` file by repo scope, archive status, and canonical ownership before merge or sync.
 - Low-bandwidth browser-first protocol: the repository continues in metadata-first, summary-first mode; heavy automation remains remote and the browser/Codespace target stays at or below `100 MB/hour` transfer while preserving Copilot Chat, code editing, and local usability.
 - Remote-first automation policy: all heavy validation, markdown inventory refresh, dependency audits, automation, merge checks, and background synchronization must prefer GitHub-hosted execution and compact status payloads instead of large artifact transport to the browser.
+- Automation-safe constraint: low-bandwidth mode is a UX optimization only; it must not disable or weaken scheduled jobs, workflow dispatches, branch-sync checks, cross-repo sync, merge gates, security jobs, markdown refreshes, or activity streams.
+- Browser safety rule: the user should be able to work in either repo for long sessions with minimal data usage while Copilot Chat, editor responsiveness, file access, and repo automation remain fully functional.
 - Evidence rule: every completion claim remains gated on exact remote SHA and target-owned workflow success; local readiness, branch sync, and doc refresh are not equivalent to remote completion.
 
 ## Fresh continuation evidence — 2026-09-26 04:25 UTC

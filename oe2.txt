@@ -29,6 +29,23 @@ This repository must continue to operate in a browser-safe, low-bandwidth, remot
 
 This contract is intentionally designed to support a low-bundle, long-session browser workflow while preserving repository fidelity, merge safety, automation coverage, and valid remote-first completion gates.
 
+## Automation-safe low-bandwidth plan (2026-09-27)
+
+The low-bandwidth mode must be treated as a UX and sync optimization, not as a way to disable or weaken automation. The following rules preserve all intended automation features while keeping the browser and Codespace light:
+
+- Keep all GitHub Actions, branch-sync jobs, cross-repo sync jobs, markdown inventory refreshes, merge gates, security checks, and activity streams running remotely without throttling or cancellation.
+- Only minimize the browser-side payload: manifest files, small diffs, summaries, metadata, and compact status updates; never suppress the remote execution layer.
+- Do not disable workflow dispatch, scheduled automations, concurrency protections, or backup/sync rules. The automation layer remains authoritative and always runs in GitHub-managed infrastructure.
+- Keep artifact downloads opt-in. Heavy model bundles, archives, and snapshots stay remote unless a user specifically requests them.
+- Use compact status checks and summary-only output for browser views; detailed validation remains remote and is stored in workflow logs and repo evidence files.
+- Maintain the current branch-sync and cross-repo automation contract so both repositories remain updated without requiring large local downloads or heavy local rebuilds.
+- Ensure the low-bandwidth profile does not block Copilot Chat, editor intelligence, code navigation, file reads, or branch inspection; the browser session remains responsive and small while the remote layer continues doing heavy operations.
+- Keep the remote-first gate and protected-branch rules intact: no completion claim is valid unless GitHub Actions and exact remote SHAs prove it.
+- Use metadata-first sync, not broad-history downloads; count and inspect docs via inventory metadata and workflow output rather than pulling every file into the browser at once.
+- Keep long-running background automation alive in the remote layer so both repositories continue to be monitored and improved without user-visible data bloat or degradation.
+
+This is the intended safe compromise: slim browser/Codespace usage, full remote automation, no adverse effect on Copilot or workflow reliability, and no weakening of the repository’s security or evidence gates.
+
 ## Continuation checkpoint (2026-09-26)
 
 Status: LOCAL VALIDATION GREEN; METRIC-COVERAGE EXPANSION AND TRADING AUTOMATION ENHANCED; REMOTE COMPLETION IS STILL PENDING FINAL TARGET-OWNED WORKFLOW CONCLUSIONS AND EXACT SHAS.
