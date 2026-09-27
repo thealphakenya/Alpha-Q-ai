@@ -12,6 +12,9 @@
 - Mandatory follow-through: the agent must keep `remotecompletion.md`, `oe2.txt`, `ALLMDFILESREFS.md`, and the repo memory/index files aligned with real validation results and with the current repo state before any completion claim.
 - Markdown inventory metrics for the current workspace: root live repo `120`, `Alpha-Q-ai-2025` snapshot `2456`, `qmoi-enhanced-history-14` historical materialization `2045`, raw scope sum `4621`, full workspace enumeration `4630`, overlap/normalization delta `9`.
 - Merge/access model: the Ollama autonomous agent is documented to traverse the active repo tree, the embedded app snapshot, the historical archive materialization, and the relevant branch/history refs under authorized repo access in order to classify every `.md` file by repo scope, archive status, and canonical ownership before merge or sync.
+- Low-bandwidth browser-first protocol: the repository continues in metadata-first, summary-first mode; heavy automation remains remote and the browser/Codespace target stays at or below `100 MB/hour` transfer while preserving Copilot Chat, code editing, and local usability.
+- Remote-first automation policy: all heavy validation, markdown inventory refresh, dependency audits, automation, merge checks, and background synchronization must prefer GitHub-hosted execution and compact status payloads instead of large artifact transport to the browser.
+- Evidence rule: every completion claim remains gated on exact remote SHA and target-owned workflow success; local readiness, branch sync, and doc refresh are not equivalent to remote completion.
 
 ## Fresh continuation evidence — 2026-09-26 04:25 UTC
 

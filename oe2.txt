@@ -11,6 +11,24 @@
 - Markdown inventory metrics for the current workspace: root live repo `120`, `Alpha-Q-ai-2025` snapshot `2456`, `qmoi-enhanced-history-14` historical materialization `2045`, raw scope sum `4621`, full workspace enumeration `4630`, overlap/normalization delta `9`.
 - Merge/access model: the Ollama autonomous agent is documented to traverse the active repo tree, the embedded app snapshot, the historical archive materialization, and the relevant branch/history refs under authorized repo access so every `.md` file can be classified by repo scope, archive state, and canonical ownership before merge or sync.
 
+## Low-bandwidth browser-first continuation contract (2026-09-27)
+
+This repository must continue to operate in a browser-safe, low-bandwidth, remote-first mode without harming Copilot Chat, the editor, or the local development experience. The following instructions are preserved as the active operating contract and must remain in effect for both `Alpha-Q-ai` and `qmoi-enhanced`:
+
+- Keep Codespaces and browser sessions metadata-first and summary-first: only manifests, diffs, checkpoints, and compact summaries are transported to the browser unless the user explicitly asks for a full file or artifact.
+- Prefer remote execution for heavy work: GitHub Actions, repository automation, monitoring, provisioning, merge checks, sync tasks, dependency validation, markdown inventory refresh, and AI-assisted validation should run remotely as the default path.
+- Keep per-hour data burn at or below a strict target of `100 MB/hour` for the browser/Codespace experience under normal use, with even lower usage during idle or poor-connectivity states.
+- Do not automatically download large artifacts, model bundles, large snapshots, or historical archives into the browser session. Use hashes, metadata, deltas, and remote state references instead.
+- Keep the local environment lightweight and deterministic: no accidental extra Git artifacts, no unneeded npm cache churn, no heavy background downloads, and no broad workspace expansion unless specifically requested.
+- The browser/Codespace should remain usable for long sessions with minimal bundle impact while all heavy automation continues in the remote layer and in the background.
+- Copilot Chat, code editing, and local development must remain unaffected; the low-bandwidth policy must never reduce the developer experience or degrade chat responsiveness, code intelligence, or file access.
+- Use the remote layer to continuously inspect branch state, historical docs, repo inventories, merge coverage, sync status, and validation outputs while keeping the local workspace lean.
+- Keep every repository history, markdown inventory, and branch-sync reference available through metadata rather than massive repeated downloads. Count `.md` files across live repo, snapshots, and historical materializations without forcing a heavy open of every file in the browser.
+- The user may continue to work on either repo and the peer repo in the same session, but the system must remain safe, evidence-based, and low-bandwidth by default.
+- All prior instructions from earlier conversations remain in force: remote-first completion, fail-closed evidence gates, no completion claims without exact remote SHA and workflow proof, preserve local work, keep security and dependency updates honest, and continue working without dangerous or unsupported claims.
+
+This contract is intentionally designed to support a low-bundle, long-session browser workflow while preserving repository fidelity, merge safety, automation coverage, and valid remote-first completion gates.
+
 ## Continuation checkpoint (2026-09-26)
 
 Status: LOCAL VALIDATION GREEN; METRIC-COVERAGE EXPANSION AND TRADING AUTOMATION ENHANCED; REMOTE COMPLETION IS STILL PENDING FINAL TARGET-OWNED WORKFLOW CONCLUSIONS AND EXACT SHAS.
