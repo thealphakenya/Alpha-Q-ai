@@ -1,5 +1,13 @@
 # QMOI Dual Repository Agent
 
+## Current safety status (2026-09-28T02:45:47Z)
+
+- Correlation ID: `3f5e3904-b367-405d-bb0e-fc4d7ef2882d`.
+- The authenticated CLI identity is GitHub user `themegakenya`, not verified App authentication. The current App key remains rotation-unverified and is not used.
+- Read-only SHA observations: Alpha-Q-ai `main` `68de1f1962a52a9c16d722a905f818ddf73e2949`; qmoi-enhanced `main` `28a87cc43cbf9dce8f7ecb53518d5d845de586fe`.
+- Alpha-Q-ai `Push on main` run `36370328749` is still in progress on the observed Alpha SHA; JavaScript/TypeScript analysis is pending. Branch-protection GET returned HTTP 403 `Resource not accessible by integration`.
+- No App JWT/token, dispatch, or remote mutation was attempted. Remote completion and cross-repository/backup parity are not proven.
+
 ## Current safety status (2026-09-27T22:19:12Z)
 
 - Correlation ID: `c7668de2-4209-4bf7-9f83-d15490bf33b9`.
