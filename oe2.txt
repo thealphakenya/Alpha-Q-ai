@@ -1,3 +1,15 @@
+## Publication and remote-first continuation evidence — 2026-09-28T02:16:13Z
+
+- Correlation ID: `34ef5888-2a18-4f6d-afcc-61130cfaeda0`.
+- Safe publication completed: after fetching/rebasing onto the latest remote telemetry, the normal `git push origin main` succeeded. Local `HEAD` and `origin/main` both resolve to `e80709f9642a51b2410cf2e6202d9f49aa6f84a3`; no force-push was used.
+- Pre-publication focused proof passed: `pytest tests/test_control_plane.py -k 'q_version or research' tests/test_ollama_autonomous_agent.py -k 'merge_duplicate_markdown_files or build_branch_history_inventory or execute_merge_records_premerge_inventory_as_first_operation' -q` returned `4 passed, 129 deselected`. Python compilation and `git diff --check` passed.
+- Current worktree is clean and synchronized with `origin/main` at the exact published SHA.
+- Fresh target workflow observation on the published SHA: Security and Merge Gates run `36369131361`, QMOI Bidirectional Cross-Repository Autosync run `36369131387`, QMOI Live Activity Stream run `36369131317`, and configured dependency graph update run `36369133841` are `in_progress`; CodeQL and Branch Sync are `skipped`. These are active observations, not terminal completion proof.
+- Branch-protection GET remains HTTP 403 `Resource not accessible by integration`; the available actor is the GitHub CLI user, not independently verified App authorization.
+- GitHub warned that `ALLMDFILESREFS.md` is 69.67 MB, above the recommended 50 MB maximum. This is a repository-size/data-transfer risk requiring a future metadata/manifest redesign; it is not hidden or marked resolved here.
+- GitHub reported 36 default-branch vulnerabilities (20 high, 12 moderate, 4 low). This remains a security blocker until independently remediated or explicitly classified by target-owned evidence.
+- Remote state: `PUSHED_EXACT_SHA_REMOTE_WORKFLOWS_IN_PROGRESS_REMOTE_COMPLETION_PENDING`. The push is proven; merge, backup parity, cross-repository parity, required terminal checks, and final remote completion are not yet proven.
+
 ## Recovered instruction replay and research enhancement ledger
 
 - Requirement replay: preserve all prior user instructions, including the continuation loop, the 10 internal research controls, the 10 external research controls, the official resource allowlist, the merge-first design, the validation-first evidence policy, the Q-version lifecycle gates, the evolution/autodev/document audit scope, the QMOI/QVillage automation loop, the final repo cleanup rule, and the fail-closed remote completion rule.

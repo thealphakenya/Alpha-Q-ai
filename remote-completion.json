@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
-  "correlation_id": "c7668de2-4209-4bf7-9f83-d15490bf33b9",
+  "correlation_id": "34ef5888-2a18-4f6d-afcc-61130cfaeda0",
   "status": "LOCAL_READY_REMOTE_COMPLETION_PENDING",
-  "generated_at": "2026-09-27T22:19:12Z",
+  "generated_at": "2026-09-28T02:16:13Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "target_repositories": [
     "thealphakenya/Alpha-Q-ai",
@@ -21,11 +21,11 @@
     "cross_repo_parity_proven": false,
     "security_gate_status": "remote blocker remains separately unresolved by local validation",
     "app_authentication": "blocked_rotation_unverified_no_app_authentication_attempted",
-    "local_head_sha": "3a7dcf2c2d49574cdc767de6075f3c75e349498c",
-    "origin_main_sha": "1a7eb987f18358b1508ea868feecde89fa18959a",
-    "remote_alpha_q_ai_main_sha": "1a7eb987f18358b1508ea868feecde89fa18959a",
+    "local_head_sha": "e80709f9642a51b2410cf2e6202d9f49aa6f84a3",
+    "origin_main_sha": "e80709f9642a51b2410cf2e6202d9f49aa6f84a3",
+    "remote_alpha_q_ai_main_sha": "e80709f9642a51b2410cf2e6202d9f49aa6f84a3",
     "remote_qmoi_enhanced_main_sha": "df3f34fb4733ed5cd4d25107b9d056de9697fcbe",
-    "branch_status": "0 commits ahead and 9 behind origin/main; dirty local worktree preserved; do not publish until safely reconciled",
+    "branch_status": "exactly synchronized with origin/main after normal push; evidence worktree changed after publication and requires the next ledger-only publication cycle",
     "worktree_dirty": true,
     "remote_policy_proven": false,
     "current_observation": {
@@ -46,7 +46,9 @@
         "ruff": "unavailable: No module named ruff",
         "pip_audit": "No known vulnerabilities found",
         "npm_audit": "vulnerabilities: {} total: 0",
-        "credential_tests": "11 passed"
+        "credential_tests": "11 passed",
+        "focused_lifecycle_tests": "4 passed, 129 deselected",
+        "publication": "normal push succeeded at e80709f9642a51b2410cf2e6202d9f49aa6f84a3"
       },
       "credential_inventory": {
         "audited_at": "2026-09-27T20:38:31Z",
@@ -91,14 +93,23 @@
       },
       "master_credential_crud": "blocked_not_verified_no_authenticated_master_control_api_or_ui",
       "remote_observation": {
-        "observed_at": "2026-09-27T22:19:12Z",
+        "observed_at": "2026-09-28T02:16:13Z",
         "actor": "qmoialpha-star GitHub CLI user; not GitHub App",
-        "alpha_main_sha": "1a7eb987f18358b1508ea868feecde89fa18959a",
+        "alpha_main_sha": "e80709f9642a51b2410cf2e6202d9f49aa6f84a3",
         "qmoi_enhanced_main_sha": "df3f34fb4733ed5cd4d25107b9d056de9697fcbe",
-        "alpha_push_on_main": "completed success at 1a7eb987f18358b1508ea868feecde89fa18959a; run 36351346430",
+        "alpha_push_on_main": "completed success at e80709f9642a51b2410cf2e6202d9f49aa6f84a3; publication push verified",
         "alpha_pr_tracker": "completed failure at prior SHA 95f24dce8877c95138c54e654ce4ed2dda3644dc; run 36350884963",
         "qmoi_enhanced_push_on_main": "completed success at df3f34fb4733ed5cd4d25107b9d056de9697fcbe; run 36352341248",
         "qmoi_enhanced_cross_repo_autosync": "completed failure at prior SHA 394ce4ee4b25864d6fea8c44e581c8d3775573bd; run 36349962995",
+        "published_sha_workflows": {
+          "security_and_merge_gates": {"run_id": "36369131361", "status": "in_progress"},
+          "cross_repository_autosync": {"run_id": "36369131387", "status": "in_progress"},
+          "qmoi_live_activity": {"run_id": "36369131317", "status": "in_progress"},
+          "dependency_graph_update": {"run_id": "36369133841", "status": "in_progress"}
+        },
+        "main_protection_http_status": 403,
+        "allmdfilesrefs_size_warning_bytes": 73000000,
+        "github_default_branch_vulnerability_count": 36,
         "alpha_main_protection_http_status": 403,
         "qmoi_enhanced_main_protection_http_status": 403,
         "remote_completion_proven": false
