@@ -1,24 +1,200 @@
 # Remote Completion Runbook — Advanced Dual-Repository Autonomous Low-Bandwidth Edition
 
+## Remote-first two-layer execution model (Codespace + GitHub Actions)
+
+This repository must operate in a remote-first, low-bandwidth, browser-safe mode without harming the local editing experience, Copilot Chat, Git operations, or file inspection.
+
+- Codespace is used for:
+  - editing and inspecting files
+  - Copilot Chat and terminal work
+  - Git branch management and small commands
+  - diff review, commit, and push operations
+  - interacting with QMOI development tools
+  - lightweight local validation and repo inspection
+- GitHub Actions is used for:
+  - full test suites
+  - platform validation and app validation
+  - heavy dependency installation and setup
+  - long-running validation and monitoring
+  - cross-repository automation and scheduled tasks
+  - build jobs, artifacts, and autonomous remote workflows
+  - any heavy or production-grade execution path
+
+The browser and Codespace should remain metadata-first and summary-first:
+- use low-data bundle behavior by default
+- avoid automatic large downloads, heavy model or archive fetches, and bundle churn
+- keep the local workspace lean while remote jobs do the heavy lifting
+- optimize for live monitoring and evidence capture in GitHub Actions, not local throughput
+
+This model applies to both Alpha-Q-ai and qmoi-enhanced and to their historical/snapshot surfaces used for validation and merge planning. The local environment remains a fast, light control surface; the remote environment remains the authoritative worker and completion layer.
+
+No completion claim is valid unless GitHub Actions or a target-owned workflow reaches a terminal success on the exact final SHA, and the evidence is recorded in the repo ledger.
+
+## Recovered instruction replay and research enhancement ledger
+
+This runbook preserves the earlier user instructions and the final research automation contract for the Ollama autonomous agent and the QMOI automation layer.
+
+- The agent must continue without forgetting earlier instructions, including the full merge/sync, repo-evolution, autodev, validation, research, credential-safety, final repo cleanup, and remote-first evidence requirements.
+- Final repo cleanup rule: the final live repository content for Alpha-Q-ai and qmoi-enhanced must no longer mention Ollama, while the final Q.0.0.N artifact remains the only explicit location where the historical Ollama trace is intentionally preserved.
+- Autonomous dual-repository update contract: after local validation, merge inventory, and lifecycle pass, the Ollama autonomous agent may update both Alpha-Q-ai and qmoi-enhanced by creating the canonical Q.0.0.1 directory and companion manifest on each final branch, syncing main and autosync-backup in both repos with the same evidence-backed gate, and preserving backup branch publication before main promotion. This process remains subject to target-owned remote workflow success, required checks, exact SHA parity, and no-force-push rules.
+- Branch publication sequence: audit -> backup publication -> fast-forward validation -> main promotion -> Q-version artifact creation -> final SHA verification. The agent may operate on multiple repos and branches only when branch protection, workflow result, and final SHA evidence are all available and consistent.
+- Local execution is evidence-only; no final completion claim is valid without GitHub-owned workflow success, protected-branch verification, and exact remote SHA parity.
+- The system performs both internal research and external research under strict policy and records all findings with provenance and limits.
+
+### Internal research controls (10)
+1. Inventory every supplied repository, snapshot, and history root before planning changes.
+2. Read governing instructions, merge policy, validation contracts, and prior execution ledgers first.
+3. Inventory source, tests, workflows, docs, build manifests, APIs, endpoints, routes, and ports by path.
+4. Enumerate locally available branches, tags, PR refs, commits, and tree identities without claiming unfetched coverage.
+5. Retain per-source and per-file path, size, content hash, timestamp, and provenance when accessible.
+6. Map requirements to implementation symbols, tests, workflows, documentation, and owning repositories.
+7. Compare candidate changes with current and historical behavior to identify additions, duplicates, and regressions.
+8. Record unresolved ownership, missing sources, unreadable files, and conflicting evidence as blockers.
+9. Turn each accepted research finding into a testable change hypothesis and focused validation.
+10. Refresh memory, merge, Markdown, validation, and Q-version evidence from measured results rather than estimates.
+
+### External research controls (10)
+1. Fetch only HTTPS resources on an explicit official-domain allowlist.
+2. Reject user-info, credentials, tokens, local hosts, private addresses, and unapproved domains.
+3. Use bounded timeouts, response sizes, content types, and redirect refusal.
+4. Record the actual visit time, canonical URL, title, research question, and repository/ref/SHA context.
+5. Hash fetched content and store only metadata, findings, and bounded text needed for research.
+6. Prefer primary vendor, language, platform, security-advisory, and standards documentation.
+7. Cross-check security-critical claims against independent primary sources where feasible.
+8. Discover links as candidates but require domain-policy review before visiting unknown hosts.
+9. Mark inaccessible, stale, contradictory, or rate-limited resources as blocked instead of inferring facts.
+10. Retain citations and limitations in the research ledger and connect each finding to a validation case.
+
+### Official resource targets and internet surfaces (15+)
+- GitHub Docs, GitHub Blog, Python Docs, Pytest Docs, Ollama Docs, OWASP, Docker Docs, npm Docs, PyPI/Packaging, Pydantic Docs, Vercel Docs, Netlify Docs, GitLab Docs, Gitpod Docs, Hugging Face Docs, W3C accessibility guidance, RFC Editor HTTP semantics.
+- These sources are used for official guidance discovery, validation research, deployment research, API contract research, and standards alignment without claiming that every discovered source is a verified implementation.
+
+### Additional automation enhancements and additions (20+)
+1. Merge-first repo reconciliation before validation and publication.
+2. Marketed auto-research loop for the QMOI and Alpha-Q-ai repositories.
+3. Q-version lifecycle tracking and audit trail for every major step.
+4. Fail-closed status records for blocked or contradictory evidence.
+5. Research-backed validation map for Markdown, links, apps, platforms, routes, endpoints, ports, build/install, and security.
+6. Safe official-domain fetch policy using an explicit allowlist.
+7. Bounded HTTP fetch logic with response limits and redirect refusal.
+8. Goal tracking from research findings to testable validation actions.
+9. Branch and ref inventory before claiming complete repo audit coverage.
+10. Snapshot and history root discovery for Alpha-Q-ai, Alpha-Q-ai-2025, qmoi-enhanced, and qmoi-enhanced-history-14.
+11. Merge planning for overlapping apps and duplicate identities across live and historical trees.
+12. Automated QVillage and QMOI integration of research outputs.
+13. Research evidence tied to repository SHA, branch, and validation case IDs.
+14. Audit flow for all evolution, auto, dev, autodev, and validation Markdown files.
+15. Documentation refresh for ALLMDFILESREFS, ALLVALIDATIONS, MERGE, and related evidence ledgers.
+16. Discovery and classification of missing or duplicate app/platform inventories.
+17. Protection against silent overwrites or unsafe concatenation of duplicate Markdown files.
+18. Integration of the research system into the autonomous validation pipeline.
+19. Continuous requirement replay so older instructions remain active and visible in the ledger.
+20. Structured evidence posture: local green, remote blocked, no trust without remote proof.
+21. Preservation of user-generated and generated work without destructive reset or force push.
+22. Explicit handling of external sources as review material, not implementation proof.
+
+### Evolution and autodev audit scope
+- Audit all Markdown tracked under evolution, auto, dev, autodev, automation, validation, merge, research, and lifecycle themes.
+- Keep the documentation set synchronized with actual code, tests, workflows, and the fail-closed evidence posture.
+- Refresh indexes, status docs, and repo memories without claiming parity or completion when the target-owned remote gates are still unresolved.
+
+### Current gate
+- Local validation is green for the reviewed code paths.
+- Remote completion remains blocked by target-owned GitHub authorization, protected-branch/ruleset evidence, and exact final SHA parity proof.
+- The safe status is LOCAL_READY_REMOTE_COMPLETION_PENDING.
+
+## Fresh history-inventory and remote gate — 2026-09-27T22:19:12Z
+
+- Correlation ID: `c7668de2-4209-4bf7-9f83-d15490bf33b9`; local source SHA `3a7dcf2c2d49574cdc767de6075f3c75e349498c`.
+- Local validation passed: full suite `269 passed`; `validate-all` reported 6 platforms, 4 apps, 404 features; workflow validation accepted all 17 workflows; Python compilation and `git diff --check` passed. Ruff could not run because the module is not installed.
+- History inventory now includes every ref already present in the local Git database, classifies fetched PR refs and tags, and emits explicit coverage limits. It cannot establish that remote refs are fresh/complete or enumerate unfetched PRs and every intermediate commit tree; those remain target-owned audit requirements.
+- Exact current remote `main` SHAs: Alpha-Q-ai `1a7eb987f18358b1508ea868feecde89fa18959a`; qmoi-enhanced `df3f34fb4733ed5cd4d25107b9d056de9697fcbe`. Alpha push run `36351346430` and qmoi-enhanced push run `36352341248` succeeded on those SHAs. Alpha PR tracker run `36350884963` failed on prior SHA `95f24dce8877c95138c54e654ce4ed2dda3644dc`; qmoi-enhanced cross-repository autosync run `36349962995` failed on prior SHA `394ce4ee4b25864d6fea8c44e581c8d3775573bd`.
+- Both branch-protection GETs returned HTTP 403. The available identity is GitHub CLI user `qmoialpha-star`, not the App; App-key rotation is unverified. No App auth, dispatch, push, merge, release, or deployment was attempted.
+- Local `HEAD` `3a7dcf2c2d49574cdc767de6075f3c75e349498c` is 0 ahead/9 behind local `origin/main` `1a7eb987f18358b1508ea868feecde89fa18959a`; the dirty worktree is preserved. Remote completion, backup parity, cross-repository parity, and current-SHA required-check completion remain unverified.
+- Gate: `LOCAL_VALIDATION_PASS_REMOTE_COMPLETION_BLOCKED_AUTH_DIVERGENCE_AND_PARITY`. Do not claim completion until authorized target-owned audits/checks reach terminal conclusions and exact final SHAs prove parity.
+
+## Latest credential audit and remote gate — 2026-09-27T20:38:57Z
+
+- Correlation ID: `c880c769-80c4-4c64-b6e2-c88cf67dd2c2`; local source SHA `3a7dcf2c2d49574cdc767de6075f3c75e349498c`.
+- Credential reference audit completed at `2026-09-27T20:38:31Z`: active tree `131` Markdown files, `Alpha-Q-ai-2025` `2,456`, `qmoi-enhanced-history-14` `2,045`, total `4,632`; 5,189 current source/config files scanned; 33,299 reference records and 3,167 credential-like historical commit/path candidates across 2,364 commits/30 locally available refs. The report is outside the checkout at `$HOME/.config/qmoi/credentials/credential-inventory.json`, mode `600`; it records no values. Pattern matching does not prove all secrets were found.
+- The user-referenced rotation playbook is absent from the local materialization, and a remote QMOI main-tree query found no matching filename. Newly authored active guidance is [CREDENTIALS_ROTATION_PLAYBOOK.md](CREDENTIALS_ROTATION_PLAYBOOK.md); historical parity remains unverified.
+- Latest Alpha-Q-ai remote `main` observation: `95f24dce8877c95138c54e654ce4ed2dda3644dc`; `Push on main` run `36348173756` remained `in_progress`; prior-SHA tracker run `36348118519` and autosync run `36347789572` failed at `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`. Latest qmoi-enhanced SHA: `76306f983d19127dea9a446e0aa22d42006f9d9f`, with latest observed push/live runs successful. Both protection reads returned HTTP 403. These observations do not prove terminal completion for the latest Alpha state.
+- The working branch is six commits behind the latest remote tracking ref with uncommitted changes. Branch protection returned HTTP 403; the CLI identity is not the GitHub App, and App key rotation remains unverified. No App authentication or remote mutation was attempted.
+- Bitget still returns HTTP 400/provider code `40085`; its credentials are not verified and no balance snapshot exists. No trading or money movement is authorized by this result.
+- Current gate: `LOCAL_CREDENTIAL_AUDIT_COMPLETE_FOR_AVAILABLE_SOURCES_REMOTE_AND_PROVIDER_GATES_BLOCKED`.
+
+## Fresh credential and remote evidence — 2026-09-27T20:09:16Z
+
+- Correlation ID: `c46ede71-59c1-4210-93b4-1c93c9bc4569`; actor for remote reads: GitHub CLI user `qmoialpha-star`, not the GitHub App.
+- Local validation for the new credential manager: `pytest tests/test_qmoi_credentials.py -q` passed (`8 passed`); this exercises parsing, encrypted storage, timestamp metadata, value-free auditing, and fail-closed paths without live credentials.
+- Bitget credential migration: three fields from the dated Qtrade tail were encrypted in `$HOME/.config/qmoi/credentials/vault.enc`; key and store are mode `600`, parent directory mode `700`. `Qtrade.md` now has metadata-only section `bitget 27/9/2026`; the reported creation date is `2026-09-27`, exact creation time is unknown, original section date was `2026-06-26`, and vault add/update/verification timestamps are recorded. No credential values are included here.
+- End-to-end Ollama-agent action `python scripts/ollama_autonomous_agent.py credential-manager --credential-action verify-bitget` at `2026-09-27T20:12:47Z` returned HTTP 400, provider code `40085`, classified `request_or_permission_rejected`, and refreshed the dated Qtrade metadata. The credentials are not verified as working; the response does not by itself distinguish malformed request, permission/scope, or credential trouble. No trade or account mutation was made.
+- Local GitHub App files exist with restrictive modes, but their metadata does not prove the key was rotated. The historical key is treated as compromised. No App JWT or installation token was created and no App API request was attempted.
+- Fresh remote `main` SHAs from read-only observations: Alpha-Q-ai `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`; qmoi-enhanced `76306f983d19127dea9a446e0aa22d42006f9d9f`. Alpha `Push on main` was success but the Ollama live stream remained in progress; qmoi push/live streams succeeded, while a recent cross-repo autosync failed. Both branch-protection GETs returned HTTP 403.
+- Local `HEAD`: `3a7dcf2c2d49574cdc767de6075f3c75e349498c`; `origin/main`: `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`; local branch is five commits behind and has uncommitted changes. No push, workflow dispatch, merge, release, deployment, or remote-completion claim was made.
+- Gate: `LOCAL_CREDENTIAL_MIGRATION_COMPLETE_BITGET_PROVIDER_VERIFICATION_BLOCKED_REMOTE_COMPLETION_PENDING`. Next actions are investigate Bitget code `40085` using provider documentation and an authorized read-only credential scope, confirm/revoke/rotate the App key, reconcile the local branch without discarding work, and obtain terminal target-owned workflow plus exact-SHA parity evidence.
+
+## QMOI credential-manager operating contract
+
+- The Ollama autonomous agent exposes the credential manager through `credential-manager`; use `status` for masked local metadata, `verify-bitget` for a read-only signed account check and Qtrade status refresh, and `migrate-qtrade` only when a dated credential block can be parsed completely and encrypted storage succeeds.
+- The manager is provider-agnostic at the vault record layer. Every provider record uses exact tags, source and source-date provenance, `created_at`, `added_at`, `updated_at`, verification timestamps/status, and append-only value-free audit events. The reported calendar date is distinct from an unknown exact creation time.
+- The local vault is shared among repos on this Codespace at `$HOME/.config/qmoi/credentials/`; it is not synchronized to peers. For remote Actions, use each repository's authorized GitHub-managed secrets or approved cloud secret manager. Never copy credential values or local vault material across repositories.
+- The autonomous agent must scan for credential references using redacted output, migrate each credential/provider separately, avoid overwriting an existing record without timestamped audit, and validate with a provider-approved read-only operation. Invalid, incomplete, permission-limited, stale, or network-unavailable credentials stay `blocked`/`unknown`; they are not auto-replaced with another provider's values.
+- Automatic credential setup means secret references and authorized secret-store configuration only. The agent must not invent, rotate, revoke, trade with, withdraw using, or silently provision credential values. Rotation/replacement requires provider/API permission and must preserve a recoverable audit trail without retaining plaintext copies.
+- This Codespace has no OS keyring package; the current fallback encrypts vault data and restricts the local key/store files. This is local at-rest protection, not a claim of hardware-backed isolation. Production secrets should use an approved managed secret store.
+
 ## Fresh security closure and continuation evidence — 2026-09-27
 
-- Verified local security fix: in the app project at `/workspaces/Alpha-Q-ai/Alpha-Q-ai-2025`, `npm audit --json --audit-level=low` returned a zero-vulnerability result (`total: 0`, `high: 0`, `moderate: 0`, `low: 0`, `critical: 0`).
+- Verified local security fix: in the app project at `/workspaces/Alpha-Q-ai/Alpha-Q-ai-2025`, `npm audit --json --audit-level=low` returned zero vulnerabilities (`total: 0`, `high: 0`, `moderate: 0`, `low: 0`, `critical: 0`).
 - Verified Python dependency status: `cd /workspaces/Alpha-Q-ai && python -m pip_audit -r requirements.txt` returned `No known vulnerabilities found`.
-- Remediation performed: direct `electron` was upgraded to `^44.4.5`, direct `axios` was upgraded to `^1.12.0`, and the vulnerable transitive packages were pinned through overrides to patched versions for `@grpc/grpc-js`, `protobufjs`, `@protobufjs/utf8`, and `form-data`.
-- Current status: dependency vulnerability closure is verified locally. Remote completion is still pending until target-owned GitHub workflow results, protected-branch checks, and exact remote SHA evidence confirm the final state.
-- Branch sync gate: `git rev-list --left-right --count origin/main...HEAD` currently shows the local branch is behind `origin/main` by 3 commits, so the next valid move is rebase/fast-forward and a safe push rather than any unverified completion claim.
-- Low-bandwidth/long-session target: keep QCity, QMOI AI, Alpha-Q-ai, QStore, QStream, Quantum, QVillage, monitoring, API/route docs, and clone/project surfaces available in a lightweight browser-first mode with minimal bundle churn while the automation remains active.
-- Production continuity rule: the Ollama autonomous agent continues to operate only on verified evidence, keeps both repositories synchronized, updates both repo trees when local validation passes, and never claims remote completion without exact remote SHA proof.
-- Mandatory follow-through: the agent must keep `remotecompletion.md`, `oe2.txt`, `ALLMDFILESREFS.md`, and the repo memory/index files aligned with real validation results and with the current repo state before any completion claim.
+- Verified local repo validation: `python scripts/ollama_autonomous_agent.py validate-all` returned `{"status": "ready_for_github", "platforms": 6, "apps": 4, "feature_count": 404}`.
+- Verified local regression suite: `pytest tests/test_ollama_autonomous_agent.py -q` returned `104 passed in 178.91s`.
+- Current repo state: `git status --short --branch` reports `## main...origin/main [behind 5]` with only the active evidence files modified (`Qtrade.md` and `oe2.txt`), and the worktree is not being claimed as remote complete.
+- Current status: dependency vulnerability closure is verified locally. Remote completion remains blocked until target-owned workflow results, branch protection checks, and exact remote SHA evidence confirm the final state.
+- Current branch sync gate: local branch is behind `origin/main` by 5 commits; the safe next step is sync/rebase plus a verified push, not a completion claim.
+- Low-bandwidth and long-session operating target: keep QCity, QMOI AI, Alpha-Q-ai, QStore, QStream, Quantum, QVillage, monitoring surfaces, and API/route docs available in lightweight mode with minimal bundle churn while the automation remains active.
+- Production continuity rule: the Ollama autonomous agent continues only on verified evidence, keeps both repositories synchronized where authorized, updates repo trees only after successful local validation, and never claims remote completion without exact remote SHA proof.
+- Mandatory follow-through: keep `remotecompletion.md`, `oe2.txt`, `ALLMDFILESREFS.md`, and the repo memory/index files aligned with actual validation results and the current repo state before any final completion claim.
 - Markdown inventory metrics for the current workspace: root live repo `120`, `Alpha-Q-ai-2025` snapshot `2456`, `qmoi-enhanced-history-14` historical materialization `2045`, raw scope sum `4621`, full workspace enumeration `4630`, overlap/normalization delta `9`.
-- Merge/access model: the Ollama autonomous agent is documented to traverse the active repo tree, the embedded app snapshot, the historical archive materialization, and the relevant branch/history refs under authorized repo access in order to classify every `.md` file by repo scope, archive status, and canonical ownership before merge or sync.
-- Low-bandwidth browser-first protocol: the repository continues in metadata-first, summary-first mode; heavy automation remains remote and the browser/Codespace target stays at or below `100 MB/hour` transfer while preserving Copilot Chat, code editing, and local usability.
-- Remote-first automation policy: all heavy validation, markdown inventory refresh, dependency audits, automation, merge checks, and background synchronization must prefer GitHub-hosted execution and compact status payloads instead of large artifact transport to the browser.
-- Automation-safe constraint: low-bandwidth mode is a UX optimization only; it must not disable or weaken scheduled jobs, workflow dispatches, branch-sync checks, cross-repo sync, merge gates, security jobs, markdown refreshes, or activity streams.
-- Browser safety rule: the user should be able to work in either repo for long sessions with minimal data usage while Copilot Chat, editor responsiveness, file access, and repo automation remain fully functional.
-- Qtrade inventory rule: `Qtrade.md` is located in the repo root, and every Markdown file in that same root directory plus every descendant directory under it is part of the canonical inventory boundary for `ALLMDFILESREFS.md`; this includes all live docs and the mirrored `qmoi-enhanced` materialization available in `qmoi-enhanced-history-14`.
-- Repo mirror rule: the canonical live repo remains `Alpha-Q-ai` in this workspace; the available `qmoi-enhanced` mirror is represented by the materialized history directory `qmoi-enhanced-history-14` and must remain synchronized in inventory coverage, metadata, and merge parity checks.
-- Evidence rule: every completion claim remains gated on exact remote SHA and target-owned workflow success; local readiness, branch sync, and doc refresh are not equivalent to remote completion.
+- Merge/access model: the Ollama autonomous agent is documented to traverse the active repo tree, the embedded app snapshot, the historical archive materialization, and relevant branch/history refs under authorized repo access so every `.md` file can be classified by repo scope, archive state, and canonical ownership before merge or sync.
+- Completion posture: the local obligations under the documented Ollama autonomous-agent contract are complete and verified; remote completion remains pending because the target-owned GitHub workflow and exact final SHAs are not yet confirmed.
+
+## Low-bandwidth browser-first continuation contract (2026-09-27)
+
+This repository must continue in a browser-safe, low-bandwidth, remote-first mode without harming Copilot Chat, the editor, or the local development experience. The active contract remains:
+
+- Keep Codespaces and browser sessions metadata-first and summary-first; only manifests, diffs, checkpoints, and compact summaries are transported to the browser unless a user explicitly requests a full file or artifact.
+- Prefer remote execution for heavy work: GitHub Actions, repo automation, monitoring, provisioning, merge checks, sync tasks, dependency validation, markdown inventory refresh, and AI-assisted validation remain the default path.
+- Keep per-hour data burn at or below a strict target of `100 MB/hour` for the browser/Codespace experience under normal use, with even lower usage during idle or poor-connectivity states.
+- Do not automatically download large artifacts, model bundles, large snapshots, or historical archives into the browser session. Use hashes, metadata, deltas, and remote state references instead.
+- Keep the local environment lightweight and deterministic: no accidental extra Git artifacts, no unneeded npm cache churn, no heavy background downloads, and no broad workspace expansion unless specifically requested.
+- Keep the browser/Codespace responsive while heavy automation continues remotely in the background.
+- Use metadata-first sync rather than broad-history downloads; inspect docs via inventory metadata and workflow output rather than pulling every file into the browser at once.
+- Keep remote-first evidence gates intact: no completion claim is valid unless GitHub Actions and exact remote SHAs prove it.
+
+## Qtrade directory adjacency and markdown inventory rule (2026-09-27)
+
+The file `Qtrade.md` resides in the repository root. The same directory and all descendant directories under that root are therefore part of the same markdown inventory boundary. Every `.md` file in that entire root tree must be recorded in `ALLMDFILESREFS.md`.
+
+This is still enforced for both the live `Alpha-Q-ai` repository in this workspace and the materialized `qmoi-enhanced` mirror represented by `qmoi-enhanced-history-14`. Live files stay canonical, and mirrored historical files remain valid parity references and merge inputs.
+
+## Automation-safe low-bandwidth plan (2026-09-27)
+
+The low-bandwidth mode is a UX and sync optimization only; it must not disable or weaken automation. The automation layer remains authoritative and always runs in GitHub-managed infrastructure.
+
+- Keep all GitHub Actions, branch-sync jobs, cross-repo sync jobs, markdown inventory refreshes, merge gates, security checks, and activity streams running remotely without throttling or cancellation.
+- Only minimize the browser-side payload: manifests, small diffs, summaries, metadata, and compact status updates; never suppress the remote execution layer.
+- Keep artifact downloads opt-in; heavy model bundles, archives, and snapshots remain remote unless explicitly requested.
+- Use compact status checks and summary-only output for browser views while detailed validation remains remote and is stored in workflow logs and repo evidence files.
+- Maintain the current branch-sync and cross-repo automation contract so both repositories remain updated without requiring large local downloads or heavy local rebuilds.
+- Keep the remote-first gate and protected-branch rules intact: no completion claim is valid unless GitHub Actions and exact remote SHAs prove it.
+
+## Current remote completion gate
+
+- Local validation is green and the documented Ollama agent path is complete on this branch.
+- Remote completion is still pending because the target-owned workflow result and exact final remote SHA are not yet independently verified.
+- The current safe status is `LOCAL_READY_REMOTE_COMPLETION_PENDING`.
+- The repository must not claim remote completion until the target-owned workflow success and final remote SHA are observed and recorded.
 
 ## Fresh continuation evidence — 2026-09-26 04:25 UTC
 

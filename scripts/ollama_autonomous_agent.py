@@ -78,13 +78,16 @@ import argparse
 import hashlib
 import json
 import os
+import posixpath
 import re
 import subprocess
 import sys
+import uuid
 from collections.abc import Iterable, Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, ClassVar
+from urllib.parse import unquote, urlsplit
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPOSITORY_ROOT = SCRIPT_DIR.parent
@@ -93,6 +96,16 @@ if str(REPOSITORY_ROOT) not in sys.path:
 
 from scripts.command_inventory import refresh_commands_category
 from scripts.link_validator import LinkValidator
+from scripts.q_version_manager import QVersionManager
+from scripts.ollama_research import (
+    EXTERNAL_RESEARCH_CONTROLS,
+    INTERNAL_RESEARCH_CONTROLS,
+    build_external_research_plan,
+    build_internal_research_plan,
+    build_validation_research_matrix,
+    fetch_official_resource,
+    record_research_visit,
+)
 
 try:
     from scripts.live_activity_stream import (
@@ -514,6 +527,61 @@ def sanitize_documentation_text(content: str) -> str:
     return text
 
 
+def sanitize_repo_ollama_mentions(root: Path | str) -> dict[str, Any]:
+    """Remove Ollama mentions from live repo content while preserving Q.0.0.N final artifact evidence."""
+    target = Path(root).resolve()
+    files_sanitized = 0
+    protected_count = 0
+    text_extensions = {
+        ".md",
+        ".txt",
+        ".py",
+        ".json",
+        ".yml",
+        ".yaml",
+        ".toml",
+        ".ini",
+        ".cfg",
+        ".log",
+        ".html",
+        ".csv",
+        ".ts",
+        ".js",
+        ".tsx",
+        ".jsx",
+    }
+
+    for current, directories, filenames in os.walk(target):
+        current_path = Path(current)
+        directories[:] = [name for name in sorted(directories) if name != ".git" and not ("Q.0.0.N" in current_path.joinpath(name).parts)]
+        for filename in sorted(filenames):
+            path = current_path / filename
+            if "Q.0.0.N" in path.parts:
+                protected_count += 1
+                continue
+            if path.suffix.lower() not in text_extensions:
+                continue
+            try:
+                text = path.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                continue
+            if "ollama" not in text.lower():
+                continue
+            sanitized = sanitize_documentation_text(text)
+            if sanitized == text:
+                continue
+            path.write_text(sanitized, encoding="utf-8")
+            files_sanitized += 1
+
+    return {
+        "status": "OK",
+        "root": str(target),
+        "files_sanitized": files_sanitized,
+        "protected_files_skipped": protected_count,
+        "message": "Ollama mentions removed from live repo content; Q.0.0.N remains the sole preserved explicit artifact location.",
+    }
+
+
 def flatten_feature_count(features: Mapping[str, Any]) -> int:
     """
     Count terminal feature values recursively.
@@ -546,6 +614,18 @@ def unique_preserve_order(
 ) -> list[str]:
     """Return unique strings while preserving their original order."""
     return list(dict.fromkeys(str(value) for value in values))
+
+
+def iter_markdown_files(root: Path | str) -> Iterable[Path]:
+    """Yield every case-insensitive Markdown file while excluding Git internals."""
+    base = Path(root)
+    for current, directories, filenames in os.walk(base):
+        directories[:] = sorted(name for name in directories if name != ".git")
+        current_path = Path(current)
+        for name in sorted(filenames):
+            path = current_path / name
+            if path.suffix.lower() == ".md":
+                yield path
 
 
 # ============================================================================
@@ -701,6 +781,59 @@ def configure_github_git_auth() -> dict[str, Any]:
 def _hash_text(text: str) -> str:
     """Return a stable SHA-256 fingerprint for a text value."""
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def validate_markdown_content(
+    text: str,
+    path: str,
+    known_paths: set[str] | None = None,
+) -> dict[str, Any]:
+    """Run deterministic structural and same-tree relative-Markdown-link checks."""
+    stripped = text.strip()
+    lines = text.splitlines()
+    unresolved = sorted(set(re.findall(r"\b(?:TODO|FIXME|TBD|PLACEHOLDER)\b", text, re.IGNORECASE)))
+    fence_lines = [line.lstrip() for line in lines if line.lstrip().startswith(("```", "~~~"))]
+    errors: list[str] = []
+    if not stripped:
+        errors.append("empty_document")
+    has_heading = any(line.lstrip().startswith("#") for line in lines)
+    if not has_heading:
+        errors.append("missing_heading")
+    balanced_fences = len(fence_lines) % 2 == 0
+    if not balanced_fences:
+        errors.append("unbalanced_code_fence")
+    if unresolved:
+        errors.append("unresolved_marker")
+
+    missing_links: list[str] = []
+    available_paths = known_paths or set()
+    for match in re.finditer(r"!?\[[^\]]*\]\(([^)]+)\)", text):
+        target = match.group(1).strip().split(maxsplit=1)[0].strip("<>")
+        parsed = urlsplit(target)
+        if parsed.scheme or parsed.netloc or not parsed.path:
+            continue
+        link_path = unquote(parsed.path)
+        candidate = (
+            link_path.lstrip("/")
+            if link_path.startswith("/")
+            else posixpath.normpath(posixpath.join(posixpath.dirname(path), link_path))
+        )
+        if candidate.lower().endswith(".md") and candidate not in available_paths:
+            missing_links.append(target)
+    if missing_links:
+        errors.append("missing_local_markdown_link")
+
+    return {
+        "status": "validated" if not errors else "needs-review",
+        "checks": {
+            "nonempty": bool(stripped),
+            "has_heading": has_heading,
+            "balanced_code_fences": balanced_fences,
+            "unresolved_markers": unresolved,
+            "missing_local_markdown_links": sorted(set(missing_links)),
+        },
+        "errors": errors,
+    }
 
 
 def _normalize_resume_source(source: str | None) -> str:
@@ -3052,9 +3185,7 @@ class CrossRepositoryAutonomyManager:
                 reports.append({"root": str(root), "exists": False, "files": 0})
                 continue
             markdown_files = []
-            for path in sorted(root.rglob("*.md")):
-                if ".git" in path.parts:
-                    continue
+            for path in iter_markdown_files(root):
                 relative = path.relative_to(root).as_posix()
                 markdown_files.append(relative)
                 all_paths.add(f"{root.name}/{relative}")
@@ -3356,10 +3487,18 @@ class CrossRepositoryAutonomyManager:
         self,
         repo_path: Path | str,
     ) -> dict[str, Any]:
-        """Inventory every local and remote branch in a repo and aggregate file/directory dup counts."""
+        """Inventory every locally available Git ref and aggregate file/directory duplication metrics."""
         repo = Path(repo_path).resolve()
-        refs = self._git_output(repo, "for-each-ref", "--format=%(refname:short)", "refs/heads", "refs/remotes")
-        refs = sorted(set(refs))
+        all_refs = sorted(set(self._git_output(repo, "for-each-ref", "--format=%(refname)")))
+        branch_refs = sorted(set(self._git_output(
+            repo,
+            "for-each-ref",
+            "--format=%(refname:short)",
+            "refs/heads",
+            "refs/remotes",
+        )))
+        pull_request_refs = [ref for ref in all_refs if ref.startswith("refs/pull/")]
+        tag_refs = [ref for ref in all_refs if ref.startswith("refs/tags/")]
         files_by_ref: dict[str, list[str]] = {}
         file_name_counts: dict[str, int] = {}
         dir_name_counts: dict[str, int] = {}
@@ -3370,7 +3509,7 @@ class CrossRepositoryAutonomyManager:
         total_files = 0
         total_directories = 0
 
-        for ref in refs:
+        for ref in all_refs:
             file_list = self._git_output(repo, "ls-tree", "-r", "--name-only", ref)
             files_by_ref[ref] = file_list
             ref_dir_paths: set[str] = set()
@@ -3400,9 +3539,20 @@ class CrossRepositoryAutonomyManager:
 
         report = {
             "repo": str(repo),
-            "branches": refs,
-            "ref_counts": len(refs),
-            "branches_with_inventory": list(files_by_ref.keys()),
+            "branches": branch_refs,
+            "ref_counts": len(branch_refs),
+            "all_refs": all_refs,
+            "all_ref_count": len(all_refs),
+            "pull_request_refs": pull_request_refs,
+            "tag_refs": tag_refs,
+            "branches_with_inventory": branch_refs,
+            "refs_with_inventory": list(files_by_ref.keys()),
+            "coverage": {
+                "scope": "all refs currently available in the local Git database",
+                "pull_request_ref_count": len(pull_request_refs),
+                "remote_completeness": "not_verified; remote-tracking refs may be stale or incomplete",
+                "unfetched_pull_requests_included": False,
+            },
             "total_files": total_files,
             "total_directories": total_directories,
             "duplicate_file_basenames": sorted(duplicate_file_basenames),
@@ -3430,6 +3580,9 @@ class CrossRepositoryAutonomyManager:
         total_files = 0
         total_directories = 0
         total_branches = 0
+        total_refs = 0
+        total_pull_request_refs = 0
+        total_tag_refs = 0
         duplicate_basenames: dict[str, int] = {}
         duplicate_directories: dict[str, int] = {}
         api_route_related_files: set[str] = set()
@@ -3447,6 +3600,9 @@ class CrossRepositoryAutonomyManager:
                 total_files += report["total_files"]
                 total_directories += report["total_directories"]
                 total_branches += report["ref_counts"]
+                total_refs += report["all_ref_count"]
+                total_pull_request_refs += len(report["pull_request_refs"])
+                total_tag_refs += len(report["tag_refs"])
                 for name, count in report["file_name_counts"].items():
                     duplicate_basenames[name] = max(duplicate_basenames.get(name, 0), count)
                 for name, count in report["directory_name_counts"].items():
@@ -3480,6 +3636,9 @@ class CrossRepositoryAutonomyManager:
             "total_files": total_files,
             "total_directories": total_directories,
             "total_branches": total_branches,
+            "total_refs": total_refs,
+            "pull_request_ref_count": total_pull_request_refs,
+            "tag_ref_count": total_tag_refs,
             "duplicate_file_names": duplicate_file_names,
             "duplicate_file_count": len(duplicate_file_names),
             "duplicate_directory_names": duplicate_directory_names,
@@ -3648,12 +3807,7 @@ class CrossRepositoryAutonomyManager:
         include_history: bool = True,
         include_memory: bool = True,
     ) -> dict[str, Any]:
-        """Canonicalize duplicate markdown files by basename and merge their contents into one live target.
-
-        This is the real merge execution step: same-named markdown files from the live repo,
-        Alpha-Q-ai, historical snapshots, and tracker memory are combined into a single canonical
-        file, with source provenance preserved in each appended section.
-        """
+        """Merge only compatible same-title Markdown sections; preserve divergent variants."""
         inventory = self.build_unified_markdown_inventory(
             roots,
             include_history=include_history,
@@ -3669,6 +3823,7 @@ class CrossRepositoryAutonomyManager:
 
         duplicated_names = sorted(inventory["duplicate_basenames"])
         merged_targets: dict[str, str] = {}
+        merge_decisions: dict[str, dict[str, Any]] = {}
         duplicate_dirs: dict[str, list[str]] = {}
 
         dir_names: dict[str, list[str]] = {}
@@ -3691,40 +3846,12 @@ class CrossRepositoryAutonomyManager:
             canonical = inventory["canonical_targets"].get(basename)
             if not canonical:
                 continue
-
             canonical_path = Path(canonical).resolve()
-            canonical_path.parent.mkdir(parents=True, exist_ok=True)
-            canonical_text = canonical_path.read_text(encoding="utf-8", errors="ignore") if canonical_path.exists() else ""
-            sections: list[str] = []
-            seen_sources: set[str] = set()
-
-            for source_path in sorted(files, key=lambda item: (item.lower() != canonical.lower(), item)):
-                source_file = Path(source_path).resolve()
-                if source_file == canonical_path:
-                    continue
-                source_key = str(source_file)
-                if source_key in seen_sources:
-                    continue
-                seen_sources.add(source_key)
-                try:
-                    source_text = source_file.read_text(encoding="utf-8", errors="ignore")
-                except OSError:
-                    continue
-                if not source_text.strip():
-                    continue
-                rel_source = os.path.relpath(source_file, target_root_path)
-                sections.append(
-                    "\n---\n\n"
-                    + f"## Merged source: {rel_source}\n\n"
-                    + source_text.rstrip()
-                    + "\n"
-                )
-
-            if not sections:
+            decision = self._classify_markdown_duplicate_group(files, canonical_path, target_root_path)
+            merge_decisions[basename] = decision
+            if decision["action"] != "merge_additive_sections":
                 continue
-
-            merged_text = canonical_text.rstrip() + "\n\n" + "\n".join(sections).rstrip() + "\n"
-            canonical_path.write_text(merged_text, encoding="utf-8")
+            canonical_path.write_text(decision["merged_content"], encoding="utf-8")
             merged_targets[basename] = str(canonical_path)
 
         merge_metrics = self.collect_full_merge_metrics(
@@ -3745,6 +3872,9 @@ class CrossRepositoryAutonomyManager:
             f"- merged_files: {len(merged_targets)}",
             f"- duplicate_basenames: {', '.join(duplicated_names) if duplicated_names else 'none'}",
             f"- total_branches_in_scope: {merge_metrics['total_branches']}",
+            f"- total_local_refs_in_scope: {merge_metrics['total_refs']}",
+            f"- locally_available_pull_request_refs: {merge_metrics['pull_request_ref_count']}",
+            f"- tag_refs_in_scope: {merge_metrics['tag_ref_count']}",
             f"- total_files_in_scope: {merge_metrics['total_files']}",
             f"- total_directories_in_scope: {merge_metrics['total_directories']}",
             f"- duplicate_file_count: {merge_metrics['duplicate_file_count']}",
@@ -3759,6 +3889,7 @@ class CrossRepositoryAutonomyManager:
                 {
                     "merged_count": len(merged_targets),
                     "duplicate_basenames": duplicated_names,
+                    "merge_decisions": merge_decisions,
                     "duplicate_directories": sorted(duplicate_dirs),
                     "merged_targets": merged_targets,
                     "merge_metrics": merge_metrics,
@@ -3777,10 +3908,146 @@ class CrossRepositoryAutonomyManager:
             "target_root": str(target_root_path),
             "merged_count": len(merged_targets),
             "duplicate_basenames": duplicated_names,
+            "merge_decisions": merge_decisions,
             "duplicate_directories": sorted(duplicate_dirs),
             "merged_targets": merged_targets,
             "inventory": inventory,
             "merge_metrics": merge_metrics,
+        }
+
+    @staticmethod
+    def _classify_markdown_duplicate_group(
+        files: Sequence[str],
+        canonical_path: Path,
+        target_root: Path,
+    ) -> dict[str, Any]:
+        """Return an additive merge only when title/intro agree and section bodies do not conflict."""
+        sources: list[dict[str, Any]] = []
+        for source_path in sorted(set(files)):
+            path = Path(source_path).resolve()
+            try:
+                content = path.read_bytes()
+                text = content.decode("utf-8")
+            except (OSError, UnicodeDecodeError) as exc:
+                return {
+                    "action": "preserved_conflict",
+                    "reason": f"unreadable_or_non_utf8_source:{type(exc).__name__}",
+                    "canonical_path": str(canonical_path),
+                    "sources": [{"path": item, "sha256": None} for item in sorted(set(files))],
+                }
+            lines = text.splitlines()
+            headings = [
+                (index, len(match.group(1)), match.group(2).strip())
+                for index, line in enumerate(lines)
+                if (match := re.match(r"^(#{1,6})\s+(.+?)\s*#*\s*$", line))
+            ]
+            if not headings or headings[0][1] != 1:
+                return {
+                    "action": "preserved_conflict",
+                    "reason": "missing_level_one_identity_heading",
+                    "canonical_path": str(canonical_path),
+                    "sources": [{"path": item, "sha256": hashlib.sha256(Path(item).read_bytes()).hexdigest()} for item in sorted(set(files))],
+                }
+            first_section = next((index for index, level, _ in headings[1:] if level == 2), len(lines))
+            intro = "\n".join(lines[1:first_section]).strip()
+            section_records: dict[str, tuple[str, str, str]] = {}
+            for heading_index, (line_index, level, title) in enumerate(headings):
+                if level != 2:
+                    continue
+                end = next(
+                    (next_index for next_index, next_level, _ in headings[heading_index + 1:] if next_level <= 2),
+                    len(lines),
+                )
+                key = re.sub(r"\s+", " ", title).casefold()
+                body = "\n".join(lines[line_index + 1:end]).strip()
+                section_text = "\n".join(lines[line_index:end]).rstrip()
+                section_records[key] = (title, body, section_text)
+            sources.append({
+                "path": str(path),
+                "relative_path": os.path.relpath(path, target_root).replace("\\", "/"),
+                "sha256": hashlib.sha256(content).hexdigest(),
+                "text": text,
+                "title": re.sub(r"\s+", " ", headings[0][2]).casefold(),
+                "intro": re.sub(r"\s+", " ", intro).casefold(),
+                "sections": section_records,
+            })
+
+        hashes = {source["sha256"] for source in sources}
+        if len(hashes) == 1:
+            return {
+                "action": "identical_content",
+                "reason": "all same-basename sources have identical SHA-256 content",
+                "canonical_path": str(canonical_path),
+                "sources": [{"path": source["relative_path"], "sha256": source["sha256"], "contributed": False} for source in sources],
+            }
+        if len({source["title"] for source in sources}) != 1:
+            return {
+                "action": "preserved_conflict",
+                "reason": "distinct_level_one_document_identities",
+                "canonical_path": str(canonical_path),
+                "sources": [{"path": source["relative_path"], "sha256": source["sha256"]} for source in sources],
+            }
+        if len({source["intro"] for source in sources}) != 1:
+            return {
+                "action": "preserved_conflict",
+                "reason": "conflicting_document_introductions",
+                "canonical_path": str(canonical_path),
+                "sources": [{"path": source["relative_path"], "sha256": source["sha256"]} for source in sources],
+            }
+
+        canonical_source = next(source for source in sources if Path(source["path"]) == canonical_path)
+        combined_sections: dict[str, tuple[str, str, str, str]] = {}
+        for source in sources:
+            for key, (title, body, section_text) in source["sections"].items():
+                previous = combined_sections.get(key)
+                if previous and previous[1] != body:
+                    return {
+                        "action": "preserved_conflict",
+                        "reason": f"conflicting_section:{title}",
+                        "canonical_path": str(canonical_path),
+                        "sources": [{"path": item["relative_path"], "sha256": item["sha256"]} for item in sources],
+                    }
+                if previous is None:
+                    combined_sections[key] = (title, body, section_text, source["relative_path"])
+        if not combined_sections:
+            return {
+                "action": "preserved_conflict",
+                "reason": "no_additive_level_two_sections_to_reconcile",
+                "canonical_path": str(canonical_path),
+                "sources": [{"path": source["relative_path"], "sha256": source["sha256"]} for source in sources],
+            }
+
+        canonical_keys = set(canonical_source["sections"])
+        added_sections = [
+            value for key, value in combined_sections.items() if key not in canonical_keys
+        ]
+        if not added_sections:
+            return {
+                "action": "identical_sections",
+                "reason": "sources add no nonconflicting section to the canonical document",
+                "canonical_path": str(canonical_path),
+                "sources": [{"path": source["relative_path"], "sha256": source["sha256"], "contributed": False} for source in sources],
+            }
+
+        merged_content = canonical_source["text"].rstrip()
+        for _key, (title, _body, section_text, provenance) in sorted(combined_sections.items()):
+            if _key in canonical_keys:
+                continue
+            merged_content += (
+                f"\n\n<!-- QMOI merge provenance: {provenance}; sha256={next(source['sha256'] for source in sources if source['relative_path'] == provenance)} -->\n"
+                + section_text
+            )
+        return {
+            "action": "merge_additive_sections",
+            "reason": "same document identity and introduction; added section headings have no conflicting bodies",
+            "canonical_path": str(canonical_path),
+            "added_sections": [item[0] for item in added_sections],
+            "sources": [{
+                "path": source["relative_path"],
+                "sha256": source["sha256"],
+                "contributed": any(key not in canonical_keys for key in source["sections"]),
+            } for source in sources],
+            "merged_content": merged_content.rstrip() + "\n",
         }
 
     def record_merge_audit(self, repo_path: Path | str, plan: Mapping[str, Any]) -> Path:
@@ -3791,6 +4058,9 @@ class CrossRepositoryAutonomyManager:
         merge_metrics = plan.get("merge_metrics") or self.collect_full_merge_metrics([repo])
         metrics_summary = {
             "total_branches": merge_metrics.get("total_branches", 0),
+            "total_refs": merge_metrics.get("total_refs", 0),
+            "pull_request_ref_count": merge_metrics.get("pull_request_ref_count", 0),
+            "tag_ref_count": merge_metrics.get("tag_ref_count", 0),
             "total_files": merge_metrics.get("total_files", 0),
             "total_directories": merge_metrics.get("total_directories", 0),
             "duplicate_file_count": merge_metrics.get("duplicate_file_count", 0),
@@ -3825,6 +4095,9 @@ class CrossRepositoryAutonomyManager:
                 f"- Total markdown files inventoried: {plan.get('inventory', {}).get('total_markdown_files', 0)}\n"
                 f"- Duplicate basenames detected: {duplicates}\n"
                 f"- Full branch inventory count: {metrics_summary['total_branches']}\n"
+                f"- Locally available Git ref count: {metrics_summary['total_refs']}\n"
+                f"- Locally available PR ref count: {metrics_summary['pull_request_ref_count']}\n"
+                f"- Tag ref count: {metrics_summary['tag_ref_count']}\n"
                 f"- Full file count in scope: {metrics_summary['total_files']}\n"
                 f"- Full directory count in scope: {metrics_summary['total_directories']}\n"
                 "- Canonical merge targets are chosen from live repo roots before historical snapshots and memory artifacts.\n"
@@ -3849,7 +4122,9 @@ class CrossRepositoryAutonomyManager:
             ],
             "history_snapshot_directory": HISTORY_SNAPSHOT_DIRECTORY,
             "inventory_requirements": [
-                "all reachable local and remote branches",
+                "all locally available Git refs, including branches, tags, and fetched pull-request refs",
+                "target-owned remote enumeration of every pull request and its changed-file/tree manifest; missing or unfetched PR trees remain blockers",
+                "remote-ref freshness and completeness independently verified for each repository",
                 "all tracked files and directories, including symlinks",
                 "all markdown files from QE, AQ, and the historical ref",
                 "materialized history snapshot contents",
@@ -4893,6 +5168,8 @@ All timestamps use UTC ISO-8601 format.
         *,
         auto_push: bool = False,
         target_root: Path | str | None = None,
+        q_version_execution_id: str | None = None,
+        lifecycle_phase: str = "initial",
     ) -> dict[str, Any]:
         """Inventory, audit, and synchronize repo trees while keeping file, directory, and merge metrics in scope for every repo."""
         repo_paths = [Path(repo).resolve() for repo in repo_roots]
@@ -4901,6 +5178,80 @@ All timestamps use UTC ISO-8601 format.
 
         primary_root = Path(target_root).resolve() if target_root is not None else repo_paths[0]
         primary_root.mkdir(parents=True, exist_ok=True)
+        q_execution_id = q_version_execution_id or f"merge-{uuid.uuid4().hex}"
+        q_version_manager = QVersionManager(primary_root)
+        if lifecycle_phase not in {"initial", "post_agent"}:
+            raise ValueError(f"Unsupported merge lifecycle phase: {lifecycle_phase}")
+        if lifecycle_phase == "initial":
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "MERGE_START",
+                repo_paths,
+                status="PASS",
+                details={
+                    "first_agent_operation": "merge and source inventory",
+                    "repositories": [str(path) for path in repo_paths],
+                    "auto_push": auto_push,
+                    "remote_mutation": False,
+                },
+                include_inventory=False,
+            )
+            pre_inventory = q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "PRE_MERGE_INVENTORY",
+                repo_paths,
+                status="PASS",
+                details={
+                    "inventory_boundary": "filesystem outside .git, plus locally available Git refs",
+                    "unfetched_remote_history_verified": False,
+                },
+            )
+            if any(
+                item.get("status") != "READY"
+                for item in pre_inventory.get("root_metrics", {}).values()
+            ):
+                raise RuntimeError("Pre-merge Q-version inventory is incomplete; merge mutation is blocked")
+            research_report = self.build_autoresearch_report(
+                repo_paths,
+                fetch_external=True,
+            )
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "INTERNAL_RESEARCH",
+                repo_paths,
+                status=(
+                    "PASS"
+                    if all(item.get("exists") and item.get("unreadable_metadata_count") == 0
+                           for item in research_report["internal"]["source_roots"])
+                    else "NEEDS_REVIEW"
+                ),
+                details={
+                    "controls": research_report["internal"]["controls"],
+                    "source_metrics": research_report["internal"]["source_roots"],
+                    "control_count": research_report["internal_control_count"],
+                    "coverage_limitations": research_report["internal"]["limitations"],
+                },
+                include_inventory=False,
+            )
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "EXTERNAL_RESEARCH",
+                repo_paths,
+                status=research_report["external_stage_status"],
+                details={
+                    "controls": research_report["external"]["controls"],
+                    "selected_resources": research_report["external"]["selected_resources"],
+                    "visited_count": research_report["external"]["visited_count"],
+                    "failed_resources": research_report["external"]["failed_resources"],
+                    "control_count": research_report["external_control_count"],
+                    "status": research_report["external"]["status"],
+                },
+                research_sources=research_report["external"]["sources"],
+                include_inventory=False,
+            )
+        else:
+            pre_inventory = None
+            research_report = self.build_autoresearch_report(repo_paths, fetch_external=False)
 
         self.record_tracker_event(
             "merge_sync_started",
@@ -4910,7 +5261,7 @@ All timestamps use UTC ISO-8601 format.
             details={"repositories": [str(path) for path in repo_paths], "auto_push": auto_push},
         )
 
-        markdown_index_refresh = self.cross_repo_manager.refresh_all_markdown_indexes()
+        markdown_index_refresh = self.cross_repo_manager.refresh_all_markdown_indexes(repo_paths)
 
         inventory = self.cross_repo_manager.build_unified_markdown_inventory(
             repo_paths,
@@ -4923,6 +5274,29 @@ All timestamps use UTC ISO-8601 format.
             include_memory=True,
         )
 
+        plan_only = self.cross_repo_manager.assemble_repo_merge_plan(
+            repo_paths,
+            include_history=True,
+            include_memory=True,
+        )
+        planned_duplicates = plan_only["inventory"].get("duplicate_basenames", [])
+        plan_stage_name = "MERGE_PLAN" if lifecycle_phase == "initial" else "POST_AGENT_MERGE_PLAN"
+        q_version_manager.record_lifecycle_stage(
+            q_execution_id,
+            plan_stage_name,
+            repo_paths,
+            status="PASS" if inventory.get("total_markdown_files", 0) >= 0 else "BLOCKED",
+            details={
+                "planned_duplicate_basename_count": len(planned_duplicates),
+                "planned_duplicate_basenames": planned_duplicates,
+                "source_markdown_file_count": inventory.get("total_markdown_files", 0),
+                "merge_plan": plan_only,
+                "internal_research": research_report["internal"],
+                "authorization_required_for_remote_apply": True,
+            },
+            include_inventory=False,
+        )
+
         merge_plan = self.merge_duplicate_markdown_files(
             repo_paths,
             target_root=primary_root,
@@ -4931,6 +5305,27 @@ All timestamps use UTC ISO-8601 format.
         )
         cross_repository_plan = self.cross_repo_manager.build_cross_repository_merge_plan(
             repo_paths
+        )
+        decisions = merge_plan.get("merge_decisions", {})
+        safe_actions = {"identical_content", "identical_sections", "merge_additive_sections"}
+        unresolved_conflicts = sum(
+            item.get("action") not in safe_actions
+            for item in decisions.values()
+        )
+        apply_stage_name = "MERGE_APPLY" if lifecycle_phase == "initial" else "POST_AGENT_MERGE_APPLY"
+        q_version_manager.record_lifecycle_stage(
+            q_execution_id,
+            apply_stage_name,
+            repo_paths,
+            status="PASS" if unresolved_conflicts == 0 else "NEEDS_REVIEW",
+            details={
+                "decision_ledger_complete": len(decisions) == len(merge_plan.get("duplicate_basenames", [])),
+                "conflicts_reviewed": unresolved_conflicts == 0,
+                "unresolved_conflicts": unresolved_conflicts,
+                "decisions": decisions,
+                "merged_targets": merge_plan.get("merged_targets", {}),
+            },
+            include_inventory=False,
         )
 
         for repo_path in repo_paths:
@@ -4963,7 +5358,28 @@ All timestamps use UTC ISO-8601 format.
             "markdown_index_refresh": markdown_index_refresh,
             "captured_at": utc_iso(),
             "auto_push": auto_push,
+            "q_version_lifecycle_execution_id": q_execution_id,
+            "q_version_lifecycle_path": str(
+                primary_root / "ollamatracks" / "q_versions" / q_execution_id / "lifecycle.jsonl"
+            ),
+            "autoresearch": research_report,
         }
+        post_merge_stage = "POST_MERGE_AUDIT" if lifecycle_phase == "initial" else "POST_AGENT_MERGE_AUDIT"
+        markdown_audit_passed = bool(markdown_index_refresh.get("audit", {}).get("index_complete"))
+        q_version_manager.record_lifecycle_stage(
+            q_execution_id,
+            post_merge_stage,
+            repo_paths,
+            status="PASS" if markdown_audit_passed and audit_payload["status"] == "ready" else "NEEDS_REVIEW",
+            details={
+                "merge_audit_path": str(audit_path),
+                "markdown_index_complete": markdown_audit_passed,
+                "merge_metrics": merge_metrics,
+                "cross_repository_ready_for_apply": cross_repository_plan.get("ready_for_apply", False),
+                "remote_parity_proven": False,
+            },
+            include_inventory=lifecycle_phase == "post_agent",
+        )
         safe_json_write(audit_path, audit_payload)
 
         merge_stream = build_merge_activity_stream(
@@ -5341,15 +5757,92 @@ All timestamps use UTC ISO-8601 format.
 
         return sorted(candidates, key=lambda p: p.name)
 
+    def build_autoresearch_report(
+        self,
+        roots: Sequence[Path | str],
+        *,
+        fetch_external: bool = False,
+    ) -> dict[str, Any]:
+        """Research materialized sources and optionally fetch bounded official docs."""
+        source_roots = [Path(item).resolve() for item in roots]
+        internal = build_internal_research_plan(source_roots)
+        topics = {
+            "github-actions-auth",
+            "github-rest-api",
+            "python-testing",
+            "ollama-runtime",
+            "application-security",
+            "accessibility",
+        }
+        lowered_roots = " ".join(str(path).lower() for path in source_roots)
+        if any(token in lowered_roots for token in ("vercel", "netlify", "deployment", "hosting")):
+            topics.update({"vercel-deployment", "netlify-deployment"})
+        external = build_external_research_plan(topics)
+        visits: list[dict[str, Any]] = []
+        failures: list[dict[str, str]] = []
+        enabled = (
+            fetch_external
+            and os.getenv("GITHUB_ACTIONS", "").lower() == "true"
+            and os.getenv("QMOI_EXTERNAL_RESEARCH_ENABLED", "false").lower() in {"1", "true", "yes", "on"}
+        )
+        if enabled:
+            for resource in external["selected_resources"]:
+                fetched = fetch_official_resource(resource["url"])
+                if fetched.get("status") != "FETCHED":
+                    failures.append({"topic": resource["topic"], "status": str(fetched.get("status")), "error": str(fetched.get("error", "fetch failed"))})
+                    continue
+                primary_root = source_roots[0] if source_roots else self.root_dir
+                source_sha = self._git_output(primary_root, "rev-parse", "HEAD")
+                if not source_sha:
+                    failures.append({"topic": resource["topic"], "status": "BLOCKED", "error": "repository SHA unavailable for source provenance"})
+                    continue
+                visit = record_research_visit(
+                    url=fetched["url"],
+                    title=resource["topic"],
+                    question=f"What official guidance applies to {resource['topic']} in this merge/validation run?",
+                    purpose=resource["purpose"],
+                    content=fetched["text"].encode("utf-8"),
+                    findings=["Official source fetched; content hash recorded. Implementation claims still require comparison and tests."],
+                    limitations=["Documentation retrieval alone does not prove local implementation, permission, deployment, or runtime behavior."],
+                    repository=str(primary_root),
+                    ref=os.getenv("GITHUB_REF", "local"),
+                    source_sha=source_sha[0],
+                )
+                visits.append(visit)
+        external_status = (
+            "PASS"
+            if enabled and not failures and len(visits) == len(external["selected_resources"])
+            else "NEEDS_REVIEW"
+        )
+        external["status"] = "VISITED" if visits else "PLANNED_NOT_VISITED"
+        external["visited_count"] = len(visits)
+        external["failed_resources"] = failures
+        external["sources"] = visits
+        validation_matrix = build_validation_research_matrix(visits)
+        return {
+            "generated_at": utc_iso(),
+            "internal": internal,
+            "external": external,
+            "internal_control_count": len(INTERNAL_RESEARCH_CONTROLS),
+            "external_control_count": len(EXTERNAL_RESEARCH_CONTROLS),
+            "external_stage_status": external_status,
+            "validation_matrix": validation_matrix,
+            "limitations": [
+                "A plan or source catalog is not evidence of a visit.",
+                "Unfetched, redirected, denied, oversized, or unavailable sources remain explicit review items.",
+                "Internal file counts do not establish semantic understanding or remote-history completeness.",
+            ],
+        }
+
     def run_autonomous_loop(self) -> dict[str, Any]:
         """Merge all repo histories, validate, and then finalize the update for each repo."""
-        managed_surface_contract = self.refresh_managed_surface_documents(
-            self.root_dir
-        )
-        self.results["managed_surface_contract"] = managed_surface_contract
         repo_roots = self.discover_repo_roots(include_history=True)
         merge_result = self.execute_merge_and_sync(repo_roots, auto_push=False)
         self.results["merge_audit"] = merge_result
+        lifecycle_execution_id = merge_result.get("q_version_lifecycle_execution_id")
+
+        managed_surface_contract = self.refresh_managed_surface_documents(self.root_dir)
+        self.results["managed_surface_contract"] = managed_surface_contract
 
         health = self.verify_ollama()
         self.results["ollama_health"] = health.get("ollama_healthy", False)
@@ -5473,13 +5966,12 @@ All timestamps use UTC ISO-8601 format.
                 if not changes:
                     break
         lint_passed = self.run_lint_suite()
-        merge_roots = [self.root_dir]
-        alpha_root = self.root_dir.parent / "Alpha-Q-ai"
-        history_root = self.root_dir.parent / "qmoi-enhanced-history-14"
-        for candidate in (alpha_root, history_root):
-            if candidate.exists() and candidate.is_dir():
-                merge_roots.append(candidate)
-        merge_result = self.execute_merge_and_sync(merge_roots, auto_push=False)
+        merge_result = self.execute_merge_and_sync(
+            repo_roots,
+            auto_push=False,
+            q_version_execution_id=lifecycle_execution_id,
+            lifecycle_phase="post_agent",
+        )
         self.results["merge_audit"] = merge_result
         merge_audit_passed = merge_result.get("status") == "ready"
         validation_passed = self.run_full_validation_suite() and lint_passed and merge_audit_passed
@@ -6441,9 +6933,7 @@ All timestamps use UTC ISO-8601 format.
         }
 
         md_index: dict[str, str] = {}
-        for path in sorted(target.rglob("*.md")):
-            if not path.is_file():
-                continue
+        for path in iter_markdown_files(target):
             md_index.setdefault(path.name.lower(), path.relative_to(target).as_posix())
 
         present = []
@@ -6544,10 +7034,10 @@ All timestamps use UTC ISO-8601 format.
         }
 
     def _git_markdown_inventory(self, root: Path) -> dict[str, Any]:
-        """Enumerate Markdown paths from every locally available Git ref."""
+        """Enumerate and structurally validate Markdown blobs from every available Git ref."""
         try:
             refs_result = subprocess.run(
-                ["git", "-C", str(root), "for-each-ref", "--format=%(refname)", "refs/heads", "refs/remotes", "refs/tags"],
+                ["git", "-C", str(root), "for-each-ref", "--format=%(refname)"],
                 capture_output=True,
                 text=True,
                 check=False,
@@ -6567,12 +7057,12 @@ All timestamps use UTC ISO-8601 format.
         paths: list[str] = []
         records: list[dict[str, Any]] = []
         failed_refs: list[dict[str, str]] = []
+        paths_by_ref: dict[str, set[str]] = {}
         for ref in refs:
             try:
                 tree_result = subprocess.run(
-                    ["git", "-C", str(root), "ls-tree", "-r", "-l", ref],
+                    ["git", "-C", str(root), "ls-tree", "-r", "-z", "-l", ref],
                     capture_output=True,
-                    text=True,
                     check=False,
                     timeout=30,
                 )
@@ -6582,28 +7072,128 @@ All timestamps use UTC ISO-8601 format.
             if tree_result.returncode != 0:
                 failed_refs.append({"ref": ref, "error": tree_result.stderr.strip() or "git tree enumeration failed"})
                 continue
-            for line in tree_result.stdout.splitlines():
-                metadata, separator, path = line.partition("\t")
+            paths_by_ref[ref] = set()
+            for entry in tree_result.stdout.split(b"\0"):
+                metadata, separator, raw_path = entry.partition(b"\t")
                 fields = metadata.split()
-                if not separator or len(fields) < 4 or not path.lower().endswith(".md"):
+                if not separator or len(fields) < 4:
+                    continue
+                path = raw_path.decode("utf-8", errors="surrogateescape")
+                paths_by_ref[ref].add(path)
+                if not path.lower().endswith(".md"):
                     continue
                 inventory_path = f"git-ref/{ref}/{path}"
                 paths.append(inventory_path)
                 records.append({
                     "path": inventory_path,
+                    "relative_path": path,
                     "source": ref,
                     "bytes": int(fields[3]) if fields[3].isdigit() else None,
-                    "lines": None,
-                    "object_id": fields[2],
-                    "validation_status": "inventory-only",
-                    "validation_reason": "Git history path is indexed but not materialized for content validation",
+                    "object_id": fields[2].decode("ascii", errors="replace"),
                 })
 
+        object_ids = sorted({record["object_id"] for record in records})
+        object_content: dict[str, bytes] = {}
+        content_error: str | None = None
+        if object_ids:
+            try:
+                batch = subprocess.run(
+                    ["git", "-C", str(root), "cat-file", "--batch"],
+                    input=("\n".join(object_ids) + "\n").encode("ascii"),
+                    capture_output=True,
+                    check=False,
+                    timeout=120,
+                )
+                if batch.returncode != 0:
+                    content_error = batch.stderr.decode("utf-8", errors="replace").strip() or "Git blob batch read failed"
+                else:
+                    output = batch.stdout
+                    offset = 0
+                    for object_id in object_ids:
+                        header_end = output.find(b"\n", offset)
+                        if header_end < 0:
+                            content_error = "Git blob batch response ended before an object header"
+                            break
+                        header = output[offset:header_end].split()
+                        offset = header_end + 1
+                        if len(header) != 3 or header[1] != b"blob":
+                            content_error = f"Git blob unavailable or has unexpected type: {object_id}"
+                            continue
+                        try:
+                            content_size = int(header[2])
+                        except ValueError:
+                            content_error = f"Git blob size is invalid: {object_id}"
+                            continue
+                        content_end = offset + content_size
+                        if content_end >= len(output) or output[content_end:content_end + 1] != b"\n":
+                            content_error = f"Git blob batch response is truncated: {object_id}"
+                            break
+                        object_content[object_id] = output[offset:content_end]
+                        offset = content_end + 1
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                content_error = str(exc)
+
+        for record in records:
+            content = object_content.get(record["object_id"])
+            if content is None:
+                record.update({
+                    "lines": None,
+                    "content_sha256": None,
+                    "validation_status": "content-unavailable",
+                    "validation_reason": content_error or "Git blob content was unavailable",
+                    "validation_checks": {},
+                })
+                continue
+            try:
+                text = content.decode("utf-8")
+            except UnicodeDecodeError:
+                record.update({
+                    "lines": None,
+                    "content_sha256": hashlib.sha256(content).hexdigest(),
+                    "validation_status": "needs-review",
+                    "validation_reason": "Markdown blob is not valid UTF-8",
+                    "validation_checks": {"utf8_valid": False},
+                })
+                continue
+            validation = validate_markdown_content(
+                text,
+                record["relative_path"],
+                paths_by_ref.get(record["source"], set()),
+            )
+            record.update({
+                "lines": len(text.splitlines()),
+                "content_sha256": hashlib.sha256(content).hexdigest(),
+                "validation_status": validation["status"],
+                "validation_reason": ", ".join(validation["errors"]) or "all local structural checks passed",
+                "validation_checks": {"utf8_valid": True, **validation["checks"]},
+            })
+
+        validation_counts = {
+            status: sum(record.get("validation_status") == status for record in records)
+            for status in ("validated", "needs-review", "content-unavailable")
+        }
+        content_validation_passed = bool(records) and validation_counts["validated"] == len(records)
+        inventory_status = (
+            "partial" if failed_refs or validation_counts["content-unavailable"]
+            else "needs-review" if validation_counts["needs-review"]
+            else "ready"
+        )
+
         return {
-            "status": "ready" if not failed_refs else "partial",
+            "status": inventory_status,
             "refs": refs,
+            "pull_request_refs": [ref for ref in refs if ref.startswith("refs/pull/")],
+            "coverage": {
+                "scope": "all refs currently available in the local Git database",
+                "remote_completeness": "not_verified; remote-tracking refs may be stale or incomplete",
+                "unfetched_pull_requests_included": False,
+                "intermediate_commit_trees_included": False,
+                "all_indexed_blobs_content_checked": not bool(validation_counts["content-unavailable"]),
+            },
             "paths": sorted(set(paths)),
             "records": records,
+            "validation_counts": validation_counts,
+            "content_validation_passed": content_validation_passed,
             "failed_refs": failed_refs,
         }
 
@@ -6631,9 +7221,8 @@ All timestamps use UTC ISO-8601 format.
         manifests: dict[str, dict[str, str]] = {}
         for repo_root in roots:
             manifest: dict[str, str] = {}
-            for path in repo_root.rglob("*.md"):
-                if path.is_file() and ".git" not in path.parts:
-                    manifest[path.relative_to(repo_root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in iter_markdown_files(repo_root):
+                manifest[path.relative_to(repo_root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
             manifests[str(repo_root)] = manifest
 
         all_paths = sorted({path for manifest in manifests.values() for path in manifest})
@@ -6678,9 +7267,8 @@ All timestamps use UTC ISO-8601 format.
         for root_path in search_roots:
             if not root_path.exists():
                 continue
-            for path in root_path.rglob("*.md"):
-                if path.is_file():
-                    discovered.add(path.relative_to(target).as_posix())
+            for path in iter_markdown_files(root_path):
+                discovered.add(path.relative_to(target).as_posix())
 
         ordered_files = sorted({Path(relative).name for relative in discovered})
         full_relative_files = sorted(discovered)
@@ -6769,26 +7357,73 @@ All timestamps use UTC ISO-8601 format.
         sync_plan = self.build_markdown_sync_plan(target)
         all_category_files = sorted(set(full_relative_files) | set(git_inventory["paths"]))
         markdown_metrics: list[dict[str, Any]] = []
+        materialized_markdown_paths = set(full_relative_files)
         for relative_path in full_relative_files:
             path = target / relative_path
             data = path.read_bytes()
-            text = data.decode("utf-8", errors="replace")
-            has_heading = any(line.lstrip().startswith("#") for line in text.splitlines())
-            has_unresolved_marker = bool(re.search(r"\b(?:TODO|FIXME|TBD|PLACEHOLDER)\b", text, re.IGNORECASE))
+            utf8_valid = True
+            try:
+                text = data.decode("utf-8")
+                validation = validate_markdown_content(text, relative_path, materialized_markdown_paths)
+            except UnicodeDecodeError:
+                utf8_valid = False
+                text = data.decode("utf-8", errors="replace")
+                validation = {
+                    "status": "needs-review",
+                    "checks": {
+                        "nonempty": bool(data),
+                        "has_heading": False,
+                        "balanced_code_fences": False,
+                        "unresolved_markers": [],
+                        "missing_local_markdown_links": [],
+                    },
+                    "errors": ["invalid_utf8"],
+                }
             markdown_metrics.append({
                 "path": relative_path,
                 "source": relative_path.split("/", 1)[0] if "/" in relative_path else target.name,
                 "bytes": len(data),
                 "lines": len(text.splitlines()),
                 "sha256": hashlib.sha256(data).hexdigest(),
-                "validation_status": "validated" if data and has_heading and not has_unresolved_marker else "needs-review",
+                "validation_status": validation["status"],
+                "validation_errors": validation["errors"],
                 "validation_checks": {
-                    "nonempty": bool(data),
-                    "has_heading": has_heading,
-                    "unresolved_markers": has_unresolved_marker,
+                    "utf8_valid": utf8_valid,
+                    **validation["checks"],
                 },
             })
         markdown_metrics.extend(git_inventory.get("records", []))
+        materialized_validated = sum(
+            item.get("validation_status") == "validated"
+            for item in markdown_metrics
+            if "source" in item and not str(item.get("path", "")).startswith("git-ref/")
+        )
+        materialized_review = sum(
+            item.get("validation_status") != "validated"
+            for item in markdown_metrics
+            if "source" in item and not str(item.get("path", "")).startswith("git-ref/")
+        )
+        history_counts = git_inventory.get("validation_counts", {})
+        local_history_total = sum(history_counts.values())
+        local_history_validated = history_counts.get("validated", 0)
+        markdown_validation_summary = {
+            "materialized_file_count": len(full_relative_files),
+            "materialized_validated_count": materialized_validated,
+            "materialized_needs_review_count": materialized_review,
+            "locally_available_ref_file_count": local_history_total,
+            "locally_available_ref_validated_count": local_history_validated,
+            "locally_available_ref_needs_review_count": history_counts.get("needs-review", 0),
+            "locally_available_ref_content_unavailable_count": history_counts.get("content-unavailable", 0),
+            "all_materialized_and_local_ref_documents_validated": (
+                bool(full_relative_files)
+                and materialized_validated == len(full_relative_files)
+                and local_history_validated == local_history_total
+                and not git_inventory.get("failed_refs")
+            ),
+            "remote_ref_and_pr_completeness_verified": False,
+            "final_completion_eligible": False,
+            "blocker": "target-owned remote ref, PR, and intermediate-commit-tree inventories are not independently verified",
+        }
         aggregate_files: dict[str, str] = {}
         for relative_path in all_category_files:
             name = Path(relative_path).name.upper()
@@ -6834,6 +7469,13 @@ All timestamps use UTC ISO-8601 format.
             "Automatic contract selection: exact aggregate names and any markdown filename containing ALL are classified below; every other discovered markdown file is also listed for complete cross-repository coverage.",
             "Category membership: a markdown file may appear in unlimited categories whenever its filename, content, or feature responsibilities match; no category assignment is exclusive.",
             "Completeness rule: every discovered markdown path is listed below; missing history or remote access remains explicitly unproven rather than silently omitted.",
+            (
+                "Validation summary: "
+                f"{materialized_validated}/{len(full_relative_files)} materialized documents pass; "
+                f"{local_history_validated}/{local_history_total} documents in locally available refs pass; "
+                f"remote refs/PRs complete={markdown_validation_summary['remote_ref_and_pr_completeness_verified']}; "
+                f"final completion eligible={markdown_validation_summary['final_completion_eligible']}."
+            ),
             "",
             "Files:",
         ]
@@ -6887,6 +7529,7 @@ All timestamps use UTC ISO-8601 format.
                 "metrics": markdown_metrics,
                 "aggregate_files": aggregate_files,
                 "git_history": git_inventory,
+                "validation_summary": markdown_validation_summary,
                 "sync_plan": sync_plan,
                 "refresh_triggers": [
                     "push",
@@ -6898,6 +7541,7 @@ All timestamps use UTC ISO-8601 format.
                 ],
             },
             "count": len(ordered_files),
+            "validation_summary": markdown_validation_summary,
             "multi_category_files": sorted(
                 path for path, labels in (
                     (path, [label for label, files in assignments.items() if path in files])
@@ -7479,6 +8123,7 @@ All timestamps use UTC ISO-8601 format.
         target = Path(root) if root is not None else self.root_dir
         qstore_documents = self.refresh_qstream_qstore_documents(target)
         hosting_documents = self.refresh_hosting_quantum_ui_documents(target)
+        research_documents = self.refresh_research_contract_documents(target)
 
         for filename, content in {
             "QVILLAGE.md": "# QVILLAGE.md\n\nQVillage is the live QMOI community, model, and knowledge coordination surface.\n\n## Link and runtime references\n- Source repository: [thealphakenya/qvillage](https://github.com/thealphakenya/qvillage)\n- Community surface: [QVillage](https://qvillage.qmoi.com)\n\n## Active automation\n- QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.\n- memory, model, and runtime state are synchronized across repo docs and platform references.\n",
@@ -7487,6 +8132,8 @@ All timestamps use UTC ISO-8601 format.
             path = target / filename
             if not path.exists():
                 path.write_text(content + "\n", encoding="utf-8")
+
+        qvillage_research_path = self.refresh_qvillage_research_contract(target)
 
         link_validation = LinkValidator(str(target)).validate_product_catalog()
 
@@ -7499,6 +8146,7 @@ All timestamps use UTC ISO-8601 format.
         }
         document_paths.update({
             "qvillage": target / "QVILLAGE.md",
+            "qvillage_research": qvillage_research_path,
             "quantum": target / "QUANTUM.md",
         })
         missing_documents = [
@@ -7539,6 +8187,7 @@ All timestamps use UTC ISO-8601 format.
 
         return {
             "documents": document_paths,
+            "research_documents": research_documents,
             "catalog_apps": qstore_documents["catalog_apps"],
             "catalog_coverage": qstore_documents["catalog_coverage"],
             "app_access_requirements": APP_UI_ACCESS_REQUIREMENTS,
@@ -7560,6 +8209,60 @@ All timestamps use UTC ISO-8601 format.
                 "remote_reachability_checked": False,
             },
         }
+
+    def refresh_research_contract_documents(self, root: Path | str | None = None) -> dict[str, Path]:
+        """Refresh only managed research-contract sections and preserve authored policy text."""
+        target = Path(root) if root is not None else self.root_dir
+        internal_path = target / "INTERNALRESEARCH.md"
+        external_path = target / "EXTERIORRESEARCH.md"
+        internal_body = [
+            "## Agent-managed internal research contract",
+            "",
+            "The full policy and ten controls remain in this document. The agent starts each merge lifecycle with source inventory, then maps findings to implementation, tests, workflows, docs, owner, source/ref/hash, and a falsifiable validation hypothesis.",
+            "",
+            *[f"- {control}" for control in INTERNAL_RESEARCH_CONTROLS],
+            "",
+            "Run evidence is kept in the per-execution `ollamatracks/q_versions/<execution-id>/lifecycle.jsonl` hash chain. Missing refs, source roots, or unreadable files remain explicit blockers.",
+        ]
+        external_body = [
+            "## Agent-managed external research contract",
+            "",
+            "The curated resources listed above are candidates, not visit evidence. External fetching is disabled by default and requires an explicitly enabled GitHub-hosted run.",
+            "",
+            *[f"- {control}" for control in EXTERNAL_RESEARCH_CONTROLS],
+            "",
+            "The runtime enforces an HTTPS host allowlist, redirect refusal, 15-second maximum timeout, bounded response size/content type, and content hashes. Newly discovered domains remain `review_required` until approved.",
+        ]
+        _upsert_managed_markdown_section(internal_path, "INTERNALRESEARCH.md", "internal-research-contract", "\n".join(internal_body))
+        _upsert_managed_markdown_section(external_path, "EXTERIORRESEARCH.md", "external-research-contract", "\n".join(external_body))
+        return {"internal_research": internal_path, "external_research": external_path}
+
+    def refresh_qvillage_research_contract(self, root: Path | str | None = None) -> Path:
+        """Expose sanitized autoresearch and validation provenance in QVillage docs."""
+        target = Path(root) if root is not None else self.root_dir
+        path = target / "QVILLAGE.md"
+        body = [
+            "## QMOI Autoresearch, Autodev, and Validation Evidence",
+            "",
+            "QVillage consumes sanitized per-run research and validation metadata from the Q-version lifecycle ledger; it does not claim repository changes, external visits, or provider access by itself.",
+            "",
+            "- Internal source contract: [INTERNALRESEARCH.md](INTERNALRESEARCH.md).",
+            "- External source contract and official-resource catalog: [EXTERIORRESEARCH.md](EXTERIORRESEARCH.md).",
+            "- Autodev ownership, approval, and evidence policy: [AUTODEV.md](AUTODEV.md).",
+            "- Each run links repository/ref/SHA, source hashes, research question, visit timestamp, findings, limitations, and applicable validation domains when actually available.",
+            "- Show research states as `PLANNED_NOT_VISITED`, `VISITED`, `NEEDS_REVIEW`, `BLOCKED`, or `STALE`; never promote a plan to a successful visit.",
+            "- Validation domains include Markdown/content links, app/UI, platforms, APIs/endpoints/routes/ports, build/install/download, tests, security/dependencies, workflows/hooks, hosting/deployment, memory, and Q seed lineage.",
+            "- A source visit is not a validation pass. Display the independent test/provider/remote result and its exact repository SHA separately.",
+            "- Do not expose credentials, private user content, hidden tokens, or unapproved research text in public QVillage surfaces.",
+            "- External fetch is disabled by default and requires an authorized GitHub-hosted workflow and an allowlisted HTTPS resource.",
+        ]
+        _upsert_managed_markdown_section(
+            path,
+            "QVILLAGE.md",
+            "qvillage-autoresearch-validation",
+            "\n".join(body),
+        )
+        return path
 
     def refresh_clone_platform_documents(
         self,
@@ -7850,12 +8553,16 @@ All timestamps use UTC ISO-8601 format.
     def run_validation_pipeline(
         self,
     ) -> int:
-        self.update_resume_checkpoint(
-            status="validation_started",
-            completed_steps=[],
-        )
-
         try:
+            repo_roots = self.discover_repo_roots(include_history=True)
+            initial_merge = self.execute_merge_and_sync(repo_roots, auto_push=False)
+            lifecycle_execution_id = initial_merge.get("q_version_lifecycle_execution_id")
+            self.results["pre_validation_merge"] = initial_merge
+            self.update_resume_checkpoint(
+                status="validation_started",
+                completed_steps=["pre-validation merge inventory"],
+            )
+
             product_surface_docs = self.refresh_managed_surface_documents(
                 self.root_dir
             )
@@ -7898,6 +8605,17 @@ All timestamps use UTC ISO-8601 format.
 
             self.memory_generator.generate_index()
             self.model_card_generator.generate_card()
+
+            production_documents = self.refresh_production_manifests(self.root_dir)
+            self.results["production_manifests"] = production_documents
+
+            final_merge = self.execute_merge_and_sync(
+                repo_roots,
+                auto_push=False,
+                q_version_execution_id=lifecycle_execution_id,
+                lifecycle_phase="post_agent",
+            )
+            self.results["post_validation_merge"] = final_merge
 
             self.update_resume_checkpoint(
                 status="artifacts_generated",
@@ -7952,6 +8670,16 @@ All timestamps use UTC ISO-8601 format.
                         for name, path in product_surface_docs["documents"].items()
                     },
                 },
+                "merge_lifecycle": {
+                    "execution_id": lifecycle_execution_id,
+                    "pre_validation_status": initial_merge.get("status"),
+                    "post_validation_status": final_merge.get("status"),
+                    "lifecycle_path": final_merge.get("q_version_lifecycle_path"),
+                },
+                "autoresearch": initial_merge.get("autoresearch", {}),
+                "production_manifests": {
+                    key: str(value) for key, value in production_documents.items()
+                },
             }
 
             safe_json_write(
@@ -7965,6 +8693,8 @@ All timestamps use UTC ISO-8601 format.
             success = (
                 contract.get("status")
                 == "ready_for_github"
+                and initial_merge.get("status") == "ready"
+                and final_merge.get("status") == "ready"
             )
 
             self.update_resume_checkpoint(
@@ -8085,6 +8815,7 @@ def main(
             "continue",
             "merge-sync",
             "github-auth",
+            "credential-manager",
             "commands",
         ],
     )
@@ -8093,6 +8824,13 @@ def main(
         "--base-path",
         default=None,
         help="Repository root to operate against.",
+    )
+
+    parser.add_argument(
+        "--credential-action",
+        choices=["status", "verify-bitget", "migrate-qtrade", "audit"],
+        default="status",
+        help="Credential-manager operation used by the credential-manager command.",
     )
 
     try:
@@ -8128,6 +8866,16 @@ def main(
     if args.command == "github-auth":
         print(json.dumps(configure_github_git_auth(), indent=2, sort_keys=True))
         return 0
+
+    if args.command == "credential-manager":
+        from scripts.qmoi_credentials import main as credential_manager_main
+
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        return credential_manager_main([
+            args.credential_action,
+            "--qtrade",
+            str(root / "Qtrade.md"),
+        ])
 
     if args.command == "autonomous":
         try:

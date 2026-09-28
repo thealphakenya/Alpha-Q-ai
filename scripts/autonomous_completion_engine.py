@@ -21,13 +21,16 @@ from typing import Any, Mapping
 try:
     from .checkpoint_manager import CheckpointManager
     from .live_activity_events import LiveActivity
+    from .q_version_manager import QVersionManager
 except ImportError:  # pragma: no cover - direct script execution
     from checkpoint_manager import CheckpointManager
     from live_activity_events import LiveActivity
+    from q_version_manager import QVersionManager
 
 REQUIRED_GATES = (
     "discovery",
     "inspection",
+    "markdown_inventory",
     "validation",
     "security",
     "remote_main",
@@ -81,13 +84,7 @@ def repository_state(root: Path) -> dict[str, Any]:
 
 
 def discover_q_version(root: Path) -> str | None:
-    versions: list[tuple[int, str]] = []
-    pattern = re.compile(r"^Q\.0\.0\.(\d+)(?:\.md|$)")
-    for path in root.iterdir() if root.is_dir() else ():
-        match = pattern.match(path.name)
-        if match:
-            versions.append((int(match.group(1)), path.name))
-    return max(versions)[1] if versions else None
+    return QVersionManager(root).latest_artifact()
 
 
 def topic_metrics(root: Path) -> dict[str, Any]:
@@ -194,6 +191,10 @@ class AutonomousCompletionEngine:
             name: self._normalize_gate((gates or {}).get(name))
             for name in REQUIRED_GATES
         }
+        if normalized["markdown_inventory"] == "PASS" and not self._markdown_inventory_evidence_complete(
+            (repository_results or {}).get("markdown_inventory")
+        ):
+            normalized["markdown_inventory"] = "UNKNOWN"
         for name, status in normalized.items():
             self.activity.publish(name, "RUNNING" if status == "PASS" else "BLOCKED", name.upper(), f"Gate {name}: {status}")
             self.checkpoints.record_stage(self.execution_id, name.upper(), status, gate=status)
@@ -215,6 +216,7 @@ class AutonomousCompletionEngine:
             repository_results=dict(repository_results or {}),
             evidence={
                 "q_version": discover_q_version(self.root),
+                "q_version_audit": QVersionManager(self.root).audit(),
                 "topic_metrics": topic_metrics(self.root),
                 "production_ready": all_pass,
             },
@@ -236,6 +238,51 @@ class AutonomousCompletionEngine:
         })
         self._write_evidence(result)
         return result
+
+    @classmethod
+    def _markdown_inventory_evidence_complete(cls, evidence: Any) -> bool:
+        """Require terminal, exact-SHA proof for complete Markdown audits of both targets."""
+        if not isinstance(evidence, Mapping):
+            return False
+        if any(evidence.get(name) is not True for name in (
+            "remote_verified",
+            "all_document_content_validated",
+            "all_remote_refs_enumerated",
+            "all_pull_requests_included",
+            "all_intermediate_commit_trees_validated",
+        )):
+            return False
+        if evidence.get("unavailable_sources") != []:
+            return False
+        repositories = evidence.get("repositories")
+        required_repositories = {
+            "thealphakenya/Alpha-Q-ai",
+            "thealphakenya/qmoi-enhanced",
+        }
+        if not isinstance(repositories, Mapping) or not required_repositories.issubset(repositories):
+            return False
+        for repository in required_repositories:
+            item = repositories.get(repository)
+            if not isinstance(item, Mapping):
+                return False
+            total = item.get("markdown_total")
+            validated = item.get("markdown_validated")
+            if (
+                item.get("terminal_conclusion") != "success"
+                or item.get("remote_verified") is not True
+                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
+                or not item.get("workflow_run_id")
+                or isinstance(total, bool)
+                or not isinstance(total, int)
+                or total < 1
+                or validated != total
+                or item.get("failed_documents") != 0
+                or item.get("unfetched_refs") != 0
+                or item.get("unfetched_pull_requests") != 0
+                or item.get("unvalidated_intermediate_trees") != 0
+            ):
+                return False
+        return True
 
     @staticmethod
     def _normalize_gate(value: str | bool | None) -> str:

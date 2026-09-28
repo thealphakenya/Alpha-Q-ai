@@ -147,7 +147,10 @@ def filesystem_fingerprints(root: Path) -> dict[str, set[str]]:
 
 
 def inventory_repository(name: str, repo: Path) -> dict[str, Any]:
-    refs = run_git(repo, "for-each-ref", "--format=%(refname)", "refs/heads", "refs/remotes", "refs/tags")
+    refs = run_git(repo, "for-each-ref", "--format=%(refname)")
+    branch_refs = [ref for ref in refs if ref.startswith(("refs/heads/", "refs/remotes/"))]
+    pull_request_refs = [ref for ref in refs if ref.startswith("refs/pull/")]
+    tag_refs = [ref for ref in refs if ref.startswith("refs/tags/")]
     paths_by_ref = {ref: git_paths(repo, ref) for ref in refs}
     fingerprints: dict[str, set[str]] = {}
     for ref in refs:
@@ -160,6 +163,14 @@ def inventory_repository(name: str, repo: Path) -> dict[str, Any]:
         "root": str(repo.resolve()),
         "refs": refs,
         "ref_count": len(refs),
+        "branch_refs": branch_refs,
+        "pull_request_refs": pull_request_refs,
+        "tag_refs": tag_refs,
+        "coverage": {
+            "scope": "all refs currently available in the local Git database",
+            "remote_completeness": "not_verified; remote-tracking refs may be stale or incomplete",
+            "unfetched_pull_requests_included": False,
+        },
         "reachable_commit_count": len(commits),
         "paths_by_ref": paths_by_ref,
         "unique_history_paths": union,

@@ -30,6 +30,37 @@ CURRENT VERIFIED STATE:
 - The agent is not still running from the completed run; it reached a terminal successful state.
 - The synchronized checkpoint reports status=success, checkpoint state=complete, Ollama health=True, validation passed=True, 100 files analyzed, and 0 files changed.
 - The agent inspected the repository and completed its required autonomous validation path; no code changes were required in this run.
+
+## Remote-first two-layer execution model (Codespace + GitHub Actions)
+
+Use both layers intentionally:
+
+- Codespace is for:
+  - editing source files
+  - Copilot Chat
+  - terminal work and Git commands
+  - branch inspection, file review, small diffs, and commit/push steps
+  - local work that is lightweight and interactive
+  - QMOI development tool invocation and small validation checks
+- GitHub Actions is for:
+  - full test suites
+  - platform validation and feature validation
+  - heavy dependency installation
+  - long-running validation
+  - cross-repository automation and scheduled tasks
+  - build jobs, monitoring, artifacts, and autonomous workflow execution
+  - remote job execution and full evidence capture
+
+All browser and Codespace activity must stay metadata-first, summary-first, and low-data:
+- keep the browser session lean and responsive
+- avoid automatic large downloads, bundles, archives, or heavy caches in the local session
+- avoid letting large validation or monitoring work degrade Copilot Chat, editor responsiveness, or local developer experience
+- keep the local workspace lightweight while the remote layer performs heavy computations and monitoring in the background
+
+This applies equally to both repositories: Alpha-Q-ai and qmoi-enhanced, plus the historical, snapshot, and materialized research surfaces used for validation and merge planning. Any automation that requires heavy compute, remote workflow execution, or authoritative GitHub results must happen in GitHub Actions or target-owned remote execution, not in the browser session.
+
+The system must continue in a remote-first, low-bandwidth mode while preserving full agent capability and no false claims. Local execution supports research, diff review, and lightweight monitoring only; the remote layer remains the authority for heavy work, final validation, workflows, artifacts, and completion evidence.
+
 # Outstanding Execution Items
 
 Updated: 2026-09-09
