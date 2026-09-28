@@ -564,3 +564,14 @@ This is the durable operating standard for QMOI’s autonomous evolution.
                                                                                                 → NO NEW ORDERS
                                                                                                 That architecture lets QMOI be highly autonomous without making autonomy itself the objective. The objective becomes validated, risk-adjusted performance with controlled capital and automatic protection.
                                                                                                 For your existing Bitget/Binance setup, the next useful step would be to turn this into a concrete QMOI_TRADING_EVAL.json + automated evaluator that records confidence, P&L, drawdown, Sharpe/Sortino, slippage, latency, win rate, expectancy, capital utilization, API reliability, and autonomous-decision outcomes for every trade and every model.
+
+## bitget 27/9/2026
+
+- Credential values are stored outside the repository in the encrypted QMOI credential vault.
+- Vault location: `/home/codespace/.config/qmoi/credentials/vault.enc`; key location: `/home/codespace/.config/qmoi/credentials/master.key` (both mode `600`, parent mode `700`).
+- Setup: imported from this dated Qtrade block; timestamps and value-free audit events are recorded by `scripts/qmoi_credentials.py`.
+- Credential creation date reported by the source: `2026-09-27`; exact provider-side creation time was not available.
+- Saved to the vault at `2026-09-27T20:04:45Z`; record created at `2026-09-27T20:04:45Z`; last updated at `2026-09-27T20:12:48Z`.
+- Last read-only Bitget account check: `request_or_permission_rejected` at `2026-09-27T20:12:47Z` (HTTP 400; provider code `40085`).
+- Read-only spot balance snapshot: not available; provider verification has not succeeded.
+- This section contains metadata only. Never place API keys, secrets, passphrases, or tokens here.

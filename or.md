@@ -1,19 +1,32 @@
 # OR.md - Operations Reference & Progress Tracker (RESET 2026-08-17T23:45:00Z)
 
-## MASTER STATUS - APP AUTHORIZATION AND DISPATCH ARE LIVE
-**Last Updated**: 2026-09-26T02:40:00Z
-**Current Phase**: LOCAL VALIDATION GREEN; GITHUB APP IS AUTHENTICATED AND DISPATCHING TARGET-OWNED WORKFLOWS
-**Priority**: Continue with target-owned workflow validation, repository automation, and the remediating follow-up required by the live workflow outputs before any final completion claim
-**Target**: Continue the Ollama Autonomous Agent and cross-repo automation using the live GitHub App installation and the real target-owned workflow evidence
-**Repository Canonical State**: scripts/ollama_autonomous_agent.py is the live authoritative agent; the current session is now verified at the app, installation, and workflow-dispatch layers for the target repos
+## MASTER STATUS - LOCAL CREDENTIAL MIGRATION COMPLETE; REMOTE/AUTH GATES BLOCKED
+**Last Updated**: 2026-09-28T02:45:47Z
+**Current Phase**: LOCAL MAIN SYNCHRONIZED; CURRENT-SHA WORKFLOW IN PROGRESS; APP/PROTECTION/PARITY GATES BLOCKED
+**Priority**: Obtain terminal target-owned checks for the published evidence SHA and authorized branch-protection/App status; preserve fail-closed completion gate
+**Target**: Continue only with verified local evidence and authorized target-owned workflows; do not infer App identity from the separate GitHub CLI user session
+**Repository Canonical State**: `scripts/ollama_autonomous_agent.py` is the live agent; historical App-dispatch claims below are dated evidence and are superseded by the current rotation-unverified/403 checkpoint
+
+### Fresh remote continuation evidence — 2026-09-28T02:45:47Z
+- Correlation ID: `3f5e3904-b367-405d-bb0e-fc4d7ef2882d`; the GitHub CLI actor is `themegakenya`, not the GitHub App.
+- At observation time local `HEAD`, `origin/main`, and Alpha-Q-ai remote `main` matched `68de1f1962a52a9c16d722a905f818ddf73e2949`; qmoi-enhanced remote `main` was `28a87cc43cbf9dce8f7ecb53518d5d845de586fe`.
+- Alpha `Push on main` run `36370328749` is `in_progress`; JavaScript/TypeScript analysis is pending. The branch-protection GET returned HTTP 403; App-key rotation is unverified and no App authentication or mutation was attempted.
+- Current gate: `LOCAL_READY_REMOTE_COMPLETION_PENDING_CURRENT_SHA_WORKFLOW_IN_PROGRESS_AND_PROTECTION_AUTH_BLOCKED`. Backup parity, cross-repository parity, and final published-SHA completion remain unverified.
+
+### Fresh continuation evidence — 2026-09-27T22:19:12Z
+- Correlation ID: `c7668de2-4209-4bf7-9f83-d15490bf33b9`; local `HEAD` `3a7dcf2c2d49574cdc767de6075f3c75e349498c` is 0 ahead/9 behind `origin/main` `1a7eb987f18358b1508ea868feecde89fa18959a`; dirty worktree preserved.
+- Full local suite passed (`269 passed`); `validate-all` reported 6 platforms/4 apps/404 features; all 17 workflow definitions validated. Ruff is unavailable; Python compilation and `git diff --check` passed.
+- History metrics now include branches, tags, and fetched PR refs present locally, with remote freshness and unfetched PR coverage explicitly unverified. All intermediate commit trees and both-repository parity remain outstanding.
+- Current remote mains: Alpha-Q-ai `1a7eb987f18358b1508ea868feecde89fa18959a`; qmoi-enhanced `df3f34fb4733ed5cd4d25107b9d056de9697fcbe`. Push runs `36351346430` and `36352341248` succeeded on those SHAs; Alpha PR tracker `36350884963` failed at prior SHA `95f24dce8877c95138c54e654ce4ed2dda3644dc`; cross-repo autosync `36349962995` failed at prior SHA `394ce4ee4b25864d6fea8c44e581c8d3775573bd`.
+- Both branch-protection probes returned HTTP 403. App-key rotation is unverified; no App authentication or remote mutation was attempted. Current status: `LOCAL_VALIDATION_PASS_REMOTE_COMPLETION_BLOCKED_AUTH_DIVERGENCE_AND_PARITY`.
 
 ### Immediate authorization gate
-- Verified: `gh auth status --hostname github.com` reports the active session as `qmoialpha-star` via `GITHUB_TOKEN`.
-- Verified metadata: `$HOME/.config/alpha-q-ai/github-app/credentials.env` exists and contains the GitHub App identifiers (`APP_ID`, `CLIENT_ID`) plus the configured key path. The protected private-key path is `$HOME/.config/alpha-q-ai/github-app/private-key.pem`.
-- Historical PEM recovery: the previously uploaded file was found in the current reachable Git history as `qmoi-dual-repository-agent.2026-09-24.private-key (1).pem`, restored to the protected path, and validated successfully as a PEM using `openssl pkey`.
-- Verified state: the restored key is present at the protected path with mode `600`, a JWT minted from it succeeded against the GitHub App `/app` endpoint with HTTP 200, the repository installation lookup for both target repos returned HTTP 200, and the installation token mint returned HTTP 201 for both repos.
-- Live workflow evidence: the App successfully dispatched the `Cross-Repository Auth Preflight` workflow for `thealphakenya/Alpha-Q-ai` and the resulting workflow run reported `status=completed` and `conclusion=success`.
-- Required next step: continue with the live target-owned workflow results, repository automation, and any follow-up remediation or validation implied by the successful workflow before making any final remote completion claim.
+- `gh auth status` reports user `qmoialpha-star`; this is not GitHub App authentication.
+- App credential files exist with restrictive modes, but key rotation is not independently verified; the historical key is treated as compromised. No App JWT/token or App API request was created in this session.
+- Fresh protection GETs returned HTTP 403 for both repositories. Alpha-Q-ai `Push on main` run `36348173756` is in progress at `95f24dce8877c95138c54e654ce4ed2dda3644dc`; its latest tracker run `36348118519` and cross-repo autosync run `36347789572` failed at previous SHA `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`. No terminal target-workflow success is verified for the current SHA.
+- Bitget read-only verification returned HTTP 400/provider code `40085`; credentials and balance remain unverified and trading must remain disabled.
+- Current local credential reference audit covers 4,632 Markdown files, 2,364 local commits and 30 refs; future/unfetched/private sources remain out of scope.
+- The App-dispatch statements later in this file describe historical checkpoints only and must not override this current gate.
 
 ---
 

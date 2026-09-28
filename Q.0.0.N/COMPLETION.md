@@ -42,3 +42,10 @@ Mirror contract: thealphakenya/qmoi-enhanced
 - Repo state: active and locally inspectable.
 - Current terminal verification: local files are present and repository commands are available.
 - No final production-ready or merge-complete claim is made at this stage.
+
+## Required Q-version metrics
+
+- After, and only after, terminal target-owned success and independently verified exact SHAs for both repositories, `scripts/q_version_manager.py` must inventory each final repository's files, directories, byte totals, per-file SHA-256 values, Git HEAD, and clean-worktree state.
+- Each repository's `Q.0.0.N/REPOSITORY_METRICS.json` stores the complete path-level inventory; the matching root `Q.0.0.N.md` records aggregate file, directory, and byte counts and links to that manifest.
+- The metric JSON and companion Markdown are excluded from their own hashes to avoid recursive self-reference. Their exclusion is recorded explicitly.
+- A reservation, local test, or locally generated report is not final evidence. This Q.0.0.N remains partial until remote checks, parity, exact SHAs, and per-repository metrics are independently verified.

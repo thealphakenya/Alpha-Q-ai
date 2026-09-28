@@ -1,3 +1,190 @@
+## Latest remote-first continuation evidence — 2026-09-28T02:45:47Z
+
+- Correlation ID: `3f5e3904-b367-405d-bb0e-fc4d7ef2882d`.
+- Read-only identity: GitHub CLI user `themegakenya`; this is not proof of GitHub App authentication. Local `HEAD`, `origin/main`, and remote Alpha-Q-ai `main` were `68de1f1962a52a9c16d722a905f818ddf73e2949`; qmoi-enhanced `main` was `28a87cc43cbf9dce8f7ecb53518d5d845de586fe`.
+- Exact-SHA `Push on main` run `36370328749` remains `in_progress`; Actions and Rust analyses succeeded, while JavaScript/TypeScript analysis and the corresponding commit check remain in progress.
+- Branch-protection GET returned HTTP 403 `Resource not accessible by integration`. No App authentication, dispatch, or protected-branch mutation was attempted; App-key rotation remains unverified.
+- Evidence docs are being updated locally. Remote completion, backup/cross-repository parity, and terminal checks for the eventual published evidence SHA remain unverified. Do not mark complete.
+
+## Publication and remote-first continuation evidence — 2026-09-28T02:16:13Z
+
+- Correlation ID: `34ef5888-2a18-4f6d-afcc-61130cfaeda0`.
+- Safe publication completed: after fetching/rebasing onto the latest remote telemetry, the normal `git push origin main` succeeded. Local `HEAD` and `origin/main` both resolve to `e80709f9642a51b2410cf2e6202d9f49aa6f84a3`; no force-push was used.
+- Pre-publication focused proof passed: `pytest tests/test_control_plane.py -k 'q_version or research' tests/test_ollama_autonomous_agent.py -k 'merge_duplicate_markdown_files or build_branch_history_inventory or execute_merge_records_premerge_inventory_as_first_operation' -q` returned `4 passed, 129 deselected`. Python compilation and `git diff --check` passed.
+- Current worktree is clean and synchronized with `origin/main` at the exact published SHA.
+- Fresh target workflow observation on the published SHA: Security and Merge Gates run `36369131361`, QMOI Bidirectional Cross-Repository Autosync run `36369131387`, QMOI Live Activity Stream run `36369131317`, and configured dependency graph update run `36369133841` are `in_progress`; CodeQL and Branch Sync are `skipped`. These are active observations, not terminal completion proof.
+- Branch-protection GET remains HTTP 403 `Resource not accessible by integration`; the available actor is the GitHub CLI user, not independently verified App authorization.
+- GitHub warned that `ALLMDFILESREFS.md` is 69.67 MB, above the recommended 50 MB maximum. This is a repository-size/data-transfer risk requiring a future metadata/manifest redesign; it is not hidden or marked resolved here.
+- GitHub reported 36 default-branch vulnerabilities (20 high, 12 moderate, 4 low). This remains a security blocker until independently remediated or explicitly classified by target-owned evidence.
+- Remote state: `PUSHED_EXACT_SHA_REMOTE_WORKFLOWS_IN_PROGRESS_REMOTE_COMPLETION_PENDING`. The push is proven; merge, backup parity, cross-repository parity, required terminal checks, and final remote completion are not yet proven.
+
+## Recovered instruction replay and research enhancement ledger
+
+- Requirement replay: preserve all prior user instructions, including the continuation loop, the 10 internal research controls, the 10 external research controls, the official resource allowlist, the merge-first design, the validation-first evidence policy, the Q-version lifecycle gates, the evolution/autodev/document audit scope, the QMOI/QVillage automation loop, the final repo cleanup rule, and the fail-closed remote completion rule.
+- Final repo cleanup rule: remove all human-facing and generated mentions of "Ollama" across the live repository content for Alpha-Q-ai and qmoi-enhanced, while preserving the final Q.0.0.N artifact as the sole explicit historical/evidence location where Ollama references may remain.
+- Autonomous dual-repository update contract: after local validation, merge inventory, and lifecycle pass, the Ollama autonomous agent may update both Alpha-Q-ai and qmoi-enhanced by creating the canonical Q.0.0.1 directory and companion manifest on each final branch, syncing main and autosync-backup in both repos with the same evidence-backed gate, and preserving backup branch publication before main promotion. This process remains subject to target-owned remote workflow success, required checks, exact SHA parity, and no-force-push rules.
+- Branch publication sequence: audit -> backup publication -> fast-forward validation -> main promotion -> Q-version artifact creation -> final SHA verification. The agent may operate on multiple repos and branches only when branch protection, workflow result, and final SHA evidence are all available and consistent.
+- Applied architecture: local validation can produce green evidence, but final completion remains blocked until GitHub-owned workflow results, branch protection/required checks, and exact remote SHA parity are independently verified.
+- Research automation scope: the Ollama autonomy layer and the research module now perform a full internal audit of each repository tree, branch history, refs, docs, scripts, tests, generated surfaces, apps, endpoints, ports, and validation files before any merge or publication. External research is restricted to allowlisted official sources and is treated as evidence for review, not proof of implementation.
+
+### Internal research controls (10)
+1. Inventory every supplied repository, snapshot, and history root before planning changes.
+2. Read governing instructions, merge policy, validation contracts, and prior execution ledgers first.
+3. Inventory source, tests, workflows, docs, build manifests, APIs, endpoints, routes, and ports by path.
+4. Enumerate locally available branches, tags, PR refs, commits, and tree identities without claiming unfetched coverage.
+5. Retain per-source and per-file path, size, content hash, timestamp, and provenance when accessible.
+6. Map requirements to implementation symbols, tests, workflows, documentation, and owning repositories.
+7. Compare candidate changes with current and historical behavior to identify additions, duplicates, and regressions.
+8. Record unresolved ownership, missing sources, unreadable files, and conflicting evidence as blockers.
+9. Turn each accepted research finding into a testable change hypothesis and focused validation.
+10. Refresh memory, merge, Markdown, validation, and Q-version evidence from measured results rather than estimates.
+
+### External research controls (10)
+1. Fetch only HTTPS resources on an explicit official-domain allowlist.
+2. Reject user-info, credentials, tokens, local hosts, private addresses, and unapproved domains.
+3. Use bounded timeouts, response sizes, content types, and redirect refusal.
+4. Record the actual visit time, canonical URL, title, research question, and repository/ref/SHA context.
+5. Hash fetched content and store only metadata, findings, and bounded text needed for research.
+6. Prefer primary vendor, language, platform, security-advisory, and standards documentation.
+7. Cross-check security-critical claims against independent primary sources where feasible.
+8. Discover links as candidates but require domain-policy review before visiting unknown hosts.
+9. Mark inaccessible, stale, contradictory, or rate-limited resources as blocked instead of inferring facts.
+10. Retain citations and limitations in the research ledger and connect each finding to a validation case.
+
+### Official external resource catalog (15+)
+- GitHub Docs, GitHub Blog, Python Docs, Pytest Docs, Ollama Docs, OWASP, Docker Docs, npm Docs, PyPI/Packaging, Pydantic Docs, Vercel Docs, Netlify Docs, GitLab Docs, Gitpod Docs, Hugging Face Docs, W3C WCAG, RFC Editor HTTP semantics.
+- These are used as bounded official research venues for security, API behavior, runtime validation, deployment validation, and standards compliance checks.
+
+### Additional research automation additions and enhancements (20+)
+1. Merge-first orchestration before validation to preserve repository truth and blocker handling.
+2. Pre-merge inventory and source-fidelity check before any apply or sync path.
+3. Research-driven validation matrix linking docs, endpoints, APIs, routes, ports, apps, and security checks.
+4. Q-version lifecycle stage tracking for merge start, inventory, internal research, external research, validation, and publication.
+5. Automatic detection of repo roots including live trees, snapshots, and historical projections.
+6. Automatic discovery of source-path, test-path, workflow-path, endpoint-path, and doc-path coverage.
+7. Content-hash and size retention for research evidence without storing secrets.
+8. Fail-closed classification for blocked, stale, unreachable, and contradictory sources.
+9. Bounded external fetch policy with redirect refusal and explicit response limits.
+10. Source-backed validation references linking each claim to a repository SHA and a validation case.
+11. Markdown inventory refresh and validation cross-links for all .md and related evidence files.
+12. Merge safety controls preventing silent corruption of duplicate or conflicting docs.
+13. Explicit documentation of remote completion blockers: auth, rulesets, parity, and exact remote SHA.
+14. Coverage of QMOI/QVillage and QCity/QMOI AI enhancement loops in the autonomous agent scan.
+15. Safety-first credential policy: no values printed, copied, or silently activated.
+16. Integration of research evidence into the app/platform validation pipeline.
+17. Internal research used as evidence for repo evolution, autodev, and merge planning.
+18. External research used as evidence for standards, runtime, deployment, and security review.
+19. Controlled config of official resource allowlists and policy review for unknown domains.
+20. Ongoing audit requirement for all evolution, auto, dev, autodev, validation, and repo metadata Markdown files.
+21. Requirement replay preservation so every earlier instruction remains represented in this live evidence ledger.
+22. Documentation and report synchronization across oe2.txt, remotecompletion.md, ALLVALIDATIONS.md, ALLMDFILESREFS.md, MERGE.md, and the repo memory/index files.
+
+### Evolution, auto, dev, autodev, and validation Markdown audit scope
+- Audit all .md files related to evolution, auto, dev, autodev, automation, merge, validation, research, security, migration, and repo lifecycle.
+- Ensure every relevant .md file remains aligned with the current evidence, the research protocols, and the repo's fail-closed completion model.
+- Keep the QMOI/QVillage, Alpha-Q-ai, qmoi-enhanced-history-14, and Alpha-Q-ai-2025 inventories synchronized with actual repo state and documented limitations.
+- Refresh auto-generated indexes without claiming parity or completion when remote GitHub-owned proof is still missing.
+
+### Completion posture
+- Local status: validated and ready for GitHub review in the current workspace.
+- Remote status: blocked pending target-owned workflow results, protected-branch/ruleset verification, and exact final remote SHA parity.
+- Safe conclusion: local evidence is green; remote completion remains intentionally unclaimed.
+
+## PR/history ref coverage and remote gate — 2026-09-27T22:19:12Z
+
+- Correlation ID: `c7668de2-4209-4bf7-9f83-d15490bf33b9`; local source SHA `3a7dcf2c2d49574cdc767de6075f3c75e349498c`.
+- Extended `CrossRepositoryAutonomyManager.build_branch_history_inventory`, `_git_markdown_inventory`, and `scripts/merge_inventory.py` to enumerate all refs currently available in each local Git database, including fetched `refs/pull/*` and tags. Reports distinguish branches, all refs, PR refs, and tag refs and explicitly mark remote-ref completeness unverified. Unfetched PRs remain excluded and are not claimed as audited.
+- Generated merge metrics now preserve the branch count and report total refs, locally available PR refs, and tags in `MERGE.md`. The merge audit contract now requires target-owned remote enumeration of every PR and explicit freshness/completeness evidence before claiming full coverage.
+- Focused history/merge/proof tests passed: `4 passed, 107 deselected`. Full suite passed: `pytest tests -q` returned `269 passed in 614.37s`. `python scripts/ollama_autonomous_agent.py validate-all` returned `ready_for_github` with 6 platforms, 4 apps, and 404 features. `python scripts/validate_workflows.py` validated all 17 workflows. Python compilation and `git diff --check` passed. Ruff was unavailable (`No module named ruff`).
+- This change inventories trees reachable from locally available refs; it does not enumerate every intermediate commit tree or prove all remote/future/private refs and PRs were fetched. Full-history/source parity remains unproven.
+- Fresh GitHub CLI read-only observation: Alpha-Q-ai `main` is `1a7eb987f18358b1508ea868feecde89fa18959a`; qmoi-enhanced `main` is `df3f34fb4733ed5cd4d25107b9d056de9697fcbe`. Alpha push run `36351346430` and qmoi-enhanced push run `36352341248` completed successfully on those respective SHAs. Alpha PR tracker run `36350884963` failed at older SHA `95f24dce8877c95138c54e654ce4ed2dda3644dc`; cross-repository autosync run `36349962995` failed at older SHA `394ce4ee4b25864d6fea8c44e581c8d3775573bd`. These runs do not prove cross-repository parity or current-SHA required checks.
+- Both current `main` branch-protection GETs returned HTTP 403 `Resource not accessible by integration`. GitHub CLI user `qmoialpha-star` is not the GitHub App; App key rotation remains unverified. No App authentication, workflow dispatch, merge, release, deployment, or push was attempted.
+- Local `HEAD` remains 0 commits ahead and 9 behind `origin/main` (`1a7eb987f18358b1508ea868feecde89fa18959a`); the worktree is dirty with pre-existing user/generated changes preserved. Remote completion, backup parity, cross-repository parity, and security closure remain pending.
+- Next actions: verify App-key rotation through the App owner, obtain authorized read access to protection/ruleset details, enumerate current remote PR refs/tree manifests and all reachable commit trees in target-owned workflows, reconcile the nine-commit divergence without overwriting local work, then require terminal checks and exact-SHA parity evidence before any completion claim.
+
+## Continued credential manager and repository audit — 2026-09-27T20:38:57Z
+As you continue, also make best plan to automate and enhance further how ollama autonomous agent is thorough in doing full audit in each and every file and directory in all histories of each repo(qmoi-enhanced and Alpha-Q-ai(this repo)) , qmoi-enhanced-history-14, Alpha-Q-ai-2025 , all files and directories in pr , all branches and all histories of all branches and everywhere else in all the merge features and how it would also use all these full audits as internal research materials for each repo(e.g 1. all histories and futures of Alpha-Q-ai should be used in research,improvement of Alpha-Q-ai repo and should all be merged to the Alpha-Q-ai (it should first have all the files and directories in Alpha-Q-ai-2025 as mentioned in the base contents of Alpha-Q-ai repo(this repo) 2. all histories and futures of qmoi-enhanced should be used in research,improvement of qmoi-enhanced repo and should all be merged to the qmoi-enhanced-history-14 (it should first have all the files and directories in qmoi-enhanced-history-14 as mentioned in the base contents of qmoi-enhanced repo) . Also make best plan to also add these futures of the qmoi-enhanced and Alpha-Q-ai (this repo) in the merge features too. Features are like opposite of histories e.g there are commits and changes I made to each of the mentioned histories of the repos(qmoi-enhanced-history-14 and Alpha-Q-ai-2025 that are the base contents of qmoi-enhanced and Alpha-Q-ai repos respective before merging begins. ). Also note and update features ollama autonomous agent updates MERGE.md , it should always note and update metrics of all audits and all files and directories. Automate and enhance further how it is thorough in merging all ui features, frotend , backend and all to the me styles and universals features mentioned in STYLES.md, UNIVERSAL.md and UNIVERSALS, it should be very thorough to ensure it never forgets or ignores any file, feature, implementations and everything that could be an improvement to the final qmoi-enhanced and Alpha-Q-ai repos, it should be able to know if doing a certain merge activity is an improvement or degradation and know which ones to merge where . Also note features that ollama autonomous agent will do the merge activities as the first thing  as mentioned in ollama master orchestrator and related files. Ollama should do everything else it is itended to do as mentioned in all files related to ollama autonomous agent, its tests plus everything else. Ollama Autonomous Agent should also be enhanced and automated further in how it always ensures there are tests for everything as well as hooks and webhooks for everything as well as updating all .MD files related to all these. Ollama Autonomous agent ))
+- Correlation ID: `c880c769-80c4-4c64-b6e2-c88cf67dd2c2`; local HEAD `3a7dcf2c2d49574cdc767de6075f3c75e349498c`; latest remote Alpha-Q-ai `main` SHA observed `95f24dce8877c95138c54e654ce4ed2dda3644dc`.
+- Credential manager exposes metadata-only status, Bitget read-only verification/balance retrieval, Qtrade migration, and current/history credential-reference audit through the Ollama CLI. The audit covers 4,632 Markdown files (active 131, snapshot 2,456, history materialization 2,045), 5,189 source/config files, and 2,364 commits/30 local refs; it found 33,299 current reference records and 3,167 historical candidate commit/path matches. Report path is `$HOME/.config/qmoi/credentials/credential-inventory.json`, mode `600`, and contains locations/categories only.
+- These are pattern-based candidates, not a guarantee that every credential was found or works. Unfetched/future refs, private repositories not materialized, binary data, external secret stores, and unknown formats remain out of scope. The referenced historical `CREDENTIALS_ROTATION_PLAYBOOK.md` was not found locally or in the queried remote QMOI main tree; new canonical guidance is in the root playbook, without a parity claim.
+- Lifecycle tags now include exact UTC `created_at`, `added_at`, `updated_at`, and `last_verified_at`, while append-only audit events exclude values. Bitget source-reported creation date remains `2026-09-27`; exact provider-side creation time is unknown. `Qtrade.md` heading is exactly `bitget 27/9/2026` and its metadata reports no old section date as the credential creation date.
+- Bitget read-only account/balance request remains blocked: latest HTTP 400/code `40085`, no balance snapshot. Successful spot account rows, when available, are retained only encrypted; amounts are never printed or documented. No order, transfer, deposit, withdrawal, or live trading is performed.
+- Current master-authorized CRUD API/UI is not verified. The local vault's internal write/update methods do not authenticate a master; add/edit/remove/rotation requests must remain blocked until a signed least-privilege control path and authorization tests exist.
+- Focused credential tests: `11 passed`. Historical App key rotation is unverified; no GitHub App auth was attempted. GitHub CLI user `qmoialpha-star` is not the App. Alpha remote `main` at `95f24dce8877c95138c54e654ce4ed2dda3644dc` has `Push on main` run `36348173756` still in progress; tracker run `36348118519` and autosync run `36347789572` failed at prior SHA `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`. Branch protection reads returned 403 and the local branch is six commits behind with changes preserved.
+- No push, dispatch, merge, release, deployment, credential rotation, or remote completion claim was made.
+
+## Bitget credential migration and remote completion update — 2026-09-27
+
+- Added the live-root credential vault and Ollama CLI entrypoint: `scripts/qmoi_credentials.py` via `python scripts/ollama_autonomous_agent.py credential-manager --credential-action status|verify-bitget|migrate-qtrade`.
+- Migrated the three parseable Bitget fields from the Qtrade tail into encrypted storage outside the repository. Vault directory mode is `700`; key, encrypted store, audit and lock files are `600`. Audit events contain provider/tag/action/status/timestamps only, never values.
+- Replaced the credential-bearing Qtrade tail with the exact metadata-only heading `bitget 27/9/2026`. It records vault/key locations, setup source, original section date `2026-06-26`, reported creation date `2026-09-27`, exact vault add/update times, and latest verification result. Exact provider-side credential creation time was not available and is not inferred.
+- Read-only Bitget verification returned HTTP 400, provider code `40085`, at `2026-09-27T20:07:22Z`; status is `request_or_permission_rejected`, not valid/working. The response body and credentials were not printed. No trading or account mutation occurred.
+- End-to-end agent command `python scripts/ollama_autonomous_agent.py credential-manager --credential-action verify-bitget` refreshed Qtrade and the encrypted audit at `2026-09-27T20:12:47Z`; result remained HTTP 400/code `40085`/`request_or_permission_rejected`. Credentials remain blocked from trading until a successful provider-approved read-only check.
+- New focused credential tests passed: `pytest tests/test_qmoi_credentials.py -q` returned `8 passed`. Earlier local suite evidence from this session remains `validate-all` ready for GitHub with 6 platforms/4 apps/404 features, agent tests `104 passed`, Python audit clean, and app npm audit total `0`; rerun broader tests after the latest integration edits before relying on those earlier results.
+- The manager is provider-agnostic for stored records but only Bitget migration and read-only verification are implemented here. Other providers/repos must be migrated individually into their authorized managed secret stores; the local vault is not cross-repo synchronized. This Codespace has no OS keyring package, so current local encrypted storage is a fallback, not hardware-backed protection.
+- GitHub App use was not performed: local App credential files have restrictive modes, but rotation of the historically exposed key is not independently verified. Do not authenticate with it; obtain and install a confirmed rotated key first. The GitHub CLI user `qmoialpha-star` is a separate identity.
+- Fresh remote observation (`2026-09-27T20:09:16Z`, correlation `c46ede71-59c1-4210-93b4-1c93c9bc4569`): Alpha-Q-ai main `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`; qmoi-enhanced main `76306f983d19127dea9a446e0aa22d42006f9d9f`. Alpha push succeeded but Ollama live activity remained in progress; qmoi recent push/live workflows succeeded but a recent bidirectional autosync failed. Both protection reads returned 403.
+- Local HEAD is `3a7dcf2c2d49574cdc767de6075f3c75e349498c`, five commits behind `origin/main`, with user/generated modifications preserved. No push, dispatch, merge, release, deployment, or remote-completion claim was made. Gate remains `LOCAL_CREDENTIAL_MIGRATION_COMPLETE_BITGET_PROVIDER_VERIFICATION_BLOCKED_REMOTE_COMPLETION_PENDING`.
+
+## Fresh security closure and continuation evidence — 2026-09-27
+
+- Verified local security fix: in the app project at `/workspaces/Alpha-Q-ai/Alpha-Q-ai-2025`, `npm audit --json --audit-level=low` returned zero vulnerabilities (`total: 0`, `high: 0`, `moderate: 0`, `low: 0`, `critical: 0`).
+- Verified Python dependency status: `cd /workspaces/Alpha-Q-ai && python -m pip_audit -r requirements.txt` returned `No known vulnerabilities found`.
+- Verified local repo validation: `python scripts/ollama_autonomous_agent.py validate-all` returned `{"status": "ready_for_github", "platforms": 6, "apps": 4, "feature_count": 404}`.
+- Verified local regression suite: `pytest tests/test_ollama_autonomous_agent.py -q` returned `104 passed in 178.91s`.
+- Current repo state: `git status --short --branch` reports `## main...origin/main [behind 5]` with only the active evidence files modified (`Qtrade.md` and `oe2.txt`), and the worktree is not being claimed as remote complete.
+- Current status: dependency vulnerability closure is verified locally. Remote completion remains blocked until target-owned workflow results, branch protection checks, and exact remote SHA evidence confirm the final state.
+- Current branch sync gate: local branch is behind `origin/main` by 5 commits; the safe next step is sync/rebase plus a verified push, not a completion claim.
+- Low-bandwidth and long-session operating target: keep QCity, QMOI AI, Alpha-Q-ai, QStore, QStream, Quantum, QVillage, monitoring surfaces, and API/route docs available in lightweight mode with minimal bundle churn while the automation remains active.
+- Production continuity rule: the Ollama autonomous agent continues only on verified evidence, keeps both repositories synchronized where authorized, updates repo trees only after successful local validation, and never claims remote completion without exact remote SHA proof.
+- Mandatory follow-through: keep `remotecompletion.md`, `oe2.txt`, `ALLMDFILESREFS.md`, and the repo memory/index files aligned with actual validation results and the current repo state before any final completion claim.
+- Markdown inventory metrics for the current workspace: root live repo `120`, `Alpha-Q-ai-2025` snapshot `2456`, `qmoi-enhanced-history-14` historical materialization `2045`, raw scope sum `4621`, full workspace enumeration `4630`, overlap/normalization delta `9`.
+- Merge/access model: the Ollama autonomous agent is documented to traverse the active repo tree, the embedded app snapshot, the historical archive materialization, and relevant branch/history refs under authorized repo access so every `.md` file can be classified by repo scope, archive state, and canonical ownership before merge or sync.
+- Completion posture: local obligations under the documented Ollama contract are satisfied and verified; remote completion remains pending evidence from the target-owned GitHub workflow and exact final SHAs.
+
+## Low-bandwidth browser-first continuation contract (2026-09-27)
+
+This repository must continue to operate in a browser-safe, low-bandwidth, remote-first mode without harming Copilot Chat, the editor, or the local development experience. The following instructions are preserved as the active operating contract and must remain in effect for both `Alpha-Q-ai` and `qmoi-enhanced`:
+
+- Keep Codespaces and browser sessions metadata-first and summary-first: only manifests, diffs, checkpoints, and compact summaries are transported to the browser unless the user explicitly asks for a full file or artifact.
+- Prefer remote execution for heavy work: GitHub Actions, repository automation, monitoring, provisioning, merge checks, sync tasks, dependency validation, markdown inventory refresh, and AI-assisted validation should run remotely as the default path.
+- Keep per-hour data burn at or below a strict target of `100 MB/hour` for the browser/Codespace experience under normal use, with even lower usage during idle or poor-connectivity states.
+- Do not automatically download large artifacts, model bundles, large snapshots, or historical archives into the browser session. Use hashes, metadata, deltas, and remote state references instead.
+- Keep the local environment lightweight and deterministic: no accidental extra Git artifacts, no unneeded npm cache churn, no heavy background downloads, and no broad workspace expansion unless specifically requested.
+- The browser/Codespace should remain usable for long sessions with minimal bundle impact while all heavy automation continues in the remote layer and in the background.
+- Copilot Chat, code editing, and local development must remain unaffected; the low-bandwidth policy must never reduce the developer experience or degrade chat responsiveness, code intelligence, or file access.
+- Use the remote layer to continuously inspect branch state, historical docs, repo inventories, merge coverage, sync status, and validation outputs while keeping the local workspace lean.
+- Keep every repository history, markdown inventory, and branch-sync reference available through metadata rather than massive repeated downloads. Count `.md` files across live repo, snapshots, and historical materializations without forcing a heavy open of every file in the browser.
+- The user may continue to work on either repo and the peer repo in the same session, but the system must remain safe, evidence-based, and low-bandwidth by default.
+- All prior instructions from earlier conversations remain in force: remote-first completion, fail-closed evidence gates, no completion claims without exact remote SHA and workflow proof, preserve local work, keep security and dependency updates honest, and continue working without dangerous or unsupported claims.
+
+This contract is intentionally designed to support a low-bundle, long-session browser workflow while preserving repository fidelity, merge safety, automation coverage, and valid remote-first completion gates.
+
+## Qtrade directory adjacency and markdown inventory rule (2026-09-27)
+
+The file `Qtrade.md` resides in the repository root. The same directory and all descendant directories under that root are therefore part of the same markdown inventory boundary. Every `.md` file in that entire root tree must be recorded in `ALLMDFILESREFS.md`, whether it is a root doc, a docs subfolder file, a runtime/generated doc, a .github markdown file, a script helper file, or a historical snapshot file.
+
+This rule is now enforced for both the live `Alpha-Q-ai` repository in this workspace and the materialized `qmoi-enhanced` mirror represented here by `qmoi-enhanced-history-14`. All Markdown coverage is treated as repo-aware and source-backed; live files stay canonical, and mirrored historical files remain valid parity references and merge inputs.
+
+The user specifically required: all `.md` files in the same directory as `Qtrade.md` and all `.md` files in every subdirectory under that same root must appear in the canonical markdown inventory; the inventory must remain available in both repo states; and no markdown file in the active tree should be omitted from `ALLMDFILESREFS.md` or the repo evidence docs.
+
+## Automation-safe low-bandwidth plan (2026-09-27)
+
+The low-bandwidth mode must be treated as a UX and sync optimization, not as a way to disable or weaken automation. The following rules preserve all intended automation features while keeping the browser and Codespace light:
+
+- Keep all GitHub Actions, branch-sync jobs, cross-repo sync jobs, markdown inventory refreshes, merge gates, security checks, and activity streams running remotely without throttling or cancellation.
+- Only minimize the browser-side payload: manifest files, small diffs, summaries, metadata, and compact status updates; never suppress the remote execution layer.
+- Do not disable workflow dispatch, scheduled automations, concurrency protections, or backup/sync rules. The automation layer remains authoritative and always runs in GitHub-managed infrastructure.
+- Keep artifact downloads opt-in. Heavy model bundles, archives, and snapshots stay remote unless a user specifically requests them.
+- Use compact status checks and summary-only output for browser views; detailed validation remains remote and is stored in workflow logs and repo evidence files.
+- Maintain the current branch-sync and cross-repo automation contract so both repositories remain updated without requiring large local downloads or heavy local rebuilds.
+- Ensure the low-bandwidth profile does not block Copilot Chat, editor intelligence, code navigation, file reads, or branch inspection; the browser session remains responsive and small while the remote layer continues doing heavy operations.
+- Keep the remote-first gate and protected-branch rules intact: no completion claim is valid unless GitHub Actions and exact remote SHAs prove it.
+- Use metadata-first sync, not broad-history downloads; count and inspect docs via inventory metadata and workflow output rather than pulling every file into the browser at once.
+- Keep long-running background automation alive in the remote layer so both repositories continue to be monitored and improved without user-visible data bloat or degradation.
+
+This is the intended safe compromise: slim browser/Codespace usage, full remote automation, no adverse effect on Copilot or workflow reliability, and no weakening of the repository’s security or evidence gates.
+
 ## Continuation checkpoint (2026-09-26)
 
 Status: LOCAL VALIDATION GREEN; METRIC-COVERAGE EXPANSION AND TRADING AUTOMATION ENHANCED; REMOTE COMPLETION IS STILL PENDING FINAL TARGET-OWNED WORKFLOW CONCLUSIONS AND EXACT SHAS.
@@ -331,6 +518,56 @@ As you continue, also check and enhance the merge features, enhance how it alway
 - [x] Recomputed current ref metrics: historical base `34,950` files/`5,451` directories; imported Alpha projection `370,590`/`102,104`; QMOI history union `371,406`/`102,372`; integration ref `30,845`/`5,461`; merge PR `1,342`/`6`; materialized-inputs PR `32,190`/`5,469`.
 - [x] Current deduplicated final projection for both destinations is `376,854` files and `102,372` directories, using the unique-path union formula; duplicate analysis found `314,940` identical paths and `55,645` variant paths.
 - [!] These are plan-only forecasts. The final repositories cannot be declared merged until every variant path is reviewed, feature tests pass, and after-merge metrics are generated for both independently published destinations.
+
+## Trading and credential-manager continuation plan — 2026-09-27
+
+Status: PLAN RECORDED ONLY. No repository-wide trading audit, credential validation, platform access, account creation, funds movement, live trading, remote operation, or platform-specific success verification was performed in this checkpoint. This entry is not evidence of working credentials, balances, confidence thresholds, profitability, or live orders.
+
+- Evidence anchor: repository `Alpha-Q-ai`, local branch `main`, base `HEAD` `3a7dcf2c2d49574cdc767de6075f3c75e349498c`; correlation ID `oe2-trading-credentials-plan-2026-09-27`. At capture, the branch was 5 commits behind `origin/main`, and `Qtrade.md` already had an uncommitted modification. Preserve it; do not reset, overwrite, rebase, publish, or infer current remote state from this snapshot.
+- Immediate security finding: `Qtrade.md` contains apparent Bitget credential/key material in plaintext. Values are intentionally omitted here and must not be copied, logged, tested, or moved into another tracked file. Treat the exposed material as compromised: before any use, the authorized account owner must revoke/rotate it through Bitget's official controls, then verify revocation without exposing values. A later authorized secret-remediation task must locate references safely, remove plaintext from current tracked files, and separately assess Git history; never rewrite shared history or claim historical removal without explicit authorization and proof. This checkpoint does not modify `Qtrade.md`.
+- Date ambiguity to resolve before changing credential references: the request names both `26/9/2026` and `26/6/2026` for Bitget-related sections. Do not replace credentials with either date, treat a date as a secret/location, or silently choose one. Confirm the intended date and define a secret-free metadata format first.
+
+### Required source and feature inventory — all pending
+
+- Enumerate every accessible repository, worktree, submodule, branch/ref, commit history, archive, and generated/materialized source relevant to QMOI, including the active `Alpha-Q-ai`, `Alpha-Q-ai-2025`, and `qmoi-enhanced-history-14`. Record absent, inaccessible, shallow, or unverified sources as blockers; do not claim “all repos/history” coverage unless each source is independently enumerated.
+- Inventory all Markdown documents (including every `.md` in root and descendants), code/configuration files, tests, workflows, generated docs, and UI surfaces that mention trading, exchanges, financial activity, credential management, account setup, balances, deposits, or transfers. Build a path-to-feature/source map and reconcile it with the canonical inventories; preserve source ownership and authored content.
+- Discover platforms from source rather than assuming a fixed list. At minimum investigate Bitget, Binance, Coinbase, Kraken, Bybit, OKX, CashOn, and every additional exchange, wallet, broker, payment, hosting, or revenue-related integration found in code/docs/history. For each, map actual frontend/UI, backend/API, routes, jobs/workflows, configuration, strategies, tests, permissions, and evidence. Distinguish implemented, documented-only, sandbox/testnet, disabled, inaccessible, and independently verified capabilities.
+- Trace every trading automation and money-related path end to end: data ingestion; strategy selection and no-trade behavior; backtests and walk-forward tests; paper trading; orders and cancellation; positions; fees/slippage; risk and exposure; balance/ledger reconciliation; alerts; shutdown; deposits/transfers/withdrawals; and other platform uses. Record concrete source and tests for each path; a mention or generated UI/doc is not implementation proof.
+- Inventory every trading-related UI control and status surface per app/platform/client, including account connection, key status, market/data health, strategy and confidence, order/position state, actual-vs-simulated P&L, fees, balances, risk limits, warnings, reconciliation, audit events, and emergency stop. Verify its route/API authorization and evidence source; never show green/connected/live when stale, simulated, or unverified.
+
+### Credential manager plan — secret-safe and fail-closed
+
+- Inventory credential *names and consumers*, not values: API keys/secrets, tokens, `.env` variables, OAuth/app credentials, certificates, signing keys, and other provider-specific material across all discovered platforms, repos, workflows, runtime configs, and credential-manager UI/APIs. Use approved secret scanning with redacted/fingerprint-only findings; do not print, persist, quote, copy, or include secret values in reports, tests, chat, logs, or generated Markdown.
+- Map each required credential to its owner, platform/account, approved secret-store reference, runtime consumer, minimum permission scope, expiry/rotation policy, and safe validation method. Distinguish missing, present-but-unverified, valid read-only, expired, over-privileged, revoked, and blocked states. Do not expose values through UI, diagnostics, exception text, test fixtures, or telemetry.
+- Automate only safe readiness work: enumerate documented requirements, check secret-store references/presence and non-sensitive metadata, validate configuration shape without revealing values, identify scope/expiry gaps, and perform explicitly authorized read-only provider authentication probes in memory. Keep tokens short-lived and process-local. Never invent credentials, scrape them from files/history, bypass MFA/KYC/CAPTCHA, create accounts, or silently broaden permissions.
+- Account opening, identity verification, accepting terms, MFA recovery, API-key issuance, permission changes, credential rotation, and external account linking require the account owner/provider's authorized human workflow. A vault or approved platform-managed secret store must be the only source of secret values; documentation may contain safe locations/pointers and status, never the value.
+- After remediation is explicitly authorized, scan all accessible current trees and history for references to the exposed Bitget material using redacted match reporting. Do not automatically replace a credential with a date/string. Rotate first, update only verified consumers through an approved secret manager/configuration path, revoke old material, and independently test that old access fails and new least-privilege read-only access succeeds.
+- A future `bitgetcredentials.md` may record verification time, credential *reference names*, scope, expiry/status, method, correlation ID, and evidence location only after independently authorized validation. It must never contain credentials. Create/update it only after evidence exists; otherwise report `blocked` or `not_verified`, not success.
+
+### Trading confidence, real-funds, balances, and capital safety — pending design/validation
+
+- Convert every Qtrade metric and feature into a source-backed test/evidence matrix per platform: calibrated multi-factor confidence; data quality/freshness; regime/signal/no-trade accuracy; strategy backtest, out-of-sample and walk-forward results; paper results; risk-adjusted returns; drawdown, VaR/expected shortfall, exposure and leverage; fees, slippage and execution quality; API reliability; reconciliation; security; and kill-switch behavior. Missing, stale, uncalibrated, or contradictory evidence must fail closed.
+- Preserve Qtrade's staged progression (research, backtest, out-of-sample, paper, limited live, validated live, controlled scaling). Define thresholds, sample sizes, monitoring windows, loss/drawdown caps, and rollback criteria before implementation. Confidence alone is not proof of profitability or authorization. No agent may enable real-money trading merely because an internal threshold is met; live activation and any capital increase require explicit, scoped human authorization, exchange policy compliance, least-privilege credentials, and independent risk approval.
+- Verify whether a platform actually supports each claimed feature before enabling it. Sandbox/testnet must be the default for new integrations. Live order placement must remain disabled until the platform-specific evidence gates pass and the authorized owner explicitly enables bounded live use. Reconcile intended orders, fills, positions, and ledger before further orders; pause on mismatch, stale data, abnormal loss, suspicious activity, permission changes, or provider/API failure.
+- Balance monitoring, where separately authorized, must be read-only and distinguish available, locked, margin, reserved, and total amounts with currency, account, timestamp, and source. Report observed balance changes honestly; never promise unlimited growth, guaranteed profit, maximum possible balance, or uninterrupted multiplication. Do not automatically deposit, transfer, withdraw, borrow, or move funds between accounts. Funding requires a separately authorized, whitelisted, capped, auditable human-approved workflow and must not be inferred from a trading confidence score.
+- Record paper, backtest, and real-money results separately. Any live-performance claim must use independently reconciled exchange evidence after costs and identify the exact account/platform/time range without publishing account secrets or sensitive identifiers.
+
+### Platform deliverables and evidence gates — not yet done
+
+- Only after a platform's implementation, authorization, credential status, confidence/risk gates, and live-vs-simulated state are independently verified may its status document be created or updated. Potential `bitget.md` and `binance.md` records must be platform-specific, evidence-linked, secret-free, and explicit about limitations; no document may imply real-funds trading merely from configuration or a successful login.
+- Update `Qtrade.md`, the Ollama autonomous-agent implementation/tests, credential-manager APIs/UI, platform docs, model-card/comparison/QVillage views, and relevant inventories only after source audit and focused tests. Preserve authored sections and label plans separately from implementation and runtime evidence.
+- Keep `oe2.txt`, `remotecompletion.md`, structured remote-completion/evidence artifacts, and markdown inventories consistent with actual local and remote observations. Remote workflow, merge, release, deployment, account, credential, balance, and trading outcomes each require their own evidence; local documentation or tests do not prove them.
+
+### Explicit pause and next actions
+
+- [ ] User-requested current action is limited to this `oe2.txt` plan update; pause after focused local validation. No other file, account, credential, exchange, Git history, or remote state was changed by this checkpoint.
+- [ ] Treat the plaintext Bitget credential material in `Qtrade.md` as compromised and have the authorized owner revoke/rotate it through Bitget; do not use it. Then authorize a separate secret-remediation scope before any repository-wide modification.
+- [ ] Resolve the conflicting Bitget date (`26/9/2026` versus `26/6/2026`) and specify an approved secret-store reference convention, not a secret-bearing documentation location.
+- [ ] Once separately authorized, perform the full accessible-repository/history inventory, platform/automation/UI map, credential-name/consumer map, and feature/test/evidence gap matrix described above. Mark inaccessible repositories and history as explicit blockers.
+- [ ] Design and test secret-safe credential readiness and read-only validation; then implement only human-authorized account setup and bounded trading/funding controls. Do not perform account creation, API-key issuance, deposits, transfers, withdrawals, or live trades as part of this documentation plan.
+- [ ] Validate each exchange independently in sandbox first. Any later live-money validation requires explicit human authorization, verified least-privilege credentials, calibrated confidence, hard risk limits, reconciliation, kill switch, and platform-specific independent evidence; otherwise leave live trading disabled.
+- [ ] Create/update per-platform status and credential metadata documents only after the corresponding evidence exists; never record credential values or claim success from a plan, test fixture, or login alone.
+- [ ] Resume broader work only after this requested pause is lifted. Until then, remote completion and all trading/credential/platform outcomes remain unverified; this entry makes no remote-completion claim.
 # oe2.txt
 
 ## Fresh GitHub App and remote-completion checkpoint (2026-09-25T02:10:57Z)

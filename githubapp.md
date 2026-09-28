@@ -1,13 +1,37 @@
 # QMOI Dual Repository Agent
 
-## Current App authentication status (2026-09-26T01:20:00Z)
+## Current safety status (2026-09-28T02:45:47Z)
 
-- Correlation ID: `2026-09-26-github-app-authorization-gate`.
-- Historical PEM recovery: the uploaded GitHub App key was located in the reachable Git history as `qmoi-dual-repository-agent.2026-09-24.private-key (1).pem` and restored to the protected App key path at `$HOME/.config/alpha-q-ai/github-app/private-key.pem`.
-- Verified metadata: `$HOME/.config/alpha-q-ai/github-app/credentials.env` is present with mode `600` and contains the App identifiers (`APP_ID`, `CLIENT_ID`) and the configured private-key path.
-- Verified state: the restored PEM is present at the protected key path, the file has mode `600`, and a direct GitHub App JWT verification against the `/app` endpoint returned HTTP 200.
-- Result: the current workspace now has a valid installed PEM for the GitHub App identity check, and the App identity is confirmed as `QMOI Dual Repository Agent` under owner `thealphakenya`.
-- Remaining gate: complete the installation-based repository authorization checks and then continue only with read-only or target-authorized workflow validation before any remote mutation or dispatch.
+- Correlation ID: `3f5e3904-b367-405d-bb0e-fc4d7ef2882d`.
+- The authenticated CLI identity is GitHub user `themegakenya`, not verified App authentication. The current App key remains rotation-unverified and is not used.
+- Read-only SHA observations: Alpha-Q-ai `main` `68de1f1962a52a9c16d722a905f818ddf73e2949`; qmoi-enhanced `main` `28a87cc43cbf9dce8f7ecb53518d5d845de586fe`.
+- Alpha-Q-ai `Push on main` run `36370328749` is still in progress on the observed Alpha SHA; JavaScript/TypeScript analysis is pending. Branch-protection GET returned HTTP 403 `Resource not accessible by integration`.
+- No App JWT/token, dispatch, or remote mutation was attempted. Remote completion and cross-repository/backup parity are not proven.
+
+## Current safety status (2026-09-27T22:19:12Z)
+
+- Correlation ID: `c7668de2-4209-4bf7-9f83-d15490bf33b9`.
+- GitHub CLI user `qmoialpha-star` can read current repository refs and workflow metadata, but is not App authentication. Both `main` branch-protection reads returned HTTP 403; no dispatch or mutation authority is inferred.
+- Current remote `main` SHAs are Alpha-Q-ai `1a7eb987f18358b1508ea868feecde89fa18959a` and qmoi-enhanced `df3f34fb4733ed5cd4d25107b9d056de9697fcbe`. Push workflows succeeded at those SHAs, but Alpha's latest observed PR tracker failed at an older SHA and qmoi-enhanced cross-repository autosync failed at an older SHA.
+- App-key rotation is not independently confirmed. Treat the historical key as compromised; do not use present local key material, create a JWT/token, or call App APIs until the App owner confirms rotation and the replacement is securely installed.
+- Remote completion remains blocked by protection authorization, failed/stale automation evidence, unproven cross-repository/backup parity, and local divergence. See [remotecompletion.md](remotecompletion.md) and [oe2.txt](oe2.txt).
+
+## Current safety status (2026-09-27T20:33:40Z)
+
+- Correlation ID: `e0809d88-9e0a-42fa-9c5c-adaa18d554d2`.
+- App use remains blocked: protected credential-file presence/modes do not establish key rotation, and the historical key remains classified as compromised. No App JWT, installation token, or App API request was made in this checkpoint.
+- The separate GitHub CLI user is `qmoialpha-star`; current target branch-protection reads previously returned HTTP 403. No dispatch, mutation, or protected-branch authority is claimed.
+- Latest Alpha-Q-ai `main` SHA observed: `95f24dce8877c95138c54e654ce4ed2dda3644dc`; its push workflow was still in progress. See [github.md](github.md) and [remotecompletion.md](remotecompletion.md) for the read-only checkpoint.
+
+## Current App authentication status (2026-09-27)
+
+- Correlation ID: `c46ede71-59c1-4210-93b4-1c93c9bc4569`.
+- Local metadata only: `credentials.env` and `private-key.pem` are present under `$HOME/.config/alpha-q-ai/github-app/`, with directory mode `700` and file modes `600`.
+- Rotation state: the files' metadata does not prove that the private key is newly rotated. Repository policy records the historical key as compromised; the present key must not be used for App authentication until the App owner confirms revocation/rotation and securely installs a verified replacement.
+- No GitHub App JWT or installation token was created in this session. No App API request, dispatch, or mutation was attempted.
+- `gh auth status` identified the Codespace's separate user session as `qmoialpha-star`; it is not GitHub App authentication.
+- Read-only user-session evidence at `2026-09-27T20:09:16Z`: Alpha-Q-ai `main` SHA `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`; qmoi-enhanced `main` SHA `76306f983d19127dea9a446e0aa22d42006f9d9f`. Both main-branch protection reads returned HTTP 403 `Resource not accessible by integration`.
+- Result: `APP_AUTH_BLOCKED_ROTATION_UNVERIFIED`. Do not authenticate, dispatch, mutate, or claim App authorization until the replacement key is independently confirmed.
 
 ## Credential migration and authentication verification (2026-09-25T22:02:13Z)
 

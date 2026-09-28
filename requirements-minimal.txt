@@ -1,3 +1,11 @@
+# Remote-first execution policy:
+# - Codespace/local environment: lightweight editing, Copilot Chat, Git, branch inspection, small commands,
+#   small validation, and repository metadata review.
+# - GitHub Actions / remote workflows: full validation, heavy installs, long-running validation,
+#   cross-repository automation, monitoring, artifacts, deployment checks, and autonomous execution.
+# - Keep heavy packages and large downloads out of the browser/Codespace unless explicitly requested.
+# - Preserve low-data, low-bundle operation while executable work remains remote and authoritative.
+
 requests>=2.32.4
 aiohttp>=3.9.5
 boto3>=1.35.0

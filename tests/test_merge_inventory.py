@@ -29,12 +29,17 @@ def init_repo(root: Path, name: str) -> Path:
 
 def test_inventory_counts_all_refs_and_unique_history_paths(tmp_path):
     repo = init_repo(tmp_path, "qmoi-enhanced")
+    subprocess.run(["git", "-C", str(repo), "tag", "v1"], check=True)
+    subprocess.run(["git", "-C", str(repo), "update-ref", "refs/pull/7/head", "HEAD"], check=True)
     report = inventory_repository("qmoi-enhanced", repo)
     assert report["ref_count"] >= 2
     assert report["reachable_commit_count"] == 1
     assert "refs/heads/main" in report["refs"]
     assert "src/qmoi-enhanced.txt" in report["unique_history_paths"]
     assert report["history_file_count"] == 1
+    assert "refs/tags/v1" in report["tag_refs"]
+    assert "refs/pull/7/head" in report["pull_request_refs"]
+    assert report["coverage"]["unfetched_pull_requests_included"] is False
 
 
 def test_git_tree_metrics_records_complete_snapshot(tmp_path):

@@ -94,6 +94,22 @@ The audit is evidence collection only: it must not fetch, merge, reset, or push
 implicitly. Network synchronization and publication remain explicit workflow
 steps, followed by validation and a recorded result.
 
+Local Git-history metrics must enumerate every ref already present in the
+repository object database and classify branches, tags, and fetched
+`refs/pull/*` separately. Reports must state that remote freshness is unverified
+unless a target-owned read proves the current ref set. Missing or unfetched PRs,
+unavailable refs, and intermediate-commit-tree coverage must remain explicit
+blockers; tip-tree inventories alone are not proof of complete history coverage.
+
+Every materialized Markdown file and every distinct Markdown blob in available
+refs must receive UTF-8, nonempty, heading, code-fence, unresolved-marker, and
+same-tree local-Markdown-link checks, with byte/line counts, path, source/ref,
+object/content hash, and per-check outcomes in `ALLMDFILESREFS.md`. A failed or
+unavailable document remains `needs-review`/`content-unavailable`. Remote
+completion additionally requires target-owned evidence for every intermediate
+commit tree and every PR in both repositories; local refs and local tests cannot
+satisfy that gate.
+
 ## Required History Source And Complete Coverage
 
 The ref `origin/codespace-potential-space-happiness-wrv69x5j6qjq2g7wp` is a

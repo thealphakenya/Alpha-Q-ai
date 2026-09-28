@@ -1,5 +1,34 @@
 # GitHub Automation & Live Job Links
 
+## Current read-only remote checkpoint (2026-09-27T20:33:40Z)
+
+- Correlation ID: `e0809d88-9e0a-42fa-9c5c-adaa18d554d2`.
+- The active CLI identity is user `qmoialpha-star`; no GitHub App auth was attempted because key rotation is unverified and the historical key is treated as compromised.
+- Latest Alpha-Q-ai remote `main` observed by `git ls-remote`: `95f24dce8877c95138c54e654ce4ed2dda3644dc`. Its `Push on main` workflow run `36348173756` was `in_progress` at that SHA. No current-SHA terminal success is established.
+- On the prior Alpha SHA `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`, tracker run `36348118519` and cross-repository autosync run `36347789572` completed failure; those are not results for the current SHA.
+- Latest qmoi-enhanced `main` SHA observed earlier in this session: `76306f983d19127dea9a446e0aa22d42006f9d9f`; it has no workflow run matching the newer Alpha SHA. The previously observed cross-repository autosync failure remains historical evidence, not a current run result.
+- Branch protection GETs returned HTTP 403 at the prior checkpoint; do not infer mutation authority. No workflow dispatch or remote mutation was performed.
+- The local branch is now reported six commits behind the latest remote tracking ref, with uncommitted local work preserved. Remote completion is pending exact-SHA terminal workflow, protection, parity, and authorization proof.
+
+## Fresh credential and remote checkpoint (2026-09-27T20:09:16Z)
+
+- Correlation ID: `c46ede71-59c1-4210-93b4-1c93c9bc4569`.
+- GitHub CLI identity was read-only user `qmoialpha-star`; this is not the GitHub App identity. Local App credential files exist with restrictive modes, but key rotation has not been independently verified. The historical App key is treated as compromised; no App authentication was attempted.
+- Both `main` branch-protection reads returned HTTP 403 `Resource not accessible by integration`. No dispatch, branch mutation, PR, merge, release, or deployment was attempted.
+- Remote Alpha-Q-ai `main`: `a51b1f36bb3ca249cf5cab3fa00616065ae0f8f0`; `Push on main` completed successfully, while `Ollama Live Activity Stream` was still in progress at observation time. A prior `Ollama Autonomous Agent - PR Realtime Tracker` run failed at SHA `5c555cc5c525ade19e20a9aecf008255a`.
+- Remote qmoi-enhanced `main`: `76306f983d19127dea9a446e0aa22d42006f9d9f`; its latest observed `Push on main` and live activity/tracker workflows succeeded, but a recent `QMOI Bidirectional Cross-Repository Autosync` run failed at SHA `e516d9a2492378a19d9057cc9750fb37c7eecc8f`.
+- Local branch is five commits behind `origin/main` and has preserved uncommitted work. Remote completion remains pending terminal workflow conclusions, authorization, parity, and exact final SHA verification.
+
+## QMOI credential handling contract
+
+- The live-root credential manager is `scripts/qmoi_credentials.py`, invoked through `python scripts/ollama_autonomous_agent.py credential-manager --credential-action <status|verify-bitget|migrate-qtrade>`.
+- The local vault is shared by QMOI repos on the same Codespace at `$HOME/.config/qmoi/credentials/`; encrypted records, key, lock, and value-free audit log are outside Git worktrees with directory mode `700` and files mode `600`.
+- Every record tracks tags, source, reported source-created date, vault `created_at`/`added_at`/`updated_at`, latest verification time/status, and value-free audit events. Unknown source creation time is left unknown, never fabricated.
+- Qtrade credential values must be migrated into the encrypted vault, then removed from `Qtrade.md`; the `bitget 27/9/2026` section is metadata-only and records vault location/setup and masked verification result.
+- Provider verification is read-only and must never print response bodies, credentials, signatures, or tokens. Permission/scope/request errors are not proof of validity. No trade, withdrawal, key rotation, or remote secret write is automated without explicit provider authorization.
+- The Codespace has no Python OS-keyring package available. The current local fallback is encrypted-at-rest storage with a separately permission-restricted key file; production or cross-machine credentials should use a managed OS/cloud secret store. Never copy the local vault key or encrypted store into GitHub or another repository.
+- For credentials in other repositories, the agent must inventory by secret reference and redacted path/line metadata, migrate provider records individually, verify only through provider-approved read-only checks, and use each target repository's own authorized GitHub-managed secrets for Actions. Access to one repo or one provider must never be inferred for another.
+
 ## Read-only GitHub App authentication check (2026-09-25T22:02:13Z)
 
 Correlation ID: `026ff4e5-97d8-451f-88fe-cfedc67f6c7e`. Against `thealphakenya/Alpha-Q-ai` at local `main` SHA `a33e627c3ac123bd47b3aafbdb30b8a973256670`, `GET /app` and the repository installation endpoint both returned HTTP 200 for `qmoi-dual-repository-agent`. The five-minute JWT was process-local; no installation token or mutation was performed. This supersedes earlier notes that this Codespace had not yet authenticated as the App.

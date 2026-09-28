@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
-  "correlation_id": "2026-09-26-continuation-refresh",
+  "correlation_id": "3f5e3904-b367-405d-bb0e-fc4d7ef2882d",
   "status": "LOCAL_READY_REMOTE_COMPLETION_PENDING",
-  "generated_at": "2026-09-26T03:10:00Z",
+  "generated_at": "2026-09-28T02:45:47Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "target_repositories": [
     "thealphakenya/Alpha-Q-ai",
@@ -12,62 +12,153 @@
     "identity_verified": true,
     "actions_dispatch_authorized": false,
     "required_capability": "user-owned GitHub token or a scoped GitHub App with final workflow, contents, checks, and protected-branch authority",
-    "notes": "The live repo state is locally green, but remote completion is still gated by the final target-owned workflow result and exact remote SHAs. Current GitHub Actions show Push on main still in progress for both repositories; no final completion claim is made."
+    "notes": "GitHub CLI user themegakenya is readable but is not the GitHub App. App key rotation is unverified; do not authenticate with the historically exposed key. Branch-protection GET returned HTTP 403."
   },
   "state": {
     "local_validation": "python scripts/ollama_autonomous_agent.py validate-all => {\"status\": \"ready_for_github\", \"platforms\": 6, \"apps\": 4, \"feature_count\": 404}",
     "remote_completion": "pending",
     "backup_parity_proven": false,
     "cross_repo_parity_proven": false,
-    "security_gate_status": "separate remote blocker remains; not resolved by local validation",
-    "app_authentication": "observed-remote-workflow-path-active-but-final-proof-pending",
-    "local_head_sha": "56b960996b8ef2162776b690fec34023a257a4ef",
-    "origin_main_sha": "8465da0d3c151ce336db62f04c5bd5f6f46cb5c9",
-    "remote_alpha_q_ai_main_sha": "8465da0d3c151ce336db62f04c5bd5f6f46cb5c9",
-    "remote_qmoi_enhanced_main_sha": "8a8a5874f5890d07d00c4049ddda34929f2c675b",
-    "branch_status": "behind 5 on origin/main; local worktree is not being claimed as remote complete",
-    "worktree_dirty": false,
+    "security_gate_status": "remote blocker remains separately unresolved by local validation",
+    "app_authentication": "blocked_rotation_unverified_no_app_authentication_attempted",
+    "local_head_sha": "68de1f1962a52a9c16d722a905f818ddf73e2949",
+    "origin_main_sha": "68de1f1962a52a9c16d722a905f818ddf73e2949",
+    "remote_alpha_q_ai_main_sha": "68de1f1962a52a9c16d722a905f818ddf73e2949",
+    "remote_qmoi_enhanced_main_sha": "28a87cc43cbf9dce8f7ecb53518d5d845de586fe",
+    "branch_status": "local main and origin/main matched at observation time; current evidence edits require normal publication and fresh checks",
+    "worktree_dirty": true,
     "remote_policy_proven": false,
     "current_observation": {
-      "alpha_q_ai": {
-        "push_on_main": "in_progress",
-        "qmoi_live_activity_stream": "completed success",
-        "ollama_live_activity_stream": "completed success",
-        "pr_realtime_tracker": "completed success"
+      "local_validation_commands": [
+        "python scripts/ollama_autonomous_agent.py validate-all",
+        "pytest tests -q",
+        "python scripts/validate_workflows.py",
+        "python -m py_compile scripts/ollama_autonomous_agent.py scripts/merge_inventory.py",
+        "python -m pip_audit -r requirements.txt",
+        "npm audit --json --audit-level=low",
+        "pytest tests/test_qmoi_credentials.py -q"
+      ],
+      "local_validation_results": {
+        "validate_all": "{\"status\": \"ready_for_github\", \"platforms\": 6, \"apps\": 4, \"feature_count\": 404}",
+        "pytest": "269 passed in 614.37s",
+        "workflow_validation": "17 workflows valid; false-success safeguards and critical contracts passed",
+        "python_compilation": "passed",
+        "ruff": "unavailable: No module named ruff",
+        "pip_audit": "No known vulnerabilities found",
+        "npm_audit": "vulnerabilities: {} total: 0",
+        "credential_tests": "11 passed",
+        "focused_lifecycle_tests": "4 passed, 129 deselected",
+        "publication": "normal push succeeded at e80709f9642a51b2410cf2e6202d9f49aa6f84a3"
       },
-      "qmoi_enhanced": {
-        "push_on_main": "in_progress",
-        "qmoi_live_activity_stream": "completed success",
-        "ollama_live_activity_stream": "completed success",
-        "pr_realtime_tracker": "completed success"
+      "credential_inventory": {
+        "audited_at": "2026-09-27T20:38:31Z",
+        "report_path": "$HOME/.config/qmoi/credentials/credential-inventory.json",
+        "report_mode": "600",
+        "active_markdown_files": 131,
+        "alpha_q_ai_2025_markdown_files": 2456,
+        "qmoi_enhanced_history_14_markdown_files": 2045,
+        "total_markdown_files": 4632,
+        "source_config_files": 5189,
+        "current_reference_records": 33299,
+        "local_history_candidate_commit_paths": 3167,
+        "local_commits": 2364,
+        "local_refs": 30,
+        "secret_values_recorded": false,
+        "coverage_limit": "pattern-based current materializations and locally available refs only; future/unfetched/private sources not covered; generated dependency/build trees excluded from source/config scan"
+      },
+      "credential_manager": {
+        "vault_path": "$HOME/.config/qmoi/credentials/vault.enc",
+        "vault_mode": "600",
+        "key_mode": "600",
+        "directory_mode": "700",
+        "qtrade_section": "bitget 27/9/2026; metadata only",
+        "reported_creation_date": "2026-09-27",
+        "exact_provider_creation_time": "unknown",
+        "last_read_only_verification": {
+          "status": "request_or_permission_rejected",
+          "http_status": 400,
+          "provider_code": "40085",
+          "checked_at": "2026-09-27T20:12:47Z",
+          "invocation": "python scripts/ollama_autonomous_agent.py credential-manager --credential-action verify-bitget"
+        },
+        "credential_validity_proven": false,
+        "balance_snapshot_status": "unavailable_provider_rejected",
+        "os_keyring_available": false
+      },
+      "rotation_playbook": {
+        "historical_materialized_file_found": false,
+        "remote_qmoi_main_tree_match_found": false,
+        "active_canonical_file": "CREDENTIALS_ROTATION_PLAYBOOK.md",
+        "historical_parity_proven": false
+      },
+      "master_credential_crud": "blocked_not_verified_no_authenticated_master_control_api_or_ui",
+      "remote_observation": {
+        "observed_at": "2026-09-28T02:45:47Z",
+        "actor": "themegakenya GitHub CLI user; not GitHub App",
+        "alpha_main_sha": "68de1f1962a52a9c16d722a905f818ddf73e2949",
+        "qmoi_enhanced_main_sha": "28a87cc43cbf9dce8f7ecb53518d5d845de586fe",
+        "alpha_push_on_main": "run 36370328749 is in_progress on 68de1f1962a52a9c16d722a905f818ddf73e2949; Actions and Rust jobs succeeded; JavaScript/TypeScript job remains in_progress",
+        "previous_alpha_pr_tracker": "completed failure at prior SHA 95f24dce8877c95138c54e654ce4ed2dda3644dc; run 36350884963",
+        "previous_qmoi_enhanced_push_on_main": "completed success at df3f34fb4733ed5cd4d25107b9d056de9697fcbe; run 36352341248",
+        "previous_qmoi_enhanced_cross_repo_autosync": "completed failure at prior SHA 394ce4ee4b25864d6fea8c44e581c8d3775573bd; run 36349962995",
+        "previous_published_sha_workflows": {
+          "security_and_merge_gates": {"run_id": "36369131361", "status": "in_progress"},
+          "cross_repository_autosync": {"run_id": "36369131387", "status": "in_progress"},
+          "qmoi_live_activity": {"run_id": "36369131317", "status": "in_progress"},
+          "dependency_graph_update": {"run_id": "36369133841", "status": "in_progress"}
+        },
+        "main_protection_http_status": 403,
+        "current_sha_push_run": {
+          "run_id": "36370328749",
+          "head_sha": "68de1f1962a52a9c16d722a905f818ddf73e2949",
+          "status": "in_progress",
+          "analyze_actions": "completed_success",
+          "analyze_rust": "completed_success",
+          "analyze_javascript_typescript": "in_progress"
+        },
+        "previous_allmdfilesrefs_size_warning_bytes": 73000000,
+        "previous_github_default_branch_vulnerability_count": 36,
+        "alpha_main_protection_http_status": 403,
+        "previous_qmoi_enhanced_main_protection_http_status": 403,
+        "remote_completion_proven": false
       }
     }
   },
   "validation": {
-    "full_test_suite": "not claimed as final remote proof",
-    "required_checks": "pending final target-owned workflow conclusion and exact SHAs",
+    "full_test_suite": "local pytest tests -q passed: 269 passed in 614.37s; local-only evidence",
+    "required_checks": "Push on main run 36370328749 remains in_progress on observed SHA 68de1f1962a52a9c16d722a905f818ddf73e2949; final evidence-publication SHA checks are pending",
     "exact_final_remote_sha": null,
     "local_verification_method": [
       "git status --short --branch",
-      "git ls-remote --heads origin main",
       "python scripts/ollama_autonomous_agent.py validate-all",
-      "gh api repos/thealphakenya/Alpha-Q-ai/actions/runs --jq '.workflow_runs[:4]|map({name,status,conclusion,head_sha,created_at})'",
-      "gh api repos/thealphakenya/qmoi-enhanced/actions/runs --jq '.workflow_runs[:4]|map({name,status,conclusion,head_sha,created_at})'"
+      "pytest tests -q",
+      "python scripts/validate_workflows.py",
+      "python -m py_compile scripts/ollama_autonomous_agent.py scripts/merge_inventory.py",
+      "python -m pip_audit -r requirements.txt",
+      "cd /workspaces/Alpha-Q-ai/Alpha-Q-ai-2025 && npm audit --json --audit-level=low"
     ]
   },
   "blockers": [
     "No final remote completion claim is valid without a target-owned workflow conclusion and exact remote SHA evidence.",
-    "The current repo is behind origin/main by five commits on this local branch, so final parity must be re-established only with verified remote evidence.",
+    "Push on main run 36370328749 and its JavaScript/TypeScript analysis remain in progress on observed SHA 68de1f1962a52a9c16d722a905f818ddf73e2949; final evidence-publication SHA checks are pending.",
+    "Bitget credentials are not verified as working; provider returned HTTP 400 code 40085, and no account balance snapshot is available.",
+    "The requested historical CREDENTIALS_ROTATION_PLAYBOOK.md is unavailable in the local materialization and queried remote QMOI main tree; new canonical playbook parity is unverified.",
+    "Credential scanning is pattern-based and limited to available materialized trees and local refs; future/unfetched/private histories and external stores are not covered.",
+    "Master-authenticated credential add/edit/remove/rotation API/UI is not implemented or independently verified.",
+    "GitHub App key rotation is not verified; do not authenticate with the current local key material.",
+    "Both branch-protection reads returned HTTP 403; mutation and dispatch authorization remain blocked.",
     "The repo security panel remains a separate remote blocker and must be treated as an outstanding issue until the flow proves otherwise.",
     "The final completion gate remains remote-owned and evidence-driven."
   ],
   "evidence_refs": [
     "remotecompletion.md",
     "oe2.txt",
+    "githubapp.md",
+    "or.md",
     "remote-evidence-ledger.jsonl",
     "github_proof_contract.json",
     "scripts/ollama_autonomous_agent.py",
-    "gh api repos/thealphakenya/Alpha-Q-ai/actions/runs",
-    "gh api repos/thealphakenya/qmoi-enhanced/actions/runs"
+    "requirements.txt",
+    "/workspaces/Alpha-Q-ai/Alpha-Q-ai-2025/package.json"
   ]
 }

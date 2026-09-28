@@ -34,3 +34,7 @@ The master plan itself contains 208 numbered sections. This ledger is the operat
 ## Next milestone
 
 Prepare a final state that is fully validated, remotely verified, and Q-versioned only after all required merge and synchronization gates pass.
+
+## Final repository metrics contract
+
+After terminal target-owned success and exact remote SHA verification for both repositories, the Q version manager writes a per-file/per-directory SHA-256 inventory to each repository's `Q.0.0.N/REPOSITORY_METRICS.json` and aggregate metrics to the matching `Q.0.0.N.md`. It records all readable filesystem entries outside `.git`, including symlinks, and blocks on unreadable paths, dirty trees, failed checks, missing repositories, or SHA mismatches. The metrics document and JSON manifest are declared self-exclusions from their own inventory hashes. No such final artifact is produced by this local partial checkpoint.

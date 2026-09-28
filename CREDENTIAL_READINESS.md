@@ -1,0 +1,32 @@
+# QMOI Credential Readiness
+
+## Current evidence
+
+- Canonical local manager: `scripts/qmoi_credentials.py`, exposed through the Ollama agent's `credential-manager` command.
+- Bitget tag: `bitget 27/9/2026`.
+- Secret values have been removed from the Qtrade tail and stored encrypted outside the repository at `$HOME/.config/qmoi/credentials/vault.enc`; its key is at `$HOME/.config/qmoi/credentials/master.key`.
+- The vault directory is mode `700`; key, encrypted data, lock, and audit files are mode `600`. The audit log stores provider, tag, operation, status, and timestamps only.
+- The Qtrade metadata section reports the user-provided creation date `2026-09-27`; exact exchange-side creation time is unknown. Vault record `created_at`, `added_at`, `updated_at`, and `last_verified_at` are separately timestamped in UTC.
+- Last read-only Bitget account check: `2026-09-27T20:12:47Z`, HTTP `400`, provider code `40085`, status `request_or_permission_rejected`. Credential validity is **not verified** and trading must remain disabled until the request/permission cause is resolved and a read-only check returns success.
+- GitHub App authentication is separately blocked until the historically exposed key is confirmed revoked/rotated. File presence and restrictive modes are not proof of rotation.
+- Full available local audit at `2026-09-27T20:38:31Z`: active tree `131`, `Alpha-Q-ai-2025` `2,456`, `qmoi-enhanced-history-14` `2,045`, total `4,632` Markdown files; 5,189 source/config files scanned (excluding generated dependency/build trees); 33,299 current credential-related reference records; 3,167 credential-like historical commit/path candidates across 2,364 locally available commits and 30 refs. The mode-`600` report is `$HOME/.config/qmoi/credentials/credential-inventory.json`.
+- Coverage is limited to the current materialized trees and local refs. Future commits, unfetched/private refs, external credential stores, binary files, and non-matching credential formats are not covered. No scan result is a guarantee that all credentials were found.
+- The requested rotation playbook was absent from the local history materialization; a read-only remote QMOI `main` tree query returned no matching path. The new active policy is [CREDENTIALS_ROTATION_PLAYBOOK.md](CREDENTIALS_ROTATION_PLAYBOOK.md); parity with the unavailable historical file is unverified.
+- No master-authenticated credential CRUD API/UI is independently verified. The vault supports internal record storage/update and read-only verification, but master identity/authorization must remain blocked until a signed, least-privilege control path and its tests exist.
+- Successful Bitget spot account reads will include normalized balance rows stored only inside the encrypted vault. Current provider result `40085` means no balance was received; none is claimed or displayed.
+
+## Agent contract
+
+- Use `python scripts/ollama_autonomous_agent.py credential-manager --credential-action status` for metadata-only status.
+- Use `python scripts/ollama_autonomous_agent.py credential-manager --credential-action audit` to scan every current Markdown file in the three materialized scopes, source/config candidates outside generated trees, and credential-like edits on local Git refs. The report is redacted and remains outside the checkout; future/unfetched/private refs require a later authorized refresh.
+- Use `python scripts/ollama_autonomous_agent.py credential-manager --credential-action verify-bitget` for the signed read-only Bitget check and automatic refresh of the `bitget 27/9/2026` Qtrade metadata section.
+- Use `python scripts/ollama_autonomous_agent.py credential-manager --credential-action migrate-qtrade` only when all expected fields parse and encrypted storage succeeds. The plaintext source tail is replaced only after successful vault persistence.
+- Never print, log, commit, transmit, or put values into Qtrade, Markdown, telemetry, test output, artifacts, or cross-repository evidence. Tests use synthetic credentials only.
+- On provider/network/API errors, preserve the encrypted record, record status/code/time only, set readiness to blocked or unknown, and prohibit trading, withdrawals, or other writes.
+- Automatic replacement or rotation requires an explicitly authorized mapping, provider-supported rotation permission, successful verification of the replacement, a timestamped value-free audit entry, and secure removal of the old value. Do not copy Bitget values into another provider's fields.
+- Inventory credentials across repositories as secret references and redacted locations. Keep each repo's Actions credentials in that repo's authorized GitHub-managed secrets; the local vault is not synced across repositories or machines.
+- The local environment has no Python OS-keyring module. The current encrypted-file fallback protects against accidental repository exposure but is not hardware-backed and does not protect against compromise of the same local account. Production/multi-machine credentials should use an approved managed secret store.
+
+## Metadata lifecycle
+
+Each provider record tracks provider name, tags, source, reported source-created date, record creation/add/update times, last verification time/status, and value-free audit events. An exact upstream credential creation time must remain unknown unless the provider supplies it. Verification status is separate from storage status and from authorization to use a credential.

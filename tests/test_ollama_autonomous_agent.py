@@ -37,6 +37,7 @@ from ollama_autonomous_agent import (
     update_resume_file_metadata,
 )
 from git_execution_manager import GitExecutionManager
+from q_version_manager import QVersionManager
 from realtime_workflow_monitor import WorkflowMonitor
 
 
@@ -153,6 +154,39 @@ class TestCrossRepositoryAutonomyManager:
         assert metrics["in_progress"] == 1
         assert metrics["status_sum_matches_inventory"] is True
 
+    def test_execute_merge_records_premerge_inventory_as_first_operation(self, tmp_path):
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        (repo / "README.md").write_text("# Root\n", encoding="utf-8")
+        agent = OllamaAutonomousAgent(base_path=repo)
+        with patch.object(
+            agent.cross_repo_manager,
+            "build_cross_repository_merge_plan",
+            return_value={"ready_for_apply": False, "metrics": {}},
+        ):
+            result = agent.execute_merge_and_sync([repo], auto_push=False)
+
+        ledger_path = Path(result["q_version_lifecycle_path"])
+        records = [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").splitlines()]
+        assert [record["stage"] for record in records] == [
+            "MERGE_START",
+            "PRE_MERGE_INVENTORY",
+            "INTERNAL_RESEARCH",
+            "EXTERNAL_RESEARCH",
+            "MERGE_PLAN",
+            "MERGE_APPLY",
+            "POST_MERGE_AUDIT",
+        ]
+        assert records[0]["details"]["first_agent_operation"] == "merge and source inventory"
+        assert records[2]["stage_status"] == "PASS"
+        assert records[3]["stage_status"] == "NEEDS_REVIEW"
+        assert records[3]["details"]["visited_count"] == 0
+        premerge = records[1]["root_metrics"][str(repo.resolve())]
+        assert any(item["path"] == "README.md" for item in premerge["files"])
+        audit = QVersionManager(repo).audit_lifecycle(records[0]["execution_id"])
+        assert audit["valid"] is True
+        assert audit["stage_sequence"][0] == "MERGE_START"
+
     def test_cross_repository_plan_covers_alpha_history_and_merge_docs(self):
         manager = CrossRepositoryAutonomyManager()
         plan = manager.build_cross_repository_merge_plan()
@@ -227,7 +261,7 @@ class TestCrossRepositoryAutonomyManager:
             str(history / "docs" / "README.md"),
         }
 
-    def test_merge_duplicate_markdown_files_combines_history_and_repo_content(self, tmp_path):
+    def test_merge_duplicate_markdown_files_preserves_distinct_document_identities(self, tmp_path):
         repo_qe = tmp_path / "qmoi-enhanced"
         repo_aq = tmp_path / "Alpha-Q-ai"
         history = tmp_path / "qmoi-enhanced-history-14"
@@ -246,10 +280,46 @@ class TestCrossRepositoryAutonomyManager:
         assert merged_path.exists()
         merged_text = merged_path.read_text(encoding="utf-8")
         assert "QE section" in merged_text
-        assert "AQ section" in merged_text
-        assert "History section" in merged_text
-        assert result["merged_count"] >= 1
+        assert "AQ section" not in merged_text
+        assert "History section" not in merged_text
+        assert (repo_aq / "docs" / "README.md").read_text(encoding="utf-8").startswith("# AQ README")
+        assert (history / "docs" / "README.md").read_text(encoding="utf-8").startswith("# Historical README")
+        assert result["merged_count"] == 0
         assert result["duplicate_basenames"][0] == "README.md"
+        assert result["merge_decisions"]["README.md"]["action"] == "preserved_conflict"
+        assert result["merge_decisions"]["README.md"]["reason"] == "distinct_level_one_document_identities"
+        merge_audit = (repo_qe / "MERGE.md").read_text(encoding="utf-8")
+        assert "total_local_refs_in_scope:" in merge_audit
+        assert "locally_available_pull_request_refs:" in merge_audit
+        assert "tag_refs_in_scope:" in merge_audit
+
+    def test_merge_duplicate_markdown_files_merges_only_additive_sections(self, tmp_path):
+        repo_qe = tmp_path / "qmoi-enhanced"
+        repo_aq = tmp_path / "Alpha-Q-ai"
+        history = tmp_path / "qmoi-enhanced-history-14"
+        for root in (repo_qe, repo_aq, history):
+            (root / "docs").mkdir(parents=True)
+
+        (repo_qe / "docs" / "GUIDE.md").write_text(
+            "# Shared Guide\n\nSame introduction.\n\n## Install\nInstall steps.\n", encoding="utf-8"
+        )
+        (repo_aq / "docs" / "GUIDE.md").write_text(
+            "# Shared Guide\n\nSame introduction.\n\n## Deploy\nDeployment steps.\n", encoding="utf-8"
+        )
+        (history / "docs" / "GUIDE.md").write_text(
+            "# Shared Guide\n\nSame introduction.\n\n## Security\nSecurity steps.\n", encoding="utf-8"
+        )
+
+        result = CrossRepositoryAutonomyManager().merge_duplicate_markdown_files(
+            [repo_qe, repo_aq, history], target_root=repo_qe
+        )
+
+        merged_text = (repo_qe / "docs" / "GUIDE.md").read_text(encoding="utf-8")
+        assert all(section in merged_text for section in ("## Install", "## Deploy", "## Security"))
+        assert result["merge_decisions"]["GUIDE.md"]["action"] == "merge_additive_sections"
+        assert len(result["merge_decisions"]["GUIDE.md"]["added_sections"]) == 2
+        assert result["merged_count"] == 1
+        assert "QMOI merge provenance:" in merged_text
 
     def test_build_branch_history_inventory_counts_all_refs_and_directory_duplicates(self, tmp_path):
         repo = tmp_path / "qmoi-enhanced"
@@ -261,6 +331,9 @@ class TestCrossRepositoryAutonomyManager:
 
         (repo / "docs").mkdir()
         (repo / "docs" / "README.md").write_text("# main\n", encoding="utf-8")
+        (repo / "docs" / "broken.md").write_text(
+            "# Broken\n[missing](missing.md)\nTODO: resolve\n```python\n", encoding="utf-8"
+        )
         (repo / "api").mkdir()
         (repo / "api" / "routes.md").write_text("# routes\n", encoding="utf-8")
         subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
@@ -271,6 +344,8 @@ class TestCrossRepositoryAutonomyManager:
         (repo / "docs" / "duplicate").mkdir()
         subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
         subprocess.run(["git", "-C", str(repo), "commit", "-m", "add feature docs"], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run(["git", "-C", str(repo), "tag", "v1"], check=True)
+        subprocess.run(["git", "-C", str(repo), "update-ref", "refs/pull/42/head", "HEAD"], check=True)
 
         manager = CrossRepositoryAutonomyManager()
         report = manager.build_branch_history_inventory(repo)
@@ -279,9 +354,35 @@ class TestCrossRepositoryAutonomyManager:
         assert "main" in report["branches"]
         assert "feature/merge" in report["branches"]
         assert report["ref_counts"] >= 2
+        assert "refs/tags/v1" in report["tag_refs"]
+        assert "refs/pull/42/head" in report["pull_request_refs"]
+        assert "refs/pull/42/head" in report["paths_by_ref"]
+        assert report["coverage"]["unfetched_pull_requests_included"] is False
         assert report["total_files"] >= 2
         assert report["total_directories"] >= 2
         assert report["duplicate_file_basenames"]
+
+        markdown_inventory = OllamaAutonomousAgent(repo)._git_markdown_inventory(repo)
+        assert "refs/pull/42/head" in markdown_inventory["pull_request_refs"]
+        assert any(path.startswith("git-ref/refs/pull/42/head/") for path in markdown_inventory["paths"])
+        clean_history = next(
+            item for item in markdown_inventory["records"]
+            if item["path"] == "git-ref/refs/pull/42/head/api/routes.md"
+        )
+        broken_history = next(
+            item for item in markdown_inventory["records"]
+            if item["path"] == "git-ref/refs/pull/42/head/docs/broken.md"
+        )
+        assert clean_history["validation_status"] == "validated"
+        assert len(clean_history["content_sha256"]) == 64
+        assert broken_history["validation_status"] == "needs-review"
+        assert "missing_local_markdown_link" in broken_history["validation_reason"]
+        assert markdown_inventory["content_validation_passed"] is False
+
+        merge_metrics = manager.collect_full_merge_metrics([repo], include_history=False, include_memory=False)
+        assert merge_metrics["total_branches"] >= 2
+        assert merge_metrics["pull_request_ref_count"] == 1
+        assert merge_metrics["tag_ref_count"] == 1
 
     def test_route_file_to_target_prefers_qmoi_for_core_runtime_paths(self):
         manager = CrossRepositoryAutonomyManager()
@@ -349,6 +450,8 @@ class TestMarkdownCategoryIndex:
         history.mkdir()
 
         (repo / "README.md").write_text("# root\n", encoding="utf-8")
+        (repo / "docs").mkdir()
+        (repo / "docs" / "UPPERCASE.MD").write_text("# Uppercase extension\n", encoding="utf-8")
         (repo / "API.md").write_text("# APIs\n", encoding="utf-8")
         (repo / "ENDPOINTS.md").write_text("# Endpoints\n", encoding="utf-8")
         (repo / "ROUTES.md").write_text("# Routes\n", encoding="utf-8")
@@ -356,7 +459,6 @@ class TestMarkdownCategoryIndex:
         (repo / "QMOI_MODEL_CARD.md").write_text("# Model\n", encoding="utf-8")
         (repo / "FINANCIALMANAGER.md").write_text("# finance\n", encoding="utf-8")
         (repo / "QMOIAUTOPROJECTS.md").write_text("# autoproject\n", encoding="utf-8")
-        (repo / "docs").mkdir()
         (repo / "docs" / "CUSTOM_RELEASE_NOTES.md").write_text("# release\n", encoding="utf-8")
         (history / "LEGACY_WALLET_NOTE.md").write_text("# legacy wallet\n", encoding="utf-8")
 
@@ -371,6 +473,7 @@ class TestMarkdownCategoryIndex:
         assert "ALLMDFILESREFS.md" in result["updated_files"]
         assert set(result["all_category"]["files"]) == {
             "README.md",
+            "docs/UPPERCASE.MD",
             "API.md",
             "ENDPOINTS.md",
             "ROUTES.md",
@@ -392,6 +495,7 @@ class TestMarkdownCategoryIndex:
         index = (repo / "ALLMDFILESREFS.md").read_text(encoding="utf-8")
         assert "Category ALL" in index
         assert "docs/CUSTOM_RELEASE_NOTES.md" in index
+        assert "docs/UPPERCASE.MD" in index
         assert "qmoi-enhanced-history-14/LEGACY_WALLET_NOTE.md" in index
         assert result["all_category"]["aggregate_files"]["API.md"] == "all APIs"
         assert result["all_category"]["aggregate_files"]["ENDPOINTS.md"] == "all endpoints"
@@ -407,6 +511,11 @@ class TestMarkdownCategoryIndex:
         )
         assert history_metric["source"] == "qmoi-enhanced-history-14"
         assert history_metric["validation_status"] == "validated"
+        uppercase_metric = next(
+            item for item in result["all_category"]["metrics"]
+            if item["path"] == "docs/UPPERCASE.MD"
+        )
+        assert uppercase_metric["validation_status"] == "validated"
         assert "QMOI_MODEL_CARD.md" in result["multi_category_files"]
         assert result["all_category"]["sync_plan"]["status"] == "blocked"
 
