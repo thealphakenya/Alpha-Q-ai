@@ -1,5 +1,14 @@
 # MERGE.md - Merge Procedures and Guidelines
 
+## Current cross-repository audit checkpoint — 2026-09-29
+
+- Correlation ID: `bb69ea6a-2c63-4324-9045-dd6ece677abf`.
+- Alpha-Q-ai source `main`: `d9fadae929f5fd9be95d7dfded766ce3359eb678`; qmoi-enhanced target `main`: `bc3e9dbd68ecc849d8feef9a4a97561e1f2480f2`.
+- Target-owned autosync run `36643553762` failed before cross-repository promotion because the source commit object was absent from the target checkout. Post-run reads showed neither repository's `main` or `autosync-backup` head changed.
+- Applied merge operations: `0`. Files copied or promoted: `0`. Full per-ref file/directory/symlink counts: `NOT_MEASURED` in this run because the sync stopped at object-availability preflight; no complete remote tree manifest was produced.
+- Local repair requires source and target object availability, preflights backup and `main` before pushing, and emits a blocked/partial report. Regression suite `tests/test_cross_repo_sync.py`: `3 passed`. This repair is not yet published or remotely verified.
+- Coverage remains incomplete for remote branches, PR refs, intermediate commit trees, and complete peer-repository history. Do not treat the remote run, current metrics, or local plan as merge/parity proof.
+
 ## Complete History, Light Codespaces
 
 The repository keeps complete history and all merge inputs without requiring a

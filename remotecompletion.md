@@ -7,8 +7,36 @@
 - `chattracks.md` was not found in the checkout, accessible workspace trees, or locally available Git paths. Its instructions remain an explicit source-availability blocker.
 - Local merge tooling inventories locally available refs and their tip trees and reports reachable-commit counts. It does not establish fresh remote ref/PR completeness or every intermediate commit tree. `FULLTREE` output currently requires an explicit ref/prefix; a complete cross-repository audit therefore remains unproven until target-owned remote manifests enumerate exact refs, commits, trees, paths, object IDs, timestamps, and coverage gaps.
 - Planned gates: complete remote inventory and per-path provenance; stage/copy verification; duplicate and ownership review; post-merge metrics; focused and full validation; monitor-of-monitor freshness; sequential Q-version pair creation only after terminal per-repository success; then protected normal publication and exact final-SHA verification.
-- No merge/apply, Q-version completion artifact, target workflow, push, backup synchronization, cross-repository parity, release, deployment, or remote completion is claimed yet. A successful local push, if accepted, proves publication only and does not satisfy the terminal workflow or parity gates.
-- Status: `LOCAL_PLAN_RECORDED_REMOTE_HISTORY_AND_PROTECTION_GATES_UNVERIFIED`.
+- At capture time, no merge/apply, Q-version artifact, target workflow, push, backup synchronization, parity, release, deployment, or remote completion had been proven. See the later publication observation below.
+
+## Publication and target-workflow observation — 2026-09-29T23:08:35Z
+
+- Correlation ID: `bb69ea6a-2c63-4324-9045-dd6ece677abf`; actor: GitHub CLI user `themegakenya`.
+- Normal push succeeded; exact Alpha-Q-ai `main` SHA is `d9fadae929f5fd9be95d7dfded766ce3359eb678`, independently confirmed by `git ls-remote`. This proves publication, not remote completion.
+- On that SHA: Security and Merge Gates `36643553791` and cross-repository autosync `36643553762` were `in_progress`; QMOI Live Activity Stream `36643553844` succeeded; Markdown Inventory Refresh `36643553772` failed; Ollama PR Validation `36643553810` was queued; CodeQL `36643553697` was in progress; CodeQL Advanced `36643553834` and Branch Sync `36643553754` were skipped.
+- Failure diagnosis: Markdown Inventory Refresh job `109661179099` failed at agent import with `ModuleNotFoundError: requests`. A local workflow repair now installs `requirements.txt` before the refresh step; all 17 workflow definitions and false-success contracts validate locally. This repair is not yet published or proven on a remote run.
+- Fresh refs: Alpha-Q-ai backup `6d925c33f0093035755772137d863618b3818ab0`; Codespaces branch `5b0ee7a6b1bc5ff440c6424954fa641ef1f88a2d`; qmoi-enhanced main `bc3e9dbd68ecc849d8feef9a4a97561e1f2480f2`; qmoi-enhanced backup `d371de28f77b3ebea0244ccc1c13793a2654c395`. Backup and peer-repository parity are not proven.
+- GitHub reported 37 default-branch vulnerabilities (20 high, 13 moderate, 4 low). Alpha-Q-ai main-protection GET returned HTTP 403 `Resource not accessible by integration`; CLI identity does not establish GitHub App or protected-branch authority.
+- `atoz.md` remains untracked and excluded pending authorized review/redaction; `chattracks.md` is not available in the workspace or locally available refs. Full remote history, intermediate commit trees, all PR trees, and user-requirement completion remain unverified.
+- Gate: `PUSHED_SHA_REMOTE_CHECKS_PENDING_MARKDOWN_WORKFLOW_FAILED_REPAIR_LOCAL_ONLY_SECURITY_AND_PARITY_BLOCKED`.
+
+## Autosync failure and repair checkpoint — 2026-09-29T23:18:51Z
+
+- Correlation ID: `bb69ea6a-2c63-4324-9045-dd6ece677abf`.
+- QMOI Bidirectional Cross-Repository Autosync run `36643553762` reached terminal `failure` at `2026-09-29T23:10:19Z` on SHA `d9fadae929f5fd9be95d7dfded766ce3359eb678`, job `109661179586`. Its guarded sync step attempted to push a source commit absent from the target checkout; Git reported `Not a valid object name`. The counterpart bootstrap step completed, but fresh post-run ref reads confirm no branch head changed.
+- Current remote refs remain Alpha-Q-ai `main=d9fadae929f5fd9be95d7dfded766ce3359eb678`, `autosync-backup=6d925c33f0093035755772137d863618b3818ab0`; qmoi-enhanced `main=bc3e9dbd68ecc849d8feef9a4a97561e1f2480f2`, `autosync-backup=d371de28f77b3ebea0244ccc1c13793a2654c395`.
+- Local repair in `scripts/cross_repo_sync.py` handles failed optional ref lookups correctly, requires both repositories to contain the relevant commit objects, preflights backup and main before the first push, and writes a sanitized blocked/partial report on failures. Three focused tests pass, including an assertion that failed promotion leaves target refs unchanged. `SYNC.md` documents the object-availability gate; `MERGE.md` records 0 applied merges, 0 copied files, and tree totals as `NOT_MEASURED` because no complete manifest was produced.
+- The Markdown workflow repair adds `python -m pip install -r requirements.txt` before importing the agent; the previous exact-SHA run `36643553772` failed on missing `requests`. The workflow repair and sync repair are still local and need a normal push followed by fresh target-owned verification.
+- Exact-SHA status at observation: Security and Merge Gates `36643553791` and CodeQL `36643553697` in progress; Ollama PR Validation `36643553810` in progress; QMOI Live Activity Stream `36643553844` success; Markdown Inventory Refresh `36643553772` and cross-repository autosync `36643553762` failure; CodeQL Advanced `36643553834` and Branch Sync `36643553754` skipped.
+- Current blockers remain: GitHub reported 37 vulnerabilities; Alpha-Q-ai main-protection GET returned 403; cross-repository/backup parity and complete remote histories/PR trees are unproven; `atoz.md` is excluded pending review/redaction; `chattracks.md` is unavailable.
+- Gate: `LOCAL_SYNC_REPAIRS_VALIDATED_UNPUBLISHED_REMOTE_COMPLETION_BLOCKED`.
+
+## Latest local validation — 2026-09-29T23:24:25Z
+
+- Base SHA: `d9fadae929f5fd9be95d7dfded766ce3359eb678`; local repair changes remain uncommitted.
+- Merge/sync tests: `10 passed`; branch-history regression: `1 passed, 105 deselected`.
+- Workflow validation: all `17` workflow files and false-success contracts passed. Python compilation, JSON/JSONL parsing (now `25` records), and `git diff --check` passed.
+- These checks establish local readiness only. The current repairs have not yet been pushed or tested on a new target-owned SHA.
 
 # Remote Completion Runbook — Advanced Dual-Repository Autonomous Low-Bandwidth Edition
 
