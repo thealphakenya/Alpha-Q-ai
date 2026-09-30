@@ -1,3 +1,13 @@
+## Publication and target-owned checks — 2026-09-30T03:30:52Z
+
+- Correlation ID: `594e7361-5de6-47d1-b2d3-9f4f0d77d4b8`.
+- A normal push from a detached worktree based on the refreshed remote tip succeeded: previous Alpha-Q-ai `main=2ce2a0b1ee6d209053cd9db9fba87c23aa5ca17b`; published `main=0fdb889473f20eea3a7a70defe5e842cd2d8c70f`. `git ls-remote` independently confirms the new ref. No force-push, rewrite, or protection bypass was used. The commit includes only the agent, its tests, and these two evidence files.
+- Local validation before publication: focused proof-contract and credential-readiness regressions `2 passed`; full `tests/test_ollama_autonomous_agent.py` `106 passed, 1 skipped`; Python compilation and `git diff --check` passed. The skip is the established headless CLI timeout guard.
+- Exact-SHA remote state at `2026-09-30T03:30:52Z`: QMOI Live Activity Stream run `36664688535` succeeded. Ollama PR Validation `36664688495`, CodeQL `36664688384`, Markdown Inventory Refresh `36664688528`, QMOI Bidirectional Cross-Repository Autosync `36664688614`, and Security and Merge Gates `36664688537` are `in_progress`. Branch Sync Monitor `36664688505` and CodeQL Advanced `36664688560` are skipped. Exact commit check-runs also show platform compilation, documentation, Rust/JavaScript/Actions analysis, and dependency/tests in progress; workflow integrity passed. No terminal required-check conclusion is claimed.
+- GitHub's push response reported 50 vulnerabilities (28 high, 18 moderate, 4 low). Branch-protection GET returned HTTP 403 `Resource not accessible by integration`; policy visibility remains blocked. The remote JSONL tracker was malformed on the previous SHA; its status on this new SHA is not yet verified.
+- Alpha backup/Codespaces branches and qmoi-enhanced main/backup remain at distinct observed SHAs. No parity, complete history or PR coverage, security closure, merge completion, release, deployment, or remote completion is proven.
+- Gate: `PUBLISHED_EXACT_SHA_REMOTE_CHECKS_IN_PROGRESS_SECURITY_AND_PARITY_BLOCKED`.
+
 ## Active continuation and validation evidence — 2026-09-30T03:26:15Z
 
 - Correlation ID: `c74dcfc4-79d1-4586-8283-a008ee8bb1e3`.

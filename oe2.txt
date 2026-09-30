@@ -1,3 +1,13 @@
+## Publication and exact-SHA workflow checkpoint — 2026-09-30T03:30:52Z
+
+- Correlation ID: `594e7361-5de6-47d1-b2d3-9f4f0d77d4b8`.
+- Normal `git push origin HEAD:main` from an isolated worktree succeeded without force or bypass. Commit `0fdb889473f20eea3a7a70defe5e842cd2d8c70f` advanced Alpha-Q-ai `main` from `2ce2a0b1ee6d209053cd9db9fba87c23aa5ca17b`; `git ls-remote` independently confirms the exact new SHA. The commit contains only `scripts/ollama_autonomous_agent.py`, `tests/test_ollama_autonomous_agent.py`, `oe2.txt`, and `remotecompletion.md`.
+- On the exact published SHA, QMOI Live Activity Stream run `36664688535` succeeded. Ollama PR Validation `36664688495`, CodeQL `36664688384`, Markdown Inventory Refresh `36664688528`, QMOI Bidirectional Cross-Repository Autosync `36664688614`, and Security and Merge Gates `36664688537` were `in_progress`. Branch Sync Monitor `36664688505` and CodeQL Advanced `36664688560` were skipped. Commit checks show platform compilation (macOS, Android, Windows, web, iOS, Linux), documentation, Rust/JavaScript/Actions analysis, and dependency/tests in progress; workflow-integrity validation succeeded. These are not terminal completion proof.
+- GitHub's push response reported 50 default-branch vulnerabilities (28 high, 18 moderate, 4 low). This is a current security blocker, not resolved by local tests.
+- Candidate validation before push: focused proof-contract/credential tests `2 passed`; full agent test module `106 passed, 1 skipped`; syntax compilation and `git diff --check` passed. The skipped test is the existing headless CLI timeout guard.
+- Branch protection GET returned HTTP 403 during this pass. The successful push proves publication only, not protection-policy visibility, required-check completion, cross-repo sync, backup parity, or remote completion. Remote telemetry JSONL on the preceding tip was malformed at lines 1 and 4; its repair/outcome is not yet verified for the published SHA.
+- Status: `PUBLISHED_EXACT_SHA_REMOTE_CHECKS_IN_PROGRESS_SECURITY_AND_PARITY_BLOCKED`.
+
 ## Active continuation checkpoint — 2026-09-30T03:26:15Z
 
 - Correlation ID: `c74dcfc4-79d1-4586-8283-a008ee8bb1e3`.
