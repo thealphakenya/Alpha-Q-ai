@@ -1,3 +1,11 @@
+## Evidence-only publication follow-up — 2026-09-30T03:33:05Z
+
+- Correlation ID: `c5602682-1097-4ec7-8405-36b0836cd5e2`.
+- A normal docs-only push advanced Alpha-Q-ai `main` from `0fdb889473f20eea3a7a70defe5e842cd2d8c70f` to `52b24388a9697232b07c246ce93a871bc0457c4d`; `git ls-remote` independently confirmed the exact SHA. This commit modifies only the two required evidence files.
+- Exact-SHA check runs observed at `03:32:38Z`: QMOI Live Activity Stream and Validate Workflow Integrity succeeded. Windows/web/iOS/Android/macOS platform compilation, Documentation, Rust/JavaScript/Actions analysis, dependency audit/tests, and Markdown refresh were in progress; Linux compilation was queued. Branch synchronization and the matrix Analyze check were skipped. `gh run list` had not indexed a run for this SHA, but the commit check-runs endpoint returned the observations above. No terminal completion is claimed.
+- The push response still reports 50 vulnerabilities (28 high, 18 moderate, 4 low); the branch-protection GET remains HTTP 403. Telemetry JSONL repair, current peer/backup parity, all-history/PR coverage, and exact-SHA terminal checks remain open.
+- Gate: `EVIDENCE_COMMIT_PUBLISHED_EXACT_SHA_CHECKS_PENDING_NO_REMOTE_COMPLETION`.
+
 ## Publication and target-owned checks — 2026-09-30T03:30:52Z
 
 - Correlation ID: `594e7361-5de6-47d1-b2d3-9f4f0d77d4b8`.
