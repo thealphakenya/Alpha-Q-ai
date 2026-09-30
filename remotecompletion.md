@@ -1,3 +1,29 @@
+## Active continuation and validation evidence — 2026-09-30T03:26:15Z
+
+- Correlation ID: `c74dcfc4-79d1-4586-8283-a008ee8bb1e3`.
+- The user resumed work and reiterated that both this runbook and `oe2.txt` must remain current, with safe push steps attempted when gates permit.
+- Fetch completed without worktree mutation. Local `HEAD=5e40b2789fe32eab12e03ddd0b92ff36ea2c2bb4` is `0` ahead/`4` behind refreshed `origin/main=2ce2a0b1ee6d209053cd9db9fba87c23aa5ca17b`; upstream-only commits are telemetry reconciliations. The worktree has overlapping local edits to tracker files, so no blind fast-forward or overwrite is safe.
+- Credential-readiness focused test: `1 passed`. Full `tests/test_ollama_autonomous_agent.py` initially found that generated Qtrade/trading audit sections failed their own mandatory marker validation. The generator now states `discovered_unmapped` coverage and `provider-sourced` verification explicitly. The failing proof-contract test passes after repair; full module result is `106 passed, 1 skipped` (`351.67s`). The skip is the existing headless subprocess timeout guard. Python compilation and `git diff --check` pass for the proposed files.
+- Read-only refs: Alpha `main=2ce2a0b1ee6d209053cd9db9fba87c23aa5ca17b`, `autosync-backup=6d925c33f0093035755772137d863618b3818ab0`, Codespaces branch `5b0ee7a6b1bc5ff440c6424954fa641ef1f88a2d`; qmoi-enhanced `main=89d1d9de770e4285d173aaaa3d8382b943772d06`, backup `d371de28f77b3ebea0244ccc1c13793a2654c395`. No parity claim.
+- On the current Alpha `main` SHA, CodeQL run `36662899399` is still `in_progress`; the Actions query returned no other run for that exact SHA. Realtime tracker run `36662841862` failed on previous SHA `9c7a20ea2308cc0b150e8586059b4b50d8b95b44` because the telemetry JSONL validator rejected malformed content. Current remote telemetry also has invalid nonblank records at lines 1 and 4. This generated tracker issue is not changed or represented as resolved.
+- The existing dirty worktree is preserved. Publication scope, if safe, is only `scripts/ollama_autonomous_agent.py`, `tests/test_ollama_autonomous_agent.py`, `oe2.txt`, and this runbook; generated tracker churn, unrelated docs/evidence, and untracked `atoz.md` are excluded.
+- No push has yet been attempted. Fresh main-protection GET at `2026-09-30T03:27:21Z` returned HTTP 403 `Resource not accessible by integration`; rules remain unknown. Any attempt will be a normal push of only the four reviewed files from a detached worktree based on refreshed `origin/main`, and will stop if GitHub rejects it. All-branch/PR/intermediate-tree and January 24 audits, exact-SHA terminal required checks, peer/backup parity, security closure, and remote completion remain open. Never force-push or bypass protection.
+- Gate: `LOCAL_AGENT_MODULE_VALIDATED_REMOTE_MAIN_AHEAD_FOUR_TELEMETRY_JSONL_INVALID_PUBLICATION_PENDING`.
+
+## User-Requested Pause and Current Evidence — 2026-09-30T02:52:43Z
+
+- Correlation ID: `de3e6a34-c248-4f4f-a7f0-6f24c7a86ff4`.
+- User requested that `oe2.txt` and this runbook be updated, then work pause. No further implementation, staging, commit, push, remote dispatch, merge, provider verification, money movement, or trading action is performed after this checkpoint.
+- Local `HEAD=5e40b2789fe32eab12e03ddd0b92ff36ea2c2bb4`; cached `origin/main=bff4abd88ad07492fe7fe24ec936cc0d371cf37f`; direct remote reads observed Alpha-Q-ai `main=9c7a20ea2308cc0b150e8586059b4b50d8b95b44`, backup `6d925c33f0093035755772137d863618b3818ab0`, and Codespaces branch `5b0ee7a6b1bc5ff440c6424954fa641ef1f88a2d`. Tracking and live refs differ; divergence was not fetched/classified.
+- Direct remote reads observed qmoi-enhanced `main=89d1d9de770e4285d173aaaa3d8382b943772d06` and backup `d371de28f77b3ebea0244ccc1c13793a2654c395`. Cross-repository and backup parity remain unproven. Exact-SHA workflow states were not queried for these newest refs; older run results are stale for this observation.
+- Alpha-Q-ai commits API query for `2026-01-24` returned HTTP 404. This is ambiguous and does not establish that no commits exist. The corresponding QMOI date query and all-branch/PR/intermediate-tree audits remain undone; no January 24 changes are identified or merged.
+- The worktree contains unfinished local agent/test, trading/finance/style/accountability, ledger, and generated inventory changes. The newest credential-readiness/rotation managed-section wiring has not been validated after editing. `atoz.md` is untracked and excluded because it contains unverified sensitive account, balance, credential-like, and institution claims. `chattracks.md` remains unavailable in the workspace and local refs.
+- Local discovery recorded 958 materialized trading candidates (46 active, 168 snapshot, 744 archive); this is candidate discovery, not implementation, test, or runtime proof. Credential names/consumer paths are being indexed without reading `.env`, vault values, or provider accounts. Generic vault storage is not provider verification; Bitget is the only active provider-specific read-only verifier, and its last recorded check failed HTTP 400/code `40085`.
+- The financial-claim scanner is intended to retain only path/hash/scope/line numbers/currency/owner candidates, never raw amounts, account identifiers, or balances. It does not validate financial claims or prove funds; automatic redaction, verified provider balances, and complete wallet/bank credential verification remain undone.
+- Prior blockers remain unresolved for the current remote SHAs: protection previously returned 403; GitHub reported 37 vulnerabilities (20 high, 13 moderate, 4 low); cross-repository sync previously blocked on missing source objects; backup and peer parity are unproven. Independent remote worker failover and continuous availability across GitHub/Hugging Face outages are not established.
+- Remaining work includes January 24 and complete branch/PR/ref history audits; feature-to-code/test/UI/API/auth/event mappings; test/hooks C2 registration in `ALLMDFILESREFS.md`; merge trading metrics; tests of the latest code; review/exclusion of monitor-generated tracker churn; machine-evidence refresh; safe remote reconciliation; and a normal push only after validation and scope review.
+- Status: `PAUSED_AS_REQUESTED_LOCAL_WORK_UNVALIDATED_REMOTE_DIVERGENCE_AND_HISTORY_AUDIT_PENDING`. No remote completion claim is made. On resume, fetch and classify divergence, then validate the latest credential-readiness changes before considering publication.
+
 # Active continuation status — 2026-09-29
 
 - Correlation ID: `bb69ea6a-2c63-4324-9045-dd6ece677abf`.
@@ -37,6 +63,17 @@
 - Merge/sync tests: `10 passed`; branch-history regression: `1 passed, 105 deselected`.
 - Workflow validation: all `17` workflow files and false-success contracts passed. Python compilation, JSON/JSONL parsing (now `25` records), and `git diff --check` passed.
 - These checks establish local readiness only. The current repairs have not yet been pushed or tested on a new target-owned SHA.
+
+## Repaired-SHA remote checkpoint — 2026-09-29T23:29:50Z
+
+- Exact Alpha-Q-ai `main`: `fe273192d91ae2ab9a049fef7694fff236cf6ce1`, confirmed by `git ls-remote` and GitHub ref read. Alpha backup remains `6d925c33f0093035755772137d863618b3818ab0`.
+- Markdown Inventory Refresh run `36645195615` is `in_progress`. On this SHA, dependency installation and category refresh succeeded; generated-inventory validation has not reached a terminal result.
+- Cross-repository Autosync run `36645195633` terminated `failure`, but the repaired code correctly failed closed: report says `applied=false`, and the source SHA is not present in the target object database. No source content, target `main`, or backup was promoted.
+- The workflow's separate bootstrap committed `SYNC.md` and `scripts/cross_repo_sync.py` to QMOI `main` as `3bd55fd0d9f8e22bc190aad2eff50ae7b02fceb6`, one commit ahead of previous QMOI `main` `bc3e9dbd68ecc849d8feef9a4a97561e1f2480f2`. This exact automation-owned commit is preserved and is not a claim of repository parity.
+- Reported tip-tree counts: Alpha main `10,558` files/`1,148` directories and backup `8,564`/`902`; QMOI main `8,728`/`902` and backup `10,614`/`1,542`. These are branch-tip metrics, not full reachable-history, PR, or intermediate-tree counts.
+- Security and Merge Gates `36645195617`, Ollama PR Validation `36645195583`, CodeQL `36645195291`, and Markdown Inventory Refresh `36645195615` remained `in_progress`; QMOI Live Activity Stream `36645195661` succeeded; CodeQL Advanced `36645195579` and Branch Sync `36645195565` were skipped.
+- Main protection remains unreadable via the current integration (HTTP 403); GitHub reported 37 vulnerabilities. Backup parity, cross-repository content parity, complete history coverage, and remote completion remain unproven.
+- Status: `REPAIRS_PUBLISHED_AUTOSYNC_BLOCKED_ON_MISSING_OBJECT_MARKDOWN_AND_REQUIRED_CHECKS_PENDING`.
 
 # Remote Completion Runbook — Advanced Dual-Repository Autonomous Low-Bandwidth Edition
 

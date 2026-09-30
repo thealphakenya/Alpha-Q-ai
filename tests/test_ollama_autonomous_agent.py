@@ -336,6 +336,16 @@ class TestCrossRepositoryAutonomyManager:
         )
         (repo / "api").mkdir()
         (repo / "api" / "routes.md").write_text("# routes\n", encoding="utf-8")
+        (repo / "src" / "trading").mkdir(parents=True)
+        (repo / "src" / "trading" / "order_engine.py").write_text(
+            "def place_paper_order():\n    return 'paper trading'\n",
+            encoding="utf-8",
+        )
+        (repo / "tests").mkdir()
+        (repo / "tests" / "test_trading_orders.py").write_text(
+            "def test_order_reconciliation(): pass\n",
+            encoding="utf-8",
+        )
         subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
         subprocess.run(["git", "-C", str(repo), "commit", "-m", "init"], check=True, stdout=subprocess.DEVNULL)
 
@@ -361,6 +371,10 @@ class TestCrossRepositoryAutonomyManager:
         assert report["total_files"] >= 2
         assert report["total_directories"] >= 2
         assert report["duplicate_file_basenames"]
+        assert "src/trading/order_engine.py" in report["trading_paths_by_ref"]["refs/heads/main"]
+        assert "tests/test_trading_orders.py" in report["trading_test_paths_by_ref"]["refs/pull/42/head"]
+        assert report["coverage"]["trading_path_scope"] == "path-name matches in locally available ref tip trees"
+        assert report["coverage"]["trading_remote_completeness"] == "not_verified"
 
         markdown_inventory = OllamaAutonomousAgent(repo)._git_markdown_inventory(repo)
         assert "refs/pull/42/head" in markdown_inventory["pull_request_refs"]
@@ -698,8 +712,152 @@ class TestFeatureTester:
         assert "Keep this note." in refreshed_qstore
         assert refreshed_qstore.count("BEGIN QMOI MANAGED: qstore-catalog") == 1
 
+    def test_automation_coverage_inventory_is_discovery_not_proof(self, tmp_path):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        tests_dir = tmp_path / "tests"
+        history_tests_dir = tmp_path / "qmoi-enhanced-history-14" / "tests"
+        workflow_dir = tmp_path / ".github" / "workflows"
+        scripts_dir = tmp_path / "scripts"
+        ui_dir = tmp_path / "src" / "components" / "trading"
+        api_dir = tmp_path / "api"
+        adapter_dir = scripts_dir / "exchanges"
+        docs_dir = tmp_path / "docs"
+        tests_dir.mkdir()
+        history_tests_dir.mkdir(parents=True)
+        workflow_dir.mkdir(parents=True)
+        scripts_dir.mkdir()
+        ui_dir.mkdir(parents=True)
+        api_dir.mkdir()
+        adapter_dir.mkdir()
+        docs_dir.mkdir()
+        (tests_dir / "test_checkout.py").write_text("def test_checkout(): pass\n", encoding="utf-8")
+        (tests_dir / "test_trading_autopilot.py").write_text("def test_paper_trading(): pass\n", encoding="utf-8")
+        (history_tests_dir / "test_bitget_orders.py").write_text("def test_archived_exchange(): pass\n", encoding="utf-8")
+        (workflow_dir / "quality.yml").write_text(
+            "name: Quality\non:\n  push: {}\n  workflow_dispatch: {}\njobs:\n  test:\n    runs-on: ubuntu-latest\n",
+            encoding="utf-8",
+        )
+        (workflow_dir / "trading-monitor.yml").write_text(
+            "name: Trading monitor\non:\n  schedule:\n    - cron: '*/15 * * * *'\n  workflow_dispatch: {}\njobs:\n  audit:\n    runs-on: ubuntu-latest\n",
+            encoding="utf-8",
+        )
+        (scripts_dir / "payments.py").write_text(
+            "WEBHOOK_SIGNING_SECRET = 'do-not-leak-this-value'\n", encoding="utf-8"
+        )
+        (adapter_dir / "binance_adapter.py").write_text(
+            "import os\nVENUE = 'Binance'\nAPI_KEY = os.getenv('BINANCE_API_KEY')\nAPI_SECRET = os.getenv('BINANCE_API_SECRET')\n# paper trading only\n",
+            encoding="utf-8",
+        )
+        (ui_dir / "TradingDashboard.tsx").write_text(
+            "export const title = 'Trading wallet balance and risk';\n", encoding="utf-8"
+        )
+        (api_dir / "orders.py").write_text(
+            "def reconcile_order_ledger():\n    return 'order reconciliation'\n", encoding="utf-8"
+        )
+        (tmp_path / "Qtrade.md").write_text(
+            "# Trading policy\n\nNo live trading without authorization.\nCashOn balance: USD $125.50; KES 1,200.00.\n",
+            encoding="utf-8",
+        )
+        (docs_dir / "financial-note.md").write_text(
+            "# Financial note\n\nUnassigned revenue claim: 300 dollars.\nUnassigned transfer amount: 700 ksh.\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "TRADINGREADME.md").write_text(
+            "# Trading operations\n\nAuthored operations notes.\nBitget wallet balance USD 88.20.\n",
+            encoding="utf-8",
+        )
+        styles_path = tmp_path / "STYLES.md"
+        styles_path.write_text("# Styles\n\nAuthored style policy.\n", encoding="utf-8")
+
+        result = agent.refresh_test_hook_coverage_documents(tmp_path)
+
+        tests_text = result["documents"]["ALLTESTSAUTOTESTS.md"].read_text(encoding="utf-8")
+        hooks_text = result["documents"]["ALLHOOKSWEBHOOKS.md"].read_text(encoding="utf-8")
+        assert result["test_file_count"] == 2
+        assert result["discovered_test_file_count"] == 3
+        assert result["test_counts_by_scope"]["historical_archive"] == 1
+        assert result["workflow_file_count"] == 2
+        assert result["webhook_reference_file_count"] == 1
+        assert result["coverage_verified"] is False
+        trading_inventory = result["trading_inventory"]
+        finance_inventory = result["financial_claim_inventory"]
+        trading_records = {record["path"]: record for record in trading_inventory["files"]}
+        assert trading_inventory["coverage_verified"] is False
+        assert trading_inventory["history_scope"].startswith("materialized_paths_only;")
+        assert "tests/test_trading_autopilot.py" in trading_records
+        assert trading_records["tests/test_trading_autopilot.py"]["scope"] == "active_checkout"
+        assert "test" in trading_records["tests/test_trading_autopilot.py"]["roles"]
+        assert trading_records["qmoi-enhanced-history-14/tests/test_bitget_orders.py"]["scope"] == "historical_archive"
+        assert "frontend_ui" in trading_records["src/components/trading/TradingDashboard.tsx"]["roles"]
+        assert "backend_api_or_adapter" in trading_records["api/orders.py"]["roles"]
+        assert "binance" in trading_records["scripts/exchanges/binance_adapter.py"]["venues"]
+        assert ".github/workflows/trading-monitor.yml" in trading_records
+        credential_inventory = trading_inventory["credential_references"]
+        credential_names = {record["name"] for record in credential_inventory["references"]}
+        assert {"BINANCE_API_KEY", "BINANCE_API_SECRET"}.issubset(credential_names)
+        assert all(
+            record["path"] == "scripts/exchanges/binance_adapter.py"
+            for record in credential_inventory["references"]
+        )
+        assert credential_inventory["credential_values_read_from_secret_stores"] is False
+        assert credential_inventory["credential_values_persisted_or_emitted"] is False
+        assert credential_inventory["provider_verification"] == "not_performed"
+        assert "tests/test_checkout.py" in tests_text
+        assert "Trading surface candidate inventory" in tests_text
+        assert "discovered_unmapped" in tests_text
+        assert "historical_reference_not_active_coverage" in tests_text
+        assert "discovered_not_coverage_proof" in tests_text
+        assert "registry_only_not_implementation_proof" in tests_text
+        assert "push, workflow_dispatch" in hooks_text
+        assert "scripts/payments.py" in hooks_text
+        assert "reference_only_not_runtime_verified" in hooks_text
+        assert "do-not-leak-this-value" not in hooks_text
+        serialized_trading = json.dumps(trading_inventory)
+        assert "do-not-leak-this-value" not in serialized_trading
+        assert "os.getenv('BINANCE_API_KEY')" not in serialized_trading
+        assert "Authored style policy." in styles_path.read_text(encoding="utf-8")
+        assert "No live trading without authorization." in (
+            tmp_path / "Qtrade.md"
+        ).read_text(encoding="utf-8")
+        assert "Authored operations notes." in (
+            tmp_path / "TRADINGREADME.md"
+        ).read_text(encoding="utf-8")
+        assert "trading-audit-source-inventory" in (
+            tmp_path / "Qtrade.md"
+        ).read_text(encoding="utf-8")
+        finance_json = json.loads(
+            result["documents"]["financial_claim_inventory.json"].read_text(encoding="utf-8")
+        )
+        assert finance_inventory["actual_balances_verified"] == 0
+        assert finance_inventory["coverage_verified"] is False
+        assert finance_json["owner_currency_counts"]["cashon"]["USD"] >= 1
+        assert finance_json["owner_currency_counts"]["cashon"]["KES"] >= 1
+        assert finance_json["owner_currency_counts"]["bitget"]["USD"] >= 1
+        assert finance_json["owner_currency_counts"]["unassigned_financial_claim"]["USD"] >= 1
+        assert finance_json["owner_currency_counts"]["unassigned_financial_claim"]["KES"] >= 1
+        assert finance_inventory["untyped_numeric_candidate_count"] >= 0
+        assert "raw_amounts" not in finance_json
+        assert "$125.50" not in json.dumps(finance_json)
+        assert "1,200.00" not in json.dumps(finance_json)
+        assert "88.20" not in json.dumps(finance_json)
+        assert finance_json["source_values_stored"] is False
+        assert "feature-test-event-accountability" in (
+            tmp_path / "UNIVERSALS.md"
+        ).read_text(encoding="utf-8")
+
+        agent.refresh_markdown_category_index(tmp_path)
+        index_text = (tmp_path / "ALLMDFILESREFS.md").read_text(encoding="utf-8")
+        assert "Category C2" in index_text
+        assert "ALLTESTSAUTOTESTS.md" in index_text
+        assert "ALLHOOKSWEBHOOKS.md" in index_text
+
     def test_validation_pipeline_refreshes_qstream_qstore_surfaces(self, tmp_path, monkeypatch):
         agent = OllamaAutonomousAgent(base_path=tmp_path)
+        monkeypatch.setattr(
+            agent,
+            "execute_merge_and_sync",
+            lambda *_args, **_kwargs: {"status": "ready"},
+        )
         monkeypatch.setattr(agent, "validate_all_platforms", lambda: {})
         monkeypatch.setattr(agent, "validate_all_platform_features", lambda: {})
         monkeypatch.setattr(agent, "validate_file_handlers", lambda: {})
@@ -722,9 +880,24 @@ class TestFeatureTester:
         )
         assert len(product_surfaces["catalog_coverage"]) == 5
         assert product_surfaces["implementation_verified"] is False
+        assert product_surfaces["automation_coverage"]["coverage_verified"] is False
+        trading_summary = product_surfaces["automation_coverage"]["trading_inventory_summary"]
+        assert trading_summary["coverage_verified"] is False
+        assert trading_summary["file_count"] == 2
+        assert "files" not in trading_summary
+        assert product_surfaces["automation_coverage"]["trading_inventory_path"].endswith(
+            "ollamatracks/trading_surface_inventory.json"
+        )
         assert all(
             (tmp_path / filename).exists()
-            for filename in ("QSTREAM.md", "QSTORE.md", "APP_LINKS.md", "VERCELLINKS.md")
+            for filename in (
+                "QSTREAM.md",
+                "QSTORE.md",
+                "APP_LINKS.md",
+                "VERCELLINKS.md",
+                "ALLTESTSAUTOTESTS.md",
+                "ALLHOOKSWEBHOOKS.md",
+            )
         )
 
     def test_agent_refreshes_productionenhanced_manifest_for_nonproduction_markers(self, tmp_path):
