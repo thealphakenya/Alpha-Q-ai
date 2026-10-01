@@ -1,3 +1,11 @@
+## Latest published SHA status — 2026-10-01T23:51:28Z
+
+- Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.
+- The latest normal push published `ca47fb8c7a855c0922123ed6726d7ad82795bf51` from parent `9fd17feeecf2d7c9942633f1138b4f11e5a1f790`; `git ls-remote` independently confirmed the exact main ref. Alpha `autosync-backup` remains `6d925c33f0093035755772137d863618b3818ab0`.
+- Exact-SHA check-runs show QMOI Live Activity Stream and Validate Workflow Integrity succeeded. Six platform compilations, Documentation, Actions/Rust/JavaScript analyses, Dependency Audit and Tests, Markdown refresh, and guarded cross-repository autosync are in progress. Branch synchronization and matrix analysis were skipped. The workflow-list endpoint had not indexed this SHA at observation; commit check-runs supplied current states. No terminal all-check conclusion is claimed.
+- GitHub's push response reports 51 default-branch vulnerabilities (28 high, 19 moderate, 4 low); fresh main-protection and Dependabot-alert GETs both returned HTTP 403. The dirty local branch remains 0 ahead/58 behind and was excluded from publication.
+- Gate: `LATEST_SHA_CHECKS_PENDING_AUTOSYNC_SECURITY_AND_PARITY_BLOCKED`; remote completion remains unproven.
+
 ## Evidence publication and exact-SHA checks — 2026-10-01T23:46:59Z
 
 - Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.
