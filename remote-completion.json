@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
-  "correlation_id": "bb69ea6a-2c63-4324-9045-dd6ece677abf",
-  "status": "LOCAL_SYNC_REPAIRS_VALIDATED_UNPUBLISHED_REMOTE_COMPLETION_BLOCKED",
-  "generated_at": "2026-09-29T23:24:25Z",
+  "correlation_id": "aab29ffc-5de8-4b02-82be-9aab5784bb5c",
+  "status": "LOCAL_FOCUSED_TEST_PASS_AUTOSYNC_FAILED_SECURITY_AND_PROTECTION_READS_BLOCKED_FULL_AUDIT_PENDING",
+  "generated_at": "2026-10-01T23:44:03Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "target_repositories": [
     "thealphakenya/Alpha-Q-ai",
@@ -19,27 +19,120 @@
     "remote_completion": "pending",
     "backup_parity_proven": false,
     "cross_repo_parity_proven": false,
-    "security_gate_status": "GitHub reported 37 default-branch vulnerabilities: 20 high, 13 moderate, 4 low",
+    "security_gate_status": "Dependabot alerts API returned HTTP 403; current vulnerability totals unknown",
     "app_authentication": "blocked_rotation_unverified_no_app_authentication_attempted",
-    "local_head_sha": "d9fadae929f5fd9be95d7dfded766ce3359eb678",
-    "origin_main_sha": "d9fadae929f5fd9be95d7dfded766ce3359eb678",
-    "remote_alpha_q_ai_main_sha": "d9fadae929f5fd9be95d7dfded766ce3359eb678",
-    "remote_qmoi_enhanced_main_sha": "bc3e9dbd68ecc849d8feef9a4a97561e1f2480f2",
-    "branch_status": "normal push verified at d9fadae929f5fd9be95d7dfded766ce3359eb678; local workflow and cross-repository sync repairs are uncommitted",
+    "local_head_sha": "5e40b2789fe32eab12e03ddd0b92ff36ea2c2bb4",
+    "origin_main_sha": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
+    "remote_alpha_q_ai_main_sha": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
+    "remote_qmoi_enhanced_main_sha": "767cb450e171c0a26f44231e40fe92899951bb5f",
+    "branch_status": "local main is 0 ahead/56 behind refreshed origin/main; dirty user worktree preserved; evidence-only publication isolated",
     "worktree_dirty": true,
     "remote_policy_proven": false,
     "latest_local_validation": {
-      "observed_at": "2026-09-29T23:24:25Z",
-      "base_sha": "d9fadae929f5fd9be95d7dfded766ce3359eb678",
-      "cross_repo_sync_and_merge_inventory_tests": "10 passed",
-      "branch_history_test": "1 passed, 105 deselected",
-      "workflow_validation": "17 workflows valid; false-success checks passed",
-      "python_compilation": "passed",
-      "structured_evidence": "remote-completion.json and all 25 JSONL records parsed",
-      "diff_check": "passed",
+      "observed_at": "2026-10-01T23:37:12Z",
+      "base_sha": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
+      "credential_readiness_test": "1 passed, 106 deselected",
+      "full_agent_suite": "pending",
+      "full_workflow_validation": "pending",
+      "isolated_documentation_diff_check": "passed",
+      "active_worktree_diff_check": "pre-existing user-request trailing whitespace reported",
       "remote_repair_sha": null
     },
     "latest_observation": {
+      "observed_at": "2026-10-01T23:44:03Z",
+      "actor": "themegakenya GitHub CLI user; not verified as GitHub App",
+      "alpha_main_sha": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
+      "alpha_backup_sha": "6d925c33f0093035755772137d863618b3818ab0",
+      "qmoi_enhanced_main_sha": "767cb450e171c0a26f44231e40fe92899951bb5f",
+      "qmoi_enhanced_backup_sha": "d371de28f77b3ebea0244ccc1c13793a2654c395",
+      "workflows": {
+        "push_on_main": {
+          "run_id": "36937035410",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "ollama_live_activity": {
+          "run_id": "36941238976",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "cross_repository_autosync": {
+          "run_id": "36941265326",
+          "status": "completed",
+          "conclusion": "failure",
+          "failed_step": "Run guarded cross-repository sync",
+          "report_status": "blocked",
+          "applied": false,
+          "artifact": "cross-repo-sync-report-36941265326",
+          "artifact_sha256": "5959c9dcdd898c3ec10b930572dab2bdd9d4f796b3b166853370d2fc4b0879a9",
+          "source_commit_missing_in_target": true,
+          "reverse_source_commit_missing_in_target": true,
+          "fast_forward_possible_in_either_direction": false
+        }
+      },
+      "branch_protection_http_status": 403,
+      "dependabot_alerts_http_status": 403,
+      "remote_completion_proven": false,
+      "tip_tree_counts": {
+        "alpha_main": {
+          "files": 10607,
+          "directories": 1148
+        },
+        "alpha_autosync_backup": {
+          "files": 8564,
+          "directories": 902
+        },
+        "qmoi_enhanced_main": {
+          "files": 8771,
+          "directories": 902
+        },
+        "qmoi_enhanced_autosync_backup": {
+          "files": 10614,
+          "directories": 1542
+        }
+      }
+    },
+    "current_observation": {
+      "observed_at": "2026-10-01T23:44:03Z",
+      "actor": "themegakenya GitHub CLI user",
+      "local_head_sha": "5e40b2789fe32eab12e03ddd0b92ff36ea2c2bb4",
+      "local_ahead_behind": "0 ahead, 56 behind",
+      "origin_main_sha": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
+      "remote_refs": {
+        "alpha_main": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
+        "alpha_autosync_backup": "6d925c33f0093035755772137d863618b3818ab0",
+        "qmoi_enhanced_main": "767cb450e171c0a26f44231e40fe92899951bb5f",
+        "qmoi_enhanced_autosync_backup": "d371de28f77b3ebea0244ccc1c13793a2654c395"
+      },
+      "local_validation": {
+        "credential_readiness_test": "1 passed, 106 deselected",
+        "full_agent_suite": "not rerun for current dirty changes",
+        "diff_check_isolated_evidence_patch": "passed",
+        "dirty_worktree_diff_check": "trailing whitespace in preserved user-request text in oe2.txt"
+      },
+      "remote_workflows": {
+        "push_on_main": "36937035410 success",
+        "ollama_live_activity": "36941238976 success",
+        "cross_repository_autosync": "36941265326 failure at guarded sync step"
+      },
+      "access_limits": {
+        "main_protection_http_status": 403,
+        "dependabot_alerts_http_status": 403,
+        "current_vulnerability_total": "unknown"
+      },
+      "completion_proven": false,
+      "autosync_report": {
+        "captured_at": "2026-10-01T23:33:22.073956Z",
+        "status": "blocked",
+        "applied": false,
+        "alpha_commit_available_in_qmoi_target": false,
+        "qmoi_commit_available_in_alpha_target": false,
+        "fast_forward_possible": false,
+        "artifact_sha256": "5959c9dcdd898c3ec10b930572dab2bdd9d4f796b3b166853370d2fc4b0879a9",
+        "tip_tree_counts_only": true
+      }
+    },
+    "previous_latest_observation": {
       "observed_at": "2026-09-29T23:18:51Z",
       "actor": "themegakenya GitHub CLI user",
       "published_main_sha": "d9fadae929f5fd9be95d7dfded766ce3359eb678",
@@ -48,27 +141,60 @@
       "alpha_autosync_backup_sha": "6d925c33f0093035755772137d863618b3818ab0",
       "qmoi_enhanced_main_sha": "bc3e9dbd68ecc849d8feef9a4a97561e1f2480f2",
       "qmoi_enhanced_autosync_backup_sha": "d371de28f77b3ebea0244ccc1c13793a2654c395",
-      "github_vulnerabilities": {"total": 37, "high": 20, "moderate": 13, "low": 4},
+      "github_vulnerabilities": {
+        "total": 37,
+        "high": 20,
+        "moderate": 13,
+        "low": 4
+      },
       "alpha_main_protection_http_status": 403,
       "workflows": {
-        "security_and_merge_gates": {"run_id": "36643553791", "status": "in_progress"},
-        "cross_repository_autosync": {"run_id": "36643553762", "status": "failure"},
-        "qmoi_live_activity": {"run_id": "36643553844", "status": "success"},
-        "markdown_inventory_refresh": {"run_id": "36643553772", "status": "failure"},
-        "ollama_pr_validation": {"run_id": "36643553810", "status": "in_progress"},
-        "codeql": {"run_id": "36643553697", "status": "in_progress"},
-        "codeql_advanced": {"run_id": "36643553834", "status": "skipped"},
-        "branch_sync": {"run_id": "36643553754", "status": "skipped"}
+        "security_and_merge_gates": {
+          "run_id": "36643553791",
+          "status": "in_progress"
+        },
+        "cross_repository_autosync": {
+          "run_id": "36643553762",
+          "status": "failure"
+        },
+        "qmoi_live_activity": {
+          "run_id": "36643553844",
+          "status": "success"
+        },
+        "markdown_inventory_refresh": {
+          "run_id": "36643553772",
+          "status": "failure"
+        },
+        "ollama_pr_validation": {
+          "run_id": "36643553810",
+          "status": "in_progress"
+        },
+        "codeql": {
+          "run_id": "36643553697",
+          "status": "in_progress"
+        },
+        "codeql_advanced": {
+          "run_id": "36643553834",
+          "status": "skipped"
+        },
+        "branch_sync": {
+          "run_id": "36643553754",
+          "status": "skipped"
+        }
       },
       "markdown_refresh_failure": "run 36643553772 job 109661179099: ModuleNotFoundError: requests before inventory execution",
       "markdown_refresh_repair": "local workflow installs requirements.txt before agent import; validator passed; not yet published",
       "cross_repository_sync_failure": "run 36643553762 job 109661179586: guarded sync attempted to push a source commit absent from the target checkout; Git reported Not a valid object name",
       "cross_repository_sync_repair": "local code now validates optional refs and source/target object availability, preflights backup and main before any push, and writes a blocked/partial JSON report; 3 focused tests pass; not yet published",
-      "merge_checkpoint": {"applied_merges": 0, "copied_files": 0, "complete_tree_file_directory_symlink_metrics": "NOT_MEASURED; no complete remote tree manifest was produced"},
+      "merge_checkpoint": {
+        "applied_merges": 0,
+        "copied_files": 0,
+        "complete_tree_file_directory_symlink_metrics": "NOT_MEASURED; no complete remote tree manifest was produced"
+      },
       "post_failure_refs_unchanged": true,
       "remote_completion_proven": false
     },
-    "current_observation": {
+    "previous_current_observation": {
       "local_validation_commands": [
         "python scripts/ollama_autonomous_agent.py validate-all",
         "pytest tests -q",
@@ -142,10 +268,22 @@
         "previous_qmoi_enhanced_push_on_main": "completed success at df3f34fb4733ed5cd4d25107b9d056de9697fcbe; run 36352341248",
         "previous_qmoi_enhanced_cross_repo_autosync": "completed failure at prior SHA 394ce4ee4b25864d6fea8c44e581c8d3775573bd; run 36349962995",
         "previous_published_sha_workflows": {
-          "security_and_merge_gates": {"run_id": "36369131361", "status": "in_progress"},
-          "cross_repository_autosync": {"run_id": "36369131387", "status": "in_progress"},
-          "qmoi_live_activity": {"run_id": "36369131317", "status": "in_progress"},
-          "dependency_graph_update": {"run_id": "36369133841", "status": "in_progress"}
+          "security_and_merge_gates": {
+            "run_id": "36369131361",
+            "status": "in_progress"
+          },
+          "cross_repository_autosync": {
+            "run_id": "36369131387",
+            "status": "in_progress"
+          },
+          "qmoi_live_activity": {
+            "run_id": "36369131317",
+            "status": "in_progress"
+          },
+          "dependency_graph_update": {
+            "run_id": "36369133841",
+            "status": "in_progress"
+          }
         },
         "main_protection_http_status": 403,
         "current_sha_push_run": {
@@ -165,8 +303,8 @@
     }
   },
   "validation": {
-    "full_test_suite": "local pytest tests -q passed: 269 passed in 614.37s; local-only evidence",
-    "required_checks": "At d9fadae929f5fd9be95d7dfded766ce3359eb678: Security and Merge Gates and CodeQL in progress; Ollama PR Validation in progress; QMOI Live Activity Stream success; Markdown Inventory Refresh and cross-repo autosync failed; CodeQL Advanced and Branch Sync skipped.",
+    "full_test_suite": "Pending for current dirty agent/test changes; only credential-readiness regression passed (1 passed, 106 deselected).",
+    "required_checks": "At exact Alpha main SHA 3643ef79b72a6637dcf7bb8c92c516b20fa728ab: Push on main and Ollama Live Activity Stream succeeded; cross-repository autosync failed at guarded sync.",
     "exact_final_remote_sha": null,
     "local_verification_method": [
       "git status --short --branch",
@@ -191,7 +329,12 @@
     "The requested chattracks.md instructions are unavailable in the checkout, accessible workspace trees, and locally available refs.",
     "Untracked atoz.md contains unverified financial/account/credential-like details and is excluded from publication pending review and redaction.",
     "The repo security panel remains a separate remote blocker and must be treated as an outstanding issue until the flow proves otherwise.",
-    "The final completion gate remains remote-owned and evidence-driven."
+    "The final completion gate remains remote-owned and evidence-driven.",
+    "At current Alpha main 3643ef79b72a6637dcf7bb8c92c516b20fa728ab, autosync run 36941265326 failed at Run guarded cross-repository sync; cause not yet established from sanitized report evidence.",
+    "Main protection and Dependabot alert reads returned HTTP 403; current branch rules and vulnerability totals are unknown.",
+    "Local main is 0 ahead/56 behind and has user/generated modifications; whole-worktree publication is unsafe.",
+    "Full current agent tests and complete repo/history/PR/release/UI/API/auth/hooks/tracks and low-bandwidth audits remain pending.",
+    "Autosync report proves applied=false because Alpha commit 3643ef79b72a6637dcf7bb8c92c516b20fa728ab is unavailable in the QMOI target and QMOI commit 767cb450e171c0a26f44231e40fe92899951bb5f is unavailable in Alpha; both directions are non-fast-forward/unavailable pending object transfer by an authorized safe workflow."
   ],
   "evidence_refs": [
     "remotecompletion.md",
