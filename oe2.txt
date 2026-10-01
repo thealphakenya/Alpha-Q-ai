@@ -1,3 +1,12 @@
+## Evidence publication and exact-SHA checks — 2026-10-01T23:46:59Z
+
+- Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.
+- Normal push of evidence-only commit `9fd17feeecf2d7c9942633f1138b4f11e5a1f790` advanced Alpha-Q-ai `main` from `3643ef79b72a6637dcf7bb8c92c516b20fa728ab`; `git ls-remote` independently confirmed the new SHA. The commit contains only `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl`; no force-push or protection bypass.
+- Exact-SHA workflows: Push on main `36942519692`, Security and Merge Gates `36942520315`, Markdown Inventory Refresh `36942520270`, QMOI Bidirectional Cross-Repository Autosync `36942520557`, and Ollama PR Validation `36942520386` are in progress. QMOI Live Activity Stream `36942520346` succeeded. CodeQL Advanced `36942520362` and Branch Sync Monitor `36942520310` were skipped. Commit checks also show six platform compilations, documentation, workflow integrity, and live activity succeeded; dependency/tests, language analyses, platform-feature validation, Markdown refresh, and autosync remain in progress. No terminal all-check success is claimed.
+- GitHub's push warning reported 51 default-branch vulnerabilities: 28 high, 19 moderate, 4 low. A fresh Dependabot-alert API query and branch-protection GET each returned HTTP 403; alert details and protection rules remain inaccessible. Do not claim security closure or known rules.
+- The main worktree remains dirty and is 0 ahead/57 behind the published main; it was not included in the push. The autosync report on parent SHA `3643ef79...` proved fail-closed `applied=false` because each repository lacked the other's source commit object; peer/backup parity, security closure, complete history coverage, and remote completion remain unproven.
+- Gate: `EVIDENCE_PUBLISHED_EXACT_SHA_CHECKS_PENDING_SECURITY_AUTOSYNC_AND_PARITY_BLOCKED`.
+
 ## Active continuation checkpoint — 2026-10-01T23:37:12Z
 
 - Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.

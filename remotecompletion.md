@@ -1,3 +1,12 @@
+## Evidence publication and exact-SHA checks — 2026-10-01T23:46:59Z
+
+- Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.
+- Normal push advanced Alpha-Q-ai `main` from `3643ef79b72a6637dcf7bb8c92c516b20fa728ab` to `9fd17feeecf2d7c9942633f1138b4f11e5a1f790`; direct `git ls-remote` confirmed the exact ref. Commit `9fd17fee` contains only `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl`. No force-push or bypass was used.
+- On exact SHA `9fd17fee...`: Push on main run `36942519692`, Security and Merge Gates `36942520315`, Markdown Inventory Refresh `36942520270`, cross-repository Autosync `36942520557`, and Ollama PR Validation `36942520386` are `in_progress`; QMOI Live Activity Stream `36942520346` succeeded; CodeQL Advanced `36942520362` and Branch Sync Monitor `36942520310` were skipped. The check-runs endpoint additionally reports all six platform compilations, Documentation, Workflow Integrity, and live activity succeeded; dependency/tests, language analyses, platform-feature validation, Markdown refresh, and autosync remain in progress. No terminal overall success is claimed.
+- The push response reports 51 default-branch vulnerabilities (28 high, 19 moderate, 4 low). Current Dependabot-alert and main-protection GETs both returned HTTP 403, so alert details and protection rules remain unknown; the push warning is not security remediation.
+- The originating dirty worktree remains preserved and is 0 ahead/57 behind. Its code and generated tracker changes were excluded. Cross-repository autosync remains blocked by missing source commit objects in each counterpart object database; backup/peer parity, complete history/PR coverage, and remote completion are unproven.
+- Gate: `EVIDENCE_PUBLISHED_EXACT_SHA_CHECKS_PENDING_SECURITY_AUTOSYNC_AND_PARITY_BLOCKED`.
+
 ## Current continuation and exact-SHA evidence — 2026-10-01T23:37:12Z
 
 - Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.
