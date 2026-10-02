@@ -408,8 +408,8 @@ jobs:
               ;;
             schedule)
               run_agent="true"
-              command="autonomous"
-              reason="Scheduled bounded autonomous health and repair cycle."
+              command="continue"
+              reason="Scheduled bounded continuation cycle from the persisted checkpoint."
               ;;
           esac
 
@@ -646,8 +646,35 @@ jobs:
             echo "- Links: ${{ steps.link_validation.outcome || 'unknown' }}"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Enforce final health gate
+        id: final_health_gate
+        if: always()
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          execution="${{ steps.execution_mode.outputs.run_agent }}"
+          agent="${{ steps.agent_execution.outcome }}"
+
+          if [ "$execution" != "true" ]; then
+            exit 0
+          fi
+          if [ "$agent" = "success" ] && [ -f "$TRACK_DIR/OLLAMA_SUCCESS.json" ] && \
+            [ "${{ steps.link_validation.outcome }}" = "success" ] && \
+            python -c 'import json,sys; data=json.load(open(sys.argv[1])); required=("ollama_healthy","model_available","inference_verified","llm_coding_started","validation_passed","lint_passed","checkpoint_created"); raise SystemExit(0 if data.get("final_status") == "SUCCESS" and all(data.get(key) for key in required) else 1)' "$TRACK_DIR/OLLAMA_SUCCESS.json"; then
+            exit 0
+          fi
+          exit 1
       - name: Finalize successful resume evidence
-        if: always() && steps.agent_execution.outcome == 'success'
+        id: finalize_resume_evidence
+        if: >-
+          always() &&
+          steps.agent_execution.outcome == 'success' &&
+          steps.yaml_validation.outcome == 'success' &&
+          steps.lint.outcome == 'success' &&
+          steps.tests.outcome == 'success' &&
+          steps.final_validation.outcome == 'success' &&
+          steps.link_validation.outcome == 'success' &&
+          steps.final_health_gate.outcome == 'success'
         shell: bash
         env:
           PYTHONPATH: ${{ github.workspace }}
@@ -698,7 +725,16 @@ jobs:
           PY
 
       - name: Persist final resume evidence
-        if: always() && steps.agent_execution.outcome == 'success'
+        if: >-
+          always() &&
+          steps.agent_execution.outcome == 'success' &&
+          steps.yaml_validation.outcome == 'success' &&
+          steps.lint.outcome == 'success' &&
+          steps.tests.outcome == 'success' &&
+          steps.final_validation.outcome == 'success' &&
+          steps.link_validation.outcome == 'success' &&
+          steps.final_health_gate.outcome == 'success' &&
+          steps.finalize_resume_evidence.outcome == 'success'
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -721,21 +757,3 @@ jobs:
             ${{ env.TRACK_DIR }}/
             resumefromhere.txt
           retention-days: 30
-
-      - name: Enforce final health gate
-        if: always()
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          execution="${{ steps.execution_mode.outputs.run_agent }}"
-          agent="${{ steps.agent_execution.outcome }}"
-
-          if [ "$execution" != "true" ]; then
-            exit 0
-          fi
-          if [ "$agent" = "success" ] && [ -f "$TRACK_DIR/OLLAMA_SUCCESS.json" ] && \
-            [ "${{ steps.link_validation.outcome }}" = "success" ] && \
-            python -c 'import json,sys; data=json.load(open(sys.argv[1])); required=("ollama_healthy","model_available","inference_verified","llm_coding_started","validation_passed","lint_passed","checkpoint_created"); raise SystemExit(0 if data.get("final_status") == "SUCCESS" and all(data.get(key) for key in required) else 1)' "$TRACK_DIR/OLLAMA_SUCCESS.json"; then
-            exit 0
-          fi
-          exit 1

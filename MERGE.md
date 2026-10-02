@@ -7,7 +7,15 @@
 - Target-owned autosync run `36643553762` failed before cross-repository promotion because the source commit object was absent from the target checkout. Post-run reads showed neither repository's `main` or `autosync-backup` head changed.
 - Applied merge operations: `0`. Files copied or promoted: `0`. Full per-ref file/directory/symlink counts: `NOT_MEASURED` in this run because the sync stopped at object-availability preflight; no complete remote tree manifest was produced.
 - Local repair requires source and target object availability, preflights backup and `main` before pushing, and emits a blocked/partial report. Regression suite `tests/test_cross_repo_sync.py`: `3 passed`. This repair is not yet published or remotely verified.
-- Coverage remains incomplete for remote branches, PR refs, intermediate commit trees, and complete peer-repository history. Do not treat the remote run, current metrics, or local plan as merge/parity proof.
+- Coverage remains incomplete for PR refs, intermediate commit trees, and complete peer-repository history. Do not treat the remote run, current metrics, or local plan as merge/parity proof.
+
+### Repaired-SHA target audit
+
+- Source Alpha-Q-ai `main`: `fe273192d91ae2ab9a049fef7694fff236cf6ce1`.
+- Target qmoi-enhanced `main`: `3bd55fd0d9f8e22bc190aad2eff50ae7b02fceb6`; this is one bootstrap commit ahead of prior target SHA `bc3e9dbd68ecc849d8feef9a4a97561e1f2480f2`, with only `SYNC.md` and `scripts/cross_repo_sync.py` changed.
+- Guarded sync result: blocked before content push because the Alpha source commit is unavailable in the QMOI object database; `applied=false`, no main/backup content promotion.
+- Branch-tip metrics from the remote report (files/directories): Alpha main `10,558/1,148`; Alp BBQha backup `8,564/902`; QMOI main `8,728/902`; QMOI backup `10,614/1,542`. These are not complete history/PR counts. Both backup refs remained unchanged.
+- Cross-repository full merge remains unproven. Next gate is to make source commit objects available in the target through a supported fetch/bundle strategy, then re-audit exact refs and preflight all destinations before any content promotion.
 
 ## Complete History, Light Codespaces
 
@@ -109,6 +117,40 @@ repository object database and classify branches, tags, and fetched
 unless a target-owned read proves the current ref set. Missing or unfetched PRs,
 unavailable refs, and intermediate-commit-tree coverage must remain explicit
 blockers; tip-tree inventories alone are not proof of complete history coverage.
+
+## All-Branch Merge Planner
+
+The cross-repository audit explicitly fetches `+refs/heads/*` from each `origin`
+and includes every fetched head in `repositories.<repo>.branches`. Each entry
+records the branch name, tip commit SHA, tree SHA, recognized role, naming
+status, merge policy, and whether it belongs to the protected publication
+lane. `branch_alignment.branches` compares the union of names across both repos,
+records same-name ancestry/object availability, and marks branches present in
+only one repo for review instead of creating counterpart branches implicitly.
+
+Merge planning begins with this full branch inventory before file/feature
+analysis or any mutation. `main` and `autosync-backup` are the only protected
+cross-repository publication lanes; the existing apply path must still pass
+backup-first fast-forward, exact-object, required-check, and authorization gates.
+Feature, fix, hotfix, security, chore, docs, experiment, release, Dependabot,
+Codespaces, and legacy branches remain inventory and provenance inputs. They
+are PR/review-only (Codespaces branches are never cross-repo synchronized),
+and no branch is deleted, renamed, copied, or merged merely because it exists
+in one repository or shares a name with a branch in the other.
+
+New human branches follow `<type>/<issue-id>-<lowercase-kebab-slug>`; release
+branches follow `release/v<major>.<minor>.<patch>[-<label>]`. Provider-managed
+Dependabot and Codespaces names are exceptions. New branch proposals must state
+purpose, source/base SHA, owner, required checks, and retention policy. The
+planner reports all current names dynamically; any recorded inventory is bound
+to its repository, fetch time, and exact commit/tree identities and is not a
+promise about branches created or moved afterward.
+
+The branch inventory covers remote heads advertised during fetch only. Pull
+request refs and every intermediate commit tree are separate audit scopes and
+must remain `incomplete` until separately enumerated. The new inventory code
+and policy tests are local changes at this checkpoint; they have not been
+published or remotely verified.
 
 Every materialized Markdown file and every distinct Markdown blob in available
 refs must receive UTF-8, nonempty, heading, code-fence, unresolved-marker, and

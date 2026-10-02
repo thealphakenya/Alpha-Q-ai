@@ -8,14 +8,16 @@ This document details the synchronization mechanisms between the **qmoi-enhanced
 ### qmoi-enhanced
 - **Owner**: thealphakenya
 - **URL**: https://github.com/thealphakenya/qmoi-enhanced
-- **Primary Branches**: main, autosync-backup
+- **Required Protected Branches**: main, autosync-backup
+- **Other Branches**: inventoried from live remote refs on every sync audit; do not assume the required branches are the complete branch set
 - **Purpose**: QMOI AI applications UI, core features, and user-facing components
 - **Contains**: Applications (qmoiaiui, qmoi-space, qcity, qalpha), styles, UI features
 
 ### Alpha-Q-ai
 - **Owner**: thealphakenya
 - **URL**: https://github.com/thealphakenya/Alpha-Q-ai
-- **Primary Branches**: main, autosync-backup
+- **Required Protected Branches**: main, autosync-backup
+- **Other Branches**: inventoried from live remote refs on every sync audit; do not assume the required branches are the complete branch set
 - **Purpose**: Backend infrastructure, APIs, core algorithms, and cross-cutting concerns
 - **Contains**: API implementations, endpoints, routes, backend services
 
@@ -33,6 +35,243 @@ agree; conflicts remain blocked for review.
 Both repositories maintain:
 1. **Main Branch**: Production-ready code with validated features
 2. **Autosync-Backup Branch**: Automated backup and staging branch
+
+### All-Branch Inventory and Naming Policy
+
+Every audit fetches all remote branch refs from both repositories and reports
+each branch name, tip commit SHA, tree SHA, recognized role, naming status,
+same-name counterpart, and merge eligibility in the
+`branch_alignment.branches` report array. That generated report is the current
+complete roster for the audited refs; the short stable summary here must not be
+treated as an exhaustive or permanent list. Record the report's repository,
+ref, capture time, SHA, target Actions run ID, head SHA, and exact branch refs
+when publishing it as a workflow artifact. Missing,
+unfetched, permission-denied, or stale refs are coverage gaps, never an empty
+branch set.
+
+#### Observed branch-name snapshot — 2026-10-02T02:05:57Z
+
+This is a human-readable snapshot of the live `refs/heads` names observed at
+the timestamp above. The generated sync report is authoritative for exact tip
+SHAs and later changes. These names are inventoried; they are not all merge or
+publication targets.
+
+<details>
+<summary>Alpha-Q-ai — 25 observed branches</summary>
+
+| Branch | Role |
+| --- | --- |
+| `autosync-backup` | protected_backup |
+| `chore/security-autofix` | chore |
+| `codespace-ominous-space-spork-wrqg5956x445hggv7` | ephemeral_codespace |
+| `codespace-super-umbrella-wrq596r754wwfvgwg` | ephemeral_codespace |
+| `dependabot/github_actions/actions/checkout-7` | dependency_update |
+| `dependabot/github_actions/actions/download-artifact-8` | dependency_update |
+| `dependabot/github_actions/actions/github-script-9` | dependency_update |
+| `dependabot/github_actions/actions/setup-python-7` | dependency_update |
+| `dependabot/github_actions/actions/upload-artifact-7` | dependency_update |
+| `dependabot/github_actions/peter-evans/create-pull-request-8` | dependency_update |
+| `dependabot/npm_and_yarn/Alpha-Q-ai-2025/npm_and_yarn-c3809050de` | dependency_update |
+| `dependabot/npm_and_yarn/qmoi-enhanced-history-14/npm_and_yarn-36f0a19845` | dependency_update |
+| `dependabot/pip/boto3-gte-1.43.101` | dependency_update |
+| `dependabot/pip/coverage-gte-7.16.1` | dependency_update |
+| `dependabot/pip/fido2-gte-2.2.1` | dependency_update |
+| `dependabot/pip/flake8-gte-7.4.1` | dependency_update |
+| `dependabot/pip/flask-cors-gte-6.0.5` | dependency_update |
+| `dependabot/pip/gitpython-gte-3.1.62` | dependency_update |
+| `dependabot/pip/pyjwt-gte-2.15.0` | dependency_update |
+| `dependabot/pip/pytest-cov-gte-7.1.0` | dependency_update |
+| `dependabot/pip/requests-gte-2.34.2` | dependency_update |
+| `fix-dependabot-ws` | legacy_or_unclassified |
+| `main` | production |
+| `resolved-dependabot-ws` | legacy_or_unclassified |
+| `security/dependency-remediation-20261002` | security |
+
+</details>
+
+<details>
+<summary>qmoi-enhanced — 151 observed branches</summary>
+
+| Branch | Role |
+| --- | --- |
+| `auto-merge/imported-theofalphakenya-20251122T090610Z` | legacy_or_unclassified |
+| `auto-merge/imported-theofalphakenya-20251122T090632Z` | legacy_or_unclassified |
+| `auto-merge/imported-theofalphakenya-20251122T092741Z` | legacy_or_unclassified |
+| `auto/dns-fixes-proposals-20251120122343` | legacy_or_unclassified |
+| `auto/http-to-https-20251110` | legacy_or_unclassified |
+| `auto/placeholder-proposals-20251120-01` | legacy_or_unclassified |
+| `auto/placeholder-stubs` | legacy_or_unclassified |
+| `auto/placeholder-stubs-clean` | legacy_or_unclassified |
+| `auto/placeholders-fixes` | legacy_or_unclassified |
+| `auto/placeholders-fixes-backup-20251028002407` | legacy_or_unclassified |
+| `auto/placeholders/auto-apply-dryrun` | legacy_or_unclassified |
+| `auto/placeholders/auto-apply-final` | legacy_or_unclassified |
+| `auto/placeholders/code-fix-docs_link-validation-report.json` | legacy_or_unclassified |
+| `auto/placeholders/code-fix-qmoi-enhanced_components` | legacy_or_unclassified |
+| `auto/placeholders/code-fix-qmoi-enhanced_scripts` | legacy_or_unclassified |
+| `auto/placeholders/code-fix-qmoi-enhanced_src` | legacy_or_unclassified |
+| `auto/placeholders/code-fix-reports_placeholders.json` | legacy_or_unclassified |
+| `auto/placeholders/code-fix-reports_suggestions.json` | legacy_or_unclassified |
+| `auto/placeholders/code-fix-src_components` | legacy_or_unclassified |
+| `auto/placeholders/docs-fix-3` | legacy_or_unclassified |
+| `auto/placeholders/p0-epic` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-50b8f7d4acdba845f989c2f8552ba482453936ac` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-6f861e97978f7658419a96db195621a1370c35b2` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-730e13874a1c207ea2a3a2ca71d1a929ea46dd6a` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-74ddf5a1585e1c97907f5e3b70c046a8f629ad2e` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-7a60e32686716c20c7de7384b2470585a2be6067` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-8a71717e5525d8ca42c511e6bc97d14b3aed1e70` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-950017e1ca3e2c4421bfebba5eebc7585d7f9a98` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-ac68e484dc37c4b6600eb8ef553888b664c04a86` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-d21bd6a5f3e1c05f2cd6589732542942d8c16d29` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_1` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_10` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_11` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_12` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_13` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_14` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_15` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_2` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_3` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_4` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_5` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_6` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_7` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_8` | legacy_or_unclassified |
+| `auto/placeholders/pr-patch-pass_fixes_batch_9` | legacy_or_unclassified |
+| `auto/redact-credentials-20251113` | legacy_or_unclassified |
+| `auto/release-inventory-20251113160839` | legacy_or_unclassified |
+| `auto/update-mds-1762860999` | legacy_or_unclassified |
+| `auto/vercel-fix-1762862377` | legacy_or_unclassified |
+| `auto/vercel-fix-1762885773` | legacy_or_unclassified |
+| `auto/vercel-fixes` | legacy_or_unclassified |
+| `automated/requests-security-fix` | legacy_or_unclassified |
+| `automation/continue-setup` | legacy_or_unclassified |
+| `autosync-artifacts-20251107` | legacy_or_unclassified |
+| `autosync-backup` | protected_backup |
+| `autosync-backup-20250926-232440` | legacy_or_unclassified |
+| `autosync-backup-20250927-004803` | legacy_or_unclassified |
+| `autosync-backup-20250927-005413` | legacy_or_unclassified |
+| `autosync-backup-20250927-010622` | legacy_or_unclassified |
+| `autosync-backup-20250927-013228` | legacy_or_unclassified |
+| `autosync-backup-20250928-202506` | legacy_or_unclassified |
+| `autosync-backup-20250929-044647` | legacy_or_unclassified |
+| `autosync-backup-20250929-051243` | legacy_or_unclassified |
+| `autosync-backup-20250929-052822` | legacy_or_unclassified |
+| `autosync-backup-20250929-055200` | legacy_or_unclassified |
+| `autosync-largefiles-20250927-004803` | legacy_or_unclassified |
+| `autosync-largefiles-20250927-005413` | legacy_or_unclassified |
+| `autosync-largefiles-20250927-010622` | legacy_or_unclassified |
+| `autosync-largefiles-20250927-013228` | legacy_or_unclassified |
+| `autosync-largefiles-20250928-202506` | legacy_or_unclassified |
+| `autosync-largefiles-20250929-044647` | legacy_or_unclassified |
+| `autosync-largefiles-20250929-051243` | legacy_or_unclassified |
+| `autosync-largefiles-20250929-052822` | legacy_or_unclassified |
+| `autosync-largefiles-20250929-055200` | legacy_or_unclassified |
+| `autosync-links-20251107` | legacy_or_unclassified |
+| `autosync-md-fixes-20251107` | legacy_or_unclassified |
+| `autosync-placeholder-fix-20251125073732` | legacy_or_unclassified |
+| `autosync-resolved-1700261406` | legacy_or_unclassified |
+| `autosync/enhancements` | legacy_or_unclassified |
+| `autosync/env-manager-ci-fixes-20251027` | legacy_or_unclassified |
+| `autosync/verification-20251107-clean` | legacy_or_unclassified |
+| `autosync/verification-20251107-pr` | legacy_or_unclassified |
+| `autoupdate/alllinks-25781049099` | legacy_or_unclassified |
+| `autoupdate/alllinks-28078916358` | legacy_or_unclassified |
+| `backup/before-auto-merge-20251122T092741Z` | legacy_or_unclassified |
+| `backup/before-replacer-${TS}` | legacy_or_unclassified |
+| `chore/cleanup-tests-and-lint` | chore |
+| `chore/copilot-setup-smoke-20251122T103756Z` | legacy_or_unclassified |
+| `chore/copilot-setup-smoke-20251122T103820Z` | legacy_or_unclassified |
+| `chore/local-chat-integration-20251122T104109Z` | legacy_or_unclassified |
+| `chore/local-chat-integration-20251122T104216Z` | legacy_or_unclassified |
+| `chore/prepare-production-20251123T140000Z` | legacy_or_unclassified |
+| `chore/update-master-docs-20251122T135155Z` | legacy_or_unclassified |
+| `ci-debug-output-manual-1766306758` | legacy_or_unclassified |
+| `ci/docker-run-tests` | legacy_or_unclassified |
+| `codespace-didactic-halibut-pj95gjxxr5v736w64` | ephemeral_codespace |
+| `codespace-potential-space-happiness-wrv69x5j6qjq2g7wp` | ephemeral_codespace |
+| `codespace-potential-tribble-g46v54ggq6rv2w4v5` | ephemeral_codespace |
+| `codespace-special-guacamole-4jpvwg9rj4x4f5xx5` | ephemeral_codespace |
+| `codespace-super-enigma-wrqx6xg9ggvg356v4` | ephemeral_codespace |
+| `codespace-ubiquitous-space-waddle-r7r7rjjp7rvhpq77` | ephemeral_codespace |
+| `codespace-zany-capybara-x5xg95jjw7x5hgwg` | ephemeral_codespace |
+| `copilot/hosted-step-manager` | legacy_or_unclassified |
+| `dependabot/github_actions/actions/checkout-7` | dependency_update |
+| `dependabot/github_actions/actions/download-artifact-8` | dependency_update |
+| `dependabot/github_actions/actions/github-script-9` | dependency_update |
+| `dependabot/github_actions/actions/setup-python-7` | dependency_update |
+| `dependabot/github_actions/actions/upload-artifact-7` | dependency_update |
+| `dependabot/github_actions/peter-evans/create-pull-request-8` | dependency_update |
+| `dependabot/npm_and_yarn/qmoi-enhanced-history-14/npm_and_yarn-9239f84e19` | dependency_update |
+| `dependabot/pip/bandit-gte-1.9.4` | dependency_update |
+| `dependabot/pip/coverage-gte-7.16.1` | dependency_update |
+| `dependabot/pip/msgpack-gte-1.2.2` | dependency_update |
+| `dependabot/pip/mypy-gte-2.3.1` | dependency_update |
+| `dependabot/pip/pyjwt-gte-2.14.0` | dependency_update |
+| `dependabot/pip/pylint-gte-4.0.8` | dependency_update |
+| `dependabot/pip/python-dotenv-gte-1.2.3` | dependency_update |
+| `dependabot/pip/requests-gte-2.34.2` | dependency_update |
+| `dependabot/pip/stripe-gte-15.6.1` | dependency_update |
+| `dependabot/pip/werkzeug-gte-3.1.8` | dependency_update |
+| `enhancement/readme-pr-demo` | legacy_or_unclassified |
+| `feat/mpesa-adapter-wireup` | legacy_or_unclassified |
+| `feature/auth-prod-1780061287` | feature |
+| `feature/ci-verify-and-release` | feature |
+| `feature/session4-complete` | feature |
+| `fix/harden-ollama-agent` | fix |
+| `fix/placeholders-automated-20251122T092214Z` | legacy_or_unclassified |
+| `fix/placeholders-prod-review-20251220-clean` | fix |
+| `fix/security-redactions-20251027` | fix |
+| `gh-pages` | legacy_or_unclassified |
+| `imported-snapshot/theofalphakenya-20251122T085133Z` | legacy_or_unclassified |
+| `imported/theofalphakenya/HEAD` | legacy_or_unclassified |
+| `imported/theofalphakenya/main` | legacy_or_unclassified |
+| `integration/all-repositories-20260919` | legacy_or_unclassified |
+| `link-update/pr-clean` | legacy_or_unclassified |
+| `main` | production |
+| `mark-unverified-20251113` | legacy_or_unclassified |
+| `merge/complete-copy-gate-qe-20260919` | legacy_or_unclassified |
+| `merge/materialized-inputs-clean-20260919` | legacy_or_unclassified |
+| `ollama/iteration-11` | legacy_or_unclassified |
+| `ollama/iteration-8` | legacy_or_unclassified |
+| `ollama/iteration-9` | legacy_or_unclassified |
+| `prod-enablement-20251113090017` | legacy_or_unclassified |
+| `prod/cleanup-20260516` | legacy_or_unclassified |
+| `qe/complete-autonomous-audit-20260920` | legacy_or_unclassified |
+| `revert-88-autosync-artifacts-20251107` | legacy_or_unclassified |
+| `review/imported-theofalphakenya-main` | legacy_or_unclassified |
+| `save/current-work-20251122T093850Z` | legacy_or_unclassified |
+| `sync-notify` | legacy_or_unclassified |
+| `todo-prod-sweep-20251221` | legacy_or_unclassified |
+| `upgrade/next-15` | legacy_or_unclassified |
+
+</details>
+
+The only protected shared lifecycle branches are `main` and
+`autosync-backup`. New human work branches use lowercase names in the form
+`<type>/<issue-id>-<kebab-slug>`, for example `feature/123-add-search` or
+`security/456-fix-token-validation`. Allowed types are `feature`, `fix`,
+`hotfix`, `security`, `chore`, `docs`, and `experiment`. Release branches use
+`release/v<major>.<minor>.<patch>[-<label>]`. Dependabot and Codespaces names
+are provider-managed exceptions; the agent inventories but does not rename
+them. Unknown legacy names remain visible as `legacy_review` and are never
+silently deleted or synchronized.
+
+Branch creation is tied to a reviewed issue, release plan, or provider
+automation. The agent must not invent branches just to increase branch count.
+It records the purpose, owning repository, base SHA, expected checks, creator,
+and cleanup/retention rule before proposing a new branch. Existing branch names
+are never reused for unrelated work.
+
+Feature, fix, security, docs, experiment, release, Dependabot, Codespaces, and
+unclassified branches are inventory and merge-planning inputs, not automatic
+cross-repository promotion targets. They remain in their owning repository
+unless an explicit review PR requests a same-name counterpart or a change into
+`main`. Required checks and human review apply before merge. Codespaces branches
+are never cross-repository synchronized. Unknown/conflicting branches stop for
+review. Branch inventory inclusion means every branch is considered by merge
+planning; it does not mean every branch is blindly merged or copied.
 
 ### Autonomous update and publication contract
 The Ollama autonomous agent may update both repositories only after the local validation, merge inventory, and lifecycle gates pass. The authorized sequence is:
@@ -52,6 +291,13 @@ Each branch is considered successful only after the branch-specific publication 
 - `main` branch: validated production branch and exact SHA proof
 - `autosync-backup` branch: backup publication and audit pass before main promotion
 - Q-version artifact: `Q.0.0.1` directory and companion document added only after the final successful branch state is proven
+
+For all other branches, completion means inventory coverage plus an explicit
+branch disposition (`review_pr_required`, `provider_managed`, `ephemeral`, or
+`legacy_review`). Automatic branch publication is disabled unless the branch
+is one of the protected lifecycle branches and its exact-SHA, fast-forward,
+backup-first, and required-check gates all pass. An absent counterpart is
+reported as `only_in_<repository>` and is not created automatically.
 
 All branches and final artifacts must remain consistent with the same evidence ledger. The branch sync remains operationally complete only when both repos and both branches are in a verified state, not merely when a local script reports success.
 
@@ -179,6 +425,7 @@ Agent detects changes in either repository:
 - New files
 - Deleted files
 - Configuration changes
+- All remote branches, including branches not changed in the current push
 
 ### Step 2: Classification
 Agent classifies changes:
@@ -186,6 +433,7 @@ Agent classifies changes:
 - **Shared**: Needs replication to other repo
 - **Critical**: Requires immediate sync
 - **Scheduled**: Queued for next sync cycle
+- **Branch-Only**: Preserved in its owning repo and routed through a review PR unless it is a protected lifecycle branch
 
 ### Step 3: Validation
 Before sync:
@@ -196,10 +444,10 @@ Before sync:
 
 ### Step 4: Merge
 Apply changes to target repository:
-- Create sync branch
-- Merge changes
-- Resolve conflicts intelligently
-- Update related files
+- Create a reviewable sync branch or PR for non-protected branch changes
+- Update `autosync-backup` before any permitted `main` promotion
+- Never auto-resolve conflicts or directly merge feature/release/provider branches
+- Record unresolved conflicts and the required human decision
 
 ### Step 5: Commit & Push
 Finalize sync:

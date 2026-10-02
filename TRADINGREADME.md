@@ -104,3 +104,16 @@ This live README is aligned with historical trading references in the repository
 ## Status
 
 Trading operations model: active and under continuous production enhancement.
+
+<!-- BEGIN QMOI MANAGED: trading-audit-source-inventory -->
+## Agent-managed trading audit and remote-continuity contract
+
+The trading source inventory is a discovery artifact. Every venue, UI, API, test, and workflow must be tied to an owner, repository/ref/SHA, implementation path, risk/auth boundary, and validation record before being marked verified.
+
+- Current materialized trading candidates: `958`; platform mentions: `{"binance": 82, "bitget": 117, "bybit": 4, "cashon": 254, "coinbase": 36, "kraken": 35, "megavault": 65, "okx": 4, "paypal": 118}`.
+- Audit active, snapshot, and archive scopes separately; merge-audit local ref-tip path metrics are distinct from materialized-file scanning. Unfetched refs, PRs, intermediate commit trees, and peer roots remain explicit blockers.
+- For every Qtrade metric and exchange, map market-data source, freshness, no-trade decision, backtest/walk-forward/paper tests, execution/risk limits, fees/slippage, reconciliation, kill switch, UI states, and event handlers. Missing/stale proof remains `blocked`.
+- Remote runtime independence is a design target, not a present availability guarantee: require an independently hosted worker, durable idempotent queue, leased ownership, signed fresh heartbeats, monitoring/failover, and provider-authorized access. GitHub/Hugging Face outages must not create false healthy status.
+- On stale market/account data, lost authorization, provider outage, ledger mismatch, or failed heartbeat, stop opening orders and mark trading unavailable; only separately authorized risk-reducing actions may proceed.
+- Never invent balances, credentials, profits, accounts, webhook registrations, or live-run success. Real-money orders, transfers, deposits, withdrawals, and credential changes require explicit scoped authorization and provider evidence.
+<!-- END QMOI MANAGED: trading-audit-source-inventory -->

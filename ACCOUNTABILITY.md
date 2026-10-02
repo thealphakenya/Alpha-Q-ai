@@ -303,3 +303,13 @@ QMOI remains accountable for:
 **For**: QMOI Ollama Autonomous Agent
 **Status**: Active
 **Next Review**: 2026-09-17
+
+<!-- BEGIN QMOI MANAGED: trading-file-mutation-accountability -->
+## Agent-managed trading change accountability
+
+For every trading-related file mutation, record the repository/ref/base SHA, path, prior/new hash, feature owner, reason, authorization, tests, and terminal result. Current inventory is discovery-only and does not establish that a UI, backend, exchange, or webhook works.
+
+- Materialized trading candidate count: `958`; exact paths/hashes/scopes: `QMOItracks/trading_surface_inventory.json`.
+- Keep active, Alpha-Q-ai-2025 snapshot, and qmoi-enhanced-history-14 archive evidence distinct; all refs and remote PR histories require fresh target-owned enumeration.
+- Master accountability reports every changed path and blocked/skipped operation; secrets and credential values never enter logs or documentation.
+<!-- END QMOI MANAGED: trading-file-mutation-accountability -->

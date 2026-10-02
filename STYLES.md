@@ -2570,3 +2570,14 @@ Client platforms: windows, macos, linux, ios, android, web.
 Catalog apps: qmoiaiui, qcity, qmoi-space, qalpha, qstream.
 Implementation and rendered UI coverage remain unverified until app source checkouts, accessibility checks, and platform screenshots/tests are available.
 <!-- END QMOI MANAGED: universal-app-platform-styles -->
+
+<!-- BEGIN QMOI MANAGED: ui-feature-implementation-accountability -->
+## Agent-managed UI implementation and accountability contract
+
+Every UI feature must map a stable feature ID to app/platform, style token and interaction states, frontend component/route, backend API/authorization owner, accessibility expectations, automated tests, and evidence SHA. A style requirement or feature registry row alone is not implementation evidence.
+
+- Keep public, authenticated-user, mixed-access, and master-operator flows distinct; backend authorization is authoritative for writes.
+- Include loading, empty, error, offline, stale, disabled, success, and permission-denied states in the UI contract and tests.
+- Preserve app identity and accessibility while applying shared tokens; do not hide security, financial, consent, billing, or deployment risk.
+- Record each changed path, repository/ref/base SHA, before/after content hash, owner, reason, tests, and approvals in the change evidence.
+<!-- END QMOI MANAGED: ui-feature-implementation-accountability -->

@@ -336,3 +336,15 @@ The detailed public, authenticated-user, and master-operator UI contract is main
 
 The autonomous agent updates this section during every validation/runtime documentation refresh; implementation and account access still require source-level and authenticated-session verification.
 <!-- END QMOI MANAGED: universal-ui-access-link -->
+
+<!-- BEGIN QMOI MANAGED: feature-test-event-accountability -->
+## Agent-managed feature, test, and event accountability contract
+
+Automation may inventory and test preauthorized repository changes without a person present, but may not bypass repository policy, branch protection, user consent, provider permissions, or required human approvals for high-impact actions.
+
+- A feature is complete only when its implementation, UI/API access boundary, tests, docs, and event integrations agree for an exact repository/ref/SHA.
+- Every file mutation records path, owner, prior/new hashes, reason, validation, and authorization context; failed or skipped work remains visible.
+- Hooks/webhooks require authentication/signatures, replay and idempotency controls, bounded retries, secret-reference-only handling, audit logging, and tested failure paths.
+- A feature without a mapped test or verified event integration remains `unmapped` or `blocked`; total automation claims cannot exceed inspected scope.
+- Trading automation remains paused on stale market/account data, invalid authorization, provider outage, risk-limit breach, or ledger mismatch; runtime independence requires separately verified hosts and fresh heartbeat evidence.
+<!-- END QMOI MANAGED: feature-test-event-accountability -->

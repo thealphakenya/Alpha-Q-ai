@@ -43,8 +43,59 @@ def make_git_repo(root: Path, name: str) -> Path:
     return repository
 
 
-def record_successful_q_lifecycle(manager: QVersionManager, roots: list[Path], execution_id: str) -> None:
+def build_branch_inventory_evidence(roots: list[Path]) -> dict:
+    branches_by_repository = {}
+    for index, root in enumerate(roots, start=1):
+        commit_sha = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        tree_sha = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", f"{commit_sha}^{{tree}}"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        branches_by_repository[str(root.resolve())] = {
+            "repository": f"repo-{index}",
+            "branch_count": 2,
+            "branches": [
+                {"name": "main", "commit_sha": commit_sha, "tree_sha": tree_sha},
+                {"name": "autosync-backup", "commit_sha": commit_sha, "tree_sha": tree_sha},
+            ],
+        }
+    report_content = json.dumps(branches_by_repository, sort_keys=True, separators=(",", ":")).encode()
+    branch_alignment = [
+        {
+            "name": name,
+            "status": "diverged_or_objects_unavailable",
+            "automatic_publication_allowed": name in {"main", "autosync-backup"},
+            "merge_policy": "protected_review_and_checks" if name == "main" else "fast_forward_before_main",
+        }
+        for name in ("main", "autosync-backup")
+    ]
+    return {
+        "remote_verified": True,
+        "all_remote_heads_enumerated": True,
+        "captured_at": "2026-10-02T00:00:00Z",
+        "source_report_sha256": hashlib.sha256(report_content).hexdigest(),
+        "workflow": {
+            "run_id": "12345",
+            "repository": "thealphakenya/Alpha-Q-ai",
+            "head_sha": "a" * 40,
+            "ref": "refs/heads/main",
+        },
+        "branch_alignment": branch_alignment,
+        "branches_by_repository": branches_by_repository,
+    }
+
+
+def record_successful_q_lifecycle(manager: QVersionManager, roots: list[Path], execution_id: str) -> str:
+    branch_inventory = build_branch_inventory_evidence(roots)
     stage_details = {
+        "ALL_BRANCH_INVENTORY": {"branch_inventory": branch_inventory},
         "MERGE_APPLY": {
             "decision_ledger_complete": True,
             "conflicts_reviewed": True,
@@ -78,6 +129,11 @@ def record_successful_q_lifecycle(manager: QVersionManager, roots: list[Path], e
             details=stage_details.get(stage, {"decision_ledger_complete": True}),
             include_inventory=stage == "PRE_MERGE_INVENTORY",
         )
+    lifecycle = manager.audit_lifecycle(execution_id)
+    branch_stage = next(
+        item for item in lifecycle["stage_records"] if item["stage"] == "ALL_BRANCH_INVENTORY"
+    )
+    return branch_stage["details"]["branch_inventory_validation"]["inventory_sha256"]
 
 
 def test_completion_is_fail_closed_and_writes_topic_metrics(tmp_path):
@@ -341,6 +397,73 @@ def test_q_version_discovery_fails_closed_on_integrity_mismatch(tmp_path):
         manager.discover()
 
 
+def test_q_version_all_branch_inventory_stage_rejects_missing_remote_roster(tmp_path):
+    roots = [make_git_repo(tmp_path, "alpha"), make_git_repo(tmp_path, "qmoi")]
+    manager = QVersionManager(roots[0])
+    manager.record_lifecycle_stage("branch-gate", "MERGE_START", roots, status="PASS")
+
+    with pytest.raises(RuntimeError, match="complete remote branch evidence"):
+        manager.record_lifecycle_stage(
+            "branch-gate",
+            "ALL_BRANCH_INVENTORY",
+            roots,
+            status="PASS",
+            details={"branch_inventory": {"all_remote_heads_enumerated": False}},
+        )
+
+    assert manager.audit_lifecycle("branch-gate")["stage_sequence"] == ["MERGE_START"]
+
+
+def test_q_version_normalizes_cross_repo_branch_audit_report(tmp_path):
+    roots = [make_git_repo(tmp_path, "alpha"), make_git_repo(tmp_path, "qmoi")]
+    branch_evidence = build_branch_inventory_evidence(roots)
+    report_repositories = {
+        f"repo-{index}": {
+            "root": str(root.resolve()),
+            "branches": branch_evidence["branches_by_repository"][str(root.resolve())]["branches"],
+        }
+        for index, root in enumerate(roots, start=1)
+    }
+    report = {
+        "captured_at": branch_evidence["captured_at"],
+        "workflow": branch_evidence["workflow"],
+        "branch_alignment": {"branches": branch_evidence["branch_alignment"]},
+        "branch_inventory_coverage": {"all_remote_heads_enumerated": True},
+        "repositories": report_repositories,
+    }
+    report_bytes = json.dumps(report, sort_keys=True).encode("utf-8")
+    normalized = QVersionManager.branch_inventory_evidence_from_sync_report(
+        report,
+        hashlib.sha256(report_bytes).hexdigest(),
+    )
+
+    validated = QVersionManager.validate_branch_inventory_evidence(normalized, roots)
+
+    assert validated["complete"] is True
+    assert len(validated["repositories"]) == 2
+    assert all(item["branch_count"] == 2 for item in validated["repositories"].values())
+
+
+def test_q_version_rejects_malformed_branch_audit_report():
+    with pytest.raises(ValueError, match="JSON object"):
+        QVersionManager.branch_inventory_evidence_from_sync_report([], "a" * 64)
+
+    with pytest.raises(RuntimeError, match="invalid repository inventory"):
+        QVersionManager.branch_inventory_evidence_from_sync_report(
+            {
+                "branch_inventory_coverage": {"all_remote_heads_enumerated": True},
+                "workflow": {
+                    "run_id": "12345",
+                    "repository": "thealphakenya/Alpha-Q-ai",
+                    "head_sha": "a" * 40,
+                    "ref": "refs/heads/main",
+                },
+                "repositories": {"alpha": []},
+            },
+            "a" * 64,
+        )
+
+
 def test_q_version_reservation_lock_is_exclusive_and_preserved(tmp_path):
     manager = QVersionManager(tmp_path)
     manager.reservations.parent.mkdir(parents=True)
@@ -394,7 +517,7 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
     roots = [make_git_repo(tmp_path, "alpha"), make_git_repo(tmp_path, "qmoi")]
     manager = QVersionManager(roots[0])
     execution_id = "qversion-final-success"
-    record_successful_q_lifecycle(manager, roots, execution_id)
+    branch_inventory_sha256 = record_successful_q_lifecycle(manager, roots, execution_id)
     repository_evidence = {}
     for root in roots:
         sha = subprocess.run(
@@ -405,6 +528,7 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         ).stdout.strip()
         repository_evidence[str(root.resolve())] = {
             "final_sha": sha,
+                "autosync_backup_sha": sha,
             "terminal_conclusion": "success",
             "checks_passed": True,
             "remote_verified": True,
@@ -415,9 +539,19 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         "workflow_conclusion": "success",
         "workflow_run_id": "12345",
         "lifecycle_execution_id": execution_id,
+        "branch_inventory_sha256": branch_inventory_sha256,
         "correlation_id": "qversion-test-1",
         "repositories": repository_evidence,
     }
+
+    mismatched_backup_evidence = dict(evidence)
+    mismatched_backup_evidence["repositories"] = {
+        key: dict(value) for key, value in repository_evidence.items()
+    }
+    mismatched_backup_evidence["repositories"][str(roots[0].resolve())]["autosync_backup_sha"] = "f" * 40
+    with pytest.raises(RuntimeError, match="backup SHA is stale"):
+        manager.write_final_metrics("Q.0.0.4", roots, mismatched_backup_evidence)
+    assert not (roots[0] / "Q.0.0.4").exists()
 
     result = manager.write_final_metrics("Q.0.0.3", roots, evidence)
 
@@ -450,11 +584,17 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         publication_evidence[str(root.resolve())] = {
             "final_sha": published_sha,
             "prepared_source_sha": metrics["source_sha"],
+            "autosync_backup_sha": next(
+                branch["commit_sha"]
+                for branch in metrics["branch_inventory"]["repositories"][str(root.resolve())]["branches"]
+                if branch["name"] == "autosync-backup"
+            ),
             "terminal_conclusion": "success",
             "checks_passed": True,
             "remote_verified": True,
             "metrics_sha256": hashlib.sha256(metrics_path.read_bytes()).hexdigest(),
             "version_document_sha256": hashlib.sha256(document_path.read_bytes()).hexdigest(),
+            "branch_inventory_sha256": branch_inventory_sha256,
         }
 
     published = manager.verify_final_publication(
@@ -466,6 +606,7 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
             "workflow_conclusion": "success",
             "workflow_run_id": "run-final-456",
             "correlation_id": "qversion-publish-test",
+            "branch_inventory_sha256": branch_inventory_sha256,
             "repositories": publication_evidence,
         },
     )
@@ -476,7 +617,7 @@ def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path)
     roots = [make_git_repo(tmp_path, "alpha"), make_git_repo(tmp_path, "qmoi")]
     manager = QVersionManager(roots[0])
     execution_id = "qversion-final-dirty"
-    record_successful_q_lifecycle(manager, roots, execution_id)
+    branch_inventory_sha256 = record_successful_q_lifecycle(manager, roots, execution_id)
     (roots[0] / "uncommitted.txt").write_text("not final\n", encoding="utf-8")
     evidence = {
         "status": "SUCCESS",
@@ -484,6 +625,7 @@ def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path)
         "workflow_conclusion": "success",
         "workflow_run_id": "12345",
         "lifecycle_execution_id": execution_id,
+        "branch_inventory_sha256": branch_inventory_sha256,
         "correlation_id": "qversion-test-2",
         "repositories": {
             str(root.resolve()): {
@@ -496,7 +638,7 @@ def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path)
         },
     }
 
-    with pytest.raises(RuntimeError, match="clean verified remote SHA"):
+    with pytest.raises(RuntimeError, match="Branch inventory main SHA is stale|clean verified remote SHA"):
         manager.write_final_metrics("Q.0.0.4", roots, evidence)
     assert not (roots[0] / "Q.0.0.4").exists()
 

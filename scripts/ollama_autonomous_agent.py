@@ -97,6 +97,7 @@ if str(REPOSITORY_ROOT) not in sys.path:
 from scripts.command_inventory import refresh_commands_category
 from scripts.link_validator import LinkValidator
 from scripts.q_version_manager import QVersionManager
+from scripts.telemetry_jsonl import quarantine_invalid_jsonl
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
     INTERNAL_RESEARCH_CONTROLS,
@@ -409,6 +410,8 @@ MASTER_FILES: list[str] = [
     "ALLPLATFORMSDEVICE.md",
     "GITHUBCLONED.md",
     "GITHUB_SETUP_COMPLETE.md",
+    "githubapp.md",
+    "or.md",
     "MERGE.md",
     "SYNC.md",
     "WORKFLOWS.md",
@@ -3506,12 +3509,33 @@ class CrossRepositoryAutonomyManager:
         api_route_names: set[str] = set()
         duplicate_file_basenames: set[str] = set()
         duplicate_directory_names: set[str] = set()
+        trading_path_keywords = (
+            "trading", "trade", "qtrade", "exchange", "wallet", "balance",
+            "order", "portfolio", "risk", "finance", "payment", "cashon",
+            "megavault", "binance", "bitget",
+        )
+        trading_paths_by_ref: dict[str, list[str]] = {}
+        trading_test_paths_by_ref: dict[str, list[str]] = {}
+        trading_path_union: set[str] = set()
         total_files = 0
         total_directories = 0
 
         for ref in all_refs:
             file_list = self._git_output(repo, "ls-tree", "-r", "--name-only", ref)
             files_by_ref[ref] = file_list
+            trading_paths = [
+                path for path in file_list
+                if any(keyword in path.lower() for keyword in trading_path_keywords)
+            ]
+            trading_paths_by_ref[ref] = trading_paths
+            trading_test_paths_by_ref[ref] = [
+                path for path in trading_paths
+                if (
+                    Path(path).name.startswith("test_")
+                    or Path(path).name.endswith((".test.ts", ".test.tsx", ".test.js", ".test.jsx", ".spec.ts", ".spec.tsx", ".spec.js", ".spec.jsx"))
+                )
+            ]
+            trading_path_union.update(trading_paths)
             ref_dir_paths: set[str] = set()
             for path in file_list:
                 total_files += 1
@@ -3545,6 +3569,14 @@ class CrossRepositoryAutonomyManager:
             "all_ref_count": len(all_refs),
             "pull_request_refs": pull_request_refs,
             "tag_refs": tag_refs,
+            "trading_paths_by_ref": {
+                ref: paths for ref, paths in sorted(trading_paths_by_ref.items())
+            },
+            "trading_test_paths_by_ref": {
+                ref: paths for ref, paths in sorted(trading_test_paths_by_ref.items())
+            },
+            "trading_related_unique_path_count": len(trading_path_union),
+            "trading_related_paths": sorted(trading_path_union),
             "branches_with_inventory": branch_refs,
             "refs_with_inventory": list(files_by_ref.keys()),
             "coverage": {
@@ -3552,6 +3584,9 @@ class CrossRepositoryAutonomyManager:
                 "pull_request_ref_count": len(pull_request_refs),
                 "remote_completeness": "not_verified; remote-tracking refs may be stale or incomplete",
                 "unfetched_pull_requests_included": False,
+                "trading_path_scope": "path-name matches in locally available ref tip trees",
+                "trading_remote_completeness": "not_verified",
+                "intermediate_commit_trees_scanned": False,
             },
             "total_files": total_files,
             "total_directories": total_directories,
@@ -3588,6 +3623,7 @@ class CrossRepositoryAutonomyManager:
         api_route_related_files: set[str] = set()
         feature_related_files: set[str] = set()
         style_universal_related_files: set[str] = set()
+        trading_related_files: set[str] = set()
 
         ignored_dirs = {".git", ".hg", ".svn", ".pytest_cache", "__pycache__", ".mypy_cache", ".ruff_cache", ".venv", "venv", "node_modules", ".next", "dist", "build", "target"}
 
@@ -3608,6 +3644,7 @@ class CrossRepositoryAutonomyManager:
                 for name, count in report["directory_name_counts"].items():
                     duplicate_directories[name] = max(duplicate_directories.get(name, 0), count)
                 api_route_related_files.update(report["api_route_related_files"])
+                trading_related_files.update(report["trading_related_paths"])
                 feature_related_files.update(
                     path for path in report["file_name_counts"] if "feature" in path.lower()
                 )
@@ -3627,6 +3664,12 @@ class CrossRepositoryAutonomyManager:
                         lowered = str(path).lower()
                         if any(token in lowered for token in ("styles.md", "universals.md", "style", "universal", "user-style", "platform-style", "design-system")):
                             style_universal_related_files.add(str(path.resolve()))
+                        if any(token in lowered for token in (
+                            "trading", "trade", "qtrade", "exchange", "wallet", "balance",
+                            "order", "portfolio", "risk", "finance", "payment", "cashon",
+                            "megavault", "binance", "bitget",
+                        )):
+                            trading_related_files.add(str(path.resolve()))
 
         duplicate_file_names = sorted(name for name, count in duplicate_basenames.items() if count > 1)
         duplicate_directory_names = sorted(name for name, count in duplicate_directories.items() if count > 1)
@@ -3649,6 +3692,8 @@ class CrossRepositoryAutonomyManager:
             "feature_count": len(feature_related_files),
             "style_universal_related_files": sorted(style_universal_related_files),
             "style_universal_count": len(style_universal_related_files),
+            "trading_related_files": sorted(trading_related_files),
+            "trading_related_path_count": len(trading_related_files),
             "captured_at": utc_iso(),
         }
 
@@ -3880,6 +3925,7 @@ class CrossRepositoryAutonomyManager:
             f"- duplicate_file_count: {merge_metrics['duplicate_file_count']}",
             f"- duplicate_directory_count: {merge_metrics['duplicate_directory_count']}",
             f"- api_route_count: {merge_metrics['api_route_count']}",
+            f"- trading_related_path_count: {merge_metrics['trading_related_path_count']}",
             f"- feature_count: {merge_metrics['feature_count']}",
             f"- missing_implementation_count: {implementation_gaps['total_missing']}",
             f"- similar_file_group_count: {len(similar_file_groups)}",
@@ -4616,6 +4662,10 @@ All timestamps use UTC ISO-8601 format.
 
         self.telemetry_path.touch(exist_ok=True)
         self.log_path.touch(exist_ok=True)
+        quarantine_invalid_jsonl(
+            self.telemetry_path,
+            revision=os.getenv("GITHUB_SHA"),
+        )
 
         if not self.monitoring_summary_path.exists():
             safe_json_write(
@@ -5170,6 +5220,7 @@ All timestamps use UTC ISO-8601 format.
         target_root: Path | str | None = None,
         q_version_execution_id: str | None = None,
         lifecycle_phase: str = "initial",
+        branch_inventory_evidence: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Inventory, audit, and synchronize repo trees while keeping file, directory, and merge metrics in scope for every repo."""
         repo_paths = [Path(repo).resolve() for repo in repo_roots]
@@ -5193,6 +5244,35 @@ All timestamps use UTC ISO-8601 format.
                     "repositories": [str(path) for path in repo_paths],
                     "auto_push": auto_push,
                     "remote_mutation": False,
+                },
+                include_inventory=False,
+            )
+            branch_evidence = branch_inventory_evidence or getattr(
+                self, "branch_inventory_evidence", None
+            )
+            branch_validation = q_version_manager.validate_branch_inventory_evidence(
+                branch_evidence, repo_paths
+            )
+            local_ref_snapshot = {
+                str(repo): self.cross_repo_manager._git_output(
+                    repo,
+                    "for-each-ref",
+                    "--format=%(refname:short)%09%(objectname)",
+                    "refs/heads",
+                    "refs/remotes/origin",
+                )
+                for repo in repo_paths
+            }
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "ALL_BRANCH_INVENTORY",
+                repo_paths,
+                status="PASS" if branch_validation.get("complete") else "NEEDS_REVIEW",
+                details={
+                    "branch_inventory": branch_evidence or {},
+                    "branch_inventory_validation": branch_validation,
+                    "local_ref_snapshot": local_ref_snapshot,
+                    "local_refs_are_not_remote_freshness_proof": True,
                 },
                 include_inventory=False,
             )
@@ -7290,6 +7370,11 @@ All timestamps use UTC ISO-8601 format.
                 "REAL_TIME_MONITORING_README.md", "RESILIENCE_AUTO_HEALING.md", "TEST_ENHANCEMENTS.md", "TRIGGER.md", "monitor.md",
                 "OLLAMA_ENHANCEMENT_COMPLETE.md", "OLLAMA_ENHANCEMENT_SUCCESS.md",
             ]),
+            ("Category C2 — Validation, test automation, hooks, and webhooks", [
+                "ALLTESTSAUTOTESTS.md", "ALLHOOKSWEBHOOKS.md", "ALLVALIDATIONS.md",
+                "TEST_ENHANCEMENTS.md", "TESTREADME.md", "TESTS.md", "TESTING.md",
+                "HOOKS.md", "WEBHOOKS.md", "QMOI_TESTING_INDEX.md", "QMOI_TEST_DASHBOARD.md",
+            ]),
             ("Category D — Product applications, feature surfaces, and UI experience", [
                 "QMOIAI.md", "QMOIAIUI.md", "QALPHA.md", "QALPHAUI.md", "QCITY.md", "QCITYUI.md", "QMOISPACE.md", "QMOISPACEUI.md",
                 "STYLES.md", "UNIVERSALS.md", "ALLBACKEND.md", "ALLFRONTEND.md", "ALLPORTS.md", "ALLROUTES.md",
@@ -7304,7 +7389,7 @@ All timestamps use UTC ISO-8601 format.
             ]),
             ("Category F — Security, privacy, masks, memory, and cross-system awareness", [
                 "QMOIMASKS.md", "QVS.md", "ENHANCEDQVS.md", "QMOI_REALTIME_MEMORY_INDEX.md", "QMOI_MODEL_CARD.md",
-                "QMOI_MEMORY_AWARENESS_SYSTEM.md", "oe.md", "or.md", "ollama.md", "github.md",
+                "QMOI_MEMORY_AWARENESS_SYSTEM.md", "oe.md", "or.md", "ollama.md", "github.md", "githubapp.md",
             ]),
             ("Category G1 — Clone, autoclone, and hosted platform parity", [
                 "AUTOCLONE_STANDALONE.md", "GITHUBPAYED.md", "GITPODPAYED.md", "HUGGINGFACEPAYED.md", "HUGGINGFACEHFPAYED.md",
@@ -7349,6 +7434,8 @@ All timestamps use UTC ISO-8601 format.
             "ALLMDFILESREFS.md": "all markdown files and category references",
             "RELEASES.md": "all release evidence",
             "ALLVALIDATIONS.md": "all validation evidence",
+            "ALLTESTSAUTOTESTS.md": "all discovered automated tests and feature-to-test mappings",
+            "ALLHOOKSWEBHOOKS.md": "all discovered workflow hooks and webhook integration evidence",
         }
         aggregate_contracts = {
             name.upper(): purpose for name, purpose in aggregate_contracts.items()
@@ -7465,7 +7552,7 @@ All timestamps use UTC ISO-8601 format.
             "Owner: scripts/ollama_autonomous_agent.py::refresh_markdown_category_index",
             "Hook surfaces: .github/workflows/markdown-inventory-refresh.yml, merge planning, release readiness, and validation gates.",
             "Source scope: active repository, qmoi-enhanced-history-14, Alpha-Q-ai-2025 when materialized, and independently verified remote inventories.",
-            "Feature contracts: API.md contains all APIs; ENDPOINTS.md all endpoints; ROUTES.md all routes; ALLPORTS.md all ports; ALLROUTES.md all routes; ALLAUTO.md all automation; ALLBACKEND.md all backend features; ALLFRONTEND.md all frontend features; ALLPLATFORMSDEVICE.md all platform/device support; RELEASES.md all releases; ALLVALIDATIONS.md all validation evidence.",
+            "Feature contracts: API.md contains all APIs; ENDPOINTS.md all endpoints; ROUTES.md all routes; ALLPORTS.md all ports; ALLROUTES.md all routes; ALLAUTO.md all automation; ALLBACKEND.md all backend features; ALLFRONTEND.md all frontend features; ALLPLATFORMSDEVICE.md all platform/device support; ALLTESTSAUTOTESTS.md all discovered tests and explicit feature mappings; ALLHOOKSWEBHOOKS.md all discovered workflow events and webhook references with verification states; RELEASES.md all releases; ALLVALIDATIONS.md all validation evidence.",
             "Automatic contract selection: exact aggregate names and any markdown filename containing ALL are classified below; every other discovered markdown file is also listed for complete cross-repository coverage.",
             "Category membership: a markdown file may appear in unlimited categories whenever its filename, content, or feature responsibilities match; no category assignment is exclusive.",
             "Completeness rule: every discovered markdown path is listed below; missing history or remote access remains explicitly unproven rather than silently omitted.",
@@ -8115,6 +8202,859 @@ All timestamps use UTC ISO-8601 format.
             "master_access_verified": False,
         }
 
+    def refresh_test_hook_coverage_documents(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Inventory active tests and automation hooks without claiming coverage from discovery alone."""
+        target = Path(root) if root is not None else self.root_dir
+        target = target.resolve()
+        ignored_parts = {".git", "__pycache__", ".pytest_cache", ".venv", "venv", "node_modules", "dist", "build"}
+
+        listing = subprocess.run(
+            [
+                "git", "-C", str(target), "ls-files", "--cached", "--others",
+                "--exclude-standard", "-z",
+            ],
+            capture_output=True,
+            check=False,
+        )
+        if listing.returncode == 0:
+            relative_paths = sorted({
+                item.decode("utf-8", errors="replace")
+                for item in listing.stdout.split(b"\0")
+                if item
+            })
+        else:
+            relative_paths = sorted(
+                path.relative_to(target).as_posix()
+                for path in target.rglob("*")
+                if path.is_file()
+                and not (ignored_parts & set(path.relative_to(target).parts))
+            )
+
+        def ignored(path: str) -> bool:
+            return bool(ignored_parts & set(Path(path).parts))
+
+        test_paths = [
+            path for path in relative_paths
+            if not ignored(path)
+            and (
+                Path(path).name.startswith("test_") and Path(path).suffix == ".py"
+                or Path(path).name.endswith((".test.ts", ".test.tsx", ".test.js", ".test.jsx", ".spec.ts", ".spec.tsx", ".spec.js", ".spec.jsx"))
+            )
+            and (target / path).is_file()
+        ]
+
+        def test_source_scope(path: str) -> str:
+            parts = Path(path).parts
+            if "qmoi-enhanced-history-14" in parts or "_archive_qmoi-enhanced" in parts:
+                return "historical_archive"
+            if "Alpha-Q-ai-2025" in parts:
+                return "snapshot"
+            return "active_checkout"
+
+        test_paths_by_scope = {
+            scope: [path for path in test_paths if test_source_scope(path) == scope]
+            for scope in ("active_checkout", "snapshot", "historical_archive")
+        }
+        workflow_paths = [
+            path for path in relative_paths
+            if path.startswith(".github/workflows/")
+            and Path(path).suffix.lower() in {".yml", ".yaml"}
+            and (target / path).is_file()
+        ]
+
+        parsed_workflows: list[dict[str, str]] = []
+        parse_errors: list[str] = []
+        try:
+            import yaml
+        except ImportError:
+            yaml = None
+
+        for path in workflow_paths:
+            trigger_names = "unavailable"
+            if yaml is None:
+                parse_errors.append(f"{path}: PyYAML unavailable")
+            else:
+                try:
+                    workflow = yaml.load(
+                        (target / path).read_text(encoding="utf-8"),
+                        Loader=yaml.BaseLoader,
+                    )
+                    triggers = workflow.get("on", {}) if isinstance(workflow, dict) else {}
+                    if isinstance(triggers, str):
+                        names = [triggers]
+                    elif isinstance(triggers, dict):
+                        names = sorted(str(name) for name in triggers)
+                    elif isinstance(triggers, list):
+                        names = sorted(str(name) for name in triggers)
+                    else:
+                        names = []
+                    trigger_names = ", ".join(names) if names else "missing_or_unparsed"
+                    if not names:
+                        parse_errors.append(f"{path}: no workflow trigger parsed")
+                except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
+                    parse_errors.append(f"{path}: {type(exc).__name__}")
+            parsed_workflows.append({"path": path, "triggers": trigger_names})
+
+        webhook_paths: list[str] = []
+        source_suffixes = {".py", ".js", ".jsx", ".ts", ".tsx", ".yml", ".yaml", ".json"}
+        source_roots = ("scripts/", "src/", "apps/", "api/", "functions/", ".github/workflows/", "tests/")
+        webhook_pattern = re.compile(r"\bwebhooks?\b|\bWEBHOOK_[A-Z0-9_]+\b", re.IGNORECASE)
+        for path in relative_paths:
+            if ignored(path) or not path.startswith(source_roots) or Path(path).suffix.lower() not in source_suffixes:
+                continue
+            candidate = target / path
+            try:
+                if candidate.stat().st_size > 1_000_000:
+                    continue
+                if webhook_pattern.search(candidate.read_text(encoding="utf-8", errors="replace")):
+                    webhook_paths.append(path)
+            except OSError:
+                continue
+
+        trading_path_terms = (
+            "trading", "trade", "qtrade", "exchange", "wallet", "balance",
+            "order", "portfolio", "risk", "finance", "payment", "cashon",
+            "megavault", "binance", "bitget",
+        )
+        trading_content_pattern = re.compile(
+            r"\btrading\b|\btrade(?:r|rs|d)?\b|\bwallets?\b|\bbalances?\b|"
+            r"\bexchanges?\b|\border(?:s| book| placement| reconciliation)?\b|"
+            r"\bportfolios?\b|\bqtrade\b|\bbitget\b|\bbinance\b|\bcashon\b|"
+            r"\bmegavault\b|\bno.trade\b|\bdrawdown\b|\bslippage\b",
+            re.IGNORECASE,
+        )
+        venue_terms = {
+            "bitget": "bitget", "binance": "binance", "cashon": "cashon",
+            "cash-on": "cashon", "megavault": "megavault", "paypal": "paypal",
+            "coinbase": "coinbase", "kraken": "kraken", "bybit": "bybit", "okx": "okx",
+        }
+        source_code_suffixes = {".py", ".js", ".jsx", ".ts", ".tsx", ".yml", ".yaml", ".json"}
+        source_directory_names = {
+            "scripts", "src", "apps", "api", "backend", "frontend", "ui",
+            "components", "routes", "services", "adapters", "tests", "functions",
+        }
+        trading_files: list[dict[str, Any]] = []
+        role_counts: dict[str, int] = {}
+        scope_counts: dict[str, int] = {}
+        venue_counts: dict[str, int] = {}
+        test_path_set = set(test_paths)
+        workflow_path_set = set(workflow_paths)
+
+        for path in relative_paths:
+            if ignored(path):
+                continue
+            candidate = target / path
+            suffix = candidate.suffix.lower()
+            if suffix != ".md" and suffix not in source_code_suffixes:
+                continue
+            try:
+                if candidate.is_symlink():
+                    continue
+                stat = candidate.stat()
+                if not candidate.is_file():
+                    continue
+            except OSError:
+                continue
+
+            lowered_path = path.lower()
+            matched_by = [f"path:{term}" for term in trading_path_terms if term in lowered_path]
+            source_parts = {part.lower() for part in Path(path).parts}
+            content_scanned = False
+            file_digest: str | None = None
+            lowered_content = ""
+            scan_content = (
+                suffix == ".md"
+                or suffix in source_code_suffixes and bool(source_parts & source_directory_names)
+            )
+            if scan_content and stat.st_size <= 1_000_000:
+                try:
+                    content = candidate.read_bytes()
+                    content_scanned = True
+                    file_digest = hashlib.sha256(content).hexdigest()
+                    decoded = content.decode("utf-8", errors="replace")
+                    lowered_content = decoded.lower()
+                    if trading_content_pattern.search(decoded):
+                        matched_by.append("content:trading-domain-term")
+                except OSError:
+                    pass
+            if not matched_by:
+                continue
+
+            roles: set[str] = set()
+            if suffix == ".md":
+                roles.add("documentation")
+            if path in test_path_set or "tests" in source_parts or Path(path).name.startswith("test_"):
+                roles.add("test")
+            if path in workflow_path_set or path.startswith(".github/workflows/"):
+                roles.add("workflow_hook")
+            if suffix in {".tsx", ".jsx", ".ts", ".js"} and (
+                source_parts & {"ui", "frontend", "components", "pages", "views"}
+                or "dashboard" in lowered_path
+            ):
+                roles.add("frontend_ui")
+            if source_parts & {"api", "backend", "routes", "services", "adapters"} or "adapter" in lowered_path:
+                roles.add("backend_api_or_adapter")
+            if suffix in source_code_suffixes and not roles.intersection({
+                "test", "workflow_hook", "documentation", "frontend_ui", "backend_api_or_adapter",
+            }):
+                roles.add("runtime_or_integration_candidate")
+            if not roles:
+                roles.add("unclassified_candidate")
+
+            venues = sorted({
+                canonical for needle, canonical in venue_terms.items()
+                if needle in lowered_path or needle in lowered_content
+            })
+            record = {
+                "path": path,
+                "repository_scope": target.name,
+                "scope": test_source_scope(path),
+                "roles": sorted(roles),
+                "venues": venues,
+                "matched_by": sorted(set(matched_by)),
+                "bytes": stat.st_size,
+                "sha256": file_digest or "not_hashed_size_limit_or_read_error",
+                "content_scanned": content_scanned,
+                "status": "discovered_unmapped_not_coverage_proof",
+            }
+            trading_files.append(record)
+            scope_counts[record["scope"]] = scope_counts.get(record["scope"], 0) + 1
+            for role in roles:
+                role_counts[role] = role_counts.get(role, 0) + 1
+            for venue in venues:
+                venue_counts[venue] = venue_counts.get(venue, 0) + 1
+
+        credential_reference_patterns = (
+            re.compile(r"""os\.(?:getenv|environ\.get)\(\s*[\"']([A-Z][A-Z0-9_]{2,})[\"']"""),
+            re.compile(r"""process\.env\.([A-Z][A-Z0-9_]{2,})"""),
+            re.compile(r"""process\.env\[\s*[\"']([A-Z][A-Z0-9_]{2,})[\"']\s*\]"""),
+            re.compile(r"""\$\{\{\s*secrets\.([A-Z][A-Z0-9_]{2,})\s*\}\}"""),
+            re.compile(r"""\b(?:API_KEY|API_SECRET|ACCESS_TOKEN|ACCESS_KEY|PRIVATE_KEY|CLIENT_SECRET|PASSPHRASE|WEBHOOK_SECRET)\b"""),
+        )
+        skipped_secret_path_parts = {".env", "credentials", "secrets", "vault", "keys", "private"}
+        credential_suffixes = {".py", ".js", ".jsx", ".ts", ".tsx", ".yml", ".yaml", ".json", ".toml", ".ini", ".cfg", ".conf", ".sh"}
+        provider_names = (
+            "bitget", "binance", "cashon", "pesapal", "paypal", "coinbase",
+            "kraken", "bybit", "okx", "megavault", "kcb", "standard_chartered",
+            "stripe", "github", "huggingface",
+        )
+        credential_reference_records: dict[tuple[str, str], dict[str, Any]] = {}
+        for path in relative_paths:
+            parts = {part.lower() for part in Path(path).parts}
+            if ignored(path) or parts & skipped_secret_path_parts:
+                continue
+            candidate = target / path
+            if candidate.suffix.lower() not in credential_suffixes or candidate.name.lower().startswith((".env", "id_rsa", "id_ed25519")):
+                continue
+            try:
+                if candidate.is_symlink() or candidate.stat().st_size > 1_000_000:
+                    continue
+                source_lines = candidate.read_text(encoding="utf-8", errors="replace").splitlines()
+            except OSError:
+                continue
+            for line_number, line in enumerate(source_lines, 1):
+                names: set[str] = set()
+                for pattern in credential_reference_patterns:
+                    for match in pattern.finditer(line):
+                        name = match.group(1) if match.lastindex else match.group(0)
+                        normalized_name = name.upper()
+                        if any(token in normalized_name for token in (
+                            "KEY", "SECRET", "TOKEN", "PASSPHRASE", "CREDENTIAL", "WEBHOOK",
+                        )):
+                            names.add(normalized_name)
+                for name in names:
+                    provider = next((item for item in provider_names if item.upper() in name), "unmapped_provider")
+                    key = (name, path)
+                    record = credential_reference_records.setdefault(key, {
+                        "name": name,
+                        "path": path,
+                        "scope": test_source_scope(path),
+                        "provider": provider,
+                        "line_numbers": [],
+                        "status": "reference_only_not_verified",
+                        "credential_value_stored": False,
+                    })
+                    record["line_numbers"].append(line_number)
+
+        credential_references = sorted(
+            credential_reference_records.values(),
+            key=lambda record: (record["provider"], record["name"], record["path"]),
+        )
+        credential_provider_counts: dict[str, int] = {}
+        for record in credential_references:
+            credential_provider_counts[record["provider"]] = credential_provider_counts.get(record["provider"], 0) + 1
+        credential_reference_inventory = {
+            "schema_version": 1,
+            "captured_at": utc_iso(),
+            "scope": "source_code_reference_names_and_consumers_only",
+            "remote_completeness": "not_verified",
+            "coverage_verified": False,
+            "credential_values_read_from_secret_stores": False,
+            "credential_values_persisted_or_emitted": False,
+            "excluded_secret_store_files": True,
+            "reference_count": len(credential_references),
+            "provider_reference_counts": dict(sorted(credential_provider_counts.items())),
+            "provider_verification": "not_performed",
+            "provider_adapter_status": {
+                "bitget": "local_read_only_verifier_exists_but_latest_remote/provider status requires fresh verification",
+                "other_providers": "provider-specific verification not proven by this inventory",
+            },
+            "references": credential_references,
+        }
+        credential_reference_inventory_path = target / "ollamatracks" / "credential_reference_inventory.json"
+        safe_json_write(credential_reference_inventory_path, credential_reference_inventory)
+        credential_reference_summary_lines = [
+            "### Credential references and provider verification",
+            "",
+            "This inventory scans source references only. It does not read environment values, `.env` files, private keys, credential vaults, provider accounts, or balances.",
+            "",
+            f"- Credential variable/reference names: `{credential_reference_inventory['reference_count']}`; provider groups: `{json.dumps(credential_reference_inventory['provider_reference_counts'], sort_keys=True)}`.",
+            f"- Consumer path and line-number metadata: `ollamatracks/credential_reference_inventory.json`; values stored/emitted: `false`.",
+            "- Credential manager supports encrypted metadata storage generically; only Bitget has a provider-specific read-only verifier in the active manager. Latest Bitget evidence is not a successful verification; other provider credentials remain unverified.",
+            "- Runtime presence, credential validity, scope, expiry, account ownership, balances, and live-trading permission are not inferred from a variable name.",
+        ]
+
+        ref_result = subprocess.run(
+            ["git", "-C", str(target), "for-each-ref", "--format=%(refname)"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        local_ref_names = sorted({line for line in ref_result.stdout.splitlines() if line}) if ref_result.returncode == 0 else []
+        trading_inventory: dict[str, Any] = {
+            "schema_version": 1,
+            "captured_at": utc_iso(),
+            "repository_root_name": target.name,
+            "scope": "materialized_worktree_files_only",
+            "history_scope": "materialized_paths_only; local ref tip trading path candidates are recorded by the merge audit; intermediate commit trees and unfetched remote refs are not scanned here",
+            "local_git_ref_count": len(local_ref_names),
+            "local_git_refs_available": bool(local_ref_names),
+            "remote_completeness": "not_verified",
+            "coverage_verified": False,
+            "live_execution_status": "not_verified_by_source_inventory",
+            "file_count": len(trading_files),
+            "counts_by_scope": dict(sorted(scope_counts.items())),
+            "counts_by_role": dict(sorted(role_counts.items())),
+            "counts_by_venue": dict(sorted(venue_counts.items())),
+            "credential_references": credential_reference_inventory,
+            "files": sorted(trading_files, key=lambda record: record["path"]),
+        }
+        trading_inventory_path = target / "ollamatracks" / "trading_surface_inventory.json"
+        safe_json_write(trading_inventory_path, trading_inventory)
+        trading_path_lines = [
+            "### Trading surface candidate inventory",
+            "",
+            "Materialized source paths are candidates, not proof of implementation, authorization, or test coverage. Complete branch/PR history is a separate remote audit gate.",
+            "",
+            f"- Candidate files: `{len(trading_files)}`; materialized scope counts: `{json.dumps(trading_inventory['counts_by_scope'], sort_keys=True)}`.",
+            f"- Candidate role counts: `{json.dumps(trading_inventory['counts_by_role'], sort_keys=True)}`.",
+            f"- Venue mentions: `{json.dumps(trading_inventory['counts_by_venue'], sort_keys=True)}`.",
+            f"- Local refs discovered: `{len(local_ref_names)}`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.",
+            "- Machine-readable path, size, hash, source scope, role, and venue evidence: `ollamatracks/trading_surface_inventory.json`.",
+            "- Coverage state: `discovered_unmapped`; platform execution, credential validity, balances, provider webhook registration, and live-order readiness are not verified by path discovery.",
+            *credential_reference_summary_lines,
+            "",
+            "| Trading-related candidate path | Source scope | Roles | Venue mentions | Mapping status |",
+            "| --- | --- | --- | --- | --- |",
+            *[
+                f"| `{record['path']}` | `{record['scope']}` | `{', '.join(record['roles'])}` | `{', '.join(record['venues']) or 'unspecified'}` | `discovered_unmapped` |"
+                for record in trading_inventory["files"]
+            ],
+        ]
+
+        tracked_result = subprocess.run(
+            ["git", "-C", str(target), "ls-files", "--cached", "-z"],
+            capture_output=True,
+            check=False,
+        )
+        tracked_markdown = {
+            item.decode("utf-8", errors="replace")
+            for item in tracked_result.stdout.split(b"\0") if item
+        } if tracked_result.returncode == 0 else set(relative_paths)
+        excluded_untracked_financial_markdown = 0
+        skipped_large_financial_markdown = 0
+        currency_pattern = re.compile(
+            r"\b(USD|KES|KSHS?|SGD|EUR|GBP|BTC|ETH|USDT|USDC|"
+            r"US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?)\b",
+            re.IGNORECASE,
+        )
+        amount_pattern = re.compile(
+            r"(?:(?:USD|KES|KSHS?|SGD|EUR|GBP|BTC|ETH|USDT|USDC|US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?)\s*[$€£¥]?\s*\d[\d,]*(?:\.\d+)?|"
+            r"(?:US\$|[$€£¥])\s*\d[\d,]*(?:\.\d+)?|"
+            r"\d[\d,]*(?:\.\d+)?\s*(?:USD|KES|KSHS?|SGD|EUR|GBP|BTC|ETH|USDT|USDC|US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?)\b)",
+            re.IGNORECASE,
+        )
+        financial_number_pattern = re.compile(r"(?<![A-Za-z0-9])\d[\d,]*(?:\.\d+)?(?![A-Za-z0-9])")
+        financial_context_pattern = re.compile(
+            r"\b(balance|amount|revenue|income|profit|loss|p&l|funds?|payment|"
+            r"deposit|withdrawal|transfer|salary|payroll|account number|iban|routing)\b",
+            re.IGNORECASE,
+        )
+        owner_patterns = {
+            "cashon": re.compile(r"\bcash\s*on\b", re.IGNORECASE),
+            "bitget": re.compile(r"\bbitget\b", re.IGNORECASE),
+            "binance": re.compile(r"\bbinance\b", re.IGNORECASE),
+            "paypal": re.compile(r"\bpaypal\b", re.IGNORECASE),
+            "coinbase": re.compile(r"\bcoinbase\b", re.IGNORECASE),
+            "kraken": re.compile(r"\bkraken\b", re.IGNORECASE),
+            "bybit": re.compile(r"\bbybit\b", re.IGNORECASE),
+            "okx": re.compile(r"\bokx\b", re.IGNORECASE),
+            "megavault": re.compile(r"\bmegavault\b", re.IGNORECASE),
+            "pesapal": re.compile(r"\bpesapal\b", re.IGNORECASE),
+            "kcb": re.compile(r"\bkcb\b", re.IGNORECASE),
+            "standard_chartered": re.compile(r"\bstandard\s+chartered\b", re.IGNORECASE),
+            "ledger_wallet": re.compile(r"\bledger\b", re.IGNORECASE),
+        }
+        generic_account_pattern = re.compile(
+            r"\b(wallet|bank|account|vault|exchange|brokerage)\b", re.IGNORECASE
+        )
+        evidence_marker_pattern = re.compile(
+            r"\b(provider response|provider evidence|observed at|checked at|source hash|"
+            r"transaction id|evidence id|reconciled at)\b",
+            re.IGNORECASE,
+        )
+        financial_claims: list[dict[str, Any]] = []
+        owner_currency_counts: dict[str, dict[str, int]] = {}
+        currency_mention_counts: dict[str, int] = {}
+        claim_line_count = 0
+        amount_candidate_count = 0
+        untyped_numeric_candidate_count = 0
+        account_identifier_candidate_count = 0
+        for path in relative_paths:
+            if ignored(path) or Path(path).suffix.lower() != ".md":
+                continue
+            if tracked_result.returncode == 0 and path not in tracked_markdown:
+                excluded_untracked_financial_markdown += 1
+                continue
+            candidate = target / path
+            try:
+                if candidate.is_symlink() or not candidate.is_file():
+                    continue
+                stat = candidate.stat()
+                if stat.st_size > 2_000_000:
+                    skipped_large_financial_markdown += 1
+                    continue
+                content = candidate.read_bytes()
+                text = content.decode("utf-8", errors="replace")
+            except OSError:
+                continue
+
+            lines = text.splitlines()
+            currency_counts: dict[str, int] = {}
+            claim_lines: list[int] = []
+            owners: set[str] = set()
+            file_amount_count = 0
+            file_untyped_number_count = 0
+            file_account_id_lines = 0
+            evidence_marker_line_count = 0
+            for line_index, line in enumerate(lines):
+                currency_aliases = {
+                    "KSH": "KES", "KSHS": "KES", "SHILLING": "KES",
+                    "SHILLINGS": "KES", "KENYAN SHILLING": "KES",
+                    "KENYAN SHILLINGS": "KES", "DOLLAR": "USD",
+                    "DOLLARS": "USD", "US DOLLAR": "USD", "US DOLLARS": "USD",
+                }
+                currencies = {
+                    currency_aliases.get(re.sub(r"\s+", " ", match.group(1).upper()),
+                                         re.sub(r"\s+", " ", match.group(1).upper()))
+                    for match in currency_pattern.finditer(line)
+                }
+                amounts = amount_pattern.findall(line)
+                account_identifier_line = bool(
+                    re.search(r"\b(account number|account no\.?|iban|routing number)\b", line, re.IGNORECASE)
+                    and re.search(r"\d", line)
+                )
+                has_financial_context = bool(financial_context_pattern.search(line))
+                if not (amounts or currencies and has_financial_context or account_identifier_line):
+                    continue
+
+                claim_lines.append(line_index + 1)
+                file_amount_count += len(amounts)
+                if has_financial_context and not amounts:
+                    file_untyped_number_count += len(financial_number_pattern.findall(line))
+                file_account_id_lines += int(account_identifier_line)
+                for currency in currencies:
+                    currency_counts[currency] = currency_counts.get(currency, 0) + 1
+                    currency_mention_counts[currency] = currency_mention_counts.get(currency, 0) + 1
+
+                context = "\n".join(lines[max(0, line_index - 2):line_index + 3])
+                matched_owners = {
+                    owner for owner, pattern in owner_patterns.items()
+                    if pattern.search(context)
+                }
+                if not matched_owners:
+                    matched_owners.add(
+                        "unassigned_account_wallet_bank"
+                        if generic_account_pattern.search(context)
+                        else "unassigned_financial_claim"
+                    )
+                owners.update(matched_owners)
+                for owner in matched_owners:
+                    owner_currency_counts.setdefault(owner, {})
+                    for currency in currencies:
+                        owner_currency_counts[owner][currency] = (
+                            owner_currency_counts[owner].get(currency, 0) + 1
+                        )
+                if evidence_marker_pattern.search(context):
+                    evidence_marker_line_count += 1
+
+            if not claim_lines:
+                continue
+            claim_line_count += len(claim_lines)
+            amount_candidate_count += file_amount_count
+            untyped_numeric_candidate_count += file_untyped_number_count
+            account_identifier_candidate_count += file_account_id_lines
+            financial_claims.append({
+                "path": path,
+                "scope": test_source_scope(path),
+                "sha256": hashlib.sha256(content).hexdigest(),
+                "bytes": stat.st_size,
+                "currency_mention_counts": dict(sorted(currency_counts.items())),
+                "amount_candidate_count": file_amount_count,
+                "untyped_numeric_candidate_count": file_untyped_number_count,
+                "account_identifier_candidate_line_count": file_account_id_lines,
+                "candidate_line_numbers": claim_lines,
+                "owner_groups": sorted(owners),
+                "evidence_marker_candidate_line_count": evidence_marker_line_count,
+                "evidence_status": "needs_independent_review_not_verified",
+            })
+
+        financial_claim_inventory: dict[str, Any] = {
+            "schema_version": 1,
+            "captured_at": utc_iso(),
+            "scope": "tracked_materialized_markdown_only",
+            "historical_scope": "active_checkout_snapshot_and_materialized_archive_labels; no complete remote refs or intermediate commit trees",
+            "remote_completeness": "not_verified",
+            "coverage_verified": False,
+            "actual_balances_verified": 0,
+            "amount_values_stored": False,
+            "account_identifiers_stored": False,
+            "source_line_text_stored": False,
+            "source_values_stored": False,
+            "currency_mention_counts": dict(sorted(currency_mention_counts.items())),
+            "owner_currency_counts": {
+                owner: dict(sorted(counts.items()))
+                for owner, counts in sorted(owner_currency_counts.items())
+            },
+            "financial_file_count": len(financial_claims),
+            "candidate_line_count": claim_line_count,
+            "amount_candidate_count": amount_candidate_count,
+            "untyped_numeric_candidate_count": untyped_numeric_candidate_count,
+            "account_identifier_candidate_line_count": account_identifier_candidate_count,
+            "excluded_untracked_financial_markdown_count": excluded_untracked_financial_markdown,
+            "skipped_large_financial_markdown_count": skipped_large_financial_markdown,
+            "files": sorted(financial_claims, key=lambda record: record["path"]),
+        }
+        financial_claim_inventory_path = target / "ollamatracks" / "financial_claim_inventory.json"
+        safe_json_write(financial_claim_inventory_path, financial_claim_inventory)
+        financial_claim_summary_lines = [
+            "### Redacted financial amount and account-claim audit",
+            "",
+            "This scan indexes claim locations and metadata only; it does not verify balances, account ownership, provider access, or transaction truth. Raw amounts, account identifiers, and source line text are never copied into the report.",
+            "",
+            f"- Tracked materialized Markdown files with financial claims: `{financial_claim_inventory['financial_file_count']}`.",
+            f"- Candidate financial lines: `{financial_claim_inventory['candidate_line_count']}`; amount-like candidates: `{financial_claim_inventory['amount_candidate_count']}`; untyped numeric candidates: `{financial_claim_inventory['untyped_numeric_candidate_count']}`.",
+            f"- Account-ID-like lines: `{financial_claim_inventory['account_identifier_candidate_line_count']}`; actual balances independently verified by this scan: `0`.",
+            f"- Currency mentions by owner label: `{json.dumps(financial_claim_inventory['owner_currency_counts'], sort_keys=True)}`.",
+            f"- Candidate locations, line numbers, hashes, scopes, and owner groups: `ollamatracks/financial_claim_inventory.json`.",
+            f"- Untracked financial Markdown excluded: `{financial_claim_inventory['excluded_untracked_financial_markdown_count']}`; oversized Markdown excluded: `{financial_claim_inventory['skipped_large_financial_markdown_count']}`.",
+            "- Unsupported claims remain `needs_independent_review_not_verified`; do not silently delete or replace historical amounts with invented evidence. Resolve each claim with authorized source proof or retain it clearly marked unverified.",
+        ]
+
+        feature_rows = []
+        for platform, apps in FEATURE_REGISTRY.items():
+            for app, features in apps.items():
+                feature_rows.append(
+                    f"| `{platform}` | `{app}` | {len(features)} | `registry_only_not_implementation_proof` | `unmapped` |"
+                )
+
+        tests_lines = [
+            "## Agent-managed active test inventory",
+            "",
+            "Scope: current checkout's tracked and non-ignored files only. Historical refs, peer repositories, and unfetched PR trees require separate audit artifacts.",
+            "",
+            f"- Active-checkout test files discovered: `{len(test_paths_by_scope['active_checkout'])}`.",
+            f"- Snapshot test files discovered (not active coverage): `{len(test_paths_by_scope['snapshot'])}`.",
+            f"- Historical/archive test files discovered (not active coverage): `{len(test_paths_by_scope['historical_archive'])}`.",
+            f"- Total test-like paths discovered across these scopes: `{len(test_paths)}`.",
+            f"- UI feature registry rows: `{len(feature_rows)}`; registry entries are requirements, not proof of implementation or test coverage.",
+            "- Coverage state: `discovered_unmapped` until a feature ID maps to implementation files, positive/negative tests, and an exact-SHA run result.",
+            "- Completion state: `tested_local` and `tested_remote` are separate; remote status requires a terminal target-owned run for the exact source SHA.",
+            "",
+            "### Test files discovered",
+            "",
+            "| Test path | Source scope | Feature mapping | Status |",
+            "| --- | --- | --- | --- |",
+            *[
+                f"| `{path}` | `{test_source_scope(path)}` | `unmapped` | `{'historical_reference_not_active_coverage' if test_source_scope(path) != 'active_checkout' else 'discovered_not_coverage_proof'}` |"
+                for path in test_paths
+            ],
+            "",
+            "### App/platform contract inventory",
+            "",
+            "| Platform | App | Registered feature count | Implementation evidence | Test mapping |",
+            "| --- | --- | ---: | --- | --- |",
+            *feature_rows,
+            "",
+            *trading_path_lines,
+            "",
+            *credential_reference_summary_lines,
+            "",
+            "### Required per-feature evidence",
+            "",
+            "Every UI/API/backend feature must have a stable feature ID, owning repository/ref, implementation paths, route/API and authorization boundary where applicable, accessibility/state expectations, positive and negative/boundary tests, hook/webhook tests when event-driven, artifact/result hashes, and a terminal exact-SHA validation record. Missing links stay `unmapped`, `blocked`, or `needs_review`; never infer coverage from a nearby test filename.",
+        ]
+        hooks_lines = [
+            "## Agent-managed active workflow and webhook inventory",
+            "",
+            "Scope: current checkout only. Inventory discovery is not proof that a hook is registered remotely, reachable, authenticated, or successfully delivered.",
+            "",
+            f"- Workflow files discovered: `{len(parsed_workflows)}`.",
+            f"- Source/config files mentioning webhook identifiers: `{len(webhook_paths)}`.",
+            f"- Workflow parse errors: `{len(parse_errors)}`.",
+            "- External registration and delivery state: `not_verified` unless a provider read and signed delivery/test evidence are recorded for the exact repository/ref.",
+            "",
+            "### Workflow event hooks",
+            "",
+            "| Workflow | Trigger events | Status |",
+            "| --- | --- | --- |",
+            *[
+                f"| `{item['path']}` | `{item['triggers']}` | `definition_discovered_execution_not_implied` |"
+                for item in parsed_workflows
+            ],
+            "",
+            "### Webhook-related source references",
+            "",
+            "| Source path | Handler/provider mapping | Status |",
+            "| --- | --- | --- |",
+            *[f"| `{path}` | `unmapped` | `reference_only_not_runtime_verified` |" for path in webhook_paths],
+            "",
+            "### Required hook/webhook safety evidence",
+            "",
+            "For each active integration, record producer/event, consumer route and owner, signature/authentication verification, least-privilege scope, replay protection, idempotency, retry/backoff and dead-letter behavior, secret reference (never secret value), audit event, positive/negative delivery tests, freshness, exact SHA, and provider-side registration/read evidence. Never auto-register a third-party webhook or expose an endpoint without authorization and a reviewed threat model.",
+        ]
+
+        styles_lines = [
+            "## Agent-managed UI implementation and accountability contract",
+            "",
+            "Every UI feature must map a stable feature ID to app/platform, style token and interaction states, frontend component/route, backend API/authorization owner, accessibility expectations, automated tests, and evidence SHA. A style requirement or feature registry row alone is not implementation evidence.",
+            "",
+            "- Keep public, authenticated-user, mixed-access, and master-operator flows distinct; backend authorization is authoritative for writes.",
+            "- Include loading, empty, error, offline, stale, disabled, success, and permission-denied states in the UI contract and tests.",
+            "- Preserve app identity and accessibility while applying shared tokens; do not hide security, financial, consent, billing, or deployment risk.",
+            "- Record each changed path, repository/ref/base SHA, before/after content hash, owner, reason, tests, and approvals in the change evidence.",
+        ]
+        universals_lines = [
+            "## Agent-managed feature, test, and event accountability contract",
+            "",
+            "Automation may inventory and test preauthorized repository changes without a person present, but may not bypass repository policy, branch protection, user consent, provider permissions, or required human approvals for high-impact actions.",
+            "",
+            "- A feature is complete only when its implementation, UI/API access boundary, tests, docs, and event integrations agree for an exact repository/ref/SHA.",
+            "- Every file mutation records path, owner, prior/new hashes, reason, validation, and authorization context; failed or skipped work remains visible.",
+            "- Hooks/webhooks require authentication/signatures, replay and idempotency controls, bounded retries, secret-reference-only handling, audit logging, and tested failure paths.",
+            "- A feature without a mapped test or verified event integration remains `unmapped` or `blocked`; total automation claims cannot exceed inspected scope.",
+            "- Trading automation remains paused on stale market/account data, invalid authorization, provider outage, risk-limit breach, or ledger mismatch; runtime independence requires separately verified hosts and fresh heartbeat evidence.",
+        ]
+
+        trading_accountability_lines = [
+            "## Agent-managed trading audit and remote-continuity contract",
+            "",
+            "The trading source inventory is a discovery artifact. Every venue, UI, API, test, and workflow must be tied to an owner, repository/ref/SHA, implementation path, risk/auth boundary, and validation record before being marked verified.",
+            "",
+            f"- Current materialized trading candidates: `{len(trading_files)}`; platform mentions: `{json.dumps(trading_inventory['counts_by_venue'], sort_keys=True)}`.",
+            "- Feature and source coverage remains `discovered_unmapped` until each candidate maps to active implementation, tests, and exact-SHA evidence.",
+            "- Provider verification is `provider-sourced` only when an authorized provider response is independently recorded; repository discovery is not provider proof.",
+            f"- Credential names and consumers discovered: `{credential_reference_inventory['reference_count']}`; metadata inventory: `ollamatracks/credential_reference_inventory.json`; values not read from stores or emitted.",
+            "- Audit active, snapshot, and archive scopes separately; merge-audit local ref-tip path metrics are distinct from materialized-file scanning. Unfetched refs, PRs, intermediate commit trees, and peer roots remain explicit blockers.",
+            "- For every Qtrade metric and exchange, map market-data source, freshness, no-trade decision, backtest/walk-forward/paper tests, execution/risk limits, fees/slippage, reconciliation, kill switch, UI states, and event handlers. Missing/stale proof remains `blocked`.",
+            "- Remote runtime independence is a design target, not a present availability guarantee: require an independently hosted worker, durable idempotent queue, leased ownership, signed fresh heartbeats, monitoring/failover, and provider-authorized access. GitHub/Hugging Face outages must not create false healthy status.",
+            "- On stale market/account data, lost authorization, provider outage, ledger mismatch, or failed heartbeat, stop opening orders and mark trading unavailable; only separately authorized risk-reducing actions may proceed.",
+            "- Never invent balances, credentials, profits, accounts, webhook registrations, or live-run success. Real-money orders, transfers, deposits, withdrawals, and credential changes require explicit scoped authorization and provider evidence.",
+        ]
+        _upsert_managed_markdown_section(
+            target / "Qtrade.md",
+            "Qtrade.md",
+            "trading-audit-source-inventory",
+            "\n".join(trading_accountability_lines),
+        )
+        _upsert_managed_markdown_section(
+            target / "TRADINGREADME.md",
+            "TRADINGREADME.md",
+            "trading-audit-source-inventory",
+            "\n".join(trading_accountability_lines),
+        )
+        _upsert_managed_markdown_section(
+            target / "FINANCIALMANAGER.md",
+            "FINANCIALMANAGER.md",
+            "trading-evidence-and-balance-accountability",
+            "\n".join([
+                "## Agent-managed trading and balance evidence",
+                "",
+                "Trading and balance displays must distinguish provider-observed, simulated, stale, and unavailable values. Path discovery does not prove account ownership, current balances, settlement, or provider integration.",
+                "",
+                f"- Materialized trading candidates: `{len(trading_files)}`; detailed inventory: `ollamatracks/trading_surface_inventory.json`.",
+                f"- Financial claim audit: `{financial_claim_inventory['financial_file_count']}` files, `{financial_claim_inventory['candidate_line_count']}` redacted candidate lines; values are excluded from the report and no balances are verified.",
+                "- Only authorized read-only provider responses can produce current balance evidence; include account scope, currency, observed-at timestamp, and reconciliation status without exposing account secrets.",
+                "- Transfers, deposits, withdrawals, payroll, and live trading remain blocked without explicit authorization, verified provider capability, risk checks, and auditable confirmation.",
+                "- Revenue, P&L, and model-comparison claims must be independently sourced and net of fees; no guaranteed growth/profit claims.",
+                *financial_claim_summary_lines,
+            ]),
+        )
+        _upsert_managed_markdown_section(
+            target / "ACCOUNTABILITY.md",
+            "ACCOUNTABILITY.md",
+            "trading-file-mutation-accountability",
+            "\n".join([
+                "## Agent-managed trading change accountability",
+                "",
+                "For every trading-related file mutation, record the repository/ref/base SHA, path, prior/new hash, feature owner, reason, authorization, tests, and terminal result. Current inventory is discovery-only and does not establish that a UI, backend, exchange, or webhook works.",
+                "",
+                f"- Materialized trading candidate count: `{len(trading_files)}`; exact paths/hashes/scopes: `ollamatracks/trading_surface_inventory.json`.",
+                f"- Financial claims: `{financial_claim_inventory['financial_file_count']}` tracked Markdown files and `{financial_claim_inventory['candidate_line_count']}` candidate lines; audit artifact `ollamatracks/financial_claim_inventory.json` stores no amount values or account identifiers.",
+                "- Keep active, Alpha-Q-ai-2025 snapshot, and qmoi-enhanced-history-14 archive evidence distinct; all refs and remote PR histories require fresh target-owned enumeration.",
+                "- Master accountability reports every changed path and blocked/skipped operation; secrets and credential values never enter logs or documentation.",
+            ]),
+        )
+        credential_readiness_lines = [
+            "## Agent-managed wallet, bank, and trading credential consumers",
+            "",
+            "The source-reference audit stores variable names and consumer paths only. It never reads `.env`, key/certificate files, encrypted vault contents, environment values, or provider responses.",
+            "",
+            f"- Discovered references: `{credential_reference_inventory['reference_count']}`; provider groups: `{json.dumps(credential_reference_inventory['provider_reference_counts'], sort_keys=True)}`.",
+            "- Consumer map: `ollamatracks/credential_reference_inventory.json`; `credential_values_read_from_secret_stores=false`; `credential_values_persisted_or_emitted=false`.",
+            "- Generic vault storage does not mean an account or provider adapter is verified. Only the Bitget read-only verifier exists in the active credential manager; its last evidence is a rejected request (`40085`) and is not success. Other providers remain unverified here.",
+            "- Banks, wallets, exchanges, payment APIs, and webhooks require provider-specific verification, minimum scopes, expiry/rotation policy, and tested consumers. Unknown owners or verifiers remain `blocked`.",
+        ]
+        _upsert_managed_markdown_section(
+            target / "CREDENTIAL_READINESS.md",
+            "CREDENTIAL_READINESS.md",
+            "wallet-bank-provider-credential-consumers",
+            "\n".join(credential_readiness_lines),
+        )
+        _upsert_managed_markdown_section(
+            target / "CREDENTIALS_ROTATION_PLAYBOOK.md",
+            "CREDENTIALS_ROTATION_PLAYBOOK.md",
+            "wallet-bank-provider-credential-coverage",
+            "\n".join([
+                "## Agent-managed provider consumer coverage",
+                "",
+                f"The current source-name inventory found `{credential_reference_inventory['reference_count']}` credential-reference occurrences across materialized active, snapshot, and historical code paths; details are in `ollamatracks/credential_reference_inventory.json`.",
+                "- This is a pattern-based candidate audit, not proof that all secrets, external stores, future refs, or providers were found.",
+                "- Keep values in approved vaults only. The inventory records names, consumers, scopes, and line numbers without copying assignment contents or inspecting vault values.",
+                "- Provider-specific tests and explicit owner authorization are required before verification, rotation, or live trading. Only Bitget has an active provider-specific read-only verifier; no other provider is marked verified by this inventory.",
+            ]),
+        )
+
+        remote_runtime_contract = [
+            "## Agent-managed remote continuity and failover contract",
+            "",
+            "A target-owned workflow can run independently of a Codespace, but it is not independent of its workflow-host provider. Do not claim uninterrupted execution without a separately deployed, authorized worker and a verified failover test.",
+            "",
+            "- Persist execution IDs, source refs/SHAs, idempotent requests, checkpoints, leases, and audit events outside the workspace; resume only after re-reading authoritative state.",
+            "- Heartbeat freshness, worker identity, queue age, lock ownership, and provider reachability are separate health signals. Missing/stale telemetry means `STALE` or `OFFLINE`, never `RUNNING`.",
+            "- Provider failover requires pre-authorized credentials, least-privilege access, tested data consistency, and a terminal failover exercise. Never silently switch trading venues or move funds when a provider is unavailable.",
+            "- On stale market/account data, lost authorization, provider outage, queue duplication, or ledger mismatch, stop new trading orders and preserve read-only monitoring where available.",
+            "- External-worker deployment, availability, and disaster recovery remain `not_verified` until exact-host evidence exists.",
+        ]
+        for filename in ("ALLAUTO.md", "AUTODEV.md", "REMOTE_EXECUTION_ARCHITECTURE.md", "MONITORING_GUIDE.md", "monitor.md"):
+            _upsert_managed_markdown_section(
+                target / filename,
+                filename,
+                "remote-continuity-and-failover",
+                "\n".join(remote_runtime_contract),
+            )
+        _upsert_managed_markdown_section(
+            target / "TEST_ENHANCEMENTS.md",
+            "TEST_ENHANCEMENTS.md",
+            "feature-test-hook-evidence-gates",
+            "\n".join([
+                "## Agent-managed feature, trading, and hook test gates",
+                "",
+                "Test discovery is not coverage. Each feature needs a stable ID and explicit implementation, positive, negative/boundary, authorization, UI-state, hook-delivery, and recovery test mappings.",
+                "",
+                f"- Active tests discovered: `{len(test_paths_by_scope['active_checkout'])}`; snapshot tests: `{len(test_paths_by_scope['snapshot'])}`; archive tests: `{len(test_paths_by_scope['historical_archive'])}`.",
+                f"- Trading source candidates: `{len(trading_files)}`; exact paths, hashes, roles, venues, and source scopes: `ollamatracks/trading_surface_inventory.json`.",
+                "- Unmapped features remain `discovered_unmapped`; only local test results and terminal exact-SHA target runs may advance test state.",
+                "- Hook tests must cover signature/auth rejection, replay, idempotency, duplicate delivery, retries, dead-letter behavior, redaction, and outage/recovery. Workflow trigger discovery is not webhook registration or delivery proof.",
+            ]),
+        )
+        _upsert_managed_markdown_section(
+            target / "ALLVALIDATIONS.md",
+            "ALLVALIDATIONS.md",
+            "trading-and-hook-validation-evidence",
+            "\n".join([
+                "## Agent-managed trading and automation validation",
+                "",
+                f"- Materialized trading candidates: `{len(trading_files)}`; source artifact: `ollamatracks/trading_surface_inventory.json`; coverage state: `discovered_unmapped`.",
+                "- Per-venue gates include credential readiness (metadata only), market/account freshness, sandbox/paper execution, risk limits, reconciliation, kill switch, UI state, and positive/negative tests.",
+                "- Live orders, transfers, account creation, and payouts remain blocked until explicit authorization and provider-side evidence exist; local reports do not prove real funds or balances.",
+                "- Remote automation reports require exact repo/ref/SHA, workflow/run URL, terminal conclusion, artifact hash, and independent branch/ref verification.",
+            ]),
+        )
+
+        documents = {
+            "ALLTESTSAUTOTESTS.md": target / "ALLTESTSAUTOTESTS.md",
+            "ALLHOOKSWEBHOOKS.md": target / "ALLHOOKSWEBHOOKS.md",
+            "STYLES.md": target / "STYLES.md",
+            "UNIVERSALS.md": target / "UNIVERSALS.md",
+            "UNIVERSAL.md": target / "UNIVERSAL.md",
+            "Qtrade.md": target / "Qtrade.md",
+            "TRADINGREADME.md": target / "TRADINGREADME.md",
+            "FINANCIALMANAGER.md": target / "FINANCIALMANAGER.md",
+            "ACCOUNTABILITY.md": target / "ACCOUNTABILITY.md",
+            "trading_surface_inventory.json": trading_inventory_path,
+            "financial_claim_inventory.json": financial_claim_inventory_path,
+            "ALLAUTO.md": target / "ALLAUTO.md",
+            "AUTODEV.md": target / "AUTODEV.md",
+            "REMOTE_EXECUTION_ARCHITECTURE.md": target / "REMOTE_EXECUTION_ARCHITECTURE.md",
+            "MONITORING_GUIDE.md": target / "MONITORING_GUIDE.md",
+            "monitor.md": target / "monitor.md",
+            "TEST_ENHANCEMENTS.md": target / "TEST_ENHANCEMENTS.md",
+            "ALLVALIDATIONS.md": target / "ALLVALIDATIONS.md",
+        }
+        _upsert_managed_markdown_section(
+            documents["ALLTESTSAUTOTESTS.md"],
+            "ALLTESTSAUTOTESTS.md",
+            "active-test-feature-coverage",
+            "\n".join(tests_lines),
+        )
+        _upsert_managed_markdown_section(
+            documents["ALLHOOKSWEBHOOKS.md"],
+            "ALLHOOKSWEBHOOKS.md",
+            "active-hooks-webhooks-coverage",
+            "\n".join(hooks_lines),
+        )
+        for filename, marker, lines in (
+            ("STYLES.md", "ui-feature-implementation-accountability", styles_lines),
+            ("UNIVERSALS.md", "feature-test-event-accountability", universals_lines),
+            ("UNIVERSAL.md", "feature-test-event-accountability", universals_lines),
+        ):
+            _upsert_managed_markdown_section(
+                documents[filename], filename, marker, "\n".join(lines)
+            )
+
+        return {
+            "documents": documents,
+            "test_file_count": len(test_paths_by_scope["active_checkout"]),
+            "discovered_test_file_count": len(test_paths),
+            "test_counts_by_scope": {
+                scope: len(paths) for scope, paths in test_paths_by_scope.items()
+            },
+            "workflow_file_count": len(parsed_workflows),
+            "webhook_reference_file_count": len(webhook_paths),
+            "feature_registry_rows": len(feature_rows),
+            "trading_inventory": trading_inventory,
+            "trading_inventory_path": trading_inventory_path,
+            "financial_claim_inventory": financial_claim_inventory,
+            "financial_claim_inventory_path": financial_claim_inventory_path,
+            "parse_errors": parse_errors,
+            "scope": "active_checkout_only",
+            "coverage_verified": False,
+        }
+
     def refresh_managed_surface_documents(
         self,
         root: Path | str | None = None,
@@ -8124,6 +9064,7 @@ All timestamps use UTC ISO-8601 format.
         qstore_documents = self.refresh_qstream_qstore_documents(target)
         hosting_documents = self.refresh_hosting_quantum_ui_documents(target)
         research_documents = self.refresh_research_contract_documents(target)
+        automation_coverage = self.refresh_test_hook_coverage_documents(target)
 
         for filename, content in {
             "QVILLAGE.md": "# QVILLAGE.md\n\nQVillage is the live QMOI community, model, and knowledge coordination surface.\n\n## Link and runtime references\n- Source repository: [thealphakenya/qvillage](https://github.com/thealphakenya/qvillage)\n- Community surface: [QVillage](https://qvillage.qmoi.com)\n\n## Active automation\n- QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.\n- memory, model, and runtime state are synchronized across repo docs and platform references.\n",
@@ -8148,6 +9089,13 @@ All timestamps use UTC ISO-8601 format.
             "qvillage": target / "QVILLAGE.md",
             "qvillage_research": qvillage_research_path,
             "quantum": target / "QUANTUM.md",
+            "all_tests": automation_coverage["documents"]["ALLTESTSAUTOTESTS.md"],
+            "all_hooks_webhooks": automation_coverage["documents"]["ALLHOOKSWEBHOOKS.md"],
+            "qtrade": automation_coverage["documents"]["Qtrade.md"],
+            "trading_readme": automation_coverage["documents"]["TRADINGREADME.md"],
+            "financial_manager": automation_coverage["documents"]["FINANCIALMANAGER.md"],
+            "accountability": automation_coverage["documents"]["ACCOUNTABILITY.md"],
+            "trading_inventory": automation_coverage["documents"]["trading_surface_inventory.json"],
         })
         missing_documents = [
             name for name, path in document_paths.items()
@@ -8165,6 +9113,18 @@ All timestamps use UTC ISO-8601 format.
             "UNIVERSALS.md": ("universal.md", "server-side authorization"),
             "STYLES.md": ("universal styling coverage", "public guest", "master-operator"),
             "CLONE_PLATFORM_UI.md": ("cloned-platform operator ui coverage", "dagshub", "android"),
+            "ALLTESTSAUTOTESTS.md": ("active-test-feature-coverage", "discovered_unmapped"),
+            "ALLHOOKSWEBHOOKS.md": ("active-hooks-webhooks-coverage", "not_verified"),
+            "Qtrade.md": ("trading-audit-source-inventory", "discovered_unmapped", "provider-sourced"),
+            "TRADINGREADME.md": ("trading-audit-source-inventory", "discovered_unmapped"),
+            "FINANCIALMANAGER.md": ("trading-evidence-and-balance-accountability", "provider-observed"),
+            "ACCOUNTABILITY.md": ("trading-file-mutation-accountability", "prior/new hash"),
+            "REMOTE_EXECUTION_ARCHITECTURE.md": ("remote-continuity-and-failover", "not_verified"),
+            "MONITORING_GUIDE.md": ("remote-continuity-and-failover", "not_verified"),
+            "ALLAUTO.md": ("remote-continuity-and-failover", "STALE"),
+            "AUTODEV.md": ("remote-continuity-and-failover", "failover"),
+            "TEST_ENHANCEMENTS.md": ("feature-test-hook-evidence-gates", "discovered_unmapped"),
+            "ALLVALIDATIONS.md": ("trading-and-hook-validation-evidence", "provider-side evidence"),
         }
         for filename, markers in required_document_markers.items():
             path = target / filename
@@ -8182,6 +9142,7 @@ All timestamps use UTC ISO-8601 format.
             len(QMOI_CLONED_PLATFORM_UI_FEATURES) * len(PLATFORMS)
         ):
             structural_errors.append("Cloned-platform UI coverage matrix is incomplete")
+        structural_errors.extend(automation_coverage["parse_errors"])
         if not link_validation["passed"]:
             structural_errors.extend(link_validation["errors"])
 
@@ -8199,6 +9160,7 @@ All timestamps use UTC ISO-8601 format.
             "style_requirements": hosting_documents["style_requirements"],
             "clone_platforms": hosting_documents["clone_platforms"],
             "clone_platform_ui_coverage": hosting_documents["clone_platform_ui_coverage"],
+            "automation_coverage": automation_coverage,
             "master_access_verified": False,
             "implementation_verified": False,
             "link_validation": link_validation,
@@ -8429,10 +9391,6 @@ All timestamps use UTC ISO-8601 format.
         self,
     ) -> int:
         """Resume safely from the latest checkpoint and continue the bounded validation loop."""
-        managed_surface_contract = self.refresh_managed_surface_documents(
-            self.root_dir
-        )
-        self.results["managed_surface_contract"] = managed_surface_contract
         checkpoint = self.load_checkpoint() or {}
         completed_steps = list(dict.fromkeys(checkpoint.get("completed_steps") or []))
 
@@ -8446,39 +9404,19 @@ All timestamps use UTC ISO-8601 format.
                 "completed_steps": completed_steps,
             },
         )
-
-        self.update_resume_checkpoint(
-            status="continuation_started",
-            completed_steps=completed_steps or ["continuation scheduled"],
-            evidence={
-                "continue_mode": True,
-                "runtime": os.getenv("GITHUB_ACTIONS", "false"),
-            },
-        )
-
-        if os.getenv("GITHUB_ACTIONS", "").lower() == "true":
-            try:
-                self.verify_ollama()
-            except (OSError, RuntimeError, ValueError) as exc:  # pragma: no cover - degraded hosted runs
-                self.record_tracker_event(
-                    "continue_cycle_runtime_warning",
-                    f"Continuation runtime check reported a warning: {exc}",
-                    status="warning",
-                    phase="continuation",
-                    details={"error": str(exc)},
-                )
-
-        self.update_resume_checkpoint(
-            status="success" if checkpoint.get("status") in {"success", "autonomous_complete", "ready"} else "continuation_complete",
-            completed_steps=[*completed_steps, "continuation cycle"],
-            evidence={
-                "continue_mode": True,
+        contract = self.run_autonomous_loop()
+        succeeded = str(contract.get("final_status", "")).upper() == "SUCCESS"
+        self.record_tracker_event(
+            "continue_cycle_completed",
+            "Autonomous continuation cycle completed.",
+            status="success" if succeeded else "failed",
+            phase="continuation",
+            details={
                 "last_checkpoint_status": checkpoint.get("status", "unknown"),
-                "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                "final_status": contract.get("final_status", "unknown"),
             },
         )
-
-        return 0
+        return 0 if succeeded else 1
 
     def write_completion_manifest(
         self,
@@ -8661,6 +9599,22 @@ All timestamps use UTC ISO-8601 format.
                     "clone_platforms": product_surface_docs["clone_platforms"],
                     "clone_platform_ui_records": len(product_surface_docs["clone_platform_ui_coverage"]),
                     "style_requirements": product_surface_docs["style_requirements"],
+                    "automation_coverage": {
+                        key: value
+                        for key, value in product_surface_docs["automation_coverage"].items()
+                        if key not in {"documents", "trading_inventory", "trading_inventory_path"}
+                    } | {
+                        "documents": {
+                            name: str(path)
+                            for name, path in product_surface_docs["automation_coverage"]["documents"].items()
+                        },
+                        "trading_inventory_path": str(product_surface_docs["automation_coverage"]["trading_inventory_path"]),
+                        "trading_inventory_summary": {
+                            key: value
+                            for key, value in product_surface_docs["automation_coverage"]["trading_inventory"].items()
+                            if key != "files"
+                        },
+                    },
                     "master_access_verified": product_surface_docs["master_access_verified"],
                     "link_validation": product_surface_docs["link_validation"],
                     "structural_validation": product_surface_docs["validation"],
@@ -8832,6 +9786,12 @@ def main(
         default="status",
         help="Credential-manager operation used by the credential-manager command.",
     )
+    parser.add_argument(
+        "--branch-inventory-report",
+        type=Path,
+        default=None,
+        help="Target-generated cross-repository audit JSON required to pass the Q-version branch inventory gate.",
+    )
 
     try:
         args = parser.parse_args(raw_argv)
@@ -8846,6 +9806,17 @@ def main(
     agent = OllamaAutonomousAgent(
         args.base_path
     )
+    if args.branch_inventory_report is not None:
+        try:
+            report_bytes = args.branch_inventory_report.read_bytes()
+            report = json.loads(report_bytes.decode("utf-8"))
+            agent.branch_inventory_evidence = QVersionManager.branch_inventory_evidence_from_sync_report(
+                report,
+                hashlib.sha256(report_bytes).hexdigest(),
+            )
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError, RuntimeError, ValueError) as exc:
+            print(f"Branch inventory report rejected: {exc}", file=sys.stderr)
+            return 2
 
     if args.command == "commands":
         root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()

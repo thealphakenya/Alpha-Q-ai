@@ -23,6 +23,40 @@ A final version is written only by `write_final_metrics()` after the caller supp
 13. Each repository receives `Q.0.0.N/REPOSITORY_METRICS.json` and `Q.0.0.N.md` with file, directory, byte, SHA, workflow, and correlation evidence.
 14. Self-referential metric JSON and its companion Markdown are explicitly excluded from their own tree hash inventory; the manifest records that exclusion.
 15. Audit output separates latest materialized version, highest reserved/discovered number, reservation integrity, pair status, and per-root source paths.
+16. The ordered lifecycle begins `MERGE_START` -> `ALL_BRANCH_INVENTORY` -> `PRE_MERGE_INVENTORY`; a missing or incomplete branch roster is `NEEDS_REVIEW` and cannot produce final Q metrics.
+17. Final Q manifests preserve the exact branch names, tip commit/tree SHAs, roles, roster capture time, source report SHA-256, and normalized branch-inventory SHA-256 for both repositories.
+
+## Branch inventory and Q-version lifecycle
+
+The Ollama agent records `ALL_BRANCH_INVENTORY` immediately after `MERGE_START`
+and before pre-merge planning. A valid target-generated cross-repository report
+must state that every remote `refs/heads/*` was fetched and provide a unique
+name, commit SHA, and tree SHA for every branch in both repositories, plus one
+alignment/disposition entry per branch name. The report must carry the target
+Actions run ID, repository, ref, and exact head SHA. Each repository roster must
+include `main` and `autosync-backup`; the report is bound to its capture time
+and SHA-256. The agent accepts that report through
+`--branch-inventory-report <path>` and records the normalized roster and
+validation result in the hash-chained lifecycle ledger.
+
+When no target-generated report is supplied, the agent records locally
+available refs as discovery evidence and marks `ALL_BRANCH_INVENTORY`
+`NEEDS_REVIEW`. Local branch names or stale remote-tracking refs never satisfy
+the remote inventory gate. Feature, fix, security, release, Dependabot,
+Codespaces, and legacy branch names are preserved in the roster; only the
+protected backup-first/main-after-gates lane can publish automatically. Other
+branches remain PR/review-only and are not implicitly copied or merged.
+
+`write_final_metrics()` refuses Q.0.0.N output unless the complete branch stage
+passed and the caller supplies the same normalized inventory SHA-256 alongside
+terminal workflow evidence. For each repository, the `main` report tip must
+match the prepared source SHA and the `autosync-backup` report tip must match
+the separately supplied verified backup SHA. Each `REPOSITORY_METRICS.json`
+contains the full per-repository branch roster and dispositions, while the
+companion document gives the total count and digest. Q-version finalization
+therefore records the exact branch population that was considered before merge
+and publication; it does not imply that every branch was merged or that
+undiscovered future refs were audited.
 
 ## Q seed lineage
 
@@ -54,12 +88,13 @@ The local ref scan does not enumerate every intermediate commit tree, remote ref
 
 The Q-version manager is designed to support the autonomous update contract for both Alpha-Q-ai and qmoi-enhanced. The allowed flow is:
 
-1. local validation and merge inventory pass on the current branch
-2. backup branch publication and audit pass on `autosync-backup`
-3. exact SHA verification and fast-forward safety check for both repos
-4. Q.0.0.1 directory creation on each final branch only after the target-owned remote workflow concludes successfully
-5. final main-branch promotion after backup/publication evidence is current and consistent
-6. final SHA reconciliation, ledger write, and exact branch publication validation
+1. start merge activity, enumerate every current branch in both repositories, and record exact tips before other planning
+2. pass local validation and the merge inventory for the current branch set
+3. publish or validate `autosync-backup` first, using only exact-SHA fast-forward checks
+4. verify required checks and branch coverage against exact SHAs for both repos
+5. promote `main` only after backup/publication evidence is current and consistent
+6. create the next reserved Q.0.0.N artifact on each final branch only after terminal target-owned success
+7. reconcile final SHAs, append the lifecycle ledger, and independently verify the published Q artifacts and branch-inventory digest
 
 A valid Q version is a repository artifact, not a substitute for branch authorization. The manager records the evidence but does not invent remote completion. It accepts a version only when the caller supplies terminal success, exact remote SHAs, clean local state, workflow run IDs, and correlated lifecycle evidence.
 

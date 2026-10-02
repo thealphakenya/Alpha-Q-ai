@@ -378,3 +378,14 @@ The financial manager is only considered active when the following are true:
 ## Status
 
 Production-oriented financial management model: active and under continued enhancement.
+
+<!-- BEGIN QMOI MANAGED: trading-evidence-and-balance-accountability -->
+## Agent-managed trading and balance evidence
+
+Trading and balance displays must distinguish provider-observed, simulated, stale, and unavailable values. Path discovery does not prove account ownership, current balances, settlement, or provider integration.
+
+- Materialized trading candidates: `958`; detailed inventory: `QMOItracks/trading_surface_inventory.json`.
+- Only authorized read-only provider responses can produce current balance evidence; include account scope, currency, observed-at timestamp, and reconciliation status without exposing account secrets.
+- Transfers, deposits, withdrawals, payroll, and live trading remain blocked without explicit authorization, verified provider capability, risk checks, and auditable confirmation.
+- Revenue, P&L, and model-comparison claims must be independently sourced and net of fees; no guaranteed growth/profit claims.
+<!-- END QMOI MANAGED: trading-evidence-and-balance-accountability -->

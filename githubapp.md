@@ -1,5 +1,29 @@
 # QMOI Dual Repository Agent
 
+## Current safety status (2026-10-02T04:22:29Z)
+
+- Correlation ID: `9e6a2f8a-0c06-4917-ae9f-388370f87fdd`.
+- Telemetry repair PR #42 is open at `9946202a45e1db1f709a5677c0c5191e5aa39b42` against Alpha main `6a144b521f964a72cd1ec4c55374c3dbef4480c2`; publication used the GitHub CLI user, not GitHub App authentication.
+- PR tests and most code checks passed; final validation is unknown, Security/Merge Gates remain nonterminal, and Vercel/Netlify checks failed. Main-protection read returned HTTP 403; no merge was attempted.
+- Published telemetry remains invalid until a successful target-owned repair run. App-key rotation remains unverified; no App token was used.
+
+## Current safety status (2026-10-02T03:49:20Z)
+
+- Correlation ID: `9e6a2f8a-0c06-4917-ae9f-388370f87fdd`.
+- Alpha-Q-ai live `main=6a144b521f964a72cd1ec4c55374c3dbef4480c2`; `autosync-backup=6d925c33f0093035755772137d863618b3818ab0`. qmoi-enhanced live `main=3d0ab843821beefad1bd24458056c53a2a6d2325`; `autosync-backup=d371de28f77b3ebea0244ccc1c13793a2654c395`. Parity is not proven.
+- Current Alpha main checks: Push run `36958927347` and Rust/Actions/JavaScript checks succeeded on SHA `6a144b52...`. Published telemetry still has invalid lines 1 and 4; the local hash-only quarantine repair is unpublished and is not covered by those checks.
+- A fresh main-protection GET at `2026-10-02T03:16:01Z` returned HTTP 403 `Resource not accessible by integration`; this does not prove protection is absent or grant mutation authority.
+- App-key rotation remains unverified; no App token, dispatch, or remote mutation was attempted. The local worktree is dirty and behind; local agent changes are unpublished. Remote completion is not established.
+- The scheduled workflow's bounded continuation change is local only; no App credential was used to publish or dispatch it.
+
+## Current safety status (2026-10-02T03:07:27Z)
+
+- Correlation ID: `9e6a2f8a-0c06-4917-ae9f-388370f87fdd`.
+- Local Alpha-Q-ai `HEAD=5e40b2789fe32eab12e03ddd0b92ff36ea2c2bb4`; fetched `origin/main=ff5686069edfd5d1d2193a9dec97e71bba84bea3`; direct remote `main=bd2b57ed44237e8c94641672c8dd9432363e6a40`.
+- Exact remote check runs: JavaScript/TypeScript analysis `in_progress`; Rust and Actions analyses `success`. Main-protection GET returned HTTP 403. The CLI session is not verified GitHub App authentication.
+- App-key rotation remains unverified; historical key material remains prohibited. No App JWT, installation token, dispatch, or remote mutation was attempted.
+- The local autonomous-agent workflow and document-coverage changes are unpublished; the dirty local branch is 64 commits behind its fetched ref. Remote completion and protected-branch authority are not proven.
+
 ## Current safety status (2026-09-28T02:45:47Z)
 
 - Correlation ID: `3f5e3904-b367-405d-bb0e-fc4d7ef2882d`.

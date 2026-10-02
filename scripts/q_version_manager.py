@@ -18,6 +18,7 @@ class QVersionManager:
     SCHEMA_VERSION = 1
     LIFECYCLE_STAGES = (
         "MERGE_START",
+        "ALL_BRANCH_INVENTORY",
         "PRE_MERGE_INVENTORY",
         "INTERNAL_RESEARCH",
         "EXTERNAL_RESEARCH",
@@ -38,6 +39,7 @@ class QVersionManager:
     artifact_pattern = pattern
     version_pattern = re.compile(r"^Q\.0\.0\.([1-9][0-9]*)$")
     sha_pattern = re.compile(r"^[0-9a-f]{40}$")
+    digest_pattern = re.compile(r"^[0-9a-f]{64}$")
 
     def __init__(self, root: Path | str):
         self.root = Path(root).resolve()
@@ -216,6 +218,198 @@ class QVersionManager:
             "worktree_clean": git_status == "" if git_status is not None else False,
         }
 
+    @classmethod
+    def branch_inventory_evidence_from_sync_report(
+        cls,
+        report: dict[str, Any],
+        report_sha256: str,
+    ) -> dict[str, Any]:
+        """Normalize a cross-repository branch audit for the Q-version lifecycle."""
+        if not isinstance(report, dict):
+            raise ValueError("Branch audit report must be a JSON object")
+        coverage = report.get("branch_inventory_coverage", {})
+        if not isinstance(coverage, dict):
+            raise RuntimeError("Branch report has invalid branch coverage metadata")
+        if coverage.get("all_remote_heads_enumerated") is not True:
+            raise RuntimeError("Branch report does not prove enumeration of all remote heads")
+        workflow = report.get("workflow")
+        if (
+            not isinstance(workflow, dict)
+            or not workflow.get("run_id")
+            or not workflow.get("repository")
+            or not workflow.get("ref")
+            or not cls.sha_pattern.fullmatch(str(workflow.get("head_sha", "")))
+        ):
+            raise RuntimeError("Branch report lacks target-workflow run, repository, ref, or head SHA")
+        if not cls.digest_pattern.fullmatch(str(report_sha256)):
+            raise ValueError("Branch audit report requires a SHA-256 digest")
+        repositories = report.get("repositories")
+        if not isinstance(repositories, dict):
+            raise RuntimeError("Branch report is missing repository inventories")
+        normalized_repositories: dict[str, dict[str, Any]] = {}
+        for name, repository in repositories.items():
+            if not isinstance(repository, dict):
+                raise RuntimeError(f"Branch report has invalid repository inventory for {name}")
+            root_value = str(repository.get("root", ""))
+            if not root_value:
+                raise RuntimeError(f"Branch report has no repository root for {name}")
+            root = str(Path(root_value).resolve())
+            branches = repository.get("branches")
+            if not isinstance(branches, list):
+                raise RuntimeError(f"Branch report has an incomplete inventory for {name}")
+            if any(not isinstance(branch, dict) for branch in branches):
+                raise RuntimeError(f"Branch report has an invalid branch entry for {name}")
+            normalized_repositories[root] = {
+                "repository": str(name),
+                "branch_count": len(branches),
+                "branches": [
+                    {
+                        "name": str(branch.get("name", "")),
+                        "commit_sha": str(branch.get("commit_sha", "")),
+                        "tree_sha": str(branch.get("tree_sha", "")),
+                        "role": str(branch.get("role", "")),
+                        "naming_status": str(branch.get("naming_status", "")),
+                        "merge_policy": str(branch.get("merge_policy", "")),
+                    }
+                    for branch in branches
+                ],
+            }
+        branch_alignment = report.get("branch_alignment", {})
+        alignment_entries = branch_alignment.get("branches") if isinstance(branch_alignment, dict) else None
+        all_branch_names = {
+            branch["name"]
+            for repository in normalized_repositories.values()
+            for branch in repository["branches"]
+        }
+        if not isinstance(alignment_entries, list):
+            raise RuntimeError("Branch report is missing cross-repository branch dispositions")
+        aligned_names = [str(item.get("name", "")) for item in alignment_entries if isinstance(item, dict)]
+        if len(aligned_names) != len(alignment_entries) or len(set(aligned_names)) != len(aligned_names):
+            raise RuntimeError("Branch report has invalid or duplicate alignment entries")
+        if set(aligned_names) != all_branch_names:
+            raise RuntimeError("Branch alignment does not cover the union of repository branch names")
+        for entry in alignment_entries:
+            name = str(entry.get("name", ""))
+            expected_auto_publish = name in {"main", "autosync-backup"}
+            if entry.get("automatic_publication_allowed") is not expected_auto_publish:
+                raise RuntimeError(f"Branch publication policy is invalid for {name}")
+            if not entry.get("status") or not entry.get("merge_policy"):
+                raise RuntimeError(f"Branch disposition is incomplete for {name}")
+        return {
+            "remote_verified": True,
+            "all_remote_heads_enumerated": True,
+            "captured_at": str(report.get("captured_at", "")),
+            "source_report_sha256": report_sha256,
+            "workflow": {
+                "run_id": str(workflow["run_id"]),
+                "repository": str(workflow["repository"]),
+                "head_sha": str(workflow["head_sha"]),
+                "ref": str(workflow["ref"]),
+            },
+            "branch_alignment": alignment_entries,
+            "branches_by_repository": normalized_repositories,
+        }
+
+    @classmethod
+    def validate_branch_inventory_evidence(
+        cls,
+        evidence: dict[str, Any] | None,
+        roots: list[Path],
+    ) -> dict[str, Any]:
+        """Check complete, exact branch rosters for all supplied repositories."""
+        errors: list[str] = []
+        if not isinstance(evidence, dict):
+            return {"complete": False, "errors": ["branch inventory evidence is missing"]}
+        if evidence.get("remote_verified") is not True:
+            errors.append("remote branch inventory is not verified")
+        if evidence.get("all_remote_heads_enumerated") is not True:
+            errors.append("all remote heads were not enumerated")
+        if not evidence.get("captured_at"):
+            errors.append("branch inventory capture time is missing")
+        if not cls.digest_pattern.fullmatch(str(evidence.get("source_report_sha256", ""))):
+            errors.append("source branch report SHA-256 is missing or invalid")
+        workflow = evidence.get("workflow")
+        if (
+            not isinstance(workflow, dict)
+            or not workflow.get("run_id")
+            or not workflow.get("repository")
+            or not workflow.get("ref")
+            or not cls.sha_pattern.fullmatch(str(workflow.get("head_sha", "")))
+        ):
+            errors.append("target workflow identity is missing or invalid")
+        repositories = evidence.get("branches_by_repository")
+        if not isinstance(repositories, dict):
+            return {"complete": False, "errors": errors + ["per-repository branch rosters are missing"]}
+        branch_alignment = evidence.get("branch_alignment")
+        if not isinstance(branch_alignment, list):
+            errors.append("cross-repository branch dispositions are missing")
+            branch_alignment = []
+
+        expected_roots = {str(Path(root).resolve()) for root in roots}
+        if len(expected_roots) < 2 or set(repositories) != expected_roots:
+            errors.append("branch rosters do not exactly cover every target repository")
+        normalized_repositories: dict[str, dict[str, Any]] = {}
+        for root in sorted(expected_roots & set(repositories)):
+            repository = repositories[root]
+            branches = repository.get("branches") if isinstance(repository, dict) else None
+            if not isinstance(branches, list):
+                errors.append(f"branch roster is missing for {root}")
+                continue
+            names = [str(branch.get("name", "")) for branch in branches if isinstance(branch, dict)]
+            if len(names) != len(branches) or len(set(names)) != len(names):
+                errors.append(f"branch roster has invalid or duplicate names for {root}")
+            if not {"main", "autosync-backup"}.issubset(set(names)):
+                errors.append(f"required main/backup branch missing for {root}")
+            for branch in branches:
+                if not isinstance(branch, dict):
+                    continue
+                if not cls.sha_pattern.fullmatch(str(branch.get("commit_sha", ""))):
+                    errors.append(f"branch commit SHA missing for {root}:{branch.get('name', '')}")
+                if not cls.sha_pattern.fullmatch(str(branch.get("tree_sha", ""))):
+                    errors.append(f"branch tree SHA missing for {root}:{branch.get('name', '')}")
+            if repository.get("branch_count") != len(branches):
+                errors.append(f"branch count does not match roster for {root}")
+            normalized_repositories[root] = {
+                "repository": str(repository.get("repository", "")),
+                "branch_count": len(branches),
+                "branches": sorted(branches, key=lambda branch: str(branch.get("name", ""))),
+            }
+
+        all_branch_names = {
+            branch["name"]
+            for repository in normalized_repositories.values()
+            for branch in repository["branches"]
+        }
+        aligned_names = [str(item.get("name", "")) for item in branch_alignment if isinstance(item, dict)]
+        if len(aligned_names) != len(branch_alignment) or len(set(aligned_names)) != len(aligned_names):
+            errors.append("branch dispositions contain invalid or duplicate names")
+        if set(aligned_names) != all_branch_names:
+            errors.append("branch dispositions do not cover the union of branch names")
+        for item in branch_alignment:
+            if not isinstance(item, dict):
+                continue
+            name = str(item.get("name", ""))
+            expected_auto_publish = name in {"main", "autosync-backup"}
+            if item.get("automatic_publication_allowed") is not expected_auto_publish:
+                errors.append(f"automatic publication policy is invalid for {name}")
+            if not item.get("status") or not item.get("merge_policy"):
+                errors.append(f"branch disposition is incomplete for {name}")
+
+        payload = {
+            "captured_at": str(evidence.get("captured_at", "")),
+            "source_report_sha256": str(evidence.get("source_report_sha256", "")),
+            "workflow": workflow if isinstance(workflow, dict) else {},
+            "branch_alignment": branch_alignment,
+            "repositories": normalized_repositories,
+        }
+        complete = not errors
+        return {
+            "complete": complete,
+            "errors": errors,
+            "inventory_sha256": hashlib.sha256(_canonical_json(payload)).hexdigest() if complete else None,
+            **payload,
+        }
+
     def record_lifecycle_stage(
         self,
         execution_id: str,
@@ -236,6 +430,16 @@ class QVersionManager:
         normalized_status = str(status).upper()
         if normalized_status not in self.LIFECYCLE_STATUSES:
             raise ValueError(f"Unsupported lifecycle status: {status}")
+
+        source_roots = self._roots(roots, self.root)
+        normalized_details = dict(details or {})
+        if stage_name == "ALL_BRANCH_INVENTORY":
+            branch_inventory = self.validate_branch_inventory_evidence(
+                normalized_details.get("branch_inventory"), source_roots
+            )
+            normalized_details["branch_inventory_validation"] = branch_inventory
+            if normalized_status == "PASS" and not branch_inventory["complete"]:
+                raise RuntimeError("Cannot pass ALL_BRANCH_INVENTORY without complete remote branch evidence")
 
         execution_dir = self.root / "ollamatracks" / "q_versions" / execution_id
         execution_dir.mkdir(parents=True, exist_ok=True)
@@ -261,7 +465,6 @@ class QVersionManager:
             if existing_records and stage_index < previous_stage_index:
                 raise RuntimeError("Q-version lifecycle stage is out of order")
 
-            source_roots = self._roots(roots, self.root)
             root_metrics = {}
             if include_inventory:
                 excluded = {f"ollamatracks/q_versions/{execution_id}"}
@@ -294,7 +497,7 @@ class QVersionManager:
                 "stage": stage_name,
                 "stage_status": normalized_status,
                 "root_metrics": root_metrics,
-                "details": dict(details or {}),
+                "details": normalized_details,
                 "external_research_status": "recorded" if normalized_sources else "not_performed_or_not_supplied",
                 "external_research_sources": normalized_sources,
                 "previous_record_sha256": previous_hash,
@@ -452,6 +655,15 @@ class QVersionManager:
         if not lifecycle.get("valid") or lifecycle.get("status") != "complete":
             raise RuntimeError("Q-version metrics require all ordered lifecycle stages to pass")
         stage_records = {item["stage"]: item for item in lifecycle["stage_records"]}
+        branch_inventory_stage = stage_records.get("ALL_BRANCH_INVENTORY", {})
+        branch_inventory_details = branch_inventory_stage.get("details", {})
+        branch_inventory = branch_inventory_details.get("branch_inventory_validation", {})
+        if (
+            branch_inventory_stage.get("stage_status") != "PASS"
+            or branch_inventory.get("complete") is not True
+            or final_evidence.get("branch_inventory_sha256") != branch_inventory.get("inventory_sha256")
+        ):
+            raise RuntimeError("Q-version metrics require complete final all-branch inventory evidence")
         required_decisions = stage_records.get("MERGE_APPLY", {}).get("details", {})
         if (
             required_decisions.get("decision_ledger_complete") is not True
@@ -499,6 +711,15 @@ class QVersionManager:
                 or not self.sha_pattern.fullmatch(sha)
             ):
                 raise RuntimeError(f"Remote completion evidence is incomplete for {root}")
+            branch_repository = branch_inventory["repositories"].get(str(root), {})
+            branch_tips = {
+                branch.get("name"): branch
+                for branch in branch_repository.get("branches", [])
+            }
+            if branch_tips.get("main", {}).get("commit_sha") != sha:
+                raise RuntimeError(f"Branch inventory main SHA is stale for {root}")
+            if evidence.get("autosync_backup_sha") != branch_tips.get("autosync-backup", {}).get("commit_sha"):
+                raise RuntimeError(f"Branch inventory backup SHA is stale for {root}")
             git_head = _git(root, "rev-parse", "HEAD")
             if git_head != sha or not self._source_tree_clean_except_lifecycle(root, execution_id):
                 raise RuntimeError(f"Local tree does not match the clean verified remote SHA for {root}")
@@ -540,6 +761,7 @@ class QVersionManager:
                 ).hexdigest(),
                 "source_worktree_clean_except_lifecycle_evidence": True,
                 "merge_decisions": required_decisions,
+                "branch_inventory": branch_inventory,
                 "production_scan": production,
                 "production_replacements": replacements,
                 "validation_summary": validation,
@@ -556,6 +778,8 @@ class QVersionManager:
                 f"Metrics source SHA: `{sha}`",
                 f"Preparation workflow run: `{final_evidence['workflow_run_id']}` (success)",
                 f"Correlation ID: `{correlation_id}`",
+                f"Remote branches inventoried: {sum(item['branch_count'] for item in branch_inventory['repositories'].values())}",
+                f"Branch inventory SHA-256: `{branch_inventory['inventory_sha256']}`",
                 f"Files inventoried: {inventory['file_count']}",
                 f"Directories inventoried: {inventory['directory_count']}",
                 f"Total file bytes: {inventory['total_bytes']}",
@@ -629,8 +853,16 @@ class QVersionManager:
                 payload.get("version") != version
                 or payload.get("publication_status") != "PREPARED_PENDING_REMOTE_VERIFICATION"
                 or payload.get("source_sha") != item.get("prepared_source_sha")
+                or payload.get("branch_inventory", {}).get("inventory_sha256") != final_evidence.get("branch_inventory_sha256")
             ):
                 raise RuntimeError(f"Published Q-version manifest provenance is inconsistent for {root}")
+            branch_repository = payload["branch_inventory"]["repositories"].get(str(root), {})
+            branch_tips = {branch.get("name"): branch for branch in branch_repository.get("branches", [])}
+            if (
+                item.get("prepared_source_sha") != branch_tips.get("main", {}).get("commit_sha")
+                or item.get("autosync_backup_sha") != branch_tips.get("autosync-backup", {}).get("commit_sha")
+            ):
+                raise RuntimeError(f"Published branch evidence does not match the Q-version roster for {root}")
             verified[str(root)] = {
                 "prepared_source_sha": payload["source_sha"],
                 "published_final_sha": final_sha,

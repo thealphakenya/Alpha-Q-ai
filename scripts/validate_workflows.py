@@ -293,6 +293,7 @@ def validate_agent_cli():
         'checkpoint',
         'health',
         'autonomous',
+        'continue',
     ]
     
     agent_script = Path("scripts/ollama_autonomous_agent.py")
@@ -313,15 +314,25 @@ def validate_agent_cli():
                 print("✅ Agent CLI responds to --help")
                 
                 # Check for supported commands
+                missing = []
                 for cmd in commands:
                     if cmd in result.stdout or cmd in result.stderr:
                         print(f"  ✅ {cmd}")
+                    else:
+                        print(f"  ❌ {cmd} is missing")
+                        missing.append(cmd)
+                return not missing
             else:
                 print("❌ Agent CLI failed")
+                return False
         except subprocess.TimeoutExpired:
             print("⚠️  Agent CLI help timed out")
+            return False
         except Exception as e:  # noqa: BLE001 - CLI validation reports unexpected tool failures
             print(f"❌ Error testing agent CLI: {e}")
+            return False
+    print("❌ Agent CLI script not found")
+    return False
 
 def main():
     """Run comprehensive workflow validation."""
@@ -355,7 +366,10 @@ def main():
     validate_success_contract_schema()
     
     # Validate agent CLI
-    validate_agent_cli()
+    agent_cli_valid = validate_agent_cli()
+    if not agent_cli_valid:
+        print("\n❌ Agent CLI is missing one or more required commands")
+        return 1
     
     # Final summary
     print("\n" + "="*70)
