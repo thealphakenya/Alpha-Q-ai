@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Probe repository and workflow access
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           PEER_REPOSITORY: ${{ github.repository == 'thealphakenya/Alpha-Q-ai' && 'thealphakenya/qmoi-enhanced' || 'thealphakenya/Alpha-Q-ai' }}
         with:
