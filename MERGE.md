@@ -1,5 +1,12 @@
 # MERGE.md - Merge Procedures and Guidelines
 
+## Current completion gate — 2026-10-02T04:30:00Z
+
+- This repository continues to require exact remote SHA proof before any merge, publish, release, or remote-completion claim is considered valid.
+- The Ollama autonomous agent must keep `oe2.txt`, `remotecompletion.md`, `RELEASES.md`, `MERGE.md`, `ALLVALIDATIONS.md`, and the related release/documentation files synchronized with the current evidence and the user's requested scope.
+- All release, QVillage, lion-variation, styles, research, track, and platform requirements are still treated as in-progress work until target-owned workflow validation and exact remote evidence are available.
+- Safe status: `remote completion blocked pending proof; local readiness is documented but not claimed as remote success`.
+
 ## Current cross-repository audit checkpoint — 2026-09-29
 
 - Correlation ID: `bb69ea6a-2c63-4324-9045-dd6ece677abf`.

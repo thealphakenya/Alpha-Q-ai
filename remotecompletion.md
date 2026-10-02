@@ -1,3 +1,11 @@
+## Current continuation gate — 2026-10-02T04:30:00Z
+
+- The Ollama autonomous agent is required to continue scanning, validating, and upgrading every release, QVillage/Lion/system surface, styles/universals, research, track, and platform requirement without dropping any required section or file. This repository keeps `oe2.txt` and `remotecompletion.md` synchronized with all other evidence files, and each update is recorded as a checkpoint rather than a completion claim.
+- The current repository state is still remote-first: local validation and workflow structure checks are useful, but exact remote SHA proof remains required before any completion, merge, push, deployment, or release claim is valid.
+- Safe operating rule: publish only from a clean, reviewed, exact remote-tip worktree; never force-push, bypass protections, or claim remote success without confirmed target-owned workflow results and branch-protection evidence.
+- Required files to keep aligned: `oe2.txt`, `remotecompletion.md`, `RELEASES.md`, `MERGE.md`, `ALLVALIDATIONS.md`, `ALLMDFILESREFS.md`, and the relevant release, style, research, and workflow artifacts.
+- Current completion status: `remote completion not proven; local readiness and documentation updates continue, but exact remote evidence remains outstanding`.
+
 ## PR #42 current checks — 2026-10-02T04:18:18Z
 
 - PR #42 head `9946202a45e1db1f709a5677c0c5191e5aa39b42`, base `6a144b521f964a72cd1ec4c55374c3dbef4480c2`, remains open/unmerged.
