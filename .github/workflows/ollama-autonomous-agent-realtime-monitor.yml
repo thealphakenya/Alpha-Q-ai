@@ -1886,6 +1886,14 @@ jobs:
       # VALIDATE JSON TELEMETRY
       # ======================================================================
 
+      - name: Quarantine malformed legacy telemetry rows
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 scripts/telemetry_jsonl.py \
+            --path "$TRACK_DIR/telemetry.jsonl" \
+            --revision "$GITHUB_SHA"
+
       - name: Validate JSON tracking data
         shell: bash
         run: |

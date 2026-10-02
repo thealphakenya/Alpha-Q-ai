@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "correlation_id": "aab29ffc-5de8-4b02-82be-9aab5784bb5c",
-  "status": "LATEST_SHA_CHECKS_PENDING_AUTOSYNC_SECURITY_AND_PARITY_BLOCKED",
-  "generated_at": "2026-10-01T23:51:28Z",
+  "status": "TELEMETRY_REPAIR_PR_OPEN_CHECKS_PENDING_DEPLOYMENT_FAILURES",
+  "generated_at": "2026-10-02T04:10:34Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "target_repositories": [
     "thealphakenya/Alpha-Q-ai",
@@ -15,8 +15,33 @@
     "notes": "GitHub CLI user themegakenya can read refs and workflow metadata but is not verified as the GitHub App. App key rotation is unverified; do not authenticate with the historically exposed key. Alpha-Q-ai main-protection GET returned HTTP 403."
   },
   "state": {
-    "local_validation": "Latest: tests/test_cross_repo_sync.py plus tests/test_merge_inventory.py: 10 passed; branch-history regression: 1 passed, 105 deselected; workflow validator: 17 workflows valid; py_compile, JSON and 25 JSONL records parsed, and git diff --check passed.",
+    "local_validation": "Telemetry repair candidate on isolated branch: tracker suite 40 passed; focused helper/agent startup tests 4 passed; workflow YAML/order and scoped diff checks passed. No full suite run.",
     "remote_completion": "pending",
+    "telemetry_repair_candidate": {
+      "branch": "fix/20261002-telemetry-jsonl-quarantine",
+      "base_sha": "6a144b521f964a72cd1ec4c55374c3dbef4480c2",
+      "implementation_sha": "6ca1c08092ba773bdbce2bacb77a9d8ad6d6f295",
+      "publication": "normal branch push succeeded",
+      "pr_created": true,
+      "pr_number": 42,
+      "pr_url": "https://github.com/thealphakenya/Alpha-Q-ai/pull/42",
+      "pr_state": "open",
+      "pr_merged": false,
+      "pr_check_summary": {
+        "platform_compilations": "six passed",
+        "documentation": "success",
+        "workflow_integrity": "success",
+        "security_and_merge_gates": "in_progress",
+        "agent_tests_and_platform_features": "in_progress",
+        "markdown_refresh": "in_progress",
+        "rust_analysis": "in_progress",
+        "vercel_netlify_previews": "failure",
+        "codeql_advanced": "neutral"
+      },
+      "current_remote_telemetry_repaired": false,
+      "raw_malformed_payloads_in_candidate_reports": false,
+      "remote_completion_proven": false
+    },
     "backup_parity_proven": false,
     "cross_repo_parity_proven": false,
     "security_gate_status": "GitHub push warning reports 51 vulnerabilities (28 high, 19 moderate, 4 low); Dependabot detail access returned HTTP 403",

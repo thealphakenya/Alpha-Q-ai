@@ -97,6 +97,7 @@ if str(REPOSITORY_ROOT) not in sys.path:
 from scripts.command_inventory import refresh_commands_category
 from scripts.link_validator import LinkValidator
 from scripts.q_version_manager import QVersionManager
+from scripts.telemetry_jsonl import quarantine_invalid_jsonl
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
     INTERNAL_RESEARCH_CONTROLS,
@@ -4659,6 +4660,10 @@ All timestamps use UTC ISO-8601 format.
 
         self.telemetry_path.touch(exist_ok=True)
         self.log_path.touch(exist_ok=True)
+        quarantine_invalid_jsonl(
+            self.telemetry_path,
+            revision=os.getenv("GITHUB_SHA"),
+        )
 
         if not self.monitoring_summary_path.exists():
             safe_json_write(

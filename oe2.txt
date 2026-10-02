@@ -1,3 +1,18 @@
+## Telemetry repair PR status — 2026-10-02T04:10:34Z
+
+- Correlation ID: `9e6a2f8a-0c06-4917-ae9f-388370f87fdd`.
+- PR #42 is open: https://github.com/thealphakenya/Alpha-Q-ai/pull/42. Head `6ca1c08092ba773bdbce2bacb77a9d8ad6d6f295`, base `6a144b521f964a72cd1ec4c55374c3dbef4480c2`.
+- Six platform compilations, documentation, workflow integrity, and auto-merge proposal check passed. Test suite/features, security gates, Markdown refresh, and Rust analysis are in progress; Vercel/Netlify deployment checks failed; CodeQL Advanced is neutral. Protection access is 403. Do not infer merge authorization.
+- Remote telemetry remains invalid until PR #42 is merged and the target-owned tracker runs successfully. No remote completion claim.
+
+## Telemetry repair candidate — 2026-10-02T04:05:06Z
+
+- Correlation ID: `9e6a2f8a-0c06-4917-ae9f-388370f87fdd`.
+- Isolated branch `fix/20261002-telemetry-jsonl-quarantine` is based on Alpha-Q-ai `main=6a144b521f964a72cd1ec4c55374c3dbef4480c2`.
+- The candidate quarantines invalid JSONL rows as hash-only events before strict validation and preserves valid rows unchanged. The agent startup path also normalizes before appending. Raw malformed row payloads are not copied to audit output.
+- Candidate tests: tracker suite `40 passed`, focused quarantine/startup tests `4 passed`; realtime workflow YAML/order and diff checks passed. The live branch still has invalid rows 1 and 4 because this candidate is not published.
+- No push, PR, or merge has been performed from the dirty primary worktree. Remote completion remains pending publication and exact-SHA proof.
+
 ## Latest published SHA status — 2026-10-01T23:51:28Z
 
 - Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.
