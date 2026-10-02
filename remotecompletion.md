@@ -1,3 +1,11 @@
+## Telemetry JSONL recovery candidate — 2026-10-02T04:05:06Z
+
+- Correlation ID: `9e6a2f8a-0c06-4917-ae9f-388370f87fdd`.
+- Candidate branch `fix/20261002-telemetry-jsonl-quarantine` is based on exact published Alpha-Q-ai `main=6a144b521f964a72cd1ec4c55374c3dbef4480c2`.
+- Added a hash-only JSONL quarantine helper, invoked before the realtime tracker validates/persists telemetry. It preserves valid rows byte-for-byte and omits malformed raw bytes while retaining line, size, hash, reason, and source revision. Agent startup integration is covered by tests.
+- Candidate validation: isolated tracker suite `40 passed`; focused helper/agent-startup tests `4 passed`; workflow YAML/order validation and `git diff --check` passed. The primary dirty worktree was not used for candidate staging.
+- The published SHA still has malformed telemetry rows 1 and 4. This candidate is uncommitted/unpushed; no PR or remote mutation yet. Remote completion remains blocked pending normal publication, exact-SHA checks, and the authorized merge gate.
+
 ## Latest published SHA status — 2026-10-01T23:51:28Z
 
 - Correlation ID: `aab29ffc-5de8-4b02-82be-9aab5784bb5c`.

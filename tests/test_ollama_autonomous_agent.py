@@ -1165,6 +1165,23 @@ class TestRealtimeTracker:
         telemetry = (tracker_dir / "telemetry.jsonl").read_text(encoding="utf-8")
         assert "agent_startup" in telemetry or "validation_started" in telemetry or "monitor_initialized" in telemetry
 
+    def test_agent_startup_quarantines_invalid_existing_telemetry(self, tmp_path):
+        tracker_dir = tmp_path / "ollamatracks"
+        tracker_dir.mkdir()
+        telemetry_path = tracker_dir / "telemetry.jsonl"
+        valid_row = b'{"event":"before"}\n'
+        invalid_row = b"legacy marker\n"
+        telemetry_path.write_bytes(valid_row + invalid_row)
+
+        OllamaAutonomousAgent(base_path=tmp_path)
+
+        rows = telemetry_path.read_bytes().splitlines()
+        parsed = [json.loads(row) for row in rows]
+        assert rows[0] == valid_row.rstrip(b"\n")
+        assert invalid_row.rstrip(b"\n") not in telemetry_path.read_bytes()
+        assert any(row.get("event") == "legacy_telemetry_record_quarantined" for row in parsed)
+        assert (tracker_dir / "telemetry_integrity_report.json").exists()
+
 
 def test_historical_autonomous_agent_utils_are_available(tmp_path):
     from scripts.ollama_autonomous_agent import (
