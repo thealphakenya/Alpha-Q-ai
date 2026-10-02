@@ -45,8 +45,8 @@ jobs:
                   raise SystemExit(proc.returncode)
           PY
 
-      - name: Audit npm dependencies
-        run: npm audit --omit=dev --audit-level=high || true
+      - name: Audit active app npm dependencies
+        run: npm audit --prefix Alpha-Q-ai-2025 --audit-level=low
 
       - name: Run repository tests
         env:

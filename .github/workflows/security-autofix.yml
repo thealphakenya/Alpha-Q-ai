@@ -16,6 +16,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v5
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.9'
+          cache: npm
+          cache-dependency-path: Alpha-Q-ai-2025/package-lock.json
+
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -45,6 +52,9 @@ jobs:
           PY
           python scripts/qmoi_security_autofix.py
 
+      - name: Apply compatible app npm fixes
+        run: npm audit fix --package-lock-only --ignore-scripts --prefix Alpha-Q-ai-2025
+
       - name: Re-run security audit
         run: |
           python - <<'PY'
@@ -59,6 +69,7 @@ jobs:
               if proc.returncode != 0:
                   raise SystemExit(proc.returncode)
           PY
+            npm audit --prefix Alpha-Q-ai-2025 --audit-level=low
 
       - name: Create or update remediation PR
         uses: peter-evans/create-pull-request@v7
@@ -66,7 +77,7 @@ jobs:
           commit-message: 'chore: apply dependency security autofix'
           title: 'chore: dependency security autofix'
           body: |
-            This PR applies the QMOI dependency security autofix for known vulnerable minimum versions and keeps the baseline dependency set aligned with the current security gates.
+            This PR applies non-forced Python dependency-floor and Alpha app lockfile updates. It is only proposed after all discovered Python manifests and the app's full npm dependency tree pass their audits.
           branch: 'chore/security-autofix'
           delete-branch: true
           base: main
