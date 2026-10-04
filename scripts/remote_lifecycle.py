@@ -13,11 +13,12 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from autonomous_completion_engine import AutonomousCompletionEngine, REQUIRED_GATES
+from autonomous_completion_engine import AutonomousCompletionEngine, REQUIRED_GATES, audit_instruction_files
 from checkpoint_manager import CheckpointManager
 from execution_lock import ExecutionLock
 from live_activity_events import LiveActivity
 from remote_state import read_branch
+from ollama_autonomous_agent import CrossRepositoryAutonomyManager
 
 
 def command_available(command: str) -> bool:
@@ -44,6 +45,9 @@ def run_lifecycle(root: Path, *, execution_id: str, sync_id: str, mode: str, dir
     lock = ExecutionLock(root, sync_id)
     gates: dict[str, str | bool | None] = {name: None for name in REQUIRED_GATES}
     details: dict[str, Any] = {"mode": mode, "direction": direction, "source_repository": source_repository, "source_sha": source_sha, "stages": {}}
+    instruction_inventory = audit_instruction_files(root)
+    gates["instruction_inventory"] = instruction_inventory["status"] == "PASS"
+    details["instruction_inventory"] = instruction_inventory
     try:
         lock.acquire(execution_id)
     except RuntimeError as exc:
@@ -60,6 +64,37 @@ def run_lifecycle(root: Path, *, execution_id: str, sync_id: str, mode: str, dir
         gates["inspection"] = request_valid
         details["stages"]["inspection"] = {"request_valid": request_valid}
         checkpoint.record_stage(execution_id, "INSPECTION", "PASS" if request_valid else "BLOCKED", next_operation="VALIDATION")
+        gates["production_readiness"] = None
+
+        if not gates["instruction_inventory"]:
+            result = AutonomousCompletionEngine(root, execution_id).evaluate(
+                gates=gates,
+                repository_results={"instruction_inventory": instruction_inventory},
+                errors=["instruction inventory is incomplete or unreadable"],
+            )
+            details["final"] = result.as_dict()
+            activity.publish("EXECUTION_BLOCKED", "BLOCKED", "INSTRUCTION_INVENTORY", "Instruction inventory failed; lifecycle stopped before validation or remote reads")
+            return result.as_dict()
+
+        production_inventory = CrossRepositoryAutonomyManager().identify_missing_implementations(root)
+        production_inventory_path = root / "ollamatracks" / "production_gap_inventory.json"
+        production_inventory_path.parent.mkdir(parents=True, exist_ok=True)
+        production_inventory_path.write_text(
+            json.dumps(production_inventory, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        gates["production_readiness"] = (
+            production_inventory.get("status") == "CLEAR"
+            and production_inventory.get("coverage_complete") is True
+        )
+        details["production_readiness"] = {
+            "status": production_inventory.get("status"),
+            "candidate_count": production_inventory.get("total_candidates"),
+            "coverage_complete": production_inventory.get("coverage_complete"),
+            "unreadable_files": production_inventory.get("unreadable_files", []),
+            "oversized_files_not_read": production_inventory.get("oversized_files_not_read"),
+            "inventory_path": str(production_inventory_path.relative_to(root)),
+        }
 
         activity.publish("VALIDATION", "RUNNING", "VALIDATION", "Running deterministic syntax and repository checks")
         syntax = run_check(["python", "-m", "py_compile", "scripts/autonomous_completion_engine.py", "scripts/remote_lifecycle.py", "scripts/qmoictl.py"], root)

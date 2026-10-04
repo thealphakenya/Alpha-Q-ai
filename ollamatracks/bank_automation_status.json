@@ -1,0 +1,38 @@
+{
+  "correlation_id": "f5560c546da74feea3141782c575c3ea",
+  "financial_writes_authorized": false,
+  "generated_at": "2026-10-03T01:57:47.298115Z",
+  "implementation_verified": false,
+  "masking_security": {
+    "agent_telemetry_redaction": "implemented_and_tested",
+    "auditability_required": true,
+    "bank_provider_masking": "runtime_unverified",
+    "document": "QMOIMASKS.md",
+    "document_status": "DOCUMENTED_RUNTIME_UNVERIFIED",
+    "failure_policy": "AUTH_BLOCKED",
+    "fingerprint_and_route_masking": "disabled_during_provider_authentication_unless_authorized",
+    "implementation_verified": false,
+    "provider_identity_masking": "disabled_by_default_unless_provider_authorized",
+    "secret_values_in_evidence": false,
+    "source_sha256": "c2c40b58962777d09c6b17f330e83ab6bae25206d7846c98c3413394a27df08e"
+  },
+  "next_action": "Map every bank requirement to implementation, authorization, sandbox tests, exact-SHA remote checks, and independently verified provider evidence.",
+  "numbered_requirement_lines": 110,
+  "q_version_audit": {
+    "generated_at": "2026-10-03T01:57:47.299768Z",
+    "highest_known_number": 0,
+    "latest_materialized_version": null,
+    "pair": null,
+    "reservation_file": "/workspaces/Alpha-Q-ai/ollamatracks/q_versions.json",
+    "reservation_integrity_verified": true,
+    "reserved_version": null,
+    "schema_version": 1,
+    "source_roots": [
+      "/workspaces/Alpha-Q-ai"
+    ]
+  },
+  "remote_completion_verified": false,
+  "source": "bankandbankaccounts.md",
+  "source_sha256": "d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321",
+  "status": "NEEDS_VERIFICATION"
+}

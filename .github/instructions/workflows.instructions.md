@@ -15,3 +15,5 @@ Use GitHub Actions for heavy validation, artifact generation, and release workfl
 ## Completion rule
 
 A workflow run is not completion. A terminal result plus independently verified remote state is required.
+
+The autonomous agent must bind every queued or dispatched job to the exact repository/ref/SHA, preserve the run ID and result, resume from checkpoints, and stop at authorization or unavailable-evidence blockers without retrying indefinitely.

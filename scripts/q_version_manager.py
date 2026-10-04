@@ -430,6 +430,64 @@ class QVersionManager:
         )
         return {"version": version, "repositories": repositories, "verified": verified}
 
+    @staticmethod
+    def verify_instruction_inventory(root: Path | str, instruction_inventory: Any) -> dict[str, Any]:
+        """Verify instruction inventory coverage and hashes against the current repository tree."""
+        target = Path(root).resolve()
+        expected_paths = set()
+        for relative in ("AGENTS.md", ".github/copilot-instructions.md"):
+            candidate = target / relative
+            if candidate.is_file() and not candidate.is_symlink():
+                expected_paths.add(relative)
+        instruction_root = target / ".github" / "instructions"
+        if instruction_root.is_dir():
+            expected_paths.update(
+                candidate.relative_to(target).as_posix()
+                for candidate in instruction_root.rglob("*")
+                if candidate.is_file() and not candidate.is_symlink()
+            )
+        if not isinstance(instruction_inventory, dict):
+            raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
+        files = instruction_inventory.get("files")
+        if (
+            instruction_inventory.get("status") != "PASS"
+            or instruction_inventory.get("files_discovered") != len(expected_paths)
+            or instruction_inventory.get("files_read") != len(expected_paths)
+            or instruction_inventory.get("unreadable_or_invalid") != []
+            or instruction_inventory.get("source_contents_recorded") is not False
+            or not isinstance(files, list)
+        ):
+            raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
+        reported_paths = set()
+        try:
+            for item in files:
+                if not isinstance(item, dict):
+                    raise ValueError("invalid record")
+                if set(item) != {"path", "bytes", "sha256", "apply_to", "nonempty"}:
+                    raise ValueError("unexpected instruction evidence field")
+                relative_path = str(item.get("path", ""))
+                path = Path(relative_path)
+                source = target / path
+                if (
+                    path.is_absolute()
+                    or ".." in path.parts
+                    or relative_path not in expected_paths
+                    or relative_path in reported_paths
+                    or not source.is_file()
+                    or source.is_symlink()
+                    or item.get("bytes") != source.stat().st_size
+                    or item.get("sha256") != hashlib.sha256(source.read_bytes()).hexdigest()
+                    or not isinstance(item.get("apply_to"), str)
+                    or item.get("nonempty") is not True
+                ):
+                    raise ValueError("record mismatch")
+                reported_paths.add(relative_path)
+        except (OSError, ValueError):
+            raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}") from None
+        if reported_paths != expected_paths:
+            raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
+        return instruction_inventory
+
     def write_final_metrics(
         self,
         version: str,
@@ -441,6 +499,9 @@ class QVersionManager:
         source_roots = self._roots(roots, self.root)
         if len(source_roots) < 2:
             raise RuntimeError("Final dual-repository Q-version metrics require both target repositories")
+        instruction_inventories = final_evidence.get("instruction_inventories")
+        if not isinstance(instruction_inventories, dict):
+            raise RuntimeError("Q-version metrics require instruction inventories for both repositories")
         if final_evidence.get("status") != "SUCCESS" or final_evidence.get("remote_verified") is not True:
             raise RuntimeError("Q-version metrics require independently verified remote completion")
         if final_evidence.get("workflow_conclusion") != "success" or not final_evidence.get("workflow_run_id"):
@@ -485,6 +546,31 @@ class QVersionManager:
         repository_evidence = final_evidence.get("repositories")
         if not isinstance(repository_evidence, dict):
             raise RuntimeError("Q-version metrics require exact evidence for every repository")
+        for root in source_roots:
+            self.verify_instruction_inventory(root, instruction_inventories.get(str(root)))
+        autonomous_completion = final_evidence.get("autonomous_completion")
+        if (
+            not isinstance(autonomous_completion, dict)
+            or autonomous_completion.get("status") not in {"SUCCESS", "NO_CHANGES_REQUIRED"}
+            or not autonomous_completion.get("execution_id")
+            or not isinstance(autonomous_completion.get("gates"), dict)
+            or not autonomous_completion["gates"]
+            or any(value != "PASS" for value in autonomous_completion["gates"].values())
+            or autonomous_completion["gates"].get("instruction_inventory") != "PASS"
+            or autonomous_completion["gates"].get("final_verification") != "PASS"
+            or autonomous_completion.get("next_actions") != []
+        ):
+            raise RuntimeError("Q-version metrics require terminal autonomous completion with no pending actions")
+        production_readiness = final_evidence.get("production_readiness")
+        if (
+            not isinstance(production_readiness, dict)
+            or production_readiness.get("status") != "CLEAR"
+            or production_readiness.get("coverage_complete") is not True
+            or production_readiness.get("candidate_count") != 0
+            or production_readiness.get("unreadable_files") != []
+            or production_readiness.get("oversized_files_not_read") != 0
+        ):
+            raise RuntimeError("Q-version metrics require complete production readiness evidence with zero candidates")
 
         validated: list[tuple[Path, dict[str, Any], str]] = []
         for root in source_roots:
@@ -543,6 +629,14 @@ class QVersionManager:
                 "production_scan": production,
                 "production_replacements": replacements,
                 "validation_summary": validation,
+                "instruction_inventory": instruction_inventories[str(root)],
+                "autonomous_completion": {
+                    "execution_id": autonomous_completion.get("execution_id"),
+                    "status": autonomous_completion["status"],
+                    "gates": autonomous_completion["gates"],
+                    "next_actions": [],
+                },
+                                "production_readiness": production_readiness,
                 "external_research_sources": lifecycle["external_research_sources"],
                 "metrics": inventory,
                 "self_referential_outputs_excluded": [str(metrics_path.relative_to(root)), version_document.name],
@@ -559,6 +653,9 @@ class QVersionManager:
                 f"Files inventoried: {inventory['file_count']}",
                 f"Directories inventoried: {inventory['directory_count']}",
                 f"Total file bytes: {inventory['total_bytes']}",
+                f"Instruction files inventoried: {instruction_inventories[str(root)]['files_read']}",
+                "Autonomous completion gates: all PASS; pending actions: 0.",
+                                "Production readiness: complete inventory; zero unresolved candidates.",
                 f"Per-file SHA-256 and path metrics: `{version}/{metrics_path.name}`",
                 "The JSON manifest excludes itself and this companion document to avoid recursive self-hashing.",
                 "",

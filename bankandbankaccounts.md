@@ -2830,3 +2830,18 @@ The current repositories already have much of the necessary foundation—especia
 GitHub +4
 The largest work is now to make banking a first-class capability, complete the currently unverified master credential-control path, introduce the universal bank/account/transaction model, and connect all of that to the existing UI, orchestration, documentation and evidence systems.
 One further point: the current public repository state is what I could audit from GitHub. I cannot see uncommitted/private Codespace changes or unpublished branches from this web audit, so those should be included in the repository's existing full-tree/history reconciliation before implementation is considered final.
+
+<!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->
+## Agent Automation Status
+
+- Updated: 2026-10-03T01:57:47.298115Z
+- Runbook SHA-256: `d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321`
+- Numbered requirement lines detected: 110
+- Requirement coverage: documented; implementation, provider access, and production readiness are not verified by this scan.
+- QMOI Masks security contract: `DOCUMENTED_RUNTIME_UNVERIFIED`; provider-facing identity, fingerprint, or route masking is disabled during bank authentication unless explicitly provider-authorized.
+- Secret values stay out of reports; mask state remains visible to audit; unavailable or conflicting controls require `AUTH_BLOCKED`.
+- Q-version audit: recorded for discovery only; a reservation or artifact is not completion evidence.
+- Financial writes, account creation, transfers, payroll, and trading: not authorized by this automation status.
+- Remote completion: not verified; require terminal target-owned checks and exact remote SHA evidence for both repositories.
+- Evidence record: `ollamatracks/bank_automation_status.json`.
+<!-- END OLLAMA BANK AUTOMATION STATUS -->

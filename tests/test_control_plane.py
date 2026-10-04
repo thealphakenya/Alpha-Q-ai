@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.autonomous_completion_engine import AutonomousCompletionEngine, REQUIRED_GATES
+from scripts.autonomous_completion_engine import AutonomousCompletionEngine, REQUIRED_GATES, audit_instruction_files
 from scripts.checkpoint_manager import CheckpointManager
 from scripts.execution_lock import ExecutionLock
 from scripts.live_activity_events import LiveActivity
@@ -27,10 +27,14 @@ from scripts.repository_contract_audit import audit_repository_contract
 def make_root(tmp_path: Path) -> Path:
     (tmp_path / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md").write_text("## 1. One\n## 2. Two\n", encoding="utf-8")
     (tmp_path / "ollama_master_topic_index.txt").write_text("1. One\n2. Two\n", encoding="utf-8")
+    (tmp_path / "AGENTS.md").write_text("# Root instructions\n", encoding="utf-8")
+    (tmp_path / ".github" / "copilot-instructions.md").parent.mkdir(parents=True, exist_ok=True)
+    (tmp_path / ".github" / "copilot-instructions.md").write_text("# Copilot instructions\n", encoding="utf-8")
+    (tmp_path / ".github" / "instructions").mkdir(parents=True, exist_ok=True)
     return tmp_path
 
 
-def make_git_repo(root: Path, name: str) -> Path:
+def make_git_repo(root: Path, name: str, *, with_instructions: bool = False) -> Path:
     repository = root / name
     repository.mkdir()
     subprocess.run(["git", "-C", str(repository), "init", "-q"], check=True)
@@ -38,9 +42,37 @@ def make_git_repo(root: Path, name: str) -> Path:
     subprocess.run(["git", "-C", str(repository), "config", "user.email", "test@example.com"], check=True)
     (repository / "src").mkdir()
     (repository / "src" / "app.py").write_text("print('ready')\n", encoding="utf-8")
+    if with_instructions:
+        (repository / "AGENTS.md").write_text("# Repository instructions\n", encoding="utf-8")
+        (repository / ".github" / "copilot-instructions.md").parent.mkdir(parents=True, exist_ok=True)
+        (repository / ".github" / "copilot-instructions.md").write_text("# Copilot instructions\n", encoding="utf-8")
+        (repository / ".github" / "instructions").mkdir(parents=True, exist_ok=True)
     subprocess.run(["git", "-C", str(repository), "add", "."], check=True)
     subprocess.run(["git", "-C", str(repository), "commit", "-m", "initial"], check=True, capture_output=True)
     return repository
+
+
+def q_version_instruction_evidence(roots: list[Path]) -> dict[str, dict[str, object]]:
+    return {str(root.resolve()): audit_instruction_files(root) for root in roots}
+
+
+def q_version_autonomous_completion() -> dict[str, object]:
+    return {
+        "execution_id": "completion-final-test",
+        "status": "SUCCESS",
+        "gates": {name: "PASS" for name in REQUIRED_GATES},
+        "next_actions": [],
+    }
+
+
+def q_version_production_readiness() -> dict[str, object]:
+    return {
+        "status": "CLEAR",
+        "coverage_complete": True,
+        "candidate_count": 0,
+        "unreadable_files": [],
+        "oversized_files_not_read": 0,
+    }
 
 
 def record_successful_q_lifecycle(manager: QVersionManager, roots: list[Path], execution_id: str) -> None:
@@ -92,6 +124,131 @@ def test_completion_is_fail_closed_and_writes_topic_metrics(tmp_path):
     metrics = json.loads((root / "ollamatracks" / "topic_metrics.json").read_text(encoding="utf-8"))
     assert metrics["master_plan_topics"] == 2
     assert metrics["fully_completed"] == 0
+    current_state = json.loads((root / "ollamatracks" / "current_state.json").read_text(encoding="utf-8"))
+    assert current_state["execution_id"] == "execution-1"
+    assert current_state["pending_actions"]
+    assert current_state["local_evidence_checks"]["values_recorded"] is False
+    inventory = json.loads((root / "ollamatracks" / "instruction_inventory.json").read_text(encoding="utf-8"))
+    assert inventory["status"] == "PASS"
+    assert inventory["source_contents_recorded"] is False
+
+
+def test_completion_refreshes_current_state_and_keeps_remote_actions_gated(tmp_path):
+    root = make_root(tmp_path)
+    (root / "AGENTS.md").write_text("# Repository instructions\n", encoding="utf-8")
+    engine = AutonomousCompletionEngine(root, "execution-first")
+    first = engine.evaluate()
+    first_state = json.loads((root / "ollamatracks" / "current_state.json").read_text(encoding="utf-8"))
+
+    gates = {name: "PASS" for name in REQUIRED_GATES}
+    markdown_evidence = {
+        "remote_verified": True,
+        "all_document_content_validated": True,
+        "all_remote_refs_enumerated": True,
+        "all_pull_requests_included": True,
+        "all_intermediate_commit_trees_validated": True,
+        "unavailable_sources": [],
+        "repositories": {
+            name: {
+                "terminal_conclusion": "success",
+                "remote_verified": True,
+                "final_sha": "a" * 40 if name.endswith("Alpha-Q-ai") else "b" * 40,
+                "workflow_run_id": "run-verified",
+                "markdown_total": 2,
+                "markdown_validated": 2,
+                "failed_documents": 0,
+                "unfetched_refs": 0,
+                "unfetched_pull_requests": 0,
+                "unvalidated_intermediate_trees": 0,
+            }
+            for name in ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced")
+        },
+    }
+    second = AutonomousCompletionEngine(root, "execution-second").evaluate(
+        gates,
+        repository_results={"markdown_inventory": markdown_evidence},
+    )
+    current_state = json.loads((root / "ollamatracks" / "current_state.json").read_text(encoding="utf-8"))
+
+    assert first.status == "BLOCKED_REQUIRES_HUMAN"
+    assert first_state["status"] == "BLOCKED_REQUIRES_HUMAN"
+    assert second.status == "NO_CHANGES_REQUIRED"
+    assert current_state["execution_id"] == "execution-second"
+    assert current_state["status"] == "NO_CHANGES_REQUIRED"
+    assert current_state["pending_actions"] == []
+    assert second.evidence["next_actions"] == []
+    remote_action = next(action for action in first.evidence["next_actions"] if action["gate"] == "remote_main")
+    assert remote_action["status"] == "BLOCKED_REQUIRES_AUTHORIZATION"
+    assert remote_action["authorization_required"] is True
+
+
+def test_invalid_local_evidence_forces_final_verification_failure(tmp_path):
+    root = make_root(tmp_path)
+    (root / "ollamatracks").mkdir(exist_ok=True)
+    (root / "ollamatracks" / "telemetry.jsonl").write_text('{"event":\n', encoding="utf-8")
+
+    result = AutonomousCompletionEngine(root, "execution-invalid-evidence").evaluate(
+        {name: "PASS" for name in REQUIRED_GATES},
+    )
+
+    assert result.evidence["local_evidence_checks"]["status"] == "FAIL"
+    assert result.gates["final_verification"] == "FAIL"
+    assert result.status == "BLOCKED_REQUIRES_HUMAN"
+
+
+def test_production_readiness_gap_creates_ranked_action_and_blocks_completion(tmp_path):
+    root = make_root(tmp_path)
+    gates = {name: "PASS" for name in REQUIRED_GATES}
+    gates["production_readiness"] = False
+
+    result = AutonomousCompletionEngine(root, "execution-production-gap").evaluate(gates)
+
+    assert result.status == "BLOCKED_REQUIRES_HUMAN"
+    action = next(item for item in result.evidence["next_actions"] if item["gate"] == "production_readiness")
+    assert action["priority"] == REQUIRED_GATES.index("production_readiness") + 1
+    assert action["status"] == "QUEUED_SAFE_AUTOMATION"
+
+
+def test_instruction_inventory_reads_scoped_files_without_recording_contents(tmp_path):
+    (tmp_path / "AGENTS.md").write_text("# Repository policy\nDo not bypass protections.\n", encoding="utf-8")
+    (tmp_path / ".github").mkdir()
+    (tmp_path / ".github" / "copilot-instructions.md").write_text("# Copilot policy\n", encoding="utf-8")
+    (tmp_path / ".github" / "instructions").mkdir(parents=True)
+    (tmp_path / ".github" / "instructions" / "api.instructions.md").write_text(
+        "# API policy\n\nVerify identity before mutations.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / ".github" / "instructions" / "scoped.instructions.md").write_text(
+        "---\napplyTo: \"src/**\"\n---\n# Source policy\nUse focused checks.\n",
+        encoding="utf-8",
+    )
+
+    result = audit_instruction_files(tmp_path)
+
+    assert result["status"] == "PASS"
+    assert result["files_discovered"] == 4
+    assert result["files_read"] == 4
+    assert result["source_contents_recorded"] is False
+    assert {item["apply_to"] for item in result["files"]} == {"repository-wide", "src/**"}
+    assert all(len(item["sha256"]) == 64 for item in result["files"])
+
+
+def test_instruction_inventory_blocks_symlinked_policy_sources(tmp_path):
+    outside = tmp_path / "outside.instructions.md"
+    outside.write_text("# External instructions\n", encoding="utf-8")
+    (tmp_path / "AGENTS.md").write_text("# Root policy\n", encoding="utf-8")
+    (tmp_path / ".github" / "copilot-instructions.md").parent.mkdir(parents=True)
+    (tmp_path / ".github" / "copilot-instructions.md").write_text("# Copilot policy\n", encoding="utf-8")
+    instruction_root = tmp_path / ".github" / "instructions"
+    instruction_root.mkdir(parents=True)
+    (instruction_root / "linked.instructions.md").symlink_to(outside)
+
+    result = audit_instruction_files(tmp_path)
+
+    assert result["status"] == "FAIL"
+    assert result["unreadable_or_invalid"] == [
+        {"path": ".github/instructions/linked.instructions.md", "error_type": "SymlinkInstruction"}
+    ]
 
 
 def test_research_system_has_ten_internal_and_ten_external_controls():
@@ -381,17 +538,58 @@ def test_q_version_tree_inventory_records_every_file_hash_and_directory(tmp_path
 
 
 def test_q_version_final_metrics_require_remote_terminal_evidence(tmp_path):
+    first = make_git_repo(tmp_path, "alpha", with_instructions=True)
+    second = make_git_repo(tmp_path, "qmoi", with_instructions=True)
+    manager = QVersionManager(first)
+
+    with pytest.raises(RuntimeError, match="remote completion"):
+        manager.write_final_metrics("Q.0.0.3", [first, second], {
+            "status": "SUCCESS",
+            "instruction_inventories": q_version_instruction_evidence([first, second]),
+            "autonomous_completion": q_version_autonomous_completion(),
+            "production_readiness": q_version_production_readiness(),
+        })
+    assert not (first / "Q.0.0.3").exists()
+
+
+def test_q_version_final_metrics_require_dual_instruction_and_completion_evidence(tmp_path):
     first = make_git_repo(tmp_path, "alpha")
     second = make_git_repo(tmp_path, "qmoi")
     manager = QVersionManager(first)
 
-    with pytest.raises(RuntimeError, match="remote completion"):
-        manager.write_final_metrics("Q.0.0.3", [first, second], {"status": "SUCCESS"})
+    with pytest.raises(RuntimeError, match="instruction inventories"):
+        manager.write_final_metrics(
+            "Q.0.0.3",
+            [first, second],
+            {"status": "SUCCESS", "remote_verified": True},
+        )
+    assert not (first / "Q.0.0.3").exists()
+
+def test_q_version_final_metrics_reject_tampered_instruction_hashes(tmp_path):
+    first = make_git_repo(tmp_path, "alpha", with_instructions=True)
+    second = make_git_repo(tmp_path, "qmoi", with_instructions=True)
+    inventories = q_version_instruction_evidence([first, second])
+    inventories[str(first.resolve())]["files"][0]["sha256"] = "0" * 64
+
+    with pytest.raises(RuntimeError, match="Instruction inventory is incomplete or unsafe"):
+        QVersionManager.verify_instruction_inventory(first, inventories[str(first.resolve())])
     assert not (first / "Q.0.0.3").exists()
 
 
+def test_q_version_instruction_inventory_rejects_embedded_policy_text(tmp_path):
+    root = make_git_repo(tmp_path, "alpha", with_instructions=True)
+    inventory = q_version_instruction_evidence([root])[str(root.resolve())]
+    inventory["files"][0]["instruction_text"] = "private policy content"
+
+    with pytest.raises(RuntimeError, match="Instruction inventory is incomplete or unsafe"):
+        QVersionManager.verify_instruction_inventory(root, inventory)
+
+
 def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories(tmp_path):
-    roots = [make_git_repo(tmp_path, "alpha"), make_git_repo(tmp_path, "qmoi")]
+    roots = [
+        make_git_repo(tmp_path, "alpha", with_instructions=True),
+        make_git_repo(tmp_path, "qmoi", with_instructions=True),
+    ]
     manager = QVersionManager(roots[0])
     execution_id = "qversion-final-success"
     record_successful_q_lifecycle(manager, roots, execution_id)
@@ -416,6 +614,9 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         "workflow_run_id": "12345",
         "lifecycle_execution_id": execution_id,
         "correlation_id": "qversion-test-1",
+        "instruction_inventories": q_version_instruction_evidence(roots),
+        "autonomous_completion": q_version_autonomous_completion(),
+        "production_readiness": q_version_production_readiness(),
         "repositories": repository_evidence,
     }
 
@@ -429,6 +630,9 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
         assert metrics["source_sha"] == repository_evidence[str(root.resolve())]["final_sha"]
         assert metrics["metrics"]["file_count"] >= 1
+        assert metrics["instruction_inventory"]["files_read"] == 2
+        assert metrics["autonomous_completion"]["next_actions"] == []
+        assert metrics["production_readiness"]["candidate_count"] == 0
         assert document_path.is_file()
         assert "Directories inventoried:" in document_path.read_text(encoding="utf-8")
         paths_to_add = ["Q.0.0.3", "Q.0.0.3.md"]
@@ -473,7 +677,10 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
 
 
 def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path):
-    roots = [make_git_repo(tmp_path, "alpha"), make_git_repo(tmp_path, "qmoi")]
+    roots = [
+        make_git_repo(tmp_path, "alpha", with_instructions=True),
+        make_git_repo(tmp_path, "qmoi", with_instructions=True),
+    ]
     manager = QVersionManager(roots[0])
     execution_id = "qversion-final-dirty"
     record_successful_q_lifecycle(manager, roots, execution_id)
@@ -485,6 +692,9 @@ def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path)
         "workflow_run_id": "12345",
         "lifecycle_execution_id": execution_id,
         "correlation_id": "qversion-test-2",
+        "instruction_inventories": q_version_instruction_evidence(roots),
+        "autonomous_completion": q_version_autonomous_completion(),
+        "production_readiness": q_version_production_readiness(),
         "repositories": {
             str(root.resolve()): {
                 "final_sha": "a" * 40,

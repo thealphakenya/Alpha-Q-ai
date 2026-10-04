@@ -1,0 +1,337 @@
+{
+  "completed_stages": [],
+  "current_stage": "DISCOVERY",
+  "execution_id": "exec-e15d83639fbc42e28c2e18fb1e3a868a",
+  "failed_stages": [
+    "DISCOVERY",
+    "INSPECTION",
+    "INSTRUCTION_INVENTORY",
+    "PRODUCTION_READINESS",
+    "MARKDOWN_INVENTORY",
+    "VALIDATION",
+    "SECURITY",
+    "REMOTE_MAIN",
+    "REMOTE_BACKUP",
+    "Q_VERSION",
+    "LIVE_ACTIVITY",
+    "CROSS_REPOSITORY",
+    "FINAL_VERIFICATION"
+  ],
+  "final_status": "BLOCKED_REQUIRES_HUMAN",
+  "instruction_inventory": {
+    "files": [
+      {
+        "apply_to": "repository-wide",
+        "bytes": 2682,
+        "nonempty": true,
+        "path": ".github/copilot-instructions.md",
+        "sha256": "0d64e0593f08b93ab1a161c22cbf0322d2a134c65c73fb1ccbba6a25d1eeeacb"
+      },
+      {
+        "apply_to": "**",
+        "bytes": 2220,
+        "nonempty": true,
+        "path": ".github/instructions/agent-autonomy.instructions.md",
+        "sha256": "afaf97f261ec7fccdf796707d81c8b0a4f32e544db3c73e5b5b80d8d66f507ce"
+      },
+      {
+        "apply_to": "repository-wide",
+        "bytes": 880,
+        "nonempty": true,
+        "path": ".github/instructions/github-api.instructions.md",
+        "sha256": "150be5d4f71cb69f7c7c5de7c5dd8599941049271c0d3b73b893925ab524a66d"
+      },
+      {
+        "apply_to": "repository-wide",
+        "bytes": 702,
+        "nonempty": true,
+        "path": ".github/instructions/release.instructions.md",
+        "sha256": "c9be90714501fc6ed49234a4c2ee9282954709164e0f317b43df81027ba8c907"
+      },
+      {
+        "apply_to": "repository-wide",
+        "bytes": 779,
+        "nonempty": true,
+        "path": ".github/instructions/security.instructions.md",
+        "sha256": "d97d3d3a2134f003843ce4f61a98747f496553761357d097160fc3c1bbb6373e"
+      },
+      {
+        "apply_to": "repository-wide",
+        "bytes": 920,
+        "nonempty": true,
+        "path": ".github/instructions/workflows.instructions.md",
+        "sha256": "62be66b9b50662b6a85749787ff78da8269365b70105666bbe33db7852669e83"
+      },
+      {
+        "apply_to": "repository-wide",
+        "bytes": 986,
+        "nonempty": true,
+        "path": ".github/instructions/workspace.instructions.md",
+        "sha256": "aed577a0781cedd1722585123b777cfd9b40ccfeea0135aa8db4d51390d62566"
+      },
+      {
+        "apply_to": "repository-wide",
+        "bytes": 2011,
+        "nonempty": true,
+        "path": "AGENTS.md",
+        "sha256": "3f8676514b060b0f13af199d19e52928321e5b4f18b5cb4b69164808d95e52cf"
+      }
+    ],
+    "files_discovered": 8,
+    "files_read": 8,
+    "source_contents_recorded": false,
+    "status": "PASS",
+    "unreadable_or_invalid": []
+  },
+  "local_evidence_checks": {
+    "checks": {
+      "ollamatracks/bank_automation_status.json": {
+        "root_type": "dict",
+        "status": "PASS"
+      },
+      "ollamatracks/telemetry.jsonl": {
+        "error_type": "JSONDecodeError",
+        "status": "FAIL"
+      },
+      "remote-completion.json": {
+        "root_type": "dict",
+        "status": "PASS"
+      },
+      "remote-evidence-ledger.jsonl": {
+        "records": 40,
+        "status": "PASS"
+      }
+    },
+    "failed_paths": [
+      "ollamatracks/telemetry.jsonl"
+    ],
+    "status": "FAIL",
+    "values_recorded": false
+  },
+  "next_operation": "Refresh refs, source roots, and repository identity",
+  "pending_actions": [
+    {
+      "action_id": "discovery:unknown",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "READ_ONLY_AUTOMATIC",
+      "gate": "discovery",
+      "gate_status": "UNKNOWN",
+      "operation": "Refresh refs, source roots, and repository identity",
+      "priority": 1,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    },
+    {
+      "action_id": "inspection:unknown",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "READ_ONLY_AUTOMATIC",
+      "gate": "inspection",
+      "gate_status": "UNKNOWN",
+      "operation": "Map requirements to source, tests, workflows, and documentation",
+      "priority": 2,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    },
+    {
+      "action_id": "instruction_inventory:unknown",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "READ_ONLY_AUTOMATIC",
+      "gate": "instruction_inventory",
+      "gate_status": "UNKNOWN",
+      "operation": "Read and hash all applicable repository instructions without rewriting policy",
+      "priority": 3,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    },
+    {
+      "action_id": "production_readiness:unknown",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "LOCAL_ANALYSIS_AND_FOCUSED_TESTS",
+      "gate": "production_readiness",
+      "gate_status": "UNKNOWN",
+      "operation": "Map production candidates to owners, requirements, focused tests, and safe replacement plans",
+      "priority": 4,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    },
+    {
+      "action_id": "markdown_inventory:unknown",
+      "authorization_required": true,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "TARGET_WORKFLOW_REQUIRED",
+      "gate": "markdown_inventory",
+      "gate_status": "UNKNOWN",
+      "operation": "Run complete target-owned Markdown/ref/PR inventory",
+      "priority": 5,
+      "status": "BLOCKED_REQUIRES_AUTHORIZATION"
+    },
+    {
+      "action_id": "validation:unknown",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "LOCAL_THEN_TARGET_WORKFLOW",
+      "gate": "validation",
+      "gate_status": "UNKNOWN",
+      "operation": "Run focused local checks, then configured target-owned validation",
+      "priority": 6,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    },
+    {
+      "action_id": "security:unknown",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "READ_ONLY_AUTOMATIC",
+      "gate": "security",
+      "gate_status": "UNKNOWN",
+      "operation": "Run available read-only security checks and record inaccessible findings",
+      "priority": 7,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    },
+    {
+      "action_id": "remote_main:unknown",
+      "authorization_required": true,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "REMOTE_AUTHORIZATION_REQUIRED",
+      "gate": "remote_main",
+      "gate_status": "UNKNOWN",
+      "operation": "Verify exact main SHA and use only an authorized normal publication path",
+      "priority": 8,
+      "status": "BLOCKED_REQUIRES_AUTHORIZATION"
+    },
+    {
+      "action_id": "remote_backup:unknown",
+      "authorization_required": true,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "REMOTE_AUTHORIZATION_REQUIRED",
+      "gate": "remote_backup",
+      "gate_status": "UNKNOWN",
+      "operation": "Verify backup SHA and guarded fast-forward eligibility",
+      "priority": 9,
+      "status": "BLOCKED_REQUIRES_AUTHORIZATION"
+    },
+    {
+      "action_id": "q_version:unknown",
+      "authorization_required": true,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "CONDITIONAL_FINALIZATION",
+      "gate": "q_version",
+      "gate_status": "UNKNOWN",
+      "operation": "Finalize a sequential Q version only after every required gate passes",
+      "priority": 10,
+      "status": "BLOCKED_REQUIRES_AUTHORIZATION"
+    },
+    {
+      "action_id": "live_activity:unknown",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "LOCAL_OR_TARGET_WORKFLOW",
+      "gate": "live_activity",
+      "gate_status": "UNKNOWN",
+      "operation": "Publish sanitized lifecycle status and verify the exact-SHA event",
+      "priority": 11,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    },
+    {
+      "action_id": "cross_repository:unknown",
+      "authorization_required": true,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "TARGET_WORKFLOW_REQUIRED",
+      "gate": "cross_repository",
+      "gate_status": "UNKNOWN",
+      "operation": "Verify both source objects and run guarded target-owned sync",
+      "priority": 12,
+      "status": "BLOCKED_REQUIRES_AUTHORIZATION"
+    },
+    {
+      "action_id": "final_verification:fail",
+      "authorization_required": false,
+      "evidence_required": [
+        "execution_id",
+        "repository",
+        "exact_sha",
+        "result",
+        "verification_method"
+      ],
+      "execution_mode": "READ_ONLY_AUTOMATIC",
+      "gate": "final_verification",
+      "gate_status": "FAIL",
+      "operation": "Re-read terminal checks, refs, ledgers, and clean exact-SHA evidence",
+      "priority": 13,
+      "status": "QUEUED_SAFE_AUTOMATION"
+    }
+  ],
+  "retry_counts": {},
+  "updated_at": "2026-10-03T00:45:53.668049Z"
+}

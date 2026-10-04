@@ -1,128 +1,367 @@
 {
   "schema_version": "1.0",
-  "correlation_id": "aab29ffc-5de8-4b02-82be-9aab5784bb5c",
-  "status": "LATEST_SHA_CHECKS_PENDING_AUTOSYNC_SECURITY_AND_PARITY_BLOCKED",
-  "generated_at": "2026-10-01T23:51:28Z",
+  "correlation_id": "f456e688-2ecb-4e5e-8042-59a97c6eaee1",
+  "status": "BLOCKED_REMOTE_AGENT_RUNS_FAILED_AUTH_UNAVAILABLE",
+  "generated_at": "2026-10-03T01:12:02Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "target_repositories": [
     "thealphakenya/Alpha-Q-ai",
     "thealphakenya/qmoi-enhanced"
   ],
   "authorization": {
-    "identity_verified": true,
+    "identity_verified": false,
     "actions_dispatch_authorized": false,
     "required_capability": "user-owned GitHub token or a scoped GitHub App with final workflow, contents, checks, and protected-branch authority",
-    "notes": "GitHub CLI user themegakenya can read refs and workflow metadata but is not verified as the GitHub App. App key rotation is unverified; do not authenticate with the historically exposed key. Alpha-Q-ai main-protection GET returned HTTP 403."
+    "notes": "The user selected CLI authentication, but a fresh gh auth status still reports no logged-in host. A non-mutating push dry-run could not obtain credentials. GitHub MCP read-only listings returned zero in-progress Ollama-agent/orchestrator runs in either repository. Correctly paired run/job details show latest agent jobs failed and their agent execution steps were skipped. Historical MY_CUSTOM_TOKEN runs prove only past cross-repository read availability, not current validity or write authority. No current branch-protection/security state was verified. Do not authenticate with historically exposed key material."
   },
   "state": {
-    "local_validation": "Latest: tests/test_cross_repo_sync.py plus tests/test_merge_inventory.py: 10 passed; branch-history regression: 1 passed, 105 deselected; workflow validator: 17 workflows valid; py_compile, JSON and 25 JSONL records parsed, and git diff --check passed.",
+    "local_validation": "Real AutonomousCompletionEngine execution exec-04905f69ea3442d094007625627e1366 returned BLOCKED_REQUIRES_HUMAN with 13 pending actions; heartbeat false, instruction inventory 8/8 and local evidence integrity PASS. Focused pytest over tests/test_control_plane.py and tests/test_ollama_autonomous_agent.py: 144 passed, 1 skipped (headless subprocess timeout handled by test), 355.15 seconds. The two named QMOI failures from the remote run passed in a separate local targeted rerun (2 passed, 194 seconds). Full repository suite not run.",
     "remote_completion": "pending",
     "backup_parity_proven": false,
     "cross_repo_parity_proven": false,
-    "security_gate_status": "GitHub push warning reports 51 vulnerabilities (28 high, 19 moderate, 4 low); Dependabot detail access returned HTTP 403",
-    "app_authentication": "blocked_rotation_unverified_no_app_authentication_attempted",
-    "local_head_sha": "5e40b2789fe32eab12e03ddd0b92ff36ea2c2bb4",
-    "origin_main_sha": "ca47fb8c7a855c0922123ed6726d7ad82795bf51",
-    "remote_alpha_q_ai_main_sha": "ca47fb8c7a855c0922123ed6726d7ad82795bf51",
-    "remote_qmoi_enhanced_main_sha": "767cb450e171c0a26f44231e40fe92899951bb5f",
-    "branch_status": "latest evidence follow-up pending publication from exact current main; originating dirty main is 0 ahead/58 behind and preserved",
+    "security_gate_status": "Not refreshed: GitHub CLI unauthenticated; current security and branch-protection status unknown. Previous HTTP 403 observations are historical.",
+    "app_authentication": "No GitHub CLI identity available in this session; GitHub App identity and authority unverified",
+    "local_head_sha": "87e87caeee391c2730729dcbf1a86de947e425e4",
+    "origin_main_sha": "a8553878f096209478d9ffe1bb1defb5183eab0c",
+    "remote_alpha_q_ai_main_sha": "a8553878f096209478d9ffe1bb1defb5183eab0c",
+    "remote_qmoi_enhanced_main_sha": "1a5e4df97fcb2677408d43b4cde6b17e4861fa9b",
+    "branch_status": "Local HEAD is 87e87caeee391c2730729dcbf1a86de947e425e4; current Alpha main was freshly observed at a8553878f096209478d9ffe1bb1defb5183eab0c, but local origin/main tracking ref is stale; ahead/behind against current remote tip is unknown. Worktree is dirty.",
     "worktree_dirty": true,
     "remote_policy_proven": false,
     "latest_local_validation": {
-      "observed_at": "2026-10-01T23:37:12Z",
-      "base_sha": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
-      "credential_readiness_test": "1 passed, 106 deselected",
-      "full_agent_suite": "pending",
-      "full_workflow_validation": "pending",
-      "isolated_documentation_diff_check": "passed",
-      "active_worktree_diff_check": "pre-existing user-request trailing whitespace reported",
-      "remote_repair_sha": null
+      "observed_at": "2026-10-03T00:47:10Z",
+      "base_sha": "87e87caeee391c2730729dcbf1a86de947e425e4",
+      "autonomous_completion_execution_id": "exec-04905f69ea3442d094007625627e1366",
+      "autonomous_completion_status": "BLOCKED_REQUIRES_HUMAN",
+      "autonomous_completion_pending_actions": 13,
+      "instruction_inventory": "PASS, 8/8",
+      "local_evidence_checks": "PASS after preserving the two legacy telemetry labels as JSONL records",
+      "post_normalization_control_plane_tests": "7 passed",
+      "post_normalization_telemetry_redaction_test": "1 passed",
+      "q_version_manager_tests": "16 passed",
+      "selected_agent_control_plane_sync_tests": "10 passed",
+      "dedicated_sync_guard_tests": "3 passed",
+      "git_diff_check": "passed",
+      "reviewed_workflow_yaml": "four workflows parsed successfully",
+      "strict_completion_json_jsonl_validation": "passed",
+      "full_suite": "not rerun"
     },
-    "latest_observation": {
-      "observed_at": "2026-10-01T23:51:28Z",
+    "workflow_review": {
+      "read_only_preflight": ".github/workflows/cross-repo-auth-preflight.yml; scheduled and manually dispatchable; consumes MY_CUSTOM_TOKEN or github.token; not dispatched this session",
+      "cross_repository_autosync": ".github/workflows/cross-repo-autosync.yml; scheduled and manually dispatchable; contents:write; checks out both repositories, updates counterpart workflow/scripts, then runs sync with --apply --promote; mutation authorization and exact-SHA evidence required",
+      "branch_sync_monitor": ".github/workflows/branch-sync.yml; synchronization job disabled by if:false",
+      "yaml_validation": "cross-repo-autosync.yml, cross-repo-auth-preflight.yml, branch-sync.yml, ollama-master-orchestrator.yml parsed successfully"
+    },
+    "latest_remote_workflow_evidence": {
+      "user_selected_integration_policy": {
+        "policy": "fast-forward-only",
+        "decision_source": "user",
+        "selected_at": "2026-10-03T00:32:26Z",
+        "merge_or_tree_mirroring_authorized": false,
+        "force_push_or_history_rewrite_authorized": false
+      },
+      "sync_guard_review": {
+        "checkout_history": "fetch-depth: 0 for both repository checkouts",
+        "sync_semantics": "fast-forward-only; requires source commit object in target checkout; does not merge unrelated histories or mirror trees",
+        "focused_test_file": "tests/test_cross_repo_sync.py",
+        "focused_test_result": "3 passed",
+        "missing_object_no_mutation_regression": "passed",
+        "interpretation": "current blocker is source commit/history availability, not evidence of failed cross-repository read access",
+        "integration_policy_change_applied": false
+      },
+      "alpha_autosync": {
+        "run_id": "37078107718",
+        "job_id": "111072398500",
+        "repository": "thealphakenya/Alpha-Q-ai",
+        "sha": "1e25b76db146c0da34fdebffe7ce7fb1f2cca4bb",
+        "conclusion": "failure",
+        "token_validation": "passed",
+        "both_repository_checkouts": "passed",
+        "sync_report_status": "blocked",
+        "applied": false,
+        "both_direction_counterpart_objects_available": false,
+        "fast_forward_possible": false,
+          "checkout_fetch_depth": 0,
+        "report_artifact_sha256": "ec22f6804b0389d1ac1aadb119d2d4c686c3efada29aa31a0c5e56236d42d16d"
+      },
+      "qmoi_autosync": {
+        "run_id": "37078536168",
+        "job_id": "111073748331",
+        "repository": "thealphakenya/qmoi-enhanced",
+        "sha": "1a5e4df97fcb2677408d43b4cde6b17e4861fa9b",
+        "conclusion": "failure",
+        "token_validation": "passed",
+        "both_repository_checkouts": "passed",
+        "sync_report_status": "blocked",
+        "applied": false,
+        "both_direction_counterpart_objects_available": false,
+        "fast_forward_possible": false,
+          "checkout_fetch_depth": 0,
+        "report_artifact_sha256": "8d894445ab1ed730b4fad54cac6002b1059fffafb5922919860aa47dae883ef4"
+      },
+      "alpha_auth_preflight": {
+        "run_id": "37071703192",
+        "job_id": "111052411755",
+        "sha": "1e25b76db146c0da34fdebffe7ce7fb1f2cca4bb",
+        "conclusion": "success",
+        "probe_payload_retrieved": false,
+        "mutation_authority_proven": false
+      },
+      "live_activity": {
+        "alpha_run_id": "37082046794",
+        "alpha_sha": "1e25b76db146c0da34fdebffe7ce7fb1f2cca4bb",
+        "alpha_conclusion": "success",
+        "qmoi_run_id": "37082042079",
+        "qmoi_sha": "1a5e4df97fcb2677408d43b4cde6b17e4861fa9b",
+        "qmoi_conclusion": "success"
+      }
+    },
+    "current_observation": {
+      "observed_at": "2026-10-03T01:12:02Z",
+      "correlation_id": "f456e688-2ecb-4e5e-8042-59a97c6eaee1",
+      "repository": "thealphakenya/Alpha-Q-ai",
+      "ref": "main",
+      "local_head_sha": "87e87caeee391c2730729dcbf1a86de947e425e4",
+      "alpha_main_sha": "a8553878f096209478d9ffe1bb1defb5183eab0c",
+      "alpha_autosync_backup_sha": "6d925c33f0093035755772137d863618b3818ab0",
+      "alpha_refs_verified_by": "git ls-remote",
+      "qmoi_refs_refreshed": true,
+      "qmoi_main_sha": "1a5e4df97fcb2677408d43b4cde6b17e4861fa9b",
+      "qmoi_autosync_backup_sha": "d371de28f77b3ebea0244ccc1c13793a2654c395",
+      "qmoi_imported_branch_sha": "7cfca70c556fcda2e2707b94b14c6ed6d8541e2f",
+      "qmoi_imported_branch_compare_status": "HTTP 404; ambiguous; no ancestry conclusion",
+      "github_api_identity": "unavailable; gh auth status reports no logged-in host",
+      "user_selected_authentication": true,
+      "authentication_verified_after_selection": false,
+      "user_reported_actions_secret": {
+        "name": "MY_CUSTOM_TOKEN",
+        "configured_in_both_repositories": true,
+        "claim_source": "user report",
+        "independently_verified": true,
+        "verification_scope": "nonempty at workflow runtime; enabled both-repository checkout/read in runs 37078107718 and 37078536168",
+        "value_accessed_or_recorded": false,
+        "read_scope_verified_at_run_time": true,
+        "write_scope_verified": false,
+        "present_day_validity_verified": false
+      },
+      "write_workflow_dispatch_authorized": false,
+      "workflows_and_protection_refreshed": true,
+      "branch_protection_refreshed": false,
+      "local_branch_ahead_behind": "unknown against current remote main: local origin/main tracking ref is stale; local HEAD 87e87caeee391c2730729dcbf1a86de947e425e4",
+      "worktree_dirty": true,
+      "focused_tests": {
+        "q_version_manager": "16 passed",
+        "agent_control_plane_sync": "10 passed",
+        "sync_guard": "3 passed",
+        "post_normalization_control_plane": "7 passed",
+        "post_normalization_redaction": "1 passed",
+        "agent_and_control_plane_pytest_files": "144 passed, 1 skipped"
+      },
+      "autonomous_completion": {
+        "execution_id": "exec-04905f69ea3442d094007625627e1366",
+        "status": "BLOCKED_REQUIRES_HUMAN",
+        "final_verification_gate": "UNKNOWN",
+        "pending_actions": 13,
+        "local_evidence_integrity": "PASS",
+        "instruction_inventory": "PASS"
+      },
+      "telemetry_jsonl_repair": {
+        "invalid_committed_records": [
+          {
+            "line": 1,
+            "sha256": "dce9913747c194447f12afd463f73ef4c0c11977ad8ed20048979f443cc1b04b"
+          },
+          {
+            "line": 4,
+            "sha256": "6b8471643e7d3835b2befe604184e47c6a2a1ca87f777fe9b24cce353680ff88"
+          }
+        ],
+        "repair": "preserved original plain-text labels inside LEGACY_TEXT_RECORD JSONL events; no other prior telemetry changes replaced",
+        "current_sha256": "bea6fc60c6baaff8fab40e890a447bc62acf718f969d5b8084755212ede6dffd",
+        "record_count": 393,
+        "all_records_parse": true
+      },
+      "instruction_inventory": {
+        "status": "PASS",
+        "files_read": 8,
+        "files_discovered": 8,
+        "source_contents_recorded": false
+      },
+      "instruction_inventory_artifact_sha256": "a8c7fcd63d25b2b33ad99ee39d1e033d3b8a7a214e915c5e15e87a3773ea4b9d",
+      "production_readiness": {
+        "status": "NEEDS_REVIEW",
+        "candidates": 282,
+        "scanned_files": 3141,
+        "unreadable_files": 13,
+        "oversized_files_not_read": 4,
+        "coverage_complete": false,
+        "inventory_sha256": "4b38a4d229044485be71cc23882d9ef8ec492ef73a53b3db592d152ecc36e84a"
+      },
+      "bounded_production_review": {
+        "paths_reviewed": [
+          "Alpha-Q-ai-2025/api/qcity.ts",
+          "Alpha-Q-ai-2025/ai_self_update_cli.py"
+        ],
+        "matching_tests_found_in_nested_tree": false,
+        "current_owner_and_requirements_established": false,
+        "source_changes_made": false
+      },
+      "q_version_manager": {
+        "highest_known_number": 0,
+        "latest_materialized_version": null,
+        "reserved_version": null,
+        "reservation_integrity_verified": true,
+        "q_version_finalized": false
+      },
+      "persistent_todos": {
+        "instruction_evidence_audit": "done",
+        "q_version_gate_validation": "done",
+        "ollama_agent_gate_validation": "done",
+        "production_candidate_review": "in_progress",
+        "dual_repository_terminal_proof": "blocked",
+        "q_version_finalization": "pending",
+        "remote_agent_live_run_proof": "blocked"
+      },
+      "remote_agent_activity": {
+        "in_progress_agent_runs": 0,
+        "in_progress_orchestrator_runs": 0,
+        "latest_alpha_agent_run_id": "37070403907",
+        "latest_alpha_agent_run_conclusion": "failure",
+        "latest_alpha_agent_job_id": "111048247738",
+        "latest_alpha_agent_failed_steps": [
+          "Validate agent-owned lint contract",
+          "Validate repository and hosted links",
+          "Enforce final health gate"
+        ],
+        "latest_alpha_link_validation": "124 accessible, 51 inaccessible, 175 checked",
+        "latest_alpha_agent_execution_step": "skipped",
+        "latest_qmoi_agent_run_id": "37068187160",
+        "latest_qmoi_agent_run_conclusion": "failure",
+        "latest_qmoi_agent_job_id": "111041098474",
+        "latest_qmoi_agent_failed_steps": [
+          "Execute repository test suite",
+          "Final lightweight validation",
+          "Enforce final health gate"
+        ],
+        "latest_qmoi_test_summary": "2 failed, 228 passed",
+        "latest_qmoi_failing_tests": [
+          "test_cross_repository_plan_covers_alpha_history_and_merge_docs",
+          "test_run_autonomous_loop_recovers_from_transient_model_500"
+        ],
+        "latest_qmoi_failure_root_cause": "KeyError: qmoi-enhanced-history-14 while reading cross-repository plan metrics",
+        "latest_qmoi_agent_execution_step": "skipped",
+        "initial_run_detail_http_status": 404,
+        "initial_404_cause": "agent run IDs were paired with the wrong repository",
+        "correctly_paired_run_and_job_details": "retrieved; both terminal failures confirmed",
+        "interpretation": "no live successful remote worker verified; latest scheduled worker jobs skipped agent execution"
+      },
+      "latest_alpha_remote_main_commit": {
+        "sha": "a8553878f096209478d9ffe1bb1defb5183eab0c",
+        "author": "github-actions[bot]",
+        "message": "chore(ollamatracks): reconcile agent telemetry [skip ci]",
+        "committed_at": "2026-10-03T01:11:42Z",
+        "changed_scope": "Ollama tracker/telemetry reconciliation files",
+        "is_agent_success_evidence": false
+      },
+      "latest_telemetry_snapshot": {
+        "observed_at": "2026-10-03T01:01:50Z",
+        "record_count": 411,
+        "sha256": "0e36b9e42ec2d1d99256416ec994dda8f0bb73fe2f557475d2cb792e7043d2ea",
+        "all_records_parse": true,
+        "latest_event": "agent_startup",
+        "latest_event_timestamp": "2026-10-03T00:59:04.418884Z",
+        "event_origin_and_completion_verified": false
+      },
+      "local_engine_snapshot": {
+        "execution_id": "exec-04905f69ea3442d094007625627e1366",
+        "heartbeat": false,
+        "status": "BLOCKED_REQUIRES_HUMAN",
+        "pending_actions": 13,
+        "process_name_check": "no Python/Ollama process listed"
+      },
+      "push_dry_run": "failed: unable to get password from user; no actual push attempted",
+      "latest_focused_pytest": "144 passed, 1 skipped; two focused files; full repository suite not run",
+      "latest_remote_failure_reproduction": {
+        "tests": [
+          "tests/test_ollama_autonomous_agent.py::TestCrossRepositoryAutonomyManager::test_cross_repository_plan_covers_alpha_history_and_merge_docs",
+          "tests/test_ollama_runtime.py::test_run_autonomous_loop_recovers_from_transient_model_500"
+        ],
+        "result": "2 passed in 194 seconds",
+        "scope": "current local checkout only; does not prove fix is published to either remote"
+      },
+      "remote_completion_proven": false,
+      "q_version_finalized": false
+    },
+    "fast_forward_policy": {
+      "selected_by_user": true,
+      "current_exact_refs_fast_forward_compatible": false,
+      "both_workflows_used_full_reachable_history": true,
+      "retry_same_refs_recommended": false,
+      "safe_next_action": "Wait for authorized policy-compliant history path establishing shared ancestry; no workflow dispatch or history rewrite"
+    },
+    "q_version_manager": {
+      "highest_known_number": 0,
+      "latest_materialized_version": null,
+      "reserved_version": null,
+      "reservation_integrity_verified": true,
+      "finalization_allowed": false
+    },
+    "observation_2026_10_03T000113Z": {
+      "observed_at": "2026-10-03T00:01:13Z",
+      "correlation_id": "0c79c338-077d-4367-87f8-d2ec01b34c6e",
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",
-      "alpha_main_sha": "3643ef79b72a6637dcf7bb8c92c516b20fa728ab",
-      "alpha_backup_sha": "6d925c33f0093035755772137d863618b3818ab0",
-      "qmoi_enhanced_main_sha": "767cb450e171c0a26f44231e40fe92899951bb5f",
-      "qmoi_enhanced_backup_sha": "d371de28f77b3ebea0244ccc1c13793a2654c395",
+      "local_head_sha": "87e87caeee391c2730729dcbf1a86de947e425e4",
+      "local_ahead_behind": "0 ahead, 8 behind",
+      "alpha_main_sha": "1e25b76db146c0da34fdebffe7ce7fb1f2cca4bb",
+      "alpha_autosync_backup_sha": "6d925c33f0093035755772137d863618b3818ab0",
+      "qmoi_enhanced_main_sha": "1a5e4df97fcb2677408d43b4cde6b17e4861fa9b",
+      "qmoi_enhanced_autosync_backup_sha": "d371de28f77b3ebea0244ccc1c13793a2654c395",
       "workflows": {
-        "push_on_main": {
-          "run_id": "36937035410",
+        "alpha_push_on_main": {
+          "run_id": "37071637052",
           "status": "completed",
           "conclusion": "success"
         },
-        "ollama_live_activity": {
-          "run_id": "36941238976",
+        "alpha_auth_preflight": {
+          "run_id": "37071703192",
           "status": "completed",
-          "conclusion": "success"
+          "conclusion": "success",
+          "meaning": "access probe only"
         },
-        "cross_repository_autosync": {
-          "run_id": "36941265326",
+        "alpha_autosync": {
+          "run_id": "37078107718",
           "status": "completed",
           "conclusion": "failure",
-          "failed_step": "Run guarded cross-repository sync",
-          "report_status": "blocked",
           "applied": false,
-          "artifact": "cross-repo-sync-report-36941265326",
-          "artifact_sha256": "5959c9dcdd898c3ec10b930572dab2bdd9d4f796b3b166853370d2fc4b0879a9",
-          "source_commit_missing_in_target": true,
-          "reverse_source_commit_missing_in_target": true,
-          "fast_forward_possible_in_either_direction": false
-        }
+          "artifact_sha256": "ec22f6804b0389d1ac1aadb119d2d4c686c3efada29aa31a0c5e56236d42d16d",
+          "reason": "source commit objects missing from counterpart checkout in both directions"
+        },
+        "alpha_live_activity": {
+          "run_id": "37078061569",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "qmoi_push_on_main": {
+          "run_id": "37076009847",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        "qmoi_autosync": {
+          "run_id": "37078536168",
+          "status": "completed",
+          "conclusion": "failure",
+          "applied": false,
+          "artifact_sha256": "8d894445ab1ed730b4fad54cac6002b1059fffafb5922919860aa47dae883ef4",
+          "reason": "source commit objects missing from counterpart checkout in both directions"
+        },
+        "language_checks": "all succeeded on current Alpha and QMOI main SHAs"
       },
       "branch_protection_http_status": 403,
       "dependabot_alerts_http_status": 403,
       "remote_completion_proven": false,
-      "tip_tree_counts": {
-        "alpha_main": {
-          "files": 10607,
-          "directories": 1148
-        },
-        "alpha_autosync_backup": {
-          "files": 8564,
-          "directories": 902
-        },
-        "qmoi_enhanced_main": {
-          "files": 8771,
-          "directories": 902
-        },
-        "qmoi_enhanced_autosync_backup": {
-          "files": 10614,
-          "directories": 1542
-        }
-      },
-      "published_sha": "ca47fb8c7a855c0922123ed6726d7ad82795bf51",
-      "published_parent_sha": "9fd17feeecf2d7c9942633f1138b4f11e5a1f790",
-      "publication": "normal push succeeded; git ls-remote matched",
-      "checks": {
-        "push_on_main": "in_progress",
-        "security_and_merge_gates": "in_progress",
-        "markdown_inventory_refresh": "in_progress",
-        "cross_repository_autosync": "in_progress",
-        "ollama_pr_validation": "in_progress",
-        "qmoi_live_activity": "success",
-        "codeql_advanced": "skipped",
-        "branch_sync_monitor": "skipped"
-      },
-      "vulnerabilities_from_push_warning": {
-        "total": 51,
-        "high": 28,
-        "moderate": 19,
-        "low": 4
-      },
-      "protection_http_status": 403,
-      "run_ids_indexed": false,
-      "additional_check_runs": {
-        "platform_compilations": "all six in_progress",
-        "documentation": "in_progress",
-        "workflow_integrity": "success",
-        "dependency_audit_and_tests": "in_progress",
-        "language_analyses": "in_progress",
-        "platform_feature_validation": "in_progress",
-        "markdown_refresh": "in_progress"
-      }
+      "q_version_finalized": false
     },
-    "current_observation": {
+    "older_current_observation": {
       "observed_at": "2026-10-01T23:51:28Z",
       "actor": "themegakenya GitHub CLI user",
       "local_head_sha": "5e40b2789fe32eab12e03ddd0b92ff36ea2c2bb4",
@@ -369,10 +608,58 @@
         "previous_qmoi_enhanced_main_protection_http_status": 403,
         "remote_completion_proven": false
       }
+    },
+    "bank_automation": {
+      "status": "NEEDS_VERIFICATION",
+      "source_sha256": "d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321",
+      "implementation_verified": false,
+      "financial_writes_authorized": false,
+      "remote_completion_verified": false,
+      "masking_security": {
+        "agent_telemetry_redaction": "implemented_and_tested",
+        "auditability_required": true,
+        "bank_provider_masking": "runtime_unverified",
+        "document": "QMOIMASKS.md",
+        "document_status": "DOCUMENTED_RUNTIME_UNVERIFIED",
+        "failure_policy": "AUTH_BLOCKED",
+        "fingerprint_and_route_masking": "disabled_during_provider_authentication_unless_authorized",
+        "implementation_verified": false,
+        "provider_identity_masking": "disabled_by_default_unless_provider_authorized",
+        "secret_values_in_evidence": false,
+        "source_sha256": "6e1d489e3559e69d3f68690e92294fca8f9404276f2b262a18ff651e22bbef7e"
+      }
+    },
+    "autonomous_completion_automation": {
+      "instruction_inventory_gate": "implemented_and_tested",
+      "production_readiness_gate": "implemented_and_tested",
+      "ranked_resumable_queue": "implemented_and_tested",
+      "current_state_refresh": "implemented_and_tested",
+      "local_evidence_integrity": "implemented_and_tested",
+      "q_version_requires_zero_candidates_and_zero_pending_actions": true,
+      "protected_or_financial_authority_self_granted": false
+    },
+    "instruction_inventory": {
+      "status": "PASS",
+      "files_discovered": 8,
+      "files_read": 8,
+      "unreadable_or_invalid": [],
+      "source_contents_recorded": false,
+      "artifact_sha256": "a8c7fcd63d25b2b33ad99ee39d1e033d3b8a7a214e915c5e15e87a3773ea4b9d"
+    },
+    "production_readiness": {
+      "status": "NEEDS_REVIEW",
+      "candidate_count": 282,
+      "scanned_files": 3141,
+      "excluded_roots": 9,
+      "unreadable_files": 13,
+      "oversized_files_not_read": 4,
+      "coverage_complete": false,
+      "inventory_sha256": "4b38a4d229044485be71cc23882d9ef8ec492ef73a53b3db592d152ecc36e84a",
+      "replacement_status": "discovered_unmapped; no bulk edits; production readiness not established"
     }
   },
   "validation": {
-    "full_test_suite": "Pending for current dirty agent/test changes; only credential-readiness regression passed (1 passed, 106 deselected).",
+    "full_test_suite": "Full repository suite not run. Focused tests/test_control_plane.py and tests/test_ollama_autonomous_agent.py: 144 passed, 1 skipped in 355.15 seconds; skip was the handled headless subprocess timeout.",
     "required_checks": "At exact published SHA ca47fb8c7a855c0922123ed6726d7ad82795bf51: live activity and workflow integrity succeeded; six platform compilations, docs, analyses, dependency/tests, Markdown refresh, and autosync in progress; branch sync and matrix analysis skipped. No terminal overall result.",
     "exact_final_remote_sha": null,
     "local_verification_method": [
@@ -408,7 +695,16 @@
     "GitHub push warning reports 51 default-branch vulnerabilities (28 high, 19 moderate, 4 low); main-protection and Dependabot alert details return HTTP 403.",
     "Cross-repository autosync on parent SHA was safely blocked because source commit objects were unavailable in the counterpart object databases; peer and backup parity remain unproven.",
     "Latest exact main SHA ca47fb8c7a855c0922123ed6726d7ad82795bf51 has required checks in progress and no terminal overall result.",
-    "Current push response reports 51 vulnerabilities (28 high, 19 moderate, 4 low); main-protection and Dependabot details remain inaccessible with HTTP 403."
+    "Current push response reports 51 vulnerabilities (28 high, 19 moderate, 4 low); main-protection and Dependabot details remain inaccessible with HTTP 403.",
+    "2026-10-02 observation: Alpha SHA 0beecbad has required checks in progress; QMOI SHA cb543712 autosync failed; branch protection and Dependabot reads returned HTTP 403; local bank documentation scan does not verify implementation or provider capability.",
+    "2026-10-03T00:51:32Z: read-only Actions queries found zero in-progress Ollama agent/orchestrator runs in either repository; latest agent and orchestrator runs listed were failures. Run/job detail requests returned HTTP 404 and remain ambiguous.",
+    "2026-10-03T00:51:32Z: gh CLI unauthenticated; git push --dry-run could not obtain credentials. No normal push or workflow dispatch was attempted; worktree is dirty and local main is 0 ahead/8 behind.",
+    "2026-10-03T00:51:32Z: QMOI imported/theofalphakenya/main ref exists at 7cfca70c556fcda2e2707b94b14c6ed6d8541e2f; compare API returned 404, so ancestry remains unknown.",
+    "2026-10-03T01:02:28Z correction: the prior run-detail 404s were caused by mismatched repo/run IDs. Correctly paired details show Alpha job 111048247738 and QMOI job 111041098474 failed, with each remote agent execution step skipped.",
+    "2026-10-03T01:02:28Z: no in-progress agent or orchestrator runs; local completion engine heartbeat is false with 13 pending actions. Remote agent continuation and successful completion are not verified.",
+    "2026-10-03T01:09:52Z: user selected GitHub CLI authentication, but gh auth status still reports no logged-in host; no push or dispatch authority is available.",
+    "2026-10-03T01:09:52Z: Alpha agent job 111048247738 failed lint and link validation (51 of 175 links inaccessible), skipped agent execution, and failed final health.",
+    "2026-10-03T01:09:52Z: QMOI agent job 111041098474 failed 2 tests (228 passed) due to KeyError qmoi-enhanced-history-14, failed final lightweight validation/health, and skipped agent execution. Both named tests pass locally in this checkout, which is not proof of remote publication."
   ],
   "evidence_refs": [
     "remotecompletion.md",
@@ -419,6 +715,8 @@
     "github_proof_contract.json",
     "scripts/ollama_autonomous_agent.py",
     "requirements.txt",
-    "/workspaces/Alpha-Q-ai/Alpha-Q-ai-2025/package.json"
+    "/workspaces/Alpha-Q-ai/Alpha-Q-ai-2025/package.json",
+    "bankandbankaccounts.md",
+    "ollamatracks/bank_automation_status.json"
   ]
 }

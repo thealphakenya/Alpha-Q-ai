@@ -54,3 +54,294 @@ QMOI Masks must always:
 ## Relationship to the central orchestrator
 
 The orchestrator should treat masks and VPN as operational capabilities, not as optional decoration. They are core runtime features that protect identity, reduce risk, and enable sensitive automation patterns without breaking the repo’s accountability and evidence model.
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T21:49:41.589854Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T21:55:50.293743Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T21:59:27.992446Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T22:13:54.693333Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T22:15:43.448376Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T22:27:40.948584Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T22:30:01.251728Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T22:59:04.761076Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:06:27.311208Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:22:47.885914Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:24:44.145718Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:29:47.690038Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:41:06.739970Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:43:02.739203Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:48:45.826972Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:54:06.434772Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-02T23:59:11.965394Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-03T00:57:31.404837Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-03T01:30:07.411436Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-03T01:46:18.675605Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->
+## Bank Automation Security Compatibility
+
+- Updated: 2026-10-03T01:57:47.298115Z
+- Policy status: DOCUMENTED_RUNTIME_UNVERIFIED; this is a documented contract, not proof that runtime masks are implemented or effective.
+- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.
+- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.
+- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.
+- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.
+- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.
+- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
+- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
+<!-- END OLLAMA BANK MASK SECURITY STATUS -->

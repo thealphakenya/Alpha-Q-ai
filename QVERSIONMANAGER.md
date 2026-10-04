@@ -23,6 +23,23 @@ A final version is written only by `write_final_metrics()` after the caller supp
 13. Each repository receives `Q.0.0.N/REPOSITORY_METRICS.json` and `Q.0.0.N.md` with file, directory, byte, SHA, workflow, and correlation evidence.
 14. Self-referential metric JSON and its companion Markdown are explicitly excluded from their own tree hash inventory; the manifest records that exclusion.
 15. Audit output separates latest materialized version, highest reserved/discovered number, reservation integrity, pair status, and per-root source paths.
+16. Instruction inventories hash applicable `AGENTS.md`, Copilot instructions, and every file under `.github/instructions` for each target; they record scope and read errors without persisting instruction source text.
+17. Q-version finalization compares reported instruction paths, byte sizes, and hashes against both exact repository trees and rejects missing, unreadable, malformed, or tampered instruction evidence.
+18. Autonomous completion evidence includes ranked next actions, current-state refresh, local evidence JSON/JSONL integrity results, and an explicit authorization state for every pending action.
+19. Production-gap scanning is a scoped candidate inventory, not a blanket replacement engine: it records file hashes and marker line numbers, makes dependency/cache/history/build exclusions and unreadable/oversized coverage gaps explicit, and queues candidates as `discovered_unmapped` until owner, implementation, focused tests, security impact, rollback, and remote proof are supplied.
+20. Final metrics require a `CLEAR` production inventory with complete scan coverage, zero candidates, zero unreadable files, and zero oversized files skipped; unresolved candidates keep production and Q-version gates blocked.
+
+## Unattended completion and instruction coverage
+
+The autonomous agent must inventory and read the repository's root `AGENTS.md`, `.github/copilot-instructions.md`, and the `.github/instructions/` directory before it plans protected repository work. All three required sources must exist. Every regular instruction file is included; empty, unreadable, malformed, or symlinked instruction sources fail the gate. Each inventory record contains only the relative path, `applyTo` scope when present, byte count, and SHA-256. The inventory does not copy instruction text into logs or ledgers, and the finalizer compares every path, byte count, and hash against each exact repository tree.
+
+Instruction inventory proves which policy files were read, not that every natural-language requirement was semantically implemented. The agent must map requirements to owning code, tests, workflows, documentation, and exact remote evidence. It may update generated status sections and evidence artifacts, but it must not rewrite, delete, weaken, or self-approve policy instructions as part of routine automation.
+
+Production readiness follows the same evidence boundary. `production.md`, `productionenhanced.md`, and `ollamatracks/production_gap_inventory.json` must distinguish scanned candidates from reviewed defects, approved plans, implemented changes, tested replacements, and remotely verified production status. Marker matches in prose, tests, generated state, historical snapshots, virtual environments, or build outputs are not proof of non-production code. A blanket rewrite across every directory or branch is not an authorized operation; changes proceed in bounded file groups with ownership, compatibility, security, test, rollback, and exact-SHA evidence.
+
+Each completion evaluation refreshes `ollamatracks/current_state.json`, validates available local JSON/JSONL evidence, and writes a priority-ordered resumable action queue for every non-passing gate. Safe local/read-only work can proceed automatically. Remote dispatch/publication, cross-repository promotion, releases, deployments, credential changes, financial activity, and Q-version finalization stay blocked until their explicit authorization and evidence requirements pass. Retries must be bounded and checkpointed; inaccessible or failed remote services are recorded as blockers rather than retried indefinitely or treated as success.
+
+The agent must not claim equivalence to Copilot Chat or human judgment merely because it can inventory instructions or generate a queue. A final `Q.0.0.N` requires a terminal `SUCCESS` or `NO_CHANGES_REQUIRED` completion result, every required gate `PASS`, zero queued actions, valid instruction inventories for both repositories, a complete production scan with zero candidates, exact clean remote SHAs, and terminal target-owned workflow evidence.
 
 ## Q seed lineage
 
@@ -64,14 +81,19 @@ The Q-version manager is designed to support the autonomous update contract for 
 A valid Q version is a repository artifact, not a substitute for branch authorization. The manager records the evidence but does not invent remote completion. It accepts a version only when the caller supplies terminal success, exact remote SHAs, clean local state, workflow run IDs, and correlated lifecycle evidence.
 
 The same contract applies to additional repo instances that follow the autosync model: branch-level publication is performed on backup first, then main, with the same SHA check and ledger gate. The automation must never force-push, overwrite an existing Q-version artifact, or claim success without terminal workflow evidence.
+The final metrics JSON also captures both repositories' instruction-inventory hashes and the terminal autonomous-completion gate map/action queue. The companion summary reports instruction-file counts and must state that the pending action count is zero; it may not summarize an unfinished queue as complete.
 
 ## Q.0.0.1 creation and companion artifacts
 
-The first materialized Q-version directory after the policy gate is `Q.0.0.1`. It must be created in the final branch state of each repository only after the evidence gate is satisfied. The directory should include:
+The first materialized Q-version directory after the policy gate is `Q.0.0.1`. It must be created in the final branch state of each repository only after the evidence gate is satisfied. Preparation requires terminal `SUCCESS` or `NO_CHANGES_REQUIRED`, every required completion gate `PASS`, an empty pending-action queue, complete instruction inventories for both repositories, exact clean remote SHAs, and terminal target-owned workflow evidence. The directory should include:
 
 - `Q.0.0.1/REPOSITORY_METRICS.json`
 - `Q.0.0.1.md` companion summary
 - any required lifecycle and sync records created by the branch publication flow
+- per-repository instruction inventory and hash evidence embedded in `REPOSITORY_METRICS.json`
+- the terminal autonomous-completion gate map and empty pending-action queue embedded in `REPOSITORY_METRICS.json`
+- the complete production inventory summary with zero candidate files, unreadable files, and oversized skipped files
+- instruction-file count in the companion Markdown summary; no instruction source text or secret values
 
 This directory is a final artifact, not an everyday working directory. It is not an excuse to keep stale or fabricated research data around. The live repo content stays sanitized; the version artifact remains the archive of accepted evidence and completion state.
 

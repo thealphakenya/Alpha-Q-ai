@@ -7585,3 +7585,225 @@ This file tracks non-production or shallow implementations that must be upgraded
 - tests/test_production_trading_autopilot.py: ERROR
 - tests/test_qmoi_release_autofix.py: placeholder
 - zx.txt: ERROR
+
+<!-- BEGIN QMOI MANAGED: PRODUCTION_INVENTORY -->
+## Agent-managed production inventory
+
+Production implementation candidate status: needs_review; production readiness is not established by scanning.
+Last scan: 2026-10-02T23:54:06.425314Z.
+Production gap inventory: `QMOItracks/production_gap_inventory.json`.
+Files scanned: 3141; candidate files: 282; unreadable: 13; oversized not read: 4.
+Historical/cache/dependency roots explicitly excluded: 9; this is the active materialized workspace only, not remote branches or unfetched history.
+
+## Required replacement policy
+- Marker matches are candidate locations, not verified defects; review owning code and intended behavior before editing.
+- Never bulk-rewrite files or change APIs from keyword matches alone. Record requirement, owner, implementation plan, focused tests, security impact, rollback, and exact validation result.
+- A replacement is verified only after implementation and relevant tests pass; a repository is production-ready only after all required gates and exact remote evidence pass.
+- Historical snapshots, installed dependencies, generated caches, and build outputs are excluded by scope and listed in the machine inventory; they are not silently counted as active source.
+
+## Unmapped production candidates
+- `Alpha-Q-ai-2025/QMOIAPIKEYREADME.md`: TODO; lines 33, 34; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/ai_self_update.py`: PLACEHOLDER, TODO; lines 60, 87, 91, 95, 99, 112, 122, 125, 129; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/ai_self_update_cli.py`: NOT_IMPLEMENTED; lines 18; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/api/qcity.ts`: TODO; lines 193, 274, 275, 288, 290; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/account-automation/route.ts`: STUB, TODO; lines 27, 22, 32, 40, 61, 62; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/cashon/balance/route.ts`: TODO; lines 34, 59; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/colab-job.ts`: STUB, TODO; lines 6, 13, 24, 34, 9, 20, 30, 37; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/document-backup/route.ts`: STUB, TODO; lines 8, 28, 13, 32; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/earning/route.ts`: STUB, TODO; lines 35, 36; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/media/generate/route.ts`: TODO; lines 38, 197; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/mpesa/callback/route.ts`: TODO; lines 39, 40; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qapikey/route.ts`: TODO; lines 16, 31, 42; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qcity/selfheal-npm/route.ts`: PLACEHOLDER; lines 6; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi-database/route.ts`: STUB, TODO; lines 13, 15; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi-earning-enhanced/route.ts`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi-model.ts`: PLACEHOLDER, TODO; lines 200, 146, 156, 541; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi/auto-fix/download-report/route.ts`: TODO; lines 25; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi/backup/route.ts`: PLACEHOLDER; lines 14, 15, 17, 18, 24, 25; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi/language/route.ts`: PLACEHOLDER; lines 15, 16, 18, 19, 21, 22, 24, 25; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi/research/route.ts`: PLACEHOLDER; lines 14, 15, 17, 18, 20, 21; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi/user/route.ts`: PLACEHOLDER; lines 10, 11, 17, 18, 20, 21, 23, 24; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi/voice-preview/route.ts`: PLACEHOLDER; lines 41; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qmoi/voice-profiles/route.ts`: PLACEHOLDER; lines 249; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qnews/route.ts`: STUB, TODO; lines 7, 9, 14, 91; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/qradio/route.ts`: TODO; lines 58; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/social-automation/route.ts`: STUB, TODO; lines 37, 15, 38; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/app/api/whatsapp-business/route.ts`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/bitget-trader.py`: PLACEHOLDER; lines 51, 57; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/AppManager.tsx`: PLACEHOLDER; lines 366; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/BrowserInterface.tsx`: TODO; lines 1; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/Chatbot.tsx`: PLACEHOLDER; lines 112; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/DeviceSettingsPanel.tsx`: PLACEHOLDER; lines 35; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/DownloadManager.tsx`: PLACEHOLDER; lines 67; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/EnhancedPreviewWindow.tsx`: PLACEHOLDER; lines 34; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/EnhancedRevenuePanel.tsx`: PLACEHOLDER; lines 271, 449, 484; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/FarmBusinessManager.tsx`: PLACEHOLDER; lines 33; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/FileCategorizer.tsx`: PLACEHOLDER; lines 37; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/GlobalCall.tsx`: PLACEHOLDER; lines 28; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/GlobalFileTransfer.tsx`: PLACEHOLDER; lines 27; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/GlobalMail.tsx`: PLACEHOLDER; lines 19, 26, 32; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/GlobalVideoCall.tsx`: PLACEHOLDER; lines 27; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/LcSpaces.tsx`: TODO; lines 23, 28, 33, 38, 43, 48, 53; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/LeahWallet.tsx`: PLACEHOLDER; lines 31, 38; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/LeahWalletPanel.tsx`: PLACEHOLDER; lines 36, 37; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/MediaPreviewWindow.tsx`: PLACEHOLDER; lines 19; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/PriceProductVerifier.tsx`: PLACEHOLDER; lines 23; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QAvatar.tsx`: PLACEHOLDER, STUB, TODO; lines 850, 874, 898, 1169, 1182, 1211, 1433, 1434, 949, 1534, 1161; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QFileManager.tsx`: PLACEHOLDER; lines 25, 35; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QI.tsx`: PLACEHOLDER, TODO; lines 1269, 643, 658, 664, 670, 704, 709, 724, 737; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QiSpaces.tsx`: TODO; lines 23, 28, 33, 38, 43, 48, 53; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QmoiAccessibility.tsx`: PLACEHOLDER; lines 513; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QmoiAutoDistribution.tsx`: PLACEHOLDER; lines 472, 477, 507, 592, 600, 631, 639; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QmoiBrowser.tsx`: PLACEHOLDER; lines 294; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QmoiDialer.tsx`: PLACEHOLDER; lines 309; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QmoiEnhancedSystem.tsx`: PLACEHOLDER; lines 844; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QmoiKeyboard.tsx`: PLACEHOLDER; lines 245; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/QmoiMediaManager.tsx`: PLACEHOLDER, TODO; lines 283, 307, 73; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/SettingsPanel.tsx`: TODO; lines 459; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/TeamRoleManager.tsx`: PLACEHOLDER; lines 111; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/VoiceSelectionPanel.tsx`: PLACEHOLDER; lines 258; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/WifiPanel.tsx`: PLACEHOLDER; lines 349, 392, 571; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/analytics/EncryptedAuditLog.tsx`: PLACEHOLDER; lines 11; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/auth/BiometricAuth.tsx`: PLACEHOLDER; lines 708, 718; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/automation/AutomationRulesPanel.tsx`: PLACEHOLDER; lines 34, 35; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/device/AWSCredentialsModal.tsx`: PLACEHOLDER; lines 12, 13, 14; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/device/AzureCredentialsModal.tsx`: PLACEHOLDER; lines 13, 14, 15, 16; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/device/DeviceIntegrationStubs.ts`: TODO; lines 8, 9, 10, 14, 15, 16, 20, 21; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/device/GCPCredentialsModal.tsx`: PLACEHOLDER; lines 11, 12; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/enhanced-system-dashboard.tsx`: PLACEHOLDER; lines 465, 579; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/projects/ProjectDashboard.tsx`: TODO; lines 26, 33, 141, 147; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/projects/TaskForm.tsx`: TODO; lines 18, 97; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/projects/TaskList.tsx`: TODO; lines 23, 100; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/q-city/EmploymentDashboard.tsx`: PLACEHOLDER; lines 731; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/q-city/QCityDevicePanel.tsx`: PLACEHOLDER; lines 611; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/q-city/QMOIOwnDeviceLogs.tsx`: PLACEHOLDER; lines 300; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/security/EncryptedAuditLog.tsx`: PLACEHOLDER; lines 11; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/ui/command.tsx`: PLACEHOLDER; lines 47; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/ui/input.tsx`: PLACEHOLDER; lines 11; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/ui/select.tsx`: PLACEHOLDER; lines 22; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/components/ui/textarea.tsx`: PLACEHOLDER; lines 10; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/earnvault/ui/EnhancedTradingPanel.tsx`: PLACEHOLDER; lines 658, 683, 696, 706, 716; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/earnvault/ui/FloatingAQ.tsx`: PLACEHOLDER; lines 367, 368, 708, 716; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/ensure_build_files.py`: PLACEHOLDER; lines 14, 15; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/hooks/useExtensionManager.ts`: TODO; lines 13; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/hooks/useLargeFileUpload.ts`: TODO; lines 14; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/hooks/useProjects.ts`: TODO; lines 30; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/huggingface_space/app.js`: PLACEHOLDER, TODO; lines 36, 17; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/huggingface_space/app.py`: PASS_STATEMENT, PLACEHOLDER; lines 100, 105, 340; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/lib/cashon-wallet.ts`: PLACEHOLDER, TODO; lines 366, 373, 417; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/notify_on_whatsapp.py`: PLACEHOLDER, TODO; lines 113, 116, 118; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/pa.py`: PLACEHOLDER; lines 6, 8, 10; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/qmoi-app-builder.py`: PLACEHOLDER; lines 68; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/qmoiexe.py`: PLACEHOLDER; lines 36, 37; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/routes/api/qmoi/autodev.ts`: NOT_IMPLEMENTED, STUB; lines 29, 97, 101, 105, 109, 113, 117, 121, 125; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/routes/api/qmoi/file.ts`: TODO; lines 20; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/routes/api/qmoi/payload.ts`: TODO; lines 3; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/routes/api/qmoi/status.ts`: TODO; lines 3; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/run_advanced_ai.py`: PLACEHOLDER; lines 6; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/auto_lint_fix.py`: PLACEHOLDER; lines 40, 43, 44, 51, 121; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/auto_utils.js`: STUB, TODO; lines 6, 6; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/db_migrations.py`: TODO; lines 130, 132; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/deploy_huggingface.js`: PLACEHOLDER; lines 130, 136; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/device_ownership_detector.py`: PASS_STATEMENT, PLACEHOLDER; lines 159, 161, 163, 201, 219, 396, 481; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/doc_verifier.py`: STUB, TODO; lines 702, 223, 273, 290, 315, 341, 355, 361, 370; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/downloadqmoiai.py`: PLACEHOLDER; lines 19, 42; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/enhance_ai.py`: PASS_STATEMENT, PLACEHOLDER; lines 241, 246, 251, 269, 274, 279, 338, 343, 348; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/ensure-files.js`: PLACEHOLDER; lines 18, 19; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/financial_verification.py`: TODO; lines 14, 25; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/gitlab-automation.js`: PLACEHOLDER, STUB; lines 460, 303; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/monitoring/performance_monitoring.py`: PASS_STATEMENT, PLACEHOLDER; lines 436, 467, 476; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/platform_manager.py`: NOT_IMPLEMENTED, PASS_STATEMENT; lines 309, 324, 195, 214; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qcity-device-manager.js`: TODO; lines 346, 352, 357; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qcity_npm_selfheal.ps1`: STUB, TODO; lines 120, 123; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qcity_npm_selfheal.sh`: STUB, TODO; lines 117, 120; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-auto-enhancement-system.js`: PLACEHOLDER; lines 696; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-cloud-env-manager.js`: TODO; lines 10, 19; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-cloud-provider.js`: STUB, TODO; lines 7, 11, 15, 6, 10, 14; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-cloud-registry.js`: TODO; lines 10, 18; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-dashboard-enhance.py`: PLACEHOLDER; lines 177; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-dashboard.py`: PLACEHOLDER; lines 51, 185, 190; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-dev-actions.py`: PLACEHOLDER; lines 44, 49, 54, 59; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-enhanced-automation.py`: NOT_IMPLEMENTED; lines 317; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-enhanced-avatar-system.js`: PLACEHOLDER; lines 548; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-enhanced-health-checker.py`: PLACEHOLDER; lines 480; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-hf-test.py`: PLACEHOLDER; lines 76; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-hot-reload.js`: TODO; lines 10, 18; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-huggingface-manager.js`: STUB, TODO; lines 56, 65, 70, 83, 94, 98, 113, 124, 26, 64, 82, 97, 112, 123, 130, 136; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-master-system.js`: PLACEHOLDER; lines 448, 453, 458, 463, 468; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-mobile-auto-selfheal.js`: PLACEHOLDER; lines 90; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-package-installer.py`: PLACEHOLDER; lines 14, 16, 22, 28, 54, 55; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-parallel-autotest.js`: TODO; lines 10, 26; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-platform-manager.py`: PLACEHOLDER; lines 43, 48; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi-revenue-enforcer.js`: PLACEHOLDER; lines 143; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_advanced_analytics.py`: PLACEHOLDER; lines 655, 656; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_ai_enhancement_engine.py`: FIXME, PLACEHOLDER, TODO; lines 228, 373, 228, 229, 438, 455, 474, 482, 493, 510; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_app_builder.py`: PLACEHOLDER; lines 68; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_app_installer.py`: PLACEHOLDER; lines 98, 477; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_auto_evolution_system.py`: PLACEHOLDER; lines 638, 647, 656, 863; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_auto_fix_enhanced.py`: FIXME, TODO; lines 320, 385, 320, 374, 380, 385; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_auto_watcher.js`: STUB, TODO; lines 11, 13, 31, 13; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_dashboard.js`: PLACEHOLDER; lines 23; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_data_optimization_system.py`: PASS_STATEMENT, PLACEHOLDER; lines 378, 435; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_enhanced_automation.py`: PLACEHOLDER; lines 317; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_hf_auto_manager.py`: PASS_STATEMENT, PLACEHOLDER; lines 75, 108, 357; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_master_website_automation.js`: PLACEHOLDER, TODO; lines 28, 30, 58, 59, 60, 70, 80, 87, 31, 61, 73, 83, 90, 97, 104, 111; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_notification_manager.py`: PLACEHOLDER; lines 80, 81, 82, 86, 87, 88; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_security_monitor.py`: PLACEHOLDER; lines 584, 611, 927; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_self_evolve.py`: STUB, TODO; lines 32, 38; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qmoi_self_test.py`: NOT_IMPLEMENTED, PASS_STATEMENT; lines 139, 367, 384, 510; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/qserver-download-tester.py`: PLACEHOLDER; lines 69; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/rust_lint_fix.rs`: STUB, TODO; lines 13, 12; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/analytics_optimization.ts`: TODO; lines 15, 29, 34; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/asset_generation.ts`: TODO; lines 6, 12, 17, 22; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/localization_service.ts`: TODO; lines 8, 13; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/platform_discovery.ts`: TODO; lines 14, 28; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/platform_integrations.ts`: TODO; lines 17, 23, 28, 33; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/project_service.ts`: TODO; lines 27; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/qcity_service.ts`: STUB, TODO; lines 297, 305, 323; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/role_management.ts`: TODO; lines 25, 30, 35, 40, 45; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/services/self_healing.ts`: TODO; lines 15, 20, 25, 30; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/trading/enhanced_trading_system.py`: NOT_IMPLEMENTED, PASS_STATEMENT; lines 101, 105, 109, 113, 117, 121, 676; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/update_readme.py`: NOT_IMPLEMENTED, PLACEHOLDER; lines 99, 61; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/utils/captcha_solver.py`: PLACEHOLDER; lines 47; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/utils/notify_enhancement.py`: PLACEHOLDER; lines 238, 240; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/scripts/whatsapp_verification.py`: TODO; lines 11, 21; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/security_proxy.py`: NOT_IMPLEMENTED, PLACEHOLDER; lines 38, 37; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/auth/AuthManager.ts`: STUB, TODO; lines 290, 295; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/AITradingRules.tsx`: PLACEHOLDER; lines 199; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/Chatbot.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/FileExplorer.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/FloatingAQ.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/GitStatus.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/LcSpaces.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/PreviewWindow.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/QI.tsx`: PLACEHOLDER; lines 118, 125; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/QIStateWindow.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/QiSpaces.tsx`: PLACEHOLDER; lines 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/alpha-q-ai-system.tsx`: PLACEHOLDER; lines 3; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/AccountAutomationPanel.tsx`: PLACEHOLDER, TODO; lines 76, 84, 90, 106, 149; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/AuditLogPanel.tsx`: PLACEHOLDER; lines 43, 49, 55, 63; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/AvatarSelector.tsx`: PLACEHOLDER; lines 244, 260, 276; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/CommandPanel.tsx`: PLACEHOLDER; lines 99; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/DevicePanel.tsx`: PLACEHOLDER; lines 106, 112, 118, 127, 133, 140; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/DocumentManagerPanel.tsx`: PLACEHOLDER, TODO; lines 68, 74, 80, 91, 126; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/EarningDashboard.tsx`: TODO; lines 98; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/Onboarding.tsx`: PLACEHOLDER, TODO; lines 69, 77, 23, 36, 107; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QApiKeyManager.tsx`: TODO; lines 88; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QAvatar.tsx`: PLACEHOLDER; lines 69; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QFileManager.tsx`: PLACEHOLDER; lines 391; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QMoiDatabaseDashboard.tsx`: PLACEHOLDER; lines 56; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QMoiFileEditorChat.tsx`: PLACEHOLDER; lines 308, 322, 386; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QMoiMediaManager.tsx`: TODO; lines 4, 5, 6; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QMoiMemoryPanel.tsx`: PLACEHOLDER; lines 91, 97; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QMoiProjectDashboard.tsx`: TODO; lines 4, 5, 6; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QMoiSettingsPanel.tsx`: PLACEHOLDER, STUB; lines 91, 103, 4; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QMoiState.tsx`: PLACEHOLDER; lines 324, 332, 340; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/QNewsDashboard.tsx`: PLACEHOLDER, TODO; lines 146, 152, 162, 171, 197, 135, 136; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/SchedulePanel.tsx`: PLACEHOLDER; lines 95, 101, 107, 113, 119; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/SelfHealPanel.tsx`: PLACEHOLDER; lines 95; status=`discovered_unmapped`.
+- `Alpha-Q-ai-2025/src/components/q-city/SocialAutomationPanel.tsx`: PLACEHOLDER, TODO; lines 67, 73, 99, 122; status=`discovered_unmapped`.
+- 82 additional candidates are indexed in `QMOItracks/production_gap_inventory.json`.
+
+## Reported replacement claims (not independently verified)
+- None supplied; detected candidates remain unresolved.
+<!-- END QMOI MANAGED: PRODUCTION_INVENTORY -->

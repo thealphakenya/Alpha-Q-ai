@@ -94,9 +94,12 @@ REPOSITORY_ROOT = SCRIPT_DIR.parent
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
+from scripts.autonomous_completion_engine import (
+    AutonomousCompletionEngine,
+    audit_instruction_files,
+)
 from scripts.command_inventory import refresh_commands_category
 from scripts.link_validator import LinkValidator
-from scripts.q_version_manager import QVersionManager
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
     INTERNAL_RESEARCH_CONTROLS,
@@ -106,6 +109,7 @@ from scripts.ollama_research import (
     fetch_official_resource,
     record_research_visit,
 )
+from scripts.q_version_manager import QVersionManager
 
 try:
     from scripts.live_activity_stream import (
@@ -692,18 +696,46 @@ def sanitize_command_metadata(
 ) -> str:
     """Remove common credential values from recorded command metadata."""
     value = str(command).strip()
-    for name in ("GH_TOKEN", "GITHUB_TOKEN", "MY_CUSTOM_TOKEN", "MY_CUTOM_TOKEN"):
-        value = re.sub(
-            rf"({name}\s*=\s*)([^\s;&|]+)",
-            r"\1<redacted>",
-            value,
-            flags=re.IGNORECASE,
-        )
+    value = re.sub(
+        r"\b([A-Z][A-Z0-9_]*(?:TOKEN|SECRET|PASSWORD|API_KEY|PRIVATE_KEY)\s*=\s*)([^\s;&|]+)",
+        r"\1<redacted>",
+        value,
+        flags=re.IGNORECASE,
+    )
     return re.sub(
         r"\b(?:github_pat_|ghp_|gho_|ghs_|ghu_)[A-Za-z0-9_]+",
         "<redacted>",
         value,
     )
+
+
+def sanitize_financial_metadata(value: Any, field_name: str = "") -> Any:
+    """Redact bank identifiers, money values, and authentication secrets recursively."""
+    normalized_name = re.sub(r"[^a-z0-9]", "", str(field_name).lower())
+    sensitive_fields = {
+        "accountnumber", "accountno", "iban", "routingnumber", "swiftcode",
+        "accountid", "bankaccountid", "balance", "balances", "availablebalance", "currentbalance", "ledgerbalance",
+        "amount", "transactionamount", "mfacode", "otp", "verificationcode",
+        "beneficiaryaccount", "beneficiarydetails", "paymentinstructions", "cardnumber",
+        "cvv", "password", "privatekey", "secretvalue", "tokenvalue", "apikeyvalue",
+    }
+    if normalized_name in sensitive_fields or normalized_name.endswith(("secret", "token", "apikey", "password", "privatekey", "mfacode")):
+        return "<redacted>"
+    if isinstance(value, dict):
+        return {
+            str(key): sanitize_financial_metadata(item, str(key))
+            for key, item in value.items()
+        }
+    if isinstance(value, (list, tuple, set)):
+        return [sanitize_financial_metadata(item, field_name) for item in value]
+    if isinstance(value, str):
+        sanitized = sanitize_command_metadata(value)
+        return re.sub(
+            r"(?i)(\b(?:account(?:_number|_no)|acct(?:_number|_no)?|iban|routing_number|balance|mfa_code|otp)\s*[:=]\s*)([^\s,;]+)",
+            r"\1<redacted>",
+            sanitized,
+        )
+    return value
 
 
 def collect_credential_requirements(root: Path | str | None = None) -> list[dict[str, Any]]:
@@ -3047,9 +3079,7 @@ class CrossRepositoryAutonomyManager:
                     root_map["qmoi-enhanced-history-14"] = path
                 elif "qmoi" in lowered and "enhanced" in lowered:
                     root_map["qmoi-enhanced"] = path
-                elif "alpha" in lowered and "2025" in lowered:
-                    root_map["Alpha-Q-ai"] = path
-                elif path.name == "Alpha-Q-ai":
+                elif "alpha" in lowered and "2025" in lowered or path.name == "Alpha-Q-ai":
                     root_map["Alpha-Q-ai"] = path
         alpha_root = root_map.get("Alpha-Q-ai") or repo_root
         history_candidates = [
@@ -3406,49 +3436,125 @@ class CrossRepositoryAutonomyManager:
         self,
         repo_path: Path | str,
     ) -> dict[str, Any]:
-        """Identify placeholders, TODOs, and stubbed implementations that the agent should resolve or merge."""
+        """Build a bounded production-gap candidate inventory without claiming defects or exposing source text."""
         root = Path(repo_path).resolve()
         findings: list[dict[str, Any]] = []
         if not root.exists():
-            return {"root": str(root), "total_missing": 0, "items": findings}
+            return {"root": str(root), "total_missing": 0, "items": findings, "status": "BLOCKED", "coverage_complete": False}
 
-        for path in sorted(root.rglob("*")):
-            if not path.is_file():
-                continue
-            try:
-                text = path.read_text(encoding="utf-8", errors="ignore")
-            except OSError:
-                continue
-            lower = text.lower()
-            markers = [
-                "todo",
-                "tbd",
-                "fixme",
-                "placeholder",
-                "not implemented",
-                "coming soon",
-                "stub",
-                "pass\n",
-                "pass\r\n",
-            ]
-            if not any(marker in lower for marker in markers):
-                continue
-            reason = next((marker for marker in markers if marker in lower), "placeholder_or_stub")
-            findings.append(
-                {
-                    "path": str(path.relative_to(root)).replace("\\", "/"),
-                    "type": "implementation_gap",
-                    "reason": reason,
-                    "target_repo": self.route_file_to_repository(str(path.relative_to(root))),
-                    "priority": "high" if reason in {"todo", "not implemented", "placeholder"} else "medium",
-                }
-            )
+        excluded_directory_reasons = {
+            ".git": "git_metadata",
+            ".venv": "virtual_environment",
+            "venv": "virtual_environment",
+            "node_modules": "installed_dependencies",
+            "__pycache__": "generated_bytecode",
+            ".pytest_cache": "test_cache",
+            ".mypy_cache": "tool_cache",
+            ".ruff_cache": "tool_cache",
+            "dist": "build_output",
+            "build": "build_output",
+            "target": "build_output",
+            "coverage": "test_output",
+            ".next": "build_output",
+            ".turbo": "build_cache",
+        }
+        allowed_suffixes = {
+            ".py", ".js", ".ts", ".tsx", ".jsx", ".go", ".rs", ".java",
+            ".c", ".cc", ".cpp", ".h", ".hpp", ".cs", ".php", ".rb",
+            ".sh", ".ps1", ".yml", ".yaml", ".json", ".toml", ".ini", ".cfg",
+            ".md", ".txt",
+        }
+        code_suffixes = allowed_suffixes - {".md", ".txt"}
+        code_patterns = (
+            ("todo", re.compile(r"\bTODO\b", re.IGNORECASE)),
+            ("fixme", re.compile(r"\bFIXME\b", re.IGNORECASE)),
+            ("tbd", re.compile(r"\bTBD\b", re.IGNORECASE)),
+            ("placeholder", re.compile(r"\bPLACEHOLDER\b|\[PRODUCTION IMPLEMENTATION REQUIRED\]", re.IGNORECASE)),
+            ("not_implemented", re.compile(r"\bNotImplementedError\b|\bnot implemented\b", re.IGNORECASE)),
+            ("stub", re.compile(r"\bstub(?:bed)?\b", re.IGNORECASE)),
+            ("pass_statement", re.compile(r"^\s*pass\s*(?:#.*)?$", re.IGNORECASE)),
+        )
+        document_patterns = (
+            ("todo", re.compile(r"^\s*(?:[-*]\s*)?TODO\s*:", re.IGNORECASE)),
+            ("fixme", re.compile(r"^\s*(?:[-*]\s*)?FIXME\s*:", re.IGNORECASE)),
+            ("tbd", re.compile(r"^\s*(?:[-*]\s*)?TBD\s*:", re.IGNORECASE)),
+            ("placeholder", re.compile(r"\[PRODUCTION IMPLEMENTATION REQUIRED\]", re.IGNORECASE)),
+        )
+        excluded_roots: list[dict[str, str]] = []
+        unreadable: list[dict[str, str]] = []
+        scanned_files = 0
+        oversized_files = 0
+        max_file_bytes = 2 * 1024 * 1024
+
+        for current, directories, filenames in os.walk(root, followlinks=False):
+            current_path = Path(current)
+            kept_directories = []
+            for directory in sorted(directories):
+                child = current_path / directory
+                reason = excluded_directory_reasons.get(directory)
+                if reason is None and ("history" in directory.lower() or directory.lower().startswith(("archive", "snapshot"))):
+                    reason = "historical_or_snapshot_materialization"
+                if child.is_symlink():
+                    excluded_roots.append({"path": child.relative_to(root).as_posix(), "reason": "symlink_not_followed"})
+                elif reason:
+                    excluded_roots.append({"path": child.relative_to(root).as_posix(), "reason": reason})
+                else:
+                    kept_directories.append(directory)
+            directories[:] = kept_directories
+            for filename in sorted(filenames):
+                path = current_path / filename
+                if path.is_symlink() or path.suffix.lower() not in allowed_suffixes:
+                    continue
+                relative_path = path.relative_to(root).as_posix()
+                try:
+                    size = path.stat().st_size
+                    if size > max_file_bytes:
+                        oversized_files += 1
+                        continue
+                    content = path.read_bytes()
+                    text = content.decode("utf-8")
+                except (OSError, UnicodeDecodeError) as exc:
+                    unreadable.append({"path": relative_path, "error_type": type(exc).__name__})
+                    continue
+                scanned_files += 1
+                patterns = code_patterns if path.suffix.lower() in code_suffixes else document_patterns
+                marker_lines: dict[str, list[int]] = {}
+                for line_number, line in enumerate(text.splitlines(), start=1):
+                    for marker, pattern in patterns:
+                        if pattern.search(line):
+                            marker_lines.setdefault(marker, []).append(line_number)
+                if marker_lines:
+                    markers = sorted(marker_lines)
+                    findings.append({
+                        "path": relative_path,
+                        "sha256": hashlib.sha256(content).hexdigest(),
+                        "bytes": len(content),
+                        "candidate_markers": markers,
+                        "line_numbers": {name: numbers for name, numbers in sorted(marker_lines.items())},
+                        "target_repo": self.route_file_to_repository(relative_path),
+                        "priority": "review_first" if any(name in {"not_implemented", "placeholder", "todo", "fixme"} for name in markers) else "review",
+                        "status": "discovered_unmapped",
+                        "implementation_verified": False,
+                        "tests_verified": False,
+                        "automatic_replacement_authorized": False,
+                        "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
+                    })
+
+        findings.sort(key=lambda item: (item["priority"] != "review_first", item["path"]))
 
         return {
             "root": str(root),
+            "status": "NEEDS_REVIEW" if findings or unreadable or oversized_files else "CLEAR",
+            "coverage_complete": not unreadable and oversized_files == 0,
+            "coverage_scope": "active materialized workspace; not remote branches or unfetched history",
+            "scanned_files": scanned_files,
+            "oversized_files_not_read": oversized_files,
+            "unreadable_files": unreadable,
+            "excluded_roots": excluded_roots,
+            "total_candidates": len(findings),
             "total_missing": len(findings),
             "items": findings,
-            "decision_rule": "prefer merging equivalent stubs, then route missing functionality to the canonical repo, then preserve the historical source as audit evidence.",
+            "decision_rule": "Candidate markers are discovery only. Require ownership mapping, implementation review, focused validation, and exact remote evidence before marking a replacement verified.",
         }
 
     def group_similar_files(
@@ -4688,12 +4794,13 @@ All timestamps use UTC ISO-8601 format.
         payload: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         timestamp = utc_iso()
+        safe_payload = sanitize_financial_metadata(payload or {})
 
         record = {
             "timestamp_utc": timestamp,
             "timestamp": timestamp,
             "event": event,
-            "payload": payload or {},
+            "payload": safe_payload,
         }
 
         with self.telemetry_path.open(
@@ -4719,15 +4826,17 @@ All timestamps use UTC ISO-8601 format.
         details: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         timestamp = utc_iso()
+        safe_message = sanitize_financial_metadata(str(message))
+        safe_details = sanitize_financial_metadata(details or {})
 
         record = {
             "timestamp_utc": timestamp,
             "timestamp": timestamp,
             "event": str(event),
-            "message": str(message),
+            "message": safe_message,
             "status": str(status),
             "phase": str(phase),
-            "details": details or {},
+            "details": safe_details,
         }
 
         with self.telemetry_path.open(
@@ -4747,7 +4856,7 @@ All timestamps use UTC ISO-8601 format.
             (
                 f"STATUS: {status}\n"
                 f"EVENT: {event}\n"
-                f"MESSAGE: {message}\n"
+                f"MESSAGE: {safe_message}\n"
                 f"PHASE: {phase}\n"
                 f"Timestamp: {timestamp}\n"
             ),
@@ -4767,7 +4876,7 @@ All timestamps use UTC ISO-8601 format.
             self.latest_activity_path,
             (
                 f"EVENT: {event}\n"
-                f"MESSAGE: {message}\n"
+                f"MESSAGE: {safe_message}\n"
                 f"STATUS: {status}\n"
                 f"PHASE: {phase}\n"
                 f"Timestamp: {timestamp}\n"
@@ -4800,7 +4909,7 @@ All timestamps use UTC ISO-8601 format.
         ) as handle:
             handle.write(
                 f"[{timestamp}] "
-                f"{event}: {message} "
+                f"{event}: {safe_message} "
                 f"(status={status}, phase={phase})\n"
             )
 
@@ -4808,10 +4917,10 @@ All timestamps use UTC ISO-8601 format.
             self.monitoring_summary_path,
             {
                 "event": str(event),
-                "message": str(message),
+                "message": safe_message,
                 "status": str(status),
                 "phase": str(phase),
-                "details": details or {},
+                "details": safe_details,
                 "timestamp_utc": timestamp,
             },
         )
@@ -6698,6 +6807,172 @@ All timestamps use UTC ISO-8601 format.
 
         return {"manifest": manifest, "requirements": requirements, "value_recorded": False}
 
+    def refresh_bank_automation_evidence(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Refresh bank automation status without treating requirements as implementation proof."""
+        target = Path(root) if root is not None else self.root_dir
+        bank_document = target / "bankandbankaccounts.md"
+        if not bank_document.is_file():
+            return {
+                "status": "BLOCKED",
+                "reason": "bankandbankaccounts.md is missing",
+                "implementation_verified": False,
+                "remote_completion_verified": False,
+            }
+
+        bank_text = bank_document.read_text(encoding="utf-8", errors="replace")
+        start_marker = "<!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->"
+        end_marker = "<!-- END OLLAMA BANK AUTOMATION STATUS -->"
+        source_text = bank_text
+        source_start = bank_text.find(start_marker)
+        source_end = bank_text.find(end_marker)
+        if (source_start == -1) != (source_end == -1) or (source_start != -1 and source_end < source_start):
+            return {
+                "status": "BLOCKED",
+                "reason": "bankandbankaccounts.md has an invalid managed status section",
+                "implementation_verified": False,
+                "remote_completion_verified": False,
+            }
+        if source_start >= 0:
+            source_end += len(end_marker)
+            source_text = bank_text[:source_start] + bank_text[source_end:]
+        source_text = source_text.rstrip() + "\n"
+        bank_sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
+        numbered_requirements = len(re.findall(r"(?m)^\s*(?:\d+\.|Phase\s+\d+)\s+", source_text))
+        masks_document = target / "QMOIMASKS.md"
+        masks_source_sha256 = None
+        masks_document_status = "BLOCKED"
+        if masks_document.is_file():
+            masks_text = masks_document.read_text(encoding="utf-8", errors="replace")
+            mask_start_marker = "<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->"
+            mask_end_marker = "<!-- END OLLAMA BANK MASK SECURITY STATUS -->"
+            masks_source_text = masks_text
+            mask_start = masks_text.find(mask_start_marker)
+            mask_end = masks_text.find(mask_end_marker)
+            if (mask_start == -1) != (mask_end == -1) or (mask_start != -1 and mask_end < mask_start):
+                masks_document_status = "BLOCKED_INVALID_MANAGED_SECTION"
+            else:
+                if mask_start >= 0:
+                    mask_end += len(mask_end_marker)
+                    masks_source_text = masks_text[:mask_start] + masks_text[mask_end:]
+                masks_source_sha256 = hashlib.sha256((masks_source_text.rstrip() + "\n").encode("utf-8")).hexdigest()
+                masks_document_status = "DOCUMENTED_RUNTIME_UNVERIFIED"
+        generated = utc_iso()
+        try:
+            q_version_audit = QVersionManager(target).audit()
+        except (OSError, RuntimeError, ValueError) as exc:
+            q_version_audit = {"status": "BLOCKED", "reason": type(exc).__name__}
+        report = {
+            "generated_at": generated,
+            "correlation_id": uuid.uuid4().hex,
+            "status": "BLOCKED" if q_version_audit.get("status") == "BLOCKED" else "NEEDS_VERIFICATION",
+            "source": bank_document.name,
+            "source_sha256": bank_sha256,
+            "numbered_requirement_lines": numbered_requirements,
+            "q_version_audit": q_version_audit,
+            "masking_security": {
+                "document": masks_document.name,
+                "document_status": masks_document_status,
+                "source_sha256": masks_source_sha256,
+                "implementation_verified": False,
+                "agent_telemetry_redaction": "implemented_and_tested",
+                "bank_provider_masking": "runtime_unverified",
+                "provider_identity_masking": "disabled_by_default_unless_provider_authorized",
+                "fingerprint_and_route_masking": "disabled_during_provider_authentication_unless_authorized",
+                "auditability_required": True,
+                "failure_policy": "AUTH_BLOCKED",
+                "secret_values_in_evidence": False,
+            },
+            "implementation_verified": False,
+            "financial_writes_authorized": False,
+            "remote_completion_verified": False,
+            "next_action": "Map every bank requirement to implementation, authorization, sandbox tests, exact-SHA remote checks, and independently verified provider evidence.",
+        }
+        managed_sections = {
+            bank_document: "\n".join([
+                "<!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->",
+                "## Agent Automation Status",
+                "",
+                f"- Updated: {generated}",
+                f"- Runbook SHA-256: `{bank_sha256}`",
+                f"- Numbered requirement lines detected: {numbered_requirements}",
+                "- Requirement coverage: documented; implementation, provider access, and production readiness are not verified by this scan.",
+                f"- QMOI Masks security contract: `{masks_document_status}`; provider-facing identity, fingerprint, or route masking is disabled during bank authentication unless explicitly provider-authorized.",
+                "- Secret values stay out of reports; mask state remains visible to audit; unavailable or conflicting controls require `AUTH_BLOCKED`.",
+                "- Q-version audit: recorded for discovery only; a reservation or artifact is not completion evidence.",
+                "- Financial writes, account creation, transfers, payroll, and trading: not authorized by this automation status.",
+                "- Remote completion: not verified; require terminal target-owned checks and exact remote SHA evidence for both repositories.",
+                "- Evidence record: `ollamatracks/bank_automation_status.json`.",
+                "<!-- END OLLAMA BANK AUTOMATION STATUS -->",
+            ]),
+            target / "oe2.txt": "\n".join([
+                "<!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->",
+                "## Bank automation continuation checkpoint",
+                "",
+                f"- Updated: {generated}",
+                f"- Source: `bankandbankaccounts.md` SHA-256 `{bank_sha256}`; {numbered_requirements} numbered requirement lines detected.",
+                "- Status: NEEDS_VERIFICATION; documentation discovery is not implementation or remote-completion proof.",
+                f"- QMOI Masks: {masks_document_status}; no provider-facing identity, fingerprint, or route masking during bank authentication without explicit provider authorization. Audit visibility is mandatory; unavailable controls mean `AUTH_BLOCKED`.",
+                "- Q-version audit is discovery evidence only. Financial writes remain unauthorized without provider capability, least-privilege authorization, and required consent.",
+                "- Next action: complete requirement-to-code/test/auth/workflow mapping, then record terminal exact-SHA evidence for both target repositories.",
+                "<!-- END OLLAMA BANK AUTOMATION STATUS -->",
+            ]),
+            target / "remotecompletion.md": "\n".join([
+                "<!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->",
+                "## Bank Automation Gate",
+                "",
+                f"- Updated: {generated}",
+                f"- Runbook SHA-256: `{bank_sha256}`; numbered requirement lines detected: {numbered_requirements}.",
+                "- Gate: BLOCKED pending implementation-to-test/auth mapping, provider-backed read-only verification, and terminal exact-SHA remote evidence for Alpha-Q-ai and qmoi-enhanced.",
+                f"- QMOI Masks bank policy: {masks_document_status}; secure local evidence masking is required, but provider-facing identity/network masking stays disabled unless explicitly permitted. Runtime enforcement is unverified.",
+                "- Preserve provider MFA/consent, visible audit trails, existing Git/Codespaces/Copilot flows, and fail-closed behavior; do not claim mask effectiveness without compatibility tests.",
+                "- The Q-version manager records lifecycle evidence but does not independently authenticate or establish remote completion.",
+                "- No account creation, credential rotation, payment, transfer, payroll, or trading is authorized by this documentation refresh.",
+                "<!-- END OLLAMA BANK AUTOMATION STATUS -->",
+            ]),
+            masks_document: "\n".join([
+                "<!-- BEGIN OLLAMA BANK MASK SECURITY STATUS -->",
+                "## Bank Automation Security Compatibility",
+                "",
+                f"- Updated: {generated}",
+                f"- Policy status: {masks_document_status}; this is a documented contract, not proof that runtime masks are implemented or effective.",
+                "- Mask secret values in logs, telemetry, generated evidence, and ordinary UI; store credential references/status only. Never log bank credentials, account numbers, balances, MFA codes, or raw payment instructions.",
+                "- The local agent tracker recursively redacts recognized account identifiers, balances, amounts, MFA/OTP, and API-key/secret fields across telemetry and status/log outputs; targeted sentinel tests pass. This does not verify provider-side masking or authorize bank actions.",
+                "- Keep bank/provider identity, browser fingerprint, device signals, and network route unmasked during provider authentication by default. Enable such masking only with explicit provider permission, tested MFA/consent compatibility, and security approval.",
+                "- Do not let masking alter provider authorization, satisfy KYC/MFA, bypass consent, change transaction intent, hide a safety decision, or act as a security control by itself.",
+                "- Keep mask activation, scope, expiry, fallback, and errors auditable. If masking breaks attribution, audit, consent, or authorization, block the protected action with `AUTH_BLOCKED` and preserve safe read-only diagnostics.",
+                "- Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.",
+                "- Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.",
+                "<!-- END OLLAMA BANK MASK SECURITY STATUS -->",
+            ]),
+        }
+        for path, block in managed_sections.items():
+            if path == bank_document:
+                original = bank_text
+            elif path.is_file():
+                original = path.read_text(encoding="utf-8", errors="replace")
+            else:
+                report["status"] = "BLOCKED"
+                report.setdefault("missing_required_documents", []).append(path.name)
+                continue
+            start = original.find(start_marker)
+            end = original.find(end_marker)
+            if (start == -1) != (end == -1) or (start != -1 and end < start):
+                report["status"] = "BLOCKED"
+                report.setdefault("invalid_managed_sections", []).append(path.name)
+                continue
+            if start >= 0:
+                end += len(end_marker)
+                updated = original[:start] + block + original[end:]
+            else:
+                updated = original.rstrip() + "\n\n" + block + "\n"
+            path.write_text(updated, encoding="utf-8")
+
+        safe_json_write(target / "ollamatracks" / "bank_automation_status.json", report)
+        return report
+
     def build_runtime_status_snapshot(
         self,
     ) -> dict[str, Any]:
@@ -6720,6 +6995,8 @@ All timestamps use UTC ISO-8601 format.
         clone_documents = self.refresh_clone_platform_documents(self.root_dir)
         production_documents = self.refresh_production_manifests(self.root_dir)
         credential_readiness = self.refresh_credential_readiness(self.root_dir)
+        bank_automation_evidence = self.refresh_bank_automation_evidence(self.root_dir)
+        instruction_inventory = audit_instruction_files(self.root_dir)
 
         financial_documents = self.refresh_financial_manager_catalog(self.root_dir)
 
@@ -6743,6 +7020,21 @@ All timestamps use UTC ISO-8601 format.
                 "manifest": str(credential_readiness["manifest"]),
                 "requirements": len(credential_readiness["requirements"]),
                 "value_recorded": credential_readiness["value_recorded"],
+            },
+            "bank_automation_evidence": {
+                "status": bank_automation_evidence["status"],
+                "source_sha256": bank_automation_evidence.get("source_sha256"),
+                "numbered_requirement_lines": bank_automation_evidence.get("numbered_requirement_lines", 0),
+                "masking_document_status": bank_automation_evidence.get("masking_security", {}).get("document_status", "BLOCKED"),
+                "implementation_verified": bank_automation_evidence.get("implementation_verified", False),
+                "remote_completion_verified": bank_automation_evidence.get("remote_completion_verified", False),
+            },
+            "instruction_inventory": {
+                "status": instruction_inventory["status"],
+                "files_read": instruction_inventory["files_read"],
+                "files_discovered": instruction_inventory["files_discovered"],
+                "unreadable_or_invalid": instruction_inventory["unreadable_or_invalid"],
+                "source_contents_recorded": False,
             },
             "financial_manager_catalog": {
                 "status": financial_documents["status"],
@@ -7371,9 +7663,7 @@ All timestamps use UTC ISO-8601 format.
             lower_name = name.lower()
             matching_labels: list[str] = []
             for label, tokens in category_rules:
-                if any(token.lower() == lower_name or token.lower() in lower_name.replace("-", "_") for token in tokens):
-                    matching_labels.append(label)
-                elif any(token.lower() in lower_name.replace("-", "_") for token in tokens):
+                if any(token.lower() == lower_name or token.lower() in lower_name.replace("-", "_") for token in tokens) or any(token.lower() in lower_name.replace("-", "_") for token in tokens):
                     matching_labels.append(label)
             if not matching_labels:
                 generated.append(relative_path)
@@ -7615,138 +7905,115 @@ All timestamps use UTC ISO-8601 format.
         target = Path(root) if root is not None else self.root_dir
         target.mkdir(parents=True, exist_ok=True)
         replacement_records = [dict(record) for record in (replacements or [])]
-
-        markers = [
-            "TODO",
-            "FIXME",
-            "placeholder",
-            "TBD",
-            "[PRODUCTION IMPLEMENTATION REQUIRED]",
-            "traceback",
-            "Exception",
-            "ERROR",
-            "stub",
-            "prototype",
-            "minimal implementation",
-            "shallow implementation",
-        ]
-        entries: list[dict[str, Any]] = []
-
-        for path in sorted(target.rglob("*")):
-            if not path.is_file() or path.name.startswith(".") and path.name not in {".env", ".env.example"}:
-                continue
-            if path.suffix.lower() not in {
-                ".py",
-                ".js",
-                ".ts",
-                ".tsx",
-                ".jsx",
-                ".md",
-                ".txt",
-                ".json",
-                ".yml",
-                ".yaml",
-                ".sh",
-                ".ps1",
-                ".ini",
-                ".cfg",
-                ".toml",
-                ".spec",
-            }:
-                continue
-            try:
-                text = path.read_text(encoding="utf-8", errors="ignore")
-            except OSError:
-                continue
-            found = [marker for marker in markers if marker.lower() in text.lower()]
-            if found:
-                entries.append({
-                    "path": path.relative_to(target).as_posix(),
-                    "markers": found,
-                })
+        production_inventory = self.cross_repo_manager.identify_missing_implementations(target)
+        entries = production_inventory["items"]
+        inventory_path = target / "ollamatracks" / "production_gap_inventory.json"
+        safe_json_write(inventory_path, production_inventory)
+        self.results["production_gap_inventory"] = production_inventory
 
         production_path = target / "production.md"
-        scan_status = "blocked_pending_replacements" if entries else "clear"
+        scan_status = "needs_review" if production_inventory["status"] == "NEEDS_REVIEW" else "clear"
         production_lines = [
-            "# production.md",
+            "## Agent-managed production inventory",
             "",
-            f"Production implementation evidence status: {scan_status}.",
+            f"Production implementation candidate status: {scan_status}; production readiness is not established by scanning.",
             f"Last scan: {utc_iso()}.",
+            f"Production gap inventory: `{inventory_path.relative_to(target).as_posix()}`.",
+            f"Files scanned: {production_inventory['scanned_files']}; candidate files: {production_inventory['total_candidates']}; unreadable: {len(production_inventory['unreadable_files'])}; oversized not read: {production_inventory['oversized_files_not_read']}.",
+            f"Historical/cache/dependency roots explicitly excluded: {len(production_inventory['excluded_roots'])}; this is the active materialized workspace only, not remote branches or unfetched history.",
             "",
             "## Required replacement policy",
-            "- Replace placeholders, stubs, TODOs, and ERROR markers with real production-grade implementations.",
-            "- Upgrade minimal or shallow implementations to fully validated, secure, and observable production behavior.",
-            "- Re-run the validation and monitoring loops after each replacement before considering the repo production-safe.",
-            "- A marker scan never counts as a replacement; each completed replacement requires implementation and validation evidence.",
+            "- Marker matches are candidate locations, not verified defects; review owning code and intended behavior before editing.",
+            "- Never bulk-rewrite files or change APIs from keyword matches alone. Record requirement, owner, implementation plan, focused tests, security impact, rollback, and exact validation result.",
+            "- A replacement is verified only after implementation and relevant tests pass; a repository is production-ready only after all required gates and exact remote evidence pass.",
+            "- Historical snapshots, installed dependencies, generated caches, and build outputs are excluded by scope and listed in the machine inventory; they are not silently counted as active source.",
             "",
-            "## Files flagged for production replacement",
+            "## Unmapped production candidates",
         ]
 
         if entries:
-            for entry in entries:
-                production_lines.append(f"- {entry['path']}: {', '.join(entry['markers'])}")
+            for entry in entries[:200]:
+                production_lines.append(f"- `{entry['path']}`: {', '.join(marker.upper() for marker in entry['candidate_markers'])}; lines {', '.join(str(number) for values in entry['line_numbers'].values() for number in values[:8])}; status=`discovered_unmapped`.")
+            if len(entries) > 200:
+                production_lines.append(f"- {len(entries) - 200} additional candidates are indexed in `{inventory_path.relative_to(target).as_posix()}`.")
         else:
-            production_lines.append("- No non-production implementation markers were detected.")
+            production_lines.append("- No scoped production-gap candidates were detected; production readiness is not implied.")
 
-        production_lines.extend(["", "## Verified replacement records"])
+        production_lines.extend(["", "## Reported replacement claims (not independently verified)"])
         if replacement_records:
             for record in replacement_records:
                 production_lines.append(
                     f"- {record.get('path', '<unknown>')}: "
-                    f"status={record.get('status', 'unverified')}; "
-                    f"implementation={record.get('implementation_evidence', '<missing>')}; "
-                    f"validation={record.get('validation_evidence', '<missing>')}"
+                    f"reported_status={record.get('status', 'unspecified')}; "
+                    f"implementation_reference={record.get('implementation_evidence', '<missing>')}; "
+                    f"validation_reference={record.get('validation_evidence', '<missing>')}"
                 )
         else:
-            production_lines.append("- None supplied; detected markers remain unresolved.")
-
-        production_path.write_text("\n".join(production_lines) + "\n", encoding="utf-8")
+            production_lines.append("- None supplied; detected candidates remain unresolved.")
 
         enhanced_path = target / "productionenhanced.md"
         enhanced_lines = [
-            "# productionenhanced.md",
+            "## Agent-managed production inventory",
             "",
-            f"Production replacement evidence status: {scan_status}.",
+            f"Production candidate review status: {scan_status}; production readiness is not established.",
             f"Last updated: {utc_iso()}.",
-            "This file records only verified production replacement work performed by the Ollama autonomous agent.",
+            "This file distinguishes candidate discovery, mapped plans, implemented changes, tested replacements, and remotely verified production state.",
+            f"Machine inventory: `{inventory_path.relative_to(target).as_posix()}` (SHA-256 `{hashlib.sha256(inventory_path.read_bytes()).hexdigest()}`).",
+            f"Scope: {production_inventory['coverage_scope']}; scanned `{production_inventory['scanned_files']}` files and found `{production_inventory['total_candidates']}` unmapped candidate files.",
             "",
             "## Production replacement policy",
             "- Scan every file and directory for placeholder, stub, minimal, shallow, or error-driven implementations.",
-            "- Replace non-production implementations with verified, production-grade implementations that include validation, observability, security, and operational resilience.",
+            "- Do not automatically rewrite candidate files from marker matches; queue each candidate for requirement mapping, safe implementation, focused tests, review gates, and rollback evidence.",
             "- Refresh this file after every major autonomous upgrade so the repository keeps an accurate production ledger.",
             "- Never mark a file production-ready from a scan alone; retain unresolved findings until implementation and validation evidence exist.",
             "",
             "## Enhancements",
-            "- Added autonomous non-production scanning across the live repository state.",
-            "- Added shallow implementation detection for minimal or stub-code patterns.",
-            "- Added a production replacement manifest for all repo files and directories.",
-            "- Added a production audit trail for merge and runtime readiness checks.",
+            "- Added scoped, hash-only candidate scanning with explicit unreadable/oversized/excluded-path coverage.",
+            "- Candidate status is `discovered_unmapped`; no automatic replacement or readiness claim is made by scanning.",
+            "- Added a production gap inventory artifact with bounded prioritized next actions.",
+            "- Production readiness remains blocked until each required implementation and validation gate is evidenced.",
             "",
             "## Files addressed",
         ]
         if entries:
-            for entry in entries:
-                enhanced_lines.append(f"- {entry['path']}")
+            for entry in entries[:200]:
+                enhanced_lines.append(f"- `{entry['path']}`: {', '.join(entry['candidate_markers'])}; status=`discovered_unmapped`.")
+            if len(entries) > 200:
+                enhanced_lines.append(f"- {len(entries) - 200} additional candidates are in `{inventory_path.relative_to(target).as_posix()}`.")
         else:
             enhanced_lines.append("- No production replacement entries were detected in the current repository state.")
 
-        enhanced_lines.extend(["", "## Verified replacement records"])
+        enhanced_lines.extend(["", "## Reported replacement claims (not independently verified)"])
         if replacement_records:
             for record in replacement_records:
                 enhanced_lines.append(
                     f"- {record.get('path', '<unknown>')}: "
-                    f"{record.get('status', 'unverified')} | "
-                    f"implementation: {record.get('implementation_evidence', '<missing>')} | "
-                    f"validation: {record.get('validation_evidence', '<missing>')}"
+                    f"reported_status={record.get('status', 'unspecified')} | "
+                    f"implementation reference: {record.get('implementation_evidence', '<missing>')} | "
+                    f"validation reference: {record.get('validation_evidence', '<missing>')}"
                 )
         else:
             enhanced_lines.append("- None supplied; no replacement is claimed.")
 
-        enhanced_path.write_text("\n".join(enhanced_lines) + "\n", encoding="utf-8")
+        _upsert_managed_markdown_section(
+            production_path,
+            "production.md",
+            "PRODUCTION_INVENTORY",
+            "\n".join(production_lines),
+        )
+        _upsert_managed_markdown_section(
+            enhanced_path,
+            "productionenhanced.md",
+            "PRODUCTION_INVENTORY",
+            "\n".join(enhanced_lines),
+        )
 
         return {
             "production": production_path,
             "productionenhanced": enhanced_path,
+            "inventory": inventory_path,
+            "status": scan_status,
+            "candidate_count": production_inventory["total_candidates"],
         }
 
     def refresh_qstream_qstore_documents(
@@ -8248,9 +8515,7 @@ All timestamps use UTC ISO-8601 format.
                     triggers = workflow.get("on", {}) if isinstance(workflow, dict) else {}
                     if isinstance(triggers, str):
                         names = [triggers]
-                    elif isinstance(triggers, dict):
-                        names = sorted(str(name) for name in triggers)
-                    elif isinstance(triggers, list):
+                    elif isinstance(triggers, (dict, list)):
                         names = sorted(str(name) for name in triggers)
                     else:
                         names = []
@@ -8475,7 +8740,7 @@ All timestamps use UTC ISO-8601 format.
             "This inventory scans source references only. It does not read environment values, `.env` files, private keys, credential vaults, provider accounts, or balances.",
             "",
             f"- Credential variable/reference names: `{credential_reference_inventory['reference_count']}`; provider groups: `{json.dumps(credential_reference_inventory['provider_reference_counts'], sort_keys=True)}`.",
-            f"- Consumer path and line-number metadata: `ollamatracks/credential_reference_inventory.json`; values stored/emitted: `false`.",
+            "- Consumer path and line-number metadata: `ollamatracks/credential_reference_inventory.json`; values stored/emitted: `false`.",
             "- Credential manager supports encrypted metadata storage generically; only Bitget has a provider-specific read-only verifier in the active manager. Latest Bitget evidence is not a successful verification; other provider credentials remain unverified.",
             "- Runtime presence, credential validity, scope, expiry, account ownership, balances, and live-trading permission are not inferred from a variable name.",
         ]
@@ -8722,7 +8987,7 @@ All timestamps use UTC ISO-8601 format.
             f"- Candidate financial lines: `{financial_claim_inventory['candidate_line_count']}`; amount-like candidates: `{financial_claim_inventory['amount_candidate_count']}`; untyped numeric candidates: `{financial_claim_inventory['untyped_numeric_candidate_count']}`.",
             f"- Account-ID-like lines: `{financial_claim_inventory['account_identifier_candidate_line_count']}`; actual balances independently verified by this scan: `0`.",
             f"- Currency mentions by owner label: `{json.dumps(financial_claim_inventory['owner_currency_counts'], sort_keys=True)}`.",
-            f"- Candidate locations, line numbers, hashes, scopes, and owner groups: `ollamatracks/financial_claim_inventory.json`.",
+            "- Candidate locations, line numbers, hashes, scopes, and owner groups: `ollamatracks/financial_claim_inventory.json`.",
             f"- Untracked financial Markdown excluded: `{financial_claim_inventory['excluded_untracked_financial_markdown_count']}`; oversized Markdown excluded: `{financial_claim_inventory['skipped_large_financial_markdown_count']}`.",
             "- Unsupported claims remain `needs_independent_review_not_verified`; do not silently delete or replace historical amounts with invented evidence. Resolve each claim with authorized source proof or retain it clearly marked unverified.",
         ]
@@ -9479,7 +9744,27 @@ All timestamps use UTC ISO-8601 format.
         self,
     ) -> int:
         try:
+            instruction_inventory = audit_instruction_files(self.root_dir)
+            self.results["instruction_inventory"] = instruction_inventory
+            safe_json_write(self.tracker_dir / "instruction_inventory.json", instruction_inventory)
+            if instruction_inventory["status"] != "PASS":
+                self.update_resume_checkpoint(
+                    status="instruction_inventory_blocked",
+                    completed_steps=[],
+                    error="Instruction inventory is incomplete or unreadable; protected planning is blocked.",
+                    evidence=instruction_inventory,
+                )
+                self.record_tracker_event(
+                    "instruction_inventory_blocked",
+                    "Instruction files could not all be read and verified; no merge/research work was started.",
+                    status="BLOCKED",
+                    phase="instruction_inventory",
+                    details=instruction_inventory,
+                )
+                return 1
             repo_roots = self.discover_repo_roots(include_history=True)
+            bank_automation_evidence = self.refresh_bank_automation_evidence(self.root_dir)
+            self.results["bank_automation_evidence"] = bank_automation_evidence
             initial_merge = self.execute_merge_and_sync(repo_roots, auto_push=False)
             lifecycle_execution_id = initial_merge.get("q_version_lifecycle_execution_id")
             self.results["pre_validation_merge"] = initial_merge
@@ -9541,6 +9826,8 @@ All timestamps use UTC ISO-8601 format.
                 lifecycle_phase="post_agent",
             )
             self.results["post_validation_merge"] = final_merge
+            bank_automation_evidence = self.refresh_bank_automation_evidence(self.root_dir)
+            self.results["bank_automation_evidence"] = bank_automation_evidence
 
             self.update_resume_checkpoint(
                 status="artifacts_generated",
@@ -9556,7 +9843,6 @@ All timestamps use UTC ISO-8601 format.
             contract = (
                 self.build_github_proof_contract()
             )
-
             proof_path = (
                 self.root_dir
                 / "github_proof_contract.json"
@@ -9617,11 +9903,48 @@ All timestamps use UTC ISO-8601 format.
                     "post_validation_status": final_merge.get("status"),
                     "lifecycle_path": final_merge.get("q_version_lifecycle_path"),
                 },
+                "bank_automation_evidence": bank_automation_evidence,
+                "instruction_inventory": instruction_inventory,
+                "production_readiness": {
+                    "status": "PASS" if production_documents.get("status") == "clear" else "NEEDS_REVIEW",
+                    "inventory_path": str(production_documents.get("inventory", "")),
+                    "candidate_count": production_documents.get("candidate_count"),
+                },
                 "autoresearch": initial_merge.get("autoresearch", {}),
                 "production_manifests": {
                     key: str(value) for key, value in production_documents.items()
                 },
             }
+
+            completion_gates = {
+                "discovery": bool(repo_roots) and all(path.is_dir() for path in repo_roots),
+                "inspection": initial_merge.get("status") == "ready" and final_merge.get("status") == "ready",
+                "instruction_inventory": instruction_inventory["status"] == "PASS",
+                "production_readiness": (
+                    production_documents.get("status") == "clear"
+                    and production_documents.get("candidate_count") == 0
+                    and bool(self.results.get("production_gap_inventory", {}).get("coverage_complete"))
+                ),
+                "markdown_inventory": None,
+                "validation": contract.get("status") == "ready_for_github",
+                "security": None,
+                "remote_main": None,
+                "remote_backup": None,
+                "q_version": None,
+                "live_activity": None,
+                "cross_repository": None,
+                "final_verification": None,
+            }
+            completion_result = AutonomousCompletionEngine(self.root_dir).evaluate(
+                completion_gates,
+                repository_results={
+                    "primary": {"changed_files": []},
+                    "secondary": {"changed_files": []},
+                    "markdown_inventory": final_merge.get("remote_markdown_inventory_evidence"),
+                },
+            )
+            report["autonomous_completion"] = completion_result.as_dict()
+            completion_actions = completion_result.evidence.get("next_actions", [])
 
             safe_json_write(
                 self.root_dir
@@ -9636,6 +9959,7 @@ All timestamps use UTC ISO-8601 format.
                 == "ready_for_github"
                 and initial_merge.get("status") == "ready"
                 and final_merge.get("status") == "ready"
+                and completion_result.status in {"SUCCESS", "NO_CHANGES_REQUIRED"}
             )
 
             self.update_resume_checkpoint(
@@ -9652,6 +9976,11 @@ All timestamps use UTC ISO-8601 format.
                     "model card generation",
                     "github proof contract",
                 ],
+                evidence={
+                    "completion_execution_id": completion_result.execution_id,
+                    "completion_status": completion_result.status,
+                    "next_operation": completion_actions[0]["operation"] if completion_actions else None,
+                },
             )
 
             self.record_tracker_event(
@@ -9685,6 +10014,16 @@ All timestamps use UTC ISO-8601 format.
             return 0 if success else 1
 
         except Exception as exc:  # noqa: BLE001 - CLI must persist any pipeline failure
+            try:
+                bank_automation_evidence = self.refresh_bank_automation_evidence(self.root_dir)
+                self.results["bank_automation_evidence"] = bank_automation_evidence
+            except Exception as evidence_error:  # noqa: BLE001 - preserve the original pipeline failure
+                self.results["bank_automation_evidence"] = {
+                    "status": "BLOCKED",
+                    "reason": f"bank evidence refresh failed: {type(evidence_error).__name__}",
+                    "implementation_verified": False,
+                    "remote_completion_verified": False,
+                }
             self.update_resume_checkpoint(
                 status="error",
                 completed_steps=[],

@@ -16,6 +16,8 @@ This repository follows the remote-first completion and evidence model described
 - Never force-push or rewrite shared history.
 - Never infer remote completion from local commits.
 - When a workflow or API returns 401/403/404, record it as diagnostic evidence and continue safely.
+- Before planning protected work, inventory and read root `AGENTS.md`, this file, and all files under `.github/instructions`; report relative paths, scopes, hashes, and unreadable files without storing instruction text in telemetry.
+- The autonomous agent may refresh generated evidence and run safe local/read-only tasks, but must not rewrite or weaken policy instructions, self-authorize protected actions, or convert a queued action into completion without terminal evidence.
 
 ## Required artifacts
 
@@ -40,6 +42,8 @@ Every operation should leave:
 - relevant SHA(s);
 - verification level; and
 - an explicit blocker or next action when remote proof is unavailable.
+
+The Ollama completion engine maintains a resumable, priority-ordered queue for non-passing gates. Retries are bounded and checkpointed. It pauses at explicit authorization or remote-evidence blockers instead of spinning, bypassing policy, or claiming it can replace Copilot Chat or human judgment.
 
 ## GitHub App credential handling
 

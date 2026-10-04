@@ -8,6 +8,7 @@
 - Treat 403 and 404 as ambiguous until verified against auth and repo state.
 - Use repository dispatch or target-owned workflow triggers only when explicitly authorized.
 - Never claim success from a dispatch acceptance alone.
+- The autonomous agent must apply these identity, protection, authorization, and terminal-evidence checks to each remote operation; an access preflight is not mutation authority or parity evidence.
 
 ## Evidence requirements
 

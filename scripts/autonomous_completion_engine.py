@@ -30,6 +30,8 @@ except ImportError:  # pragma: no cover - direct script execution
 REQUIRED_GATES = (
     "discovery",
     "inspection",
+    "instruction_inventory",
+    "production_readiness",
     "markdown_inventory",
     "validation",
     "security",
@@ -44,6 +46,21 @@ TERMINAL_STATUSES = {
     "SUCCESS",
     "NO_CHANGES_REQUIRED",
     "BLOCKED_REQUIRES_HUMAN",
+}
+GATE_ACTIONS = {
+    "discovery": ("Refresh refs, source roots, and repository identity", "READ_ONLY_AUTOMATIC", False),
+    "inspection": ("Map requirements to source, tests, workflows, and documentation", "READ_ONLY_AUTOMATIC", False),
+    "instruction_inventory": ("Read and hash all applicable repository instructions without rewriting policy", "READ_ONLY_AUTOMATIC", False),
+    "production_readiness": ("Map production candidates to owners, requirements, focused tests, and safe replacement plans", "LOCAL_ANALYSIS_AND_FOCUSED_TESTS", False),
+    "markdown_inventory": ("Run complete target-owned Markdown/ref/PR inventory", "TARGET_WORKFLOW_REQUIRED", True),
+    "validation": ("Run focused local checks, then configured target-owned validation", "LOCAL_THEN_TARGET_WORKFLOW", False),
+    "security": ("Run available read-only security checks and record inaccessible findings", "READ_ONLY_AUTOMATIC", False),
+    "remote_main": ("Verify exact main SHA and use only an authorized normal publication path", "REMOTE_AUTHORIZATION_REQUIRED", True),
+    "remote_backup": ("Verify backup SHA and guarded fast-forward eligibility", "REMOTE_AUTHORIZATION_REQUIRED", True),
+    "q_version": ("Finalize a sequential Q version only after every required gate passes", "CONDITIONAL_FINALIZATION", True),
+    "live_activity": ("Publish sanitized lifecycle status and verify the exact-SHA event", "LOCAL_OR_TARGET_WORKFLOW", False),
+    "cross_repository": ("Verify both source objects and run guarded target-owned sync", "TARGET_WORKFLOW_REQUIRED", True),
+    "final_verification": ("Re-read terminal checks, refs, ledgers, and clean exact-SHA evidence", "READ_ONLY_AUTOMATIC", False),
 }
 
 
@@ -80,6 +97,71 @@ def repository_state(root: Path) -> dict[str, Any]:
         "status": _git(root, "status", "--short"),
         "remote_main": _git(root, "rev-parse", "refs/remotes/origin/main"),
         "remote_backup": _git(root, "rev-parse", "refs/remotes/origin/autosync-backup"),
+    }
+
+
+def audit_instruction_files(root: Path | str) -> dict[str, Any]:
+    """Read every active instruction file and emit scope/hash metadata, never source contents."""
+    target = Path(root).resolve()
+    candidates: set[Path] = set()
+    errors = []
+    for relative in ("AGENTS.md", ".github/copilot-instructions.md"):
+        path = target / relative
+        if path.is_symlink():
+            errors.append({"path": relative, "error_type": "SymlinkInstruction"})
+        elif path.is_file():
+            candidates.add(path)
+        else:
+            errors.append({"path": relative, "error_type": "MissingRequiredInstruction"})
+    instruction_root = target / ".github" / "instructions"
+    if instruction_root.is_symlink():
+        errors.append({"path": ".github/instructions", "error_type": "SymlinkInstructionDirectory"})
+    elif instruction_root.is_dir():
+        for path in instruction_root.rglob("*"):
+            if path.is_symlink():
+                errors.append({"path": path.relative_to(target).as_posix(), "error_type": "SymlinkInstruction"})
+            elif path.is_file():
+                candidates.add(path)
+    else:
+        errors.append({"path": ".github/instructions", "error_type": "MissingInstructionDirectory"})
+
+    inventory = []
+    for path in sorted(candidates, key=lambda item: item.relative_to(target).as_posix()):
+        relative_path = path.relative_to(target).as_posix()
+        try:
+            content = path.read_bytes()
+            text = content.decode("utf-8")
+        except (OSError, UnicodeDecodeError) as exc:
+            errors.append({"path": relative_path, "error_type": type(exc).__name__})
+            continue
+        stripped = text.lstrip()
+        frontmatter = None
+        if stripped.startswith("---"):
+            parts = stripped.split("---", 2)
+            if len(parts) != 3:
+                errors.append({"path": relative_path, "error_type": "MalformedFrontmatter"})
+                continue
+            match = re.search(r"(?m)^applyTo:\s*(.*?)\s*$", parts[1])
+            frontmatter = match.group(1).strip("\"'") if match else "repository-wide"
+        else:
+            frontmatter = "repository-wide"
+        if not text.strip():
+            errors.append({"path": relative_path, "error_type": "EmptyInstruction"})
+            continue
+        inventory.append({
+            "path": relative_path,
+            "bytes": len(content),
+            "sha256": hashlib.sha256(content).hexdigest(),
+            "apply_to": frontmatter,
+            "nonempty": True,
+        })
+    return {
+        "status": "PASS" if inventory and not errors else "FAIL",
+        "files_discovered": len(candidates),
+        "files_read": len(inventory),
+        "unreadable_or_invalid": errors,
+        "files": inventory,
+        "source_contents_recorded": False,
     }
 
 
@@ -191,6 +273,12 @@ class AutonomousCompletionEngine:
             name: self._normalize_gate((gates or {}).get(name))
             for name in REQUIRED_GATES
         }
+        instruction_inventory = audit_instruction_files(self.root)
+        if instruction_inventory["status"] != "PASS":
+            normalized["instruction_inventory"] = "FAIL"
+        local_evidence_checks = self._validate_local_evidence_files()
+        if local_evidence_checks["status"] != "PASS":
+            normalized["final_verification"] = "FAIL"
         if normalized["markdown_inventory"] == "PASS" and not self._markdown_inventory_evidence_complete(
             (repository_results or {}).get("markdown_inventory")
         ):
@@ -200,6 +288,7 @@ class AutonomousCompletionEngine:
             self.checkpoints.record_stage(self.execution_id, name.upper(), status, gate=status)
         failures = list(errors or [])
         failures.extend(f"{name}={value}" for name, value in normalized.items() if value != "PASS")
+        next_actions = self._build_next_actions(normalized)
         all_pass = not failures and all(value == "PASS" for value in normalized.values())
         no_changes = all_pass and not any(
             (repository_results or {}).get(key, {}).get("changed_files")
@@ -218,6 +307,9 @@ class AutonomousCompletionEngine:
                 "q_version": discover_q_version(self.root),
                 "q_version_audit": QVersionManager(self.root).audit(),
                 "topic_metrics": topic_metrics(self.root),
+                "instruction_inventory": instruction_inventory,
+                "local_evidence_checks": local_evidence_checks,
+                "next_actions": next_actions,
                 "production_ready": all_pass,
             },
         )
@@ -233,7 +325,10 @@ class AutonomousCompletionEngine:
             "completed_stages": [name.upper() for name, value in normalized.items() if value == "PASS"],
             "failed_stages": [name.upper() for name, value in normalized.items() if value != "PASS"],
             "retry_counts": {},
-            "next_operation": None,
+            "next_operation": next_actions[0]["operation"] if next_actions else None,
+            "pending_actions": next_actions,
+            "local_evidence_checks": local_evidence_checks,
+            "instruction_inventory": instruction_inventory,
             "final_status": status,
         })
         self._write_evidence(result)
@@ -299,24 +394,101 @@ class AutonomousCompletionEngine:
                 return name.upper()
         return "FINAL_VERIFICATION"
 
+    @staticmethod
+    def _build_next_actions(gates: Mapping[str, str]) -> list[dict[str, Any]]:
+        """Turn every non-passing gate into a ranked, resumable action without granting authority."""
+        actions = []
+        for priority, gate in enumerate(REQUIRED_GATES, start=1):
+            gate_status = gates.get(gate, "UNKNOWN")
+            if gate_status == "PASS":
+                continue
+            operation, execution_mode, authorization_required = GATE_ACTIONS[gate]
+            actions.append({
+                "action_id": f"{gate}:{gate_status.lower()}",
+                "priority": priority,
+                "gate": gate,
+                "gate_status": gate_status,
+                "operation": operation,
+                "execution_mode": execution_mode,
+                "status": "BLOCKED_REQUIRES_AUTHORIZATION" if authorization_required else "QUEUED_SAFE_AUTOMATION",
+                "authorization_required": authorization_required,
+                "evidence_required": ["execution_id", "repository", "exact_sha", "result", "verification_method"],
+            })
+        return actions
+
+    def _validate_local_evidence_files(self) -> dict[str, Any]:
+        """Check local evidence syntax without copying sensitive values into the report."""
+        checks: dict[str, Any] = {}
+        json_files = (
+            "remote-completion.json",
+            "ollamatracks/bank_automation_status.json",
+        )
+        for relative_path in json_files:
+            path = self.root / relative_path
+            if not path.exists():
+                checks[relative_path] = {"status": "NOT_PRESENT"}
+                continue
+            try:
+                value = json.loads(path.read_text(encoding="utf-8"))
+                checks[relative_path] = {
+                    "status": "PASS" if isinstance(value, dict) else "INVALID_ROOT_TYPE",
+                    "root_type": type(value).__name__,
+                }
+            except (OSError, json.JSONDecodeError) as exc:
+                checks[relative_path] = {"status": "FAIL", "error_type": type(exc).__name__}
+
+        jsonl_files = (
+            "remote-evidence-ledger.jsonl",
+            "ollamatracks/telemetry.jsonl",
+        )
+        for relative_path in jsonl_files:
+            path = self.root / relative_path
+            if not path.exists():
+                checks[relative_path] = {"status": "NOT_PRESENT", "records": 0}
+                continue
+            records = 0
+            failure = None
+            try:
+                for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+                    if not line.strip():
+                        continue
+                    record = json.loads(line)
+                    if not isinstance(record, dict):
+                        failure = {"status": "INVALID_ROOT_TYPE", "line": line_number}
+                        break
+                    records += 1
+            except (OSError, json.JSONDecodeError) as exc:
+                failure = {"status": "FAIL", "error_type": type(exc).__name__}
+            checks[relative_path] = failure or {"status": "PASS", "records": records}
+
+        failures = [name for name, result in checks.items() if result.get("status") in {"FAIL", "INVALID_ROOT_TYPE"}]
+        return {
+            "status": "FAIL" if failures else "PASS",
+            "checks": checks,
+            "failed_paths": failures,
+            "values_recorded": False,
+        }
+
     def _write_evidence(self, result: CompletionResult) -> None:
         track = self.root / "ollamatracks"
         payload = result.as_dict()
         payload["repository_state"] = repository_state(self.root)
         payload["topic_metrics"] = payload["evidence"]["topic_metrics"]
+        _json_write(track / "instruction_inventory.json", payload["evidence"]["instruction_inventory"])
         _json_write(track / "executions" / self.execution_id / "execution.json", payload)
         current_state = track / "current_state.json"
-        if not current_state.is_file():
-            _json_write(current_state, {
-                "execution_id": self.execution_id,
-                "status": result.status,
-                "stage": result.stage,
-                "timestamp": utc_now(),
-                "heartbeat": result.status not in TERMINAL_STATUSES,
-            })
+        _json_write(current_state, {
+            "execution_id": self.execution_id,
+            "status": result.status,
+            "stage": result.stage,
+            "timestamp": utc_now(),
+            "heartbeat": result.status not in TERMINAL_STATUSES,
+            "pending_actions": result.evidence.get("next_actions", []),
+            "local_evidence_checks": result.evidence.get("local_evidence_checks", {}),
+        })
         _json_write(track / "topic_metrics.json", payload["topic_metrics"])
         checksum = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
         (track / "executions" / self.execution_id / "evidence.sha256").write_text(checksum + "\n", encoding="utf-8")
 
 
-__all__ = ["AutonomousCompletionEngine", "CompletionResult", "REQUIRED_GATES", "topic_metrics"]
+__all__ = ["AutonomousCompletionEngine", "CompletionResult", "REQUIRED_GATES", "audit_instruction_files", "topic_metrics"]

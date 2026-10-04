@@ -853,6 +853,12 @@ class TestFeatureTester:
 
     def test_validation_pipeline_refreshes_qstream_qstore_surfaces(self, tmp_path, monkeypatch):
         agent = OllamaAutonomousAgent(base_path=tmp_path)
+        (tmp_path / "AGENTS.md").write_text("# Repository instructions\n", encoding="utf-8")
+        github_dir = tmp_path / ".github"
+        (github_dir / "copilot-instructions.md").parent.mkdir(parents=True)
+        (github_dir / "copilot-instructions.md").write_text("# Copilot instructions\n", encoding="utf-8")
+        (github_dir / "instructions").mkdir()
+        (github_dir / "instructions" / "workspace.instructions.md").write_text("# Workspace rules\n", encoding="utf-8")
         monkeypatch.setattr(
             agent,
             "execute_merge_and_sync",
@@ -905,6 +911,12 @@ class TestFeatureTester:
         agent = OllamaAutonomousAgent(base_path=tmp_path)
         (tmp_path / "README.md").write_text("TODO: placeholder implementation\n", encoding="utf-8")
         (tmp_path / "app.py").write_text("raise Exception('stub')\n", encoding="utf-8")
+        (tmp_path / "production.md").write_text("# Historical production notes\nKeep this content.\n", encoding="utf-8")
+        (tmp_path / "productionenhanced.md").write_text("# Existing enhancement notes\nKeep this too.\n", encoding="utf-8")
+        (tmp_path / ".venv" / "lib").mkdir(parents=True)
+        (tmp_path / ".venv" / "lib" / "dependency.py").write_text("TODO: dependency source\n", encoding="utf-8")
+        (tmp_path / "qmoi-enhanced-history-1").mkdir()
+        (tmp_path / "qmoi-enhanced-history-1" / "old.py").write_text("TODO: archived code\n", encoding="utf-8")
 
         refreshed = agent.refresh_production_manifests(root=tmp_path)
 
@@ -914,11 +926,24 @@ class TestFeatureTester:
         assert "README.md" in production_text
         assert (tmp_path / "production.md").exists()
         assert "TODO" in (tmp_path / "production.md").read_text(encoding="utf-8")
+        assert "Historical production notes" in (tmp_path / "production.md").read_text(encoding="utf-8")
+        assert "Existing enhancement notes" in production_text
+        inventory = json.loads(refreshed["inventory"].read_text(encoding="utf-8"))
+        assert inventory["status"] == "NEEDS_REVIEW"
+        assert inventory["items"][0]["status"] == "discovered_unmapped"
+        assert inventory["items"][0]["sha256"]
+        assert "README.md" not in json.dumps(inventory["items"][0]) or "TODO:" not in json.dumps(inventory["items"][0])
+        inventory_text = json.dumps(inventory)
+        assert "TODO: placeholder implementation" not in inventory_text
+        assert any(item["path"] == ".venv" and item["reason"] == "virtual_environment" for item in inventory["excluded_roots"])
+        assert any(item["path"] == "qmoi-enhanced-history-1" for item in inventory["excluded_roots"])
 
     def test_production_manifests_record_verified_replacements(self, tmp_path):
         """Both production manifests must record implementation and validation evidence."""
         agent = OllamaAutonomousAgent(base_path=tmp_path)
         (tmp_path / "service.py").write_text("return_real_service()\n", encoding="utf-8")
+        (tmp_path / "production.md").write_text("# Existing production notes\nPreserve this.\n", encoding="utf-8")
+        (tmp_path / "productionenhanced.md").write_text("# Existing enhancement notes\nPreserve this too.\n", encoding="utf-8")
 
         agent.refresh_production_manifests(
             root=tmp_path,
@@ -932,12 +957,19 @@ class TestFeatureTester:
 
         production_text = (tmp_path / "production.md").read_text(encoding="utf-8")
         enhanced_text = (tmp_path / "productionenhanced.md").read_text(encoding="utf-8")
-        assert "Production implementation evidence status: clear" in production_text
+        assert "Production implementation candidate status: clear" in production_text
+        assert "production readiness is not established by scan" in production_text
         assert "service.py" in production_text
         assert "service.py real provider adapter" in production_text
         assert "pytest tests/test_service.py -q" in enhanced_text
-        assert "status=verified" not in enhanced_text
-        assert "verified |" in enhanced_text
+        assert "reported_status=verified" in enhanced_text
+        assert "not independently verified" in enhanced_text
+        assert enhanced_text.count("BEGIN QMOI MANAGED: PRODUCTION_INVENTORY") == 1
+
+        agent.refresh_production_manifests(tmp_path)
+        refreshed_text = (tmp_path / "productionenhanced.md").read_text(encoding="utf-8")
+        assert refreshed_text.count("BEGIN QMOI MANAGED: PRODUCTION_INVENTORY") == 1
+        assert "Existing enhancement notes" in refreshed_text
 
     def test_credential_readiness_discovers_names_without_values(self, tmp_path, monkeypatch):
         """Credential automation records readiness metadata but never secret values."""
@@ -956,6 +988,142 @@ class TestFeatureTester:
         manifest = (tmp_path / "CREDENTIAL_READINESS.md").read_text(encoding="utf-8")
         assert "MY_CUSTOM_TOKEN" in manifest
         assert "secret-value-must-not-be-recorded" not in manifest
+
+    def test_bank_automation_evidence_refreshes_managed_docs_without_claiming_completion(self, tmp_path, monkeypatch):
+        """Bank documentation is tracked, but never promoted to implementation or remote proof."""
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        (tmp_path / "bankandbankaccounts.md").write_text(
+            "# Bank requirements\n\n1. Registry\n2. Consent and reconciliation\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "QMOIMASKS.md").write_text("# QMOI Masks\n", encoding="utf-8")
+        (tmp_path / "oe2.txt").write_text("Prior evidence\n", encoding="utf-8")
+        (tmp_path / "remotecompletion.md").write_text("# Remote gate\n", encoding="utf-8")
+        (tmp_path / "bank_runtime_snapshot.json").write_text(
+            '{"account_number":"account-sentinel-9124","balance":"balance-sentinel-732.18"}\n',
+            encoding="utf-8",
+        )
+        monkeypatch.setenv("BANK_API_KEY", "credential-sentinel-never-emitted")
+
+        result = agent.refresh_bank_automation_evidence(tmp_path)
+        bank_text = (tmp_path / "bankandbankaccounts.md").read_text(encoding="utf-8")
+        continuation_text = (tmp_path / "oe2.txt").read_text(encoding="utf-8")
+        remote_text = (tmp_path / "remotecompletion.md").read_text(encoding="utf-8")
+        masks_text = (tmp_path / "QMOIMASKS.md").read_text(encoding="utf-8")
+        evidence = json.loads((tmp_path / "ollamatracks" / "bank_automation_status.json").read_text(encoding="utf-8"))
+        generated_content = "\n".join([
+            bank_text,
+            continuation_text,
+            remote_text,
+            masks_text,
+            json.dumps(evidence),
+        ])
+
+        assert result["status"] == "NEEDS_VERIFICATION"
+        assert result["correlation_id"]
+        assert result["numbered_requirement_lines"] == 2
+        assert result["implementation_verified"] is False
+        assert result["financial_writes_authorized"] is False
+        assert result["remote_completion_verified"] is False
+        assert result["masking_security"]["document_status"] == "DOCUMENTED_RUNTIME_UNVERIFIED"
+        assert result["masking_security"]["provider_identity_masking"] == "disabled_by_default_unless_provider_authorized"
+        assert result["masking_security"]["secret_values_in_evidence"] is False
+        assert result["masking_security"]["agent_telemetry_redaction"] == "implemented_and_tested"
+        assert result["masking_security"]["bank_provider_masking"] == "runtime_unverified"
+        assert "credential-sentinel-never-emitted" not in generated_content
+        assert "account-sentinel-9124" not in generated_content
+        assert "balance-sentinel-732.18" not in generated_content
+        assert evidence["source_sha256"] == result["source_sha256"]
+        assert "Prior evidence" in continuation_text
+        assert "not verified" in bank_text
+        assert "not authorized" in bank_text
+        assert "BLOCKED pending" in remote_text
+        assert "unmasked during provider authentication by default" in masks_text
+        assert "AUTH_BLOCKED" in masks_text
+
+        repeated_result = agent.refresh_bank_automation_evidence(tmp_path)
+        assert repeated_result["source_sha256"] == result["source_sha256"]
+        assert repeated_result["numbered_requirement_lines"] == result["numbered_requirement_lines"]
+        assert repeated_result["masking_security"]["source_sha256"] == result["masking_security"]["source_sha256"]
+        for text in (
+            (tmp_path / "bankandbankaccounts.md").read_text(encoding="utf-8"),
+            (tmp_path / "oe2.txt").read_text(encoding="utf-8"),
+            (tmp_path / "remotecompletion.md").read_text(encoding="utf-8"),
+        ):
+            assert text.count("BEGIN OLLAMA BANK AUTOMATION STATUS") == 1
+            assert text.count("END OLLAMA BANK AUTOMATION STATUS") == 1
+        assert masks_text.count("BEGIN OLLAMA BANK MASK SECURITY STATUS") == 1
+        assert masks_text.count("END OLLAMA BANK MASK SECURITY STATUS") == 1
+
+    def test_validation_pipeline_stops_before_repo_discovery_on_invalid_instructions(self, tmp_path):
+        """An empty instruction file blocks planning before discovery or merge can run."""
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        instruction_root = tmp_path / ".github" / "instructions"
+        instruction_root.mkdir(parents=True)
+        (instruction_root / "empty.instructions.md").write_text("", encoding="utf-8")
+
+        with patch.object(agent, "discover_repo_roots", side_effect=AssertionError("planning must not start")):
+            result = agent.run_validation_pipeline()
+
+        assert result == 1
+        checkpoint = agent.load_checkpoint()
+        assert checkpoint["status"] == "instruction_inventory_blocked"
+        assert agent.results["instruction_inventory"]["status"] == "FAIL"
+        inventory = json.loads((tmp_path / "ollamatracks" / "instruction_inventory.json").read_text(encoding="utf-8"))
+        assert inventory["status"] == "FAIL"
+        assert inventory["source_contents_recorded"] is False
+
+    def test_tracker_events_redact_financial_and_auth_values_on_every_output(self, tmp_path):
+        """Sensitive bank values are redacted while non-sensitive status remains useful."""
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        agent._append_telemetry(
+            "bank_startup_snapshot",
+            {"bank_account_id": "startup-account-4412", "bank_api_key": "startup-secret-key"},
+        )
+        record = agent.record_tracker_event(
+            "bank_snapshot",
+            "Snapshot BANK_API_KEY=api-secret account_number=message-account-9124",
+            status="complete",
+            details={
+                "account_number": "account-sentinel-9124",
+                "balance": "balance-sentinel-732.18",
+                "mfa_code": "mfa-sentinel-004281",
+                "safe_count": 3,
+                "safe_state": "read_only_verified",
+            },
+        )
+        outputs = [
+            agent.telemetry_path.read_text(encoding="utf-8"),
+            agent.current_status_path.read_text(encoding="utf-8"),
+            agent.latest_activity_path.read_text(encoding="utf-8"),
+            agent.log_path.read_text(encoding="utf-8"),
+            agent.monitoring_summary_path.read_text(encoding="utf-8"),
+        ]
+        output_text = "\n".join(outputs)
+        event = json.loads(agent.telemetry_path.read_text(encoding="utf-8").splitlines()[-1])
+
+        for sentinel in (
+            "api-secret",
+            "message-account-9124",
+            "account-sentinel-9124",
+            "balance-sentinel-732.18",
+            "mfa-sentinel-004281",
+            "startup-account-4412",
+            "startup-secret-key",
+        ):
+            assert sentinel not in output_text
+        startup_event = next(
+            json.loads(line)
+            for line in agent.telemetry_path.read_text(encoding="utf-8").splitlines()
+            if json.loads(line).get("event") == "bank_startup_snapshot"
+        )
+        assert startup_event["payload"]["bank_account_id"] == "<redacted>"
+        assert startup_event["payload"]["bank_api_key"] == "<redacted>"
+        assert record["details"]["safe_count"] == 3
+        assert event["details"]["safe_state"] == "read_only_verified"
+        assert event["details"]["account_number"] == "<redacted>"
+        assert event["details"]["balance"] == "<redacted>"
+        assert event["details"]["mfa_code"] == "<redacted>"
 
     def test_qmoi_space_features_complete(self):
         """Test QMOI Space has all required features."""

@@ -10,3 +10,5 @@
 ## Required policy
 
 All release, merge, and deployment decisions must remain blocked by unresolved security findings until the risk is remediated or the blocker is independently recorded as external and non-actionable.
+
+The autonomous agent may collect read-only diagnostics and propose bounded remediation, but it cannot downgrade, suppress, or self-approve a security finding to keep the workflow moving.

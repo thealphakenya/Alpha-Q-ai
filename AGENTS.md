@@ -14,6 +14,9 @@ This repository is governed by the remote-first completion contract in `remoteco
 8. Record exact SHAs, correlation IDs, and evidence references for every operation.
 9. Keep machine-readable evidence current and fail closed when data is missing.
 10. Do not declare remote completion without independently verified remote evidence.
+11. Before planning protected work, inventory and read root `AGENTS.md`, `.github/copilot-instructions.md`, and all files under `.github/instructions`; store only paths, scopes, hashes, and outcomes in machine evidence.
+12. Preserve instruction files as policy. Automation may refresh generated status/evidence but must not silently rewrite or weaken instructions.
+13. Resume only from verified checkpoints; keep safe work automatic and leave authorization-gated remote, release, deployment, credential, and financial operations blocked until their evidence and authority gates pass.
 
 ## Repository responsibilities
 
