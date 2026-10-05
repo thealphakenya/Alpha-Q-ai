@@ -2839,6 +2839,7 @@ class BranchSyncManager:
     REQUIRED_BRANCHES: ClassVar[list[str]] = [
         DEFAULT_BRANCH,
         BACKUP_BRANCH,
+        "qmoi",
         HISTORICAL_BRANCH,
     ]
 
@@ -2873,8 +2874,15 @@ class BranchSyncManager:
                 "and every API/endpoint/route/port/clone inventory file"
             ),
             "sync_strategy": (
-                "main -> autosync-backup -> cross-repository -> historical inventory sync"
+                "main -> autosync-backup -> qmoi restore-point -> cross-repository -> historical inventory sync"
             ),
+            "qmoi_restore_point": {
+                "purpose": "preserve the last committed, synchronized workspace before the next agent cycle",
+                "update_policy": "post-main-and-backup-success; exact-SHA; normal fast-forward only",
+                "authorization_gate": "QMOI_BRANCH_PUBLICATION_AUTHORIZED",
+                "required_evidence_files": ["oe2.txt", "remotecompletion.md"],
+                "dirty_or_ignored_workspace_files_included": False,
+            },
             "required_doc_sets": [
                 "API.md",
                 "ENDPOINTS.md",
@@ -2911,6 +2919,7 @@ class CrossRepositoryAutonomyManager:
                     "branches": [
                         DEFAULT_BRANCH,
                         BACKUP_BRANCH,
+                        "qmoi",
                         HISTORICAL_BRANCH,
                     ],
                     "history_snapshot": HISTORY_SNAPSHOT_DIRECTORY,
@@ -2922,6 +2931,7 @@ class CrossRepositoryAutonomyManager:
                     "branches": [
                         DEFAULT_BRANCH,
                         BACKUP_BRANCH,
+                        "qmoi",
                         HISTORICAL_BRANCH,
                     ],
                     "history_snapshot": HISTORY_SNAPSHOT_DIRECTORY,
@@ -5476,6 +5486,34 @@ All timestamps use UTC ISO-8601 format.
                 for item in pre_inventory.get("root_metrics", {}).values()
             ):
                 raise RuntimeError("Pre-merge Q-version inventory is incomplete; merge mutation is blocked")
+            instruction_inventories = {
+                str(root): audit_instruction_files(root)
+                for root in repo_paths
+            }
+            instruction_inventory_passed = bool(instruction_inventories) and all(
+                item.get("status") == "PASS"
+                for item in instruction_inventories.values()
+            )
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "INSTRUCTION_INVENTORY",
+                repo_paths,
+                status="PASS" if instruction_inventory_passed else "NEEDS_REVIEW",
+                details={
+                    "repositories": {
+                        root: {
+                            "status": item.get("status"),
+                            "files_discovered": item.get("files_discovered"),
+                            "files_read": item.get("files_read"),
+                            "unreadable_or_invalid": item.get("unreadable_or_invalid", []),
+                            "source_contents_recorded": item.get("source_contents_recorded"),
+                            "files": item.get("files", []),
+                        }
+                        for root, item in instruction_inventories.items()
+                    }
+                },
+                include_inventory=False,
+            )
             research_report = self.build_autoresearch_report(
                 repo_paths,
                 fetch_external=True,
@@ -5531,29 +5569,30 @@ All timestamps use UTC ISO-8601 format.
             and repository_surface_audit.get("coverage_complete") is True
             and repository_surface_audit.get("remote_verified") is True
         )
-        q_version_manager.record_lifecycle_stage(
-            q_execution_id,
-            "REPOSITORY_SURFACE_AUDIT",
-            repo_paths,
-            status="PASS" if repository_surface_audit_passed else "NEEDS_REVIEW",
-            details={
-                "audit_name": "repository_surface_audit",
-                "status": repository_surface_audit.get("status", "BLOCKED"),
-                "coverage_complete": repository_surface_audit_passed,
-                "source_manifest_sha256": repository_surface_audit.get("source_manifest_sha256"),
-                "file_count": repository_surface_audit.get("file_count", 0),
-                "directory_count": repository_surface_audit.get("directory_count", 0),
-                "markdown_file_count": repository_surface_audit.get("markdown_file_count", 0),
-                "surface_document_counts": repository_surface_audit.get("surface_document_counts", {}),
-                "metric_candidate_line_count": repository_surface_audit.get("metric_candidate_line_count", 0),
-                "percentage_occurrence_count": repository_surface_audit.get("percentage_occurrence_count", 0),
-                "production_gap_audit": repository_surface_audit.get("production_gap_audit", {}),
-                "remote_refs_prs_and_intermediate_trees_verified": False,
-                "artifact_path": repository_surface_audit.get("artifact_path"),
-                "unavailable_sources": repository_surface_audit.get("unavailable_roots", []),
-            },
-            include_inventory=False,
-        )
+        if lifecycle_phase == "initial":
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "REPOSITORY_SURFACE_AUDIT",
+                repo_paths,
+                status="PASS" if repository_surface_audit_passed else "NEEDS_REVIEW",
+                details={
+                    "audit_name": "repository_surface_audit",
+                    "status": repository_surface_audit.get("status", "BLOCKED"),
+                    "coverage_complete": repository_surface_audit_passed,
+                    "source_manifest_sha256": repository_surface_audit.get("source_manifest_sha256"),
+                    "file_count": repository_surface_audit.get("file_count", 0),
+                    "directory_count": repository_surface_audit.get("directory_count", 0),
+                    "markdown_file_count": repository_surface_audit.get("markdown_file_count", 0),
+                    "surface_document_counts": repository_surface_audit.get("surface_document_counts", {}),
+                    "metric_candidate_line_count": repository_surface_audit.get("metric_candidate_line_count", 0),
+                    "percentage_occurrence_count": repository_surface_audit.get("percentage_occurrence_count", 0),
+                    "production_gap_audit": repository_surface_audit.get("production_gap_audit", {}),
+                    "remote_refs_prs_and_intermediate_trees_verified": False,
+                    "artifact_path": repository_surface_audit.get("artifact_path"),
+                    "unavailable_sources": repository_surface_audit.get("unavailable_roots", []),
+                },
+                include_inventory=False,
+            )
 
         ollama_full_coverage_audit = self.refresh_ollama_reference_audit(primary_root)
         feature_test_hook_coverage = self.refresh_test_hook_coverage_documents(primary_root)
@@ -5566,33 +5605,73 @@ All timestamps use UTC ISO-8601 format.
             and ollama_audit_history.get("status") == "all_local_ref_diffs_scanned"
             and ollama_full_coverage_audit.get("coverage_complete")
         )
-        q_version_manager.record_lifecycle_stage(
-            q_execution_id,
-            "OLLAMA_FULL_COVERAGE_AUDIT",
-            repo_paths,
-            status="PASS" if ollama_audit_passed else "NEEDS_REVIEW",
-            details={
-                "audit_name": "OFCA",
-                "prMergeIncluded": True,
-                "position": "after_source_inventory_and_immediately_before_merge_activity",
-                "matched_file_count": ollama_audit_local.get("matched_file_count", 0),
-                "files_scanned": ollama_audit_local.get("files_scanned", 0),
-                "bytes_scanned": ollama_audit_local.get("bytes_scanned", 0),
-                "local_ref_count": ollama_audit_history.get("ref_count", 0),
-                "local_commit_count": ollama_audit_history.get("commit_count"),
-                "mention_diff_commit_count": ollama_audit_history.get("ollama_mention_diff_commit_count", 0),
-                "mention_diff_path_count": ollama_audit_history.get("ollama_mention_diff_path_count", 0),
-                "source_manifest_sha256": ollama_full_coverage_audit.get("source_manifest_sha256"),
-                "remote_history": ollama_audit_remote,
-                "coverage_complete": bool(ollama_full_coverage_audit.get("coverage_complete")),
-                "next_action": ollama_full_coverage_audit.get("next_action"),
-                "feature_count": coverage_summary.get("feature_count"),
-                "test_mapped_feature_count": coverage_summary.get("test_mapped_feature_count"),
-                "hook_applicability_reviewed_count": coverage_summary.get("hook_applicability_reviewed_count"),
-                "replacement_inventory": coverage_summary.get("style_universal_replacement_inventory"),
-            },
-            include_inventory=False,
+        if lifecycle_phase == "initial":
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "OLLAMA_FULL_COVERAGE_AUDIT",
+                repo_paths,
+                status="PASS" if ollama_audit_passed else "NEEDS_REVIEW",
+                details={
+                    "audit_name": "OFCA",
+                    "prMergeIncluded": True,
+                    "position": "after_source_inventory_and_immediately_before_merge_activity",
+                    "matched_file_count": ollama_audit_local.get("matched_file_count", 0),
+                    "files_scanned": ollama_audit_local.get("files_scanned", 0),
+                    "bytes_scanned": ollama_audit_local.get("bytes_scanned", 0),
+                    "local_ref_count": ollama_audit_history.get("ref_count", 0),
+                    "local_commit_count": ollama_audit_history.get("commit_count"),
+                    "mention_diff_commit_count": ollama_audit_history.get("ollama_mention_diff_commit_count", 0),
+                    "mention_diff_path_count": ollama_audit_history.get("ollama_mention_diff_path_count", 0),
+                    "source_manifest_sha256": ollama_full_coverage_audit.get("source_manifest_sha256"),
+                    "remote_history": ollama_audit_remote,
+                    "coverage_complete": bool(ollama_full_coverage_audit.get("coverage_complete")),
+                    "next_action": ollama_full_coverage_audit.get("next_action"),
+                    "feature_count": coverage_summary.get("feature_count"),
+                    "test_mapped_feature_count": coverage_summary.get("test_mapped_feature_count"),
+                    "hook_applicability_reviewed_count": coverage_summary.get("hook_applicability_reviewed_count"),
+                    "replacement_inventory": coverage_summary.get("style_universal_replacement_inventory"),
+                },
+                include_inventory=False,
+            )
+
+        markdown_index_refresh = self.cross_repo_manager.refresh_all_markdown_indexes(repo_paths)
+        markdown_audit_passed = bool(markdown_index_refresh.get("audit", {}).get("index_complete"))
+        if lifecycle_phase == "initial":
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "MARKDOWN_SOURCE_INDEX",
+                repo_paths,
+                status="PASS" if markdown_audit_passed else "NEEDS_REVIEW",
+                details={
+                    "index_complete": markdown_audit_passed,
+                    "audit": markdown_index_refresh.get("audit", {}),
+                    "remote_refs_prs_and_intermediate_trees_verified": False,
+                },
+                include_inventory=False,
+            )
+        ui_coverage_passed = bool(
+            coverage_summary.get("status") == "PASS"
+            and feature_test_hook_coverage.get("coverage_verified") is True
         )
+        if lifecycle_phase == "initial":
+            q_version_manager.record_lifecycle_stage(
+                q_execution_id,
+                "UI_TEST_HOOK_COVERAGE",
+                repo_paths,
+                status="PASS" if ui_coverage_passed else "NEEDS_REVIEW",
+                details={
+                    "status": coverage_summary.get("status", "BLOCKED"),
+                    "coverage_verified": feature_test_hook_coverage.get("coverage_verified") is True,
+                    "feature_count": coverage_summary.get("feature_count", 0),
+                    "test_mapped_feature_count": coverage_summary.get("test_mapped_feature_count", 0),
+                    "hook_applicability_reviewed_count": coverage_summary.get("hook_applicability_reviewed_count", 0),
+                    "unmapped_feature_count": coverage_summary.get("unmapped_feature_count"),
+                    "unreviewed_hook_applicability_count": coverage_summary.get("unreviewed_hook_applicability_count"),
+                    "unmapped_event_hook_count": coverage_summary.get("unmapped_event_hook_count"),
+                    "artifact_path": str(feature_test_hook_coverage.get("styles_universals_coverage_path", "")),
+                },
+                include_inventory=False,
+            )
 
         self.record_tracker_event(
             "merge_sync_started",
@@ -5601,8 +5680,6 @@ All timestamps use UTC ISO-8601 format.
             phase="merge_sync",
             details={"repositories": [str(path) for path in repo_paths], "auto_push": auto_push},
         )
-
-        markdown_index_refresh = self.cross_repo_manager.refresh_all_markdown_indexes(repo_paths)
 
         inventory = self.cross_repo_manager.build_unified_markdown_inventory(
             repo_paths,
@@ -5638,7 +5715,6 @@ All timestamps use UTC ISO-8601 format.
             include_inventory=False,
         )
 
-        markdown_audit_passed = bool(markdown_index_refresh.get("audit", {}).get("index_complete"))
         merge_apply_blockers = []
         if not ollama_audit_passed:
             merge_apply_blockers.append("OFCA does not prove complete remote refs, PRs, and intermediate commit trees")
@@ -10275,16 +10351,53 @@ All timestamps use UTC ISO-8601 format.
     # CLI PIPELINE
     # ------------------------------------------------------------------------
 
+    def _record_auto_continue_lifecycle_stage(
+        self,
+        *,
+        final_status: str,
+        iteration: int,
+        max_iterations: int,
+        termination_reason: str,
+    ) -> None:
+        merge_audit = self.results.get("merge_audit", {})
+        if not isinstance(merge_audit, Mapping):
+            return
+        execution_id = str(merge_audit.get("q_version_lifecycle_execution_id", ""))
+        repositories = merge_audit.get("repositories", [])
+        if not execution_id or not isinstance(repositories, list):
+            return
+        roots = [Path(repository).resolve() for repository in repositories]
+        if not roots:
+            return
+        successful = final_status.upper() == "SUCCESS" and termination_reason == "success_contract"
+        QVersionManager(self.root_dir).record_lifecycle_stage(
+            execution_id,
+            "AUTO_CONTINUE_LOOP",
+            roots,
+            status="PASS" if successful else "NEEDS_REVIEW",
+            details={
+                "loop_completed": True,
+                "iteration_count": iteration,
+                "retry_limit": max_iterations,
+                "retry_limit_respected": 1 <= iteration <= max_iterations,
+                "termination_reason": termination_reason,
+                "final_status": final_status.upper(),
+            },
+            include_inventory=False,
+        )
+
     def run_continue_cycle(
         self,
     ) -> int:
-        """Resume safely from the latest checkpoint and continue the bounded validation loop."""
+        """Resume safely from the latest checkpoint and keep the autonomous loop going until success or the bounded retry limit is reached."""
         managed_surface_contract = self.refresh_managed_surface_documents(
             self.root_dir
         )
         self.results["managed_surface_contract"] = managed_surface_contract
         checkpoint = self.load_checkpoint() or {}
         completed_steps = list(dict.fromkeys(checkpoint.get("completed_steps") or []))
+        auto_continue = os.getenv("AUTO_CONTINUE", "1").strip().lower() not in {"0", "false", "no", "off"}
+        max_iterations = max(1, int(os.getenv("AUTO_CONTINUE_MAX", "5")))
 
         self.record_tracker_event(
             "continue_cycle_started",
@@ -10294,6 +10407,8 @@ All timestamps use UTC ISO-8601 format.
             details={
                 "checkpoint_status": checkpoint.get("status", "unknown"),
                 "completed_steps": completed_steps,
+                "auto_continue": auto_continue,
+                "max_iterations": max_iterations,
             },
         )
 
@@ -10303,6 +10418,8 @@ All timestamps use UTC ISO-8601 format.
             evidence={
                 "continue_mode": True,
                 "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                "auto_continue": auto_continue,
+                "max_iterations": max_iterations,
             },
         )
 
@@ -10318,8 +10435,130 @@ All timestamps use UTC ISO-8601 format.
                     details={"error": str(exc)},
                 )
 
+        if not auto_continue:
+            self.update_resume_checkpoint(
+                status="continuation_complete",
+                completed_steps=[*completed_steps, "continuation cycle skipped because auto-continue is disabled"],
+                evidence={
+                    "continue_mode": False,
+                    "last_checkpoint_status": checkpoint.get("status", "unknown"),
+                    "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                },
+            )
+            return 0
+
+        for iteration in range(1, max_iterations + 1):
+            checkpoint = self.load_checkpoint() or {}
+            if str(checkpoint.get("status", "")).lower() in {"success", "autonomous_complete", "ready", "continuation_complete"}:
+                self.update_resume_checkpoint(
+                    status="success" if checkpoint.get("status") in {"success", "autonomous_complete", "ready"} else "continuation_complete",
+                    completed_steps=[*completed_steps, "continuation cycle"],
+                    evidence={
+                        "continue_mode": True,
+                        "iteration": iteration,
+                        "last_checkpoint_status": checkpoint.get("status", "unknown"),
+                        "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                    },
+                )
+                return 0
+
+            try:
+                result = self.run_autonomous_loop()
+            except Exception as exc:  # pragma: no cover - the surrounding caller handles runtime errors explicitly
+                self.update_resume_checkpoint(
+                    status="continuation_failed",
+                    completed_steps=[*completed_steps, f"continuation iteration {iteration}"],
+                    error=str(exc),
+                    evidence={
+                        "continue_mode": True,
+                        "iteration": iteration,
+                        "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                    },
+                )
+                self.record_tracker_event(
+                    "continue_cycle_failed",
+                    f"Automatic continuation failed on iteration {iteration}: {exc}",
+                    status="failed",
+                    phase="continuation",
+                    details={"error": str(exc), "iteration": iteration},
+                )
+                self._record_auto_continue_lifecycle_stage(
+                    final_status="FAILED",
+                    iteration=iteration,
+                    max_iterations=max_iterations,
+                    termination_reason="iteration_exception",
+                )
+                return 1
+
+            final_status = str(result.get("final_status", "")).upper()
+            if final_status == "SUCCESS":
+                self.update_resume_checkpoint(
+                    status="success",
+                    completed_steps=[*completed_steps, f"continuation iteration {iteration}", "success contract"],
+                    evidence={
+                        "continue_mode": True,
+                        "iteration": iteration,
+                        "final_status": final_status,
+                        "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                    },
+                )
+                self.record_tracker_event(
+                    "continue_cycle_succeeded",
+                    "Autonomous continuation reached a successful completion state.",
+                    status="success",
+                    phase="continuation",
+                    details={"iteration": iteration, "final_status": final_status},
+                )
+                self._record_auto_continue_lifecycle_stage(
+                    final_status=final_status,
+                    iteration=iteration,
+                    max_iterations=max_iterations,
+                    termination_reason="success_contract",
+                )
+                return 0
+
+            checkpoint = self.load_checkpoint() or {}
+            if str(checkpoint.get("status", "")).lower() in {"success", "autonomous_complete", "ready"}:
+                self.update_resume_checkpoint(
+                    status="success",
+                    completed_steps=[*completed_steps, f"continuation iteration {iteration}", "success contract"],
+                    evidence={
+                        "continue_mode": True,
+                        "iteration": iteration,
+                        "final_status": checkpoint.get("status"),
+                        "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                    },
+                )
+                return 0
+
+            if iteration == max_iterations:
+                self.update_resume_checkpoint(
+                    status="continuation_exhausted",
+                    completed_steps=[*completed_steps, f"continuation iteration {iteration}"],
+                    evidence={
+                        "continue_mode": True,
+                        "iteration": iteration,
+                        "max_iterations": max_iterations,
+                        "runtime": os.getenv("GITHUB_ACTIONS", "false"),
+                    },
+                )
+                self.record_tracker_event(
+                    "continue_cycle_exhausted",
+                    f"Automatic continuation reached its configured retry limit ({max_iterations}).",
+                    status="warning",
+                    phase="continuation",
+                    details={"iteration": iteration, "max_iterations": max_iterations},
+                )
+                self._record_auto_continue_lifecycle_stage(
+                    final_status=final_status or "FAILED",
+                    iteration=iteration,
+                    max_iterations=max_iterations,
+                    termination_reason="retry_limit_reached",
+                )
+                return 1
+
         self.update_resume_checkpoint(
-            status="success" if checkpoint.get("status") in {"success", "autonomous_complete", "ready"} else "continuation_complete",
+            status="continuation_complete",
             completed_steps=[*completed_steps, "continuation cycle"],
             evidence={
                 "continue_mode": True,
@@ -10334,9 +10573,13 @@ All timestamps use UTC ISO-8601 format.
         self,
         contract: Mapping[str, Any],
     ) -> list[Path]:
-        """Write a numbered completion manifest directory after a successful autonomous run."""
+        """Write unversioned local completion reports without allocating a Q version."""
         if str(contract.get("final_status", "")).upper() != "SUCCESS":
             return []
+
+        report_id = str(contract.get("execution_id", ""))
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}", report_id):
+            report_id = uuid.uuid4().hex
 
         repo_roots: list[Path] = [self.root_dir]
         parent = self.root_dir.parent
@@ -10350,23 +10593,11 @@ All timestamps use UTC ISO-8601 format.
 
         written: list[Path] = []
         for repo_root in repo_roots:
-            repo_root.mkdir(parents=True, exist_ok=True)
-            existing = sorted(list(repo_root.glob("Q.*")) + list(repo_root.glob("Q.*.md")))
-            version = (0, 0, 0)
-            for candidate in existing:
-                candidate_name = candidate.name
-                match = re.match(r"^Q\.(\d+)\.(\d+)\.(\d+)(?:\.md)?$", candidate_name)
-                if match:
-                    version = max(version, tuple(int(part) for part in match.groups()))
-            major, minor, patch = version
-            next_version = (major, minor, patch + 1)
-            manifest_dir = repo_root / f"Q.{next_version[0]}.{next_version[1]}.{next_version[2]}"
-            manifest_dir.mkdir(parents=True, exist_ok=True)
+            report_dir = repo_root / "ollamatracks" / "completion_reports" / report_id
+            report_dir.mkdir(parents=True, exist_ok=False)
 
             summary = [
-                f"# Q.{next_version[0]}.{next_version[1]}.{next_version[2]}",
-                "",
-                "## Autonomous completion report",
+                "# Local Autonomous Completion Report",
                 "",
                 "- Status: SUCCESS",
                 f"- Workflow run: {contract.get('workflow_run_id') or 'not recorded'}",
@@ -10379,24 +10610,15 @@ All timestamps use UTC ISO-8601 format.
                 f"- Model available: {bool(contract.get('model_available'))}",
                 f"- Inference verified: {bool(contract.get('inference_verified'))}",
                 "",
-                "## Full repository analysis completed",
-                "- All candidate repositories, branch histories, merge sources, and working inventory were analyzed before completion was marked successful.",
-                "- The merge, validation, and tracker contracts were preserved and recorded in the live monitoring artifacts.",
-                "- No success marker was written before the runtime, validation, and audit evidence were all present.",
-                "",
                 "## Evidence",
                 f"- Files analyzed: {', '.join(contract.get('files_analyzed', [])) or 'none'}",
                 f"- Files modified: {', '.join(contract.get('files_modified', [])) or 'none'}",
                 "",
-                "## Completion gate",
-                "This document is the authoritative numbered completion manifest for the autonomous agent and is written only after the full runtime, validation, and merge-audit evidence was verified.",
+                "This report records the supplied autonomous-run contract only. It is not a Q-version finalization, does not establish remote completion, and does not authorize publication.",
             ]
-            readme_path = manifest_dir / "README.md"
-            safe_text_write(readme_path, "\n".join(summary) + "\n")
-
-            legacy_manifest = repo_root / f"Q.{next_version[0]}.{next_version[1]}.{next_version[2]}.md"
-            safe_text_write(legacy_manifest, "\n".join(summary) + "\n")
-            written.append(legacy_manifest)
+            report_path = report_dir / "COMPLETION.md"
+            safe_text_write(report_path, "\n".join(summary) + "\n")
+            written.append(report_path)
 
         return written
 
@@ -10437,6 +10659,15 @@ All timestamps use UTC ISO-8601 format.
 
             product_surface_docs = self.refresh_managed_surface_documents(
                 self.root_dir
+            )
+
+            restore_point_path = self.tracker_dir / "qmoi_restore_point_preflight.json"
+            try:
+                qmoi_restore_point = json.loads(restore_point_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                qmoi_restore_point = None
+            qmoi_restore_point_passed = AutonomousCompletionEngine._qmoi_restore_point_evidence_complete(
+                qmoi_restore_point
             )
 
             platform_results = (
@@ -10611,6 +10842,7 @@ All timestamps use UTC ISO-8601 format.
                     )
                     else None
                 ),
+                "qmoi_restore_point": "PASS" if qmoi_restore_point_passed else None,
                 "instruction_inventory": instruction_inventory["status"] == "PASS",
                 "production_readiness": (
                     production_documents.get("status") == "clear"
@@ -10627,6 +10859,112 @@ All timestamps use UTC ISO-8601 format.
                 "cross_repository": None,
                 "final_verification": None,
             }
+
+            production_inventory = self.results.get("production_gap_inventory", {})
+            production_candidate_count = production_inventory.get("total_candidates")
+            production_scan_complete = bool(
+                production_inventory.get("coverage_complete") is True
+                and production_inventory.get("unreadable_files") == []
+                and production_inventory.get("oversized_files_not_read") == 0
+            )
+            production_scan_passed = bool(production_scan_complete and production_candidate_count == 0)
+            q_version_manager = QVersionManager(self.root_dir)
+            lifecycle_roots = [Path(path).resolve() for path in repo_roots]
+            def record_lifecycle_stage_if_available(stage: str, **kwargs: Any) -> None:
+                if lifecycle_execution_id:
+                    q_version_manager.record_lifecycle_stage(
+                        lifecycle_execution_id,
+                        stage,
+                        lifecycle_roots,
+                        **kwargs,
+                    )
+
+            record_lifecycle_stage_if_available(
+                "PRODUCTION_SCAN",
+                status="PASS" if production_scan_passed else "NEEDS_REVIEW",
+                details={
+                    "production_md_present": (self.root_dir / "production.md").is_file(),
+                    "productionenhanced_md_present": (self.root_dir / "productionenhanced.md").is_file(),
+                    "coverage_complete": production_scan_complete,
+                    "unresolved_findings": production_candidate_count,
+                    "candidate_count": production_candidate_count,
+                    "unreadable_files": production_inventory.get("unreadable_files", []),
+                    "oversized_files_not_read": production_inventory.get("oversized_files_not_read"),
+                    "inventory_path": "ollamatracks/production_gap_inventory.json",
+                },
+                include_inventory=False,
+            )
+            record_lifecycle_stage_if_available(
+                "PRODUCTION_REPLACEMENTS",
+                status="PASS" if production_scan_passed else "NEEDS_REVIEW",
+                details={
+                    "replacement_records_verified": production_scan_passed,
+                    "unresolved_findings": production_candidate_count,
+                    "automatic_replacement_enabled": False,
+                },
+                include_inventory=False,
+            )
+            record_lifecycle_stage_if_available(
+                "PRODUCTION_READINESS",
+                status="PASS" if production_scan_passed and production_documents.get("status") == "clear" else "NEEDS_REVIEW",
+                details={
+                    "status": "CLEAR" if production_scan_passed and production_documents.get("status") == "clear" else "NEEDS_REVIEW",
+                    "coverage_complete": production_scan_complete,
+                    "candidate_count": production_candidate_count,
+                    "unreadable_files": production_inventory.get("unreadable_files", []),
+                    "oversized_files_not_read": production_inventory.get("oversized_files_not_read"),
+                },
+                include_inventory=False,
+            )
+            local_validation_passed = contract.get("status") == "ready_for_github"
+            record_lifecycle_stage_if_available(
+                "FULL_VALIDATION",
+                status="PASS" if local_validation_passed else "NEEDS_REVIEW",
+                details={
+                    "all_required_tests_passed": local_validation_passed,
+                    "all_markdown_validated": bool(final_merge.get("markdown_index_refresh", {}).get("audit", {}).get("index_complete")),
+                    "inventory_documents_current": bool(contract.get("status") == "ready_for_github"),
+                    "validation_contract_status": contract.get("status"),
+                },
+                include_inventory=False,
+            )
+            record_lifecycle_stage_if_available(
+                "REMOTE_VERIFICATION",
+                status="NEEDS_REVIEW",
+                details={
+                    "terminal_conclusion": None,
+                    "remote_verified": False,
+                    "blocker": "No terminal target-owned workflow evidence was supplied to this local validation pipeline.",
+                },
+                include_inventory=False,
+            )
+            record_lifecycle_stage_if_available(
+                "QMOI_RESTORE_POINT",
+                status="PASS" if qmoi_restore_point_passed else "NEEDS_REVIEW",
+                details=(
+                    {**qmoi_restore_point, "status": "SUCCESS"}
+                    if qmoi_restore_point_passed
+                    else {
+                        "status": "BLOCKED",
+                        "branch": "qmoi",
+                        "remote_verified": False,
+                        "coverage_complete": False,
+                        "blocker": "The target-owned autosync workflow has not supplied valid exact-SHA qmoi/main/autosync-backup evidence for both repositories.",
+                    }
+                ),
+                include_inventory=False,
+            )
+            record_lifecycle_stage_if_available(
+                "AUTO_CONTINUE_LOOP",
+                status="NEEDS_REVIEW",
+                details={
+                    "loop_invoked": False,
+                    "auto_continue_enabled": os.getenv("AUTO_CONTINUE", "1").strip().lower() not in {"0", "false", "no", "off"},
+                    "retry_limit": max(1, int(os.getenv("AUTO_CONTINUE_MAX", "5"))),
+                    "blocker": "This validation pipeline run is not itself a continuation-loop execution.",
+                },
+                include_inventory=False,
+            )
             completion_result = AutonomousCompletionEngine(self.root_dir).evaluate(
                 completion_gates,
                 repository_results={
@@ -10636,9 +10974,29 @@ All timestamps use UTC ISO-8601 format.
                     "repository_surface_audit": final_merge.get("repository_surface_audit"),
                     "ollama_reference_audit": ollama_reference_audit,
                     "ui_test_hook_coverage": product_surface_docs["automation_coverage"]["styles_universals_coverage"],
+                    "qmoi_restore_point": qmoi_restore_point,
                 },
             )
+            record_lifecycle_stage_if_available(
+                "AUTONOMOUS_COMPLETION",
+                status="PASS" if completion_result.status in {"SUCCESS", "NO_CHANGES_REQUIRED"} else "NEEDS_REVIEW",
+                details={
+                    "status": completion_result.status,
+                    "execution_id": completion_result.execution_id,
+                    "gates": completion_result.gates,
+                    "pending_action_count": len(completion_result.evidence.get("next_actions", [])),
+                    "remote_verified": False,
+                },
+                include_inventory=False,
+            )
             report["autonomous_completion"] = completion_result.as_dict()
+            report["qmoi_restore_point"] = qmoi_restore_point or {
+                "status": "BLOCKED",
+                "branch": "qmoi",
+                "coverage_complete": False,
+                "remote_verified": False,
+                "blocker": "Restore-point preflight evidence is missing or invalid.",
+            }
             completion_actions = completion_result.evidence.get("next_actions", [])
 
             safe_json_write(

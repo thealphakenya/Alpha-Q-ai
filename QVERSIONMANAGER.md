@@ -6,6 +6,77 @@
 
 A final version is written only by `write_final_metrics()` after the caller supplies terminal target-owned workflow success, independently verified exact SHAs for both target repositories, passed checks, clean local trees matching those SHAs, a workflow run ID, and a correlation ID. The manager checks those inputs and records them; it does not authenticate to GitHub or independently verify a caller-supplied claim. The target workflow remains responsible for producing trusted evidence.
 
+## Canonical autonomous lifecycle
+
+The Q-version lifecycle is the contract for the fully autonomous Ollama agent. These are the required stage names and the order they must be recorded in:
+
+1. `MERGE_START`
+2. `PRE_MERGE_INVENTORY`
+3. `INSTRUCTION_INVENTORY`
+4. `INTERNAL_RESEARCH`
+5. `EXTERNAL_RESEARCH`
+6. `REPOSITORY_SURFACE_AUDIT`
+7. `OLLAMA_FULL_COVERAGE_AUDIT` (`OFCA`)
+8. `MARKDOWN_SOURCE_INDEX`
+9. `UI_TEST_HOOK_COVERAGE`
+10. `MERGE_PLAN`
+11. `MERGE_APPLY`
+12. `POST_MERGE_AUDIT`
+13. `POST_AGENT_MERGE_PLAN`
+14. `POST_AGENT_MERGE_APPLY`
+15. `POST_AGENT_MERGE_AUDIT`
+16. `PRODUCTION_SCAN`
+17. `PRODUCTION_REPLACEMENTS`
+18. `PRODUCTION_READINESS`
+19. `FULL_VALIDATION`
+20. `REMOTE_VERIFICATION`
+21. `QMOI_RESTORE_POINT`
+22. `AUTO_CONTINUE_LOOP`
+23. `AUTONOMOUS_COMPLETION`
+24. `Q_VERSION_FINALIZATION`
+
+This sequence covers the complete unattended control loop: branch-safe inventory, policy-instruction validation, research, Markdown coverage, repository surface audit, OFCA pre-merge safety, merge execution, production gap review, validation, UI/test-hook mapping, remote exact-SHA proof, bounded auto-continue execution, final autonomous completion, and only then Q.0.0.N finalization.
+
+Every stage is a fail-closed gate. If a required stage is missing, blocked, or unsupported by exact remote evidence, the agent must record the blocker and continue only in read-only or resumable mode; it must never claim final completion without terminal target-owned workflow proof.
+
+The merge pipeline records instruction inventory, repository surface audit, OFCA, Markdown indexing, and UI/test-hook coverage. The validation pipeline records production scan/replacement/readiness, full validation, remote verification, the `QMOI_RESTORE_POINT`, and the deterministic autonomous-completion verdict. The restore point is a separate `qmoi` branch in both repositories, created or fast-forwarded only after a target-owned workflow verifies both `main` and `autosync-backup` at the same exact SHA. It snapshots the last committed workspace tree before the next agent cycle; it never imports dirty or ignored files. `oe2.txt` and `remotecompletion.md` must be present at that SHA. Git does not store empty directories. The repository variable `QMOI_BRANCH_PUBLICATION_AUTHORIZED=true` is an explicit publication gate; absent authorization or evidence, the stage remains `NEEDS_REVIEW`. A local validation invocation is not itself an auto-continue run and has no terminal remote workflow proof, so those stages remain `NEEDS_REVIEW` until their owning execution paths supply evidence. The bounded continuation driver records its actual iteration count and retry limit; only a successful success-contract termination within that limit passes `AUTO_CONTINUE_LOOP`.
+
+The agent's local success summary is an unversioned report at `ollamatracks/completion_reports/<execution-id>/COMPLETION.md`. It is not a Q artifact. Only the Q-version manager's evidence-gated finalization path may allocate `Q.0.0.N` directories and companion documents.
+
+Finalization requires exactly two distinct repository roots and evidence keys matching those roots; publication verification also rejects missing, extra, or single-repository evidence. Lifecycle records are schema-checked in addition to hash-chain-checked. The latest stage attempt controls status, and the final `AUTONOMOUS_COMPLETION` record must match the supplied completion execution, gate map, and empty action queue. A passing `AUTO_CONTINUE_LOOP` record must show successful termination within its recorded retry bound. Instruction verification independently requires regular, non-symlinked `AGENTS.md`, `.github/copilot-instructions.md`, and `.github/instructions/` sources, valid nonempty UTF-8 content, and matching `applyTo` scope, byte count, and hash.
+
+## Autonomous agent responsibilities covered by Q-version and OFCA gates
+
+The agent is required to perform all of the following without human prompting:
+
+- inventory the repository root, policy files, and instruction sources before protected work
+- refresh and validate the Markdown source index across materialized files and refs
+- complete the repository surface audit for Markdown, API, endpoints, routes, ports, automation, links, components, tree, style, universals, QVillage/QVS, comparison, Qtrade, percentages, production gaps, and memory
+- run `OFCA` as the required pre-merge checkpoint immediately before merge activity
+- verify merge decisions, conflict handling, and post-merge audit follow-up
+- scan production gaps and replacements before final validation
+- confirm production readiness with zero unresolved candidates and zero unreadable/oversized files
+- validate all required tests and markdown coverage with exact repo state checks
+- prove UI/style/universal coverage with stable IDs, hook applicability review, and event-driven test mapping
+- keep the agent in a bounded `AUTO_CONTINUE_LOOP` until success or the retry limit is reached
+- finish with `AUTONOMOUS_COMPLETION` only when every gate passes and the queue is empty
+- preserve Q.0.0.N finalization as a repository artifact gated by exact remote SHA and workflow evidence, never as a local-only claim
+
+## Required Q.0.0.N artifact contracts
+
+Q.0.0.N is not a shortcut to completion; it is the final evidence archive for the autonomous system. A materialized version must include:
+
+- `Q.0.0.N/REPOSITORY_METRICS.json`
+- `Q.0.0.N.md` companion summary
+- instruction inventory and hash proof for every applicable repository
+- the source-manifest hash for repository and OFCA coverage
+- production-readiness, UI-hook, and remote-verification results
+- the autonomous completion gate map with zero pending actions
+- terminal `qmoi` restore-point evidence showing both repositories' `qmoi`, `main`, and `autosync-backup` refs at their exact verified SHAs
+- exact final SHAs and workflow IDs from target-owned success evidence
+
+The companion files are generated only after the terminal workflow result is successful and the repository tree is clean and matched to that exact SHA. They must not overwrite an existing Q-version artifact or be used to mask missing remote evidence.
+
 ## Implemented enhancements
 
 1. Canonical full-match parsing rejects malformed names, suffixes, leading-zero identifiers, and non-positive versions.
@@ -89,6 +160,8 @@ A valid Q version is a repository artifact, not a substitute for branch authoriz
 
 The same contract applies to additional repo instances that follow the autosync model: branch-level publication is performed on backup first, then main, with the same SHA check and ledger gate. The automation must never force-push, overwrite an existing Q-version artifact, or claim success without terminal workflow evidence.
 The final metrics JSON also captures both repositories' instruction-inventory hashes and the terminal autonomous-completion gate map/action queue. The companion summary reports instruction-file counts and must state that the pending action count is zero; it may not summarize an unfinished queue as complete.
+
+After a successful dual-repository main/backup update, the target-owned `cross-repo-autosync.yml` workflow creates or fast-forwards `qmoi` in both repositories to the same exact commit and tree. This is a restore point for the last completed workspace before the next agent cycle, not a working branch. It requires `QMOI_BRANCH_PUBLICATION_AUTHORIZED=true`; if unset, if either repository is not synchronized, if `oe2.txt` or `remotecompletion.md` is absent at the candidate SHA, or if an existing `qmoi` ref is not fast-forwardable, publication blocks without force-pushing. Git tracks files and nonempty directories only; ignored/uncommitted files and empty directories are not included.
 
 ## Q.0.0.1 creation and companion artifacts
 

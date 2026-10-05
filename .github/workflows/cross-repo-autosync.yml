@@ -2,7 +2,7 @@ name: QMOI Bidirectional Cross-Repository Autosync
 
 on:
   push:
-    branches: [main]
+    branches: [main, autosync-backup]
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
@@ -25,6 +25,7 @@ env:
   QMOI_REPOSITORY: thealphakenya/qmoi-enhanced
   ALPHA_REPOSITORY: thealphakenya/Alpha-Q-ai
   SYNC_TOKEN: ${{ secrets.MY_CUSTOM_TOKEN }}
+  QMOI_BRANCH_PUBLICATION_AUTHORIZED: ${{ vars.QMOI_BRANCH_PUBLICATION_AUTHORIZED || 'false' }}
 
 jobs:
   autosync:
@@ -113,3 +114,4 @@ jobs:
           name: cross-repo-sync-report-${{ github.run_id }}
           path: cross-repo-sync-report.json
           if-no-files-found: ignore
+          retention-days: 90

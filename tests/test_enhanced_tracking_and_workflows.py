@@ -236,6 +236,53 @@ class TestEnhancedTracking:
         content = tracking_index.read_text()
         assert "tracking" in content.lower() or "schema" in content.lower()
 
+    def test_live_stream_reports_qmoi_restore_point_workflow_status(self, monkeypatch):
+        from scripts import live_activity_stream
+
+        monkeypatch.setattr(live_activity_stream, "get_git_status", lambda: {
+            "branch": "main", "dirty": False, "behind": False, "raw": "## main", "status": "healthy",
+        })
+        monkeypatch.setattr(live_activity_stream, "get_recent_ollama_runs", lambda: [])
+        monkeypatch.setattr(live_activity_stream, "get_github_auth_status", lambda: {"valid": True})
+        monkeypatch.setattr(live_activity_stream, "get_recent_cross_repo_autosync_runs", lambda: [{
+            "databaseId": 987,
+            "headSha": "a" * 40,
+            "status": "completed",
+            "conclusion": "success",
+            "displayTitle": "QMOI autosync",
+            "headBranch": "main",
+            "url": "https://example.invalid/run/987",
+        }])
+
+        heartbeat = next(
+            entry for entry in live_activity_stream.build_dual_stream()
+            if entry["event"] == "qmoi_restore_point_heartbeat"
+        )
+
+        assert heartbeat["source"] == "qmoi"
+        assert heartbeat["status"] == "success"
+        assert heartbeat["details"]["run_id"] == 987
+        assert heartbeat["details"]["head_sha"] == "a" * 40
+
+    def test_live_stream_marks_missing_restore_point_workflow_unknown(self, monkeypatch):
+        from scripts import live_activity_stream
+
+        monkeypatch.setattr(live_activity_stream, "get_git_status", lambda: {
+            "branch": "main", "dirty": False, "behind": False, "raw": "## main", "status": "healthy",
+        })
+        monkeypatch.setattr(live_activity_stream, "get_recent_ollama_runs", lambda: [])
+        monkeypatch.setattr(live_activity_stream, "get_github_auth_status", lambda: {"valid": None})
+        monkeypatch.setattr(live_activity_stream, "get_recent_cross_repo_autosync_runs", lambda: [])
+
+        heartbeat = next(
+            entry for entry in live_activity_stream.build_dual_stream()
+            if entry["event"] == "qmoi_restore_point_heartbeat"
+        )
+
+        assert heartbeat["source"] == "qmoi"
+        assert heartbeat["status"] == "unknown"
+        assert "freshness is unverified" in heartbeat["message"]
+
 
 class TestEnhancedValidation:
     """Tests for enhanced validation with diagnostics."""

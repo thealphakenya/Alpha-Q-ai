@@ -33,6 +33,7 @@ REQUIRED_GATES = (
     "repository_surface_audit",
     "ollama_reference_audit",
     "ui_test_hook_coverage",
+    "qmoi_restore_point",
     "instruction_inventory",
     "production_readiness",
     "markdown_inventory",
@@ -56,6 +57,7 @@ GATE_ACTIONS = {
     "repository_surface_audit": ("Verify file, Markdown, API, route, link, component, tree, metrics, and percentage coverage at exact SHAs", "TARGET_WORKFLOW_REQUIRED", True),
     "ollama_reference_audit": ("Inventory Ollama responsibilities across materialized and remote histories", "TARGET_WORKFLOW_REQUIRED", True),
     "ui_test_hook_coverage": ("Map every styles/universals feature to tests and reviewed hook/webhook applicability", "TARGET_WORKFLOW_REQUIRED", True),
+    "qmoi_restore_point": ("Verify the qmoi restore branch matches both repositories' main and autosync-backup SHAs", "TARGET_WORKFLOW_REQUIRED", True),
     "instruction_inventory": ("Read and hash all applicable repository instructions without rewriting policy", "READ_ONLY_AUTOMATIC", False),
     "production_readiness": ("Map production candidates to owners, requirements, focused tests, and safe replacement plans", "LOCAL_ANALYSIS_AND_FOCUSED_TESTS", False),
     "markdown_inventory": ("Run complete target-owned Markdown/ref/PR inventory", "TARGET_WORKFLOW_REQUIRED", True),
@@ -566,6 +568,12 @@ class AutonomousCompletionEngine:
             normalized["ui_test_hook_coverage"] = "PASS"
         elif normalized["ui_test_hook_coverage"] == "PASS" and not ui_coverage_complete:
             normalized["ui_test_hook_coverage"] = "UNKNOWN"
+        restore_point_evidence = (repository_results or {}).get("qmoi_restore_point")
+        restore_point_complete = self._qmoi_restore_point_evidence_complete(restore_point_evidence)
+        if normalized["qmoi_restore_point"] == "UNKNOWN" and restore_point_complete:
+            normalized["qmoi_restore_point"] = "PASS"
+        elif normalized["qmoi_restore_point"] == "PASS" and not restore_point_complete:
+            normalized["qmoi_restore_point"] = "UNKNOWN"
         local_evidence_checks = self._validate_local_evidence_files()
         if local_evidence_checks["status"] != "PASS":
             normalized["final_verification"] = "FAIL"
@@ -611,6 +619,11 @@ class AutonomousCompletionEngine:
                     "status": normalized["ui_test_hook_coverage"],
                     "evidence_supplied": isinstance(ui_coverage_evidence, Mapping),
                     "coverage_complete": ui_coverage_complete,
+                },
+                "qmoi_restore_point": {
+                    "status": normalized["qmoi_restore_point"],
+                    "evidence_supplied": isinstance(restore_point_evidence, Mapping),
+                    "coverage_complete": restore_point_complete,
                 },
                 "instruction_inventory": instruction_inventory,
                 "local_evidence_checks": local_evidence_checks,
@@ -809,6 +822,48 @@ class AutonomousCompletionEngine:
                 or item.get("all_feature_tests_passed") is not True
                 or item.get("all_event_hook_tests_passed") is not True
                 or item.get("unavailable_sources") != []
+            ):
+                return False
+        return True
+
+    @staticmethod
+    def _qmoi_restore_point_evidence_complete(evidence: Any) -> bool:
+        """Require both repositories' qmoi/main/backup refs to prove one committed tree."""
+        if not isinstance(evidence, Mapping):
+            return False
+        workspace_sha = str(evidence.get("workspace_sha", ""))
+        tree_sha = str(evidence.get("tree_sha", ""))
+        if (
+            evidence.get("status") not in {"PASS", "SUCCESS"}
+            or evidence.get("branch") != "qmoi"
+            or evidence.get("remote_verified") is not True
+            or evidence.get("coverage_complete") is not True
+            or not evidence.get("workflow_run_id")
+            or not re.fullmatch(r"[0-9a-f]{40}", workspace_sha)
+            or not re.fullmatch(r"[0-9a-f]{40}", tree_sha)
+        ):
+            return False
+        repositories = evidence.get("repositories")
+        required_repositories = {
+            "thealphakenya/Alpha-Q-ai",
+            "thealphakenya/qmoi-enhanced",
+        }
+        if not isinstance(repositories, Mapping) or set(repositories) != required_repositories:
+            return False
+        for repository in required_repositories:
+            item = repositories.get(repository)
+            if not isinstance(item, Mapping):
+                return False
+            if (
+                item.get("branch") != "qmoi"
+                or item.get("terminal_conclusion") not in {None, "success"}
+                or item.get("remote_verified") is not True
+                or item.get("workflow_run_id") != evidence.get("workflow_run_id")
+                or item.get("qmoi_sha") != workspace_sha
+                or item.get("main_sha") != workspace_sha
+                or item.get("backup_sha") != workspace_sha
+                or item.get("branch_tree_sha") != tree_sha
+                or item.get("required_docs_present") is not True
             ):
                 return False
         return True

@@ -64,6 +64,94 @@ class TestResumeFileTracking:
         assert origin["changed"] is True
 
 
+class TestAutonomousContinuation:
+    def test_run_continue_cycle_auto_continues_until_success(self, tmp_path):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        lifecycle = QVersionManager(tmp_path)
+        execution_id = "continue-cycle-success"
+        lifecycle.record_lifecycle_stage(
+            execution_id,
+            "MERGE_START",
+            [tmp_path],
+            status="PASS",
+            include_inventory=False,
+        )
+        agent.results["merge_audit"] = {
+            "q_version_lifecycle_execution_id": execution_id,
+            "repositories": [str(tmp_path)],
+        }
+        agent.refresh_managed_surface_documents = MagicMock(return_value={"status": "ready", "catalog_apps": {}, "catalog_coverage": 0, "client_platforms": [], "hosting_features": [], "quantum_extensions": [], "master_ui_features": [], "access_modes": [], "clone_platforms": [], "clone_platform_ui_coverage": [], "style_requirements": [], "automation_coverage": {"documents": {}, "styles_universals_coverage": {"status": "PASS"}}, "master_access_verified": True, "link_validation": {"passed": True}, "validation": {"passed": True}})
+        agent.load_checkpoint = MagicMock(return_value={"status": "continuation_pending", "completed_steps": ["initial"]})
+        agent.record_tracker_event = MagicMock()
+        agent.update_resume_checkpoint = MagicMock(return_value=tmp_path / "checkpoint.json")
+
+        with patch.object(OllamaAutonomousAgent, "run_autonomous_loop", return_value={"final_status": "SUCCESS"}) as run_loop:
+            exit_code = agent.run_continue_cycle()
+
+        assert exit_code == 0
+        assert run_loop.call_count == 1
+        audit = lifecycle.audit_lifecycle(execution_id)
+        assert audit["stage_sequence"] == ["MERGE_START", "AUTO_CONTINUE_LOOP"]
+        continue_stage = audit["stage_records"][-1]
+        assert continue_stage["stage_status"] == "PASS"
+        assert continue_stage["details"]["loop_completed"] is True
+        assert continue_stage["details"]["retry_limit_respected"] is True
+
+    def test_run_continue_cycle_exhaustion_is_not_a_lifecycle_pass(self, tmp_path, monkeypatch):
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        agent = OllamaAutonomousAgent(base_path=repo)
+        monkeypatch.setenv("AUTO_CONTINUE_MAX", "2")
+        lifecycle = QVersionManager(repo)
+        execution_id = "continue-cycle-exhausted"
+        lifecycle.record_lifecycle_stage(
+            execution_id,
+            "MERGE_START",
+            [repo],
+            status="PASS",
+            include_inventory=False,
+        )
+        agent.results["merge_audit"] = {
+            "q_version_lifecycle_execution_id": execution_id,
+            "repositories": [str(repo)],
+        }
+        agent.refresh_managed_surface_documents = MagicMock(return_value={"status": "ready"})
+        agent.load_checkpoint = MagicMock(return_value={"status": "continuation_pending"})
+        agent.record_tracker_event = MagicMock()
+        agent.update_resume_checkpoint = MagicMock(return_value=repo / "checkpoint.json")
+
+        with patch.object(OllamaAutonomousAgent, "run_autonomous_loop", return_value={"final_status": "FAILED"}) as run_loop:
+            exit_code = agent.run_continue_cycle()
+
+        assert exit_code == 1
+        assert run_loop.call_count == 2
+        audit = lifecycle.audit_lifecycle(execution_id)
+        continue_stage = audit["stage_records"][-1]
+        assert continue_stage["stage"] == "AUTO_CONTINUE_LOOP"
+        assert continue_stage["stage_status"] == "NEEDS_REVIEW"
+        assert continue_stage["details"]["iteration_count"] == 2
+        assert continue_stage["details"]["termination_reason"] == "retry_limit_reached"
+
+    def test_local_completion_report_does_not_allocate_q_version(self, tmp_path):
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        agent = OllamaAutonomousAgent(base_path=repo)
+
+        reports = agent.write_completion_manifest({
+            "final_status": "SUCCESS",
+            "validation_passed": True,
+            "lint_passed": True,
+            "ollama_healthy": True,
+        })
+
+        assert len(reports) == 1
+        assert reports[0].is_file()
+        assert "ollamatracks" in reports[0].parts
+        assert "completion_reports" in reports[0].parts
+        assert not list(repo.glob("Q.0.0.*"))
+        assert "not a Q-version finalization" in reports[0].read_text(encoding="utf-8")
+
+
 class TestGitExecutionManager:
     def test_verify_remote_state_fetches_latest_remote_changes(self, tmp_path):
         remote_dir = tmp_path / "remote.git"
@@ -172,37 +260,46 @@ class TestCrossRepositoryAutonomyManager:
         assert [record["stage"] for record in records] == [
             "MERGE_START",
             "PRE_MERGE_INVENTORY",
+            "INSTRUCTION_INVENTORY",
             "INTERNAL_RESEARCH",
             "EXTERNAL_RESEARCH",
             "REPOSITORY_SURFACE_AUDIT",
             "OLLAMA_FULL_COVERAGE_AUDIT",
+            "MARKDOWN_SOURCE_INDEX",
+            "UI_TEST_HOOK_COVERAGE",
             "MERGE_PLAN",
             "MERGE_APPLY",
             "POST_MERGE_AUDIT",
         ]
         assert records[0]["details"]["first_agent_operation"] == "merge and source inventory"
-        assert records[2]["stage_status"] == "PASS"
-        surface_audit = records[2]["details"]["repository_surface_audit"]
+        assert records[2]["stage_status"] == "NEEDS_REVIEW"
+        instruction_inventory = records[2]["details"]["repositories"][str(repo.resolve())]
+        assert instruction_inventory["source_contents_recorded"] is False
+        assert records[3]["stage_status"] == "PASS"
+        surface_audit = records[3]["details"]["repository_surface_audit"]
         assert surface_audit["file_count"] >= 1
         assert surface_audit["percentage_occurrence_count"] >= 0
         assert Path(surface_audit["artifact_path"]).is_file()
-        assert records[3]["details"]["surface_audit_manifest_sha256"] == surface_audit["source_manifest_sha256"]
-        assert "model-evaluation" in records[3]["details"]["requested_topics"]
-        assert "financial-controls" in records[3]["details"]["requested_topics"]
+        assert records[4]["details"]["surface_audit_manifest_sha256"] == surface_audit["source_manifest_sha256"]
+        assert "model-evaluation" in records[4]["details"]["requested_topics"]
+        assert "financial-controls" in records[4]["details"]["requested_topics"]
         assert all((repo / name).is_file() for name in ("QAUDITS.md", "INTERNALREFSEARCH.md", "EXTERNALRESEARCH.md", "COMPONENTS.md", "TREE.md", "ALLLINKS.md"))
-        assert records[3]["stage_status"] == "NEEDS_REVIEW"
-        assert records[3]["details"]["visited_count"] == 0
-        assert records[4]["details"]["audit_name"] == "repository_surface_audit"
         assert records[4]["stage_status"] == "NEEDS_REVIEW"
-        assert records[4]["details"]["file_count"] >= 1
-        assert records[5]["details"]["audit_name"] == "OFCA"
-        assert records[5]["details"]["prMergeIncluded"] is True
-        assert records[5]["details"]["position"] == "after_source_inventory_and_immediately_before_merge_activity"
+        assert records[4]["details"]["visited_count"] == 0
+        assert records[5]["details"]["audit_name"] == "repository_surface_audit"
         assert records[5]["stage_status"] == "NEEDS_REVIEW"
-        assert records[6]["details"]["merge_plan"]
-        assert records[7]["stage_status"] == "BLOCKED"
-        assert records[7]["details"]["ofca_prMergeIncluded"] is True
-        assert records[7]["details"]["repository_surface_audit_complete"] is False
+        assert records[5]["details"]["file_count"] >= 1
+        assert records[6]["details"]["audit_name"] == "OFCA"
+        assert records[6]["details"]["prMergeIncluded"] is True
+        assert records[6]["details"]["position"] == "after_source_inventory_and_immediately_before_merge_activity"
+        assert records[6]["stage_status"] == "NEEDS_REVIEW"
+        assert records[7]["details"]["index_complete"] is True
+        assert records[7]["stage_status"] == "PASS"
+        assert records[8]["stage_status"] == "NEEDS_REVIEW"
+        assert records[9]["details"]["merge_plan"]
+        assert records[10]["stage_status"] == "BLOCKED"
+        assert records[10]["details"]["ofca_prMergeIncluded"] is True
+        assert records[10]["details"]["repository_surface_audit_complete"] is False
         premerge = records[1]["root_metrics"][str(repo.resolve())]
         assert any(item["path"] == "README.md" for item in premerge["files"])
         audit = QVersionManager(repo).audit_lifecycle(records[0]["execution_id"])
@@ -1851,12 +1948,13 @@ class TestResumeCheckpoint:
 class TestBranchSyncManager:
     """Tests for branch sync automation across the supported repo set."""
 
-    def test_branch_sync_requires_main_and_backup(self):
-        """The agent must maintain both main and autosync-backup branches."""
+    def test_branch_sync_requires_main_backup_and_qmoi_restore_point(self):
+        """The agent must maintain main, autosync-backup, and the qmoi restore point."""
         manager = BranchSyncManager()
         branches = manager.required_branches()
         assert "main" in branches
         assert "autosync-backup" in branches
+        assert "qmoi" in branches
 
     def test_sync_targets_include_qmoi_and_alpha_q_ai(self):
         """The agent must synchronize both the current repo and Alpha-Q-ai."""
@@ -1871,6 +1969,7 @@ class TestBranchSyncManager:
         plan = manager.build_sync_plan()
         assert plan["default_branch"] == "main"
         assert "autosync-backup" in plan["branches"]
+        assert "qmoi" in plan["branches"]
         assert "thealphakenya/qmoi-enhanced" in plan["repositories"]
 
     def test_sync_plan_covers_api_route_port_and_history_inventory(self):
