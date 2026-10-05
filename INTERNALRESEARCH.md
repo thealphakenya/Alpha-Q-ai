@@ -36,3 +36,36 @@ Each Q seed finding records a stable seed ID, parent, repository/ref/SHA, conten
 ## Scope limits
 
 A local filesystem walk is not a full history audit. The agent's current ref scan reads Markdown blobs reachable from refs in its local Git database; all intermediate commit trees, all remote PRs, future commits, inaccessible repos, and external systems require separate target-owned or authorized evidence. No audit can inspect future content before it exists.
+
+## Repository surface audit integration
+
+Every merge/internal-research run writes `ollamatracks/repository_surface_audit.json` and links it to the Q lifecycle. The audit maps all accessible materialized paths to Markdown, API, endpoints, routes, ports, links, components, tree, automation/hooks, styles/universals, QVillage/QVS, comparison, Qtrade, production-gap, percentage, and memory categories. It records hashes and structural metrics without copying source prose. Sentence counts are heuristic and do not prove semantic understanding; requirements require source/test/workflow mapping.
+
+`ALLMDFILESREFS.md` plus the audit artifact distinguish present paths from missing, unreadable, excluded, historical-only, or remote-unverified sources. Local refs and materialized snapshots do not prove all PRs or intermediate commit trees. The shared audit gate remains `NEEDS_REVIEW` until exact-SHA target-owned evidence covers both repositories.
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->
+
+<!-- BEGIN QMOI MANAGED: internal-surface-research -->
+## Agent-managed internal reference research coverage
+
+- Audit status: `NEEDS_REVIEW`; local paths only; source hashes are in `QMOItracks/repository_surface_audit.json`.
+- Markdown files: `2412`; local directories: `1267`; percentage candidates: `22236`; comparison/Qtrade metric lines: `46823`.
+- Formula/calculation candidates: `11364`; path-grouped descriptive percentage summaries: `734`.
+- Instruction candidates: `36263`; production-gap candidates: `285`. These are unverified queues, not proof of fulfilled instructions or defects.
+- Production-gap scan: `285` candidates across `3222` files; candidates are not confirmed defects and are never bulk-replaced.
+- Every document receives a content hash, byte/line/word/sentence counts, structural checks, and local-link checks when within the configured parse bound. Sentence counts are heuristic; semantic meaning is not inferred.
+- All API, endpoint, route, port, workflow, link, component, tree, style, universal, QVS/QVillage, comparison, Qtrade, and metrics surfaces are mapped by path in `QMOItracks/repository_surface_audit.json`.
+- Unavailable roots, unreadable or oversized files, remote refs, PR trees, and intermediate commit trees remain visible blockers.
+<!-- END QMOI MANAGED: internal-surface-research -->

@@ -29,7 +29,8 @@ A final version is written only by `write_final_metrics()` after the caller supp
 19. Production-gap scanning is a scoped candidate inventory, not a blanket replacement engine: it records file hashes and marker line numbers, makes dependency/cache/history/build exclusions and unreadable/oversized coverage gaps explicit, and queues candidates as `discovered_unmapped` until owner, implementation, focused tests, security impact, rollback, and remote proof are supplied.
 20. Final metrics require a `CLEAR` production inventory with complete scan coverage, zero candidates, zero unreadable files, and zero oversized files skipped; unresolved candidates keep production and Q-version gates blocked.
 21. Every merge lifecycle runs the Ollama Full Coverage Audit (OFCA) after source inventory and immediately before merge activity. It records path/hash/line-number responsibility metrics from materialized files and local ref history, marks `prMergeIncluded`, and blocks completion when remote refs, PRs, or intermediate commit trees lack target-owned exact-SHA evidence.
-22. Every styles/universals registry feature requires a stable ID, focused test mapping, and reviewed hook/webhook applicability; event-driven features require passing delivery/security/recovery tests before finalization.
+22. Every internal-research lifecycle runs the repository-surface audit for Markdown, API, endpoint, route, port, automation, link, component, tree, styles, universals, QVillage/QVS, comparison, Qtrade, percentages, production gaps, and memory. It records per-file hashes, structural/content metrics, exact metric/percentage locations, local refs, research-topic coverage, and explicit exclusions; finalization requires terminal exact-SHA evidence for both repositories and all required domains.
+23. Every styles/universals registry feature requires a stable ID, focused test mapping, and reviewed hook/webhook applicability; event-driven features require passing delivery/security/recovery tests before finalization.
 
 ## Unattended completion and instruction coverage
 
@@ -127,3 +128,21 @@ This generated audit indexes paths, hashes, line numbers, and responsibility cat
 `OLLAMA_FULL_COVERAGE_AUDIT` is a required lifecycle stage between source inventory/research and merge activity. It records local file/ref/commit counts, mention-bearing path counts, a source-manifest SHA-256, `prMergeIncluded`, and any remaining remote-history blocker. Local scans do not establish remote branch, PR, or intermediate-tree completeness. The stage remains `NEEDS_REVIEW` until target-owned evidence proves complete coverage at the exact repository SHA; merge application is blocked while OFCA or the Markdown source index is incomplete.
 
 Style/universal migration candidates are tracked in `ollamatracks/style_universal_replacement_inventory.json` with path, hash, affected directory, source scope, and required test/hook review. This inventory is a plan only: it does not authorize bulk replacement or claim coverage from discovery.
+
+## Repository surface audit gate
+
+Internal and external research share `ollamatracks/repository_surface_audit.json`. The artifact records each accessible materialized path and hash, Markdown byte/line/word/heuristic-sentence counts, UTF-8/heading/fence/local-link checks, API/route/component/workflow/tree counts, QVillage/QVS scope, comparison and Qtrade metric candidate lines, and percentage tokens by path/line. It stores no source prose. Heuristic sentence counts are not semantic validation; each requirement still needs source/test ownership evidence. Remote refs, PRs, and intermediate trees require target-owned exact-SHA manifests for both repositories. Incomplete coverage remains a blocker and no candidate scan authorizes a bulk production replacement.
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

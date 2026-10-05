@@ -174,6 +174,7 @@ class TestCrossRepositoryAutonomyManager:
             "PRE_MERGE_INVENTORY",
             "INTERNAL_RESEARCH",
             "EXTERNAL_RESEARCH",
+            "REPOSITORY_SURFACE_AUDIT",
             "OLLAMA_FULL_COVERAGE_AUDIT",
             "MERGE_PLAN",
             "MERGE_APPLY",
@@ -181,15 +182,27 @@ class TestCrossRepositoryAutonomyManager:
         ]
         assert records[0]["details"]["first_agent_operation"] == "merge and source inventory"
         assert records[2]["stage_status"] == "PASS"
+        surface_audit = records[2]["details"]["repository_surface_audit"]
+        assert surface_audit["file_count"] >= 1
+        assert surface_audit["percentage_occurrence_count"] >= 0
+        assert Path(surface_audit["artifact_path"]).is_file()
+        assert records[3]["details"]["surface_audit_manifest_sha256"] == surface_audit["source_manifest_sha256"]
+        assert "model-evaluation" in records[3]["details"]["requested_topics"]
+        assert "financial-controls" in records[3]["details"]["requested_topics"]
+        assert all((repo / name).is_file() for name in ("QAUDITS.md", "INTERNALREFSEARCH.md", "EXTERNALRESEARCH.md", "COMPONENTS.md", "TREE.md", "ALLLINKS.md"))
         assert records[3]["stage_status"] == "NEEDS_REVIEW"
         assert records[3]["details"]["visited_count"] == 0
-        assert records[4]["details"]["audit_name"] == "OFCA"
-        assert records[4]["details"]["prMergeIncluded"] is True
-        assert records[4]["details"]["position"] == "after_source_inventory_and_immediately_before_merge_activity"
+        assert records[4]["details"]["audit_name"] == "repository_surface_audit"
         assert records[4]["stage_status"] == "NEEDS_REVIEW"
-        assert records[5]["details"]["merge_plan"]
-        assert records[6]["stage_status"] == "BLOCKED"
-        assert records[6]["details"]["ofca_prMergeIncluded"] is True
+        assert records[4]["details"]["file_count"] >= 1
+        assert records[5]["details"]["audit_name"] == "OFCA"
+        assert records[5]["details"]["prMergeIncluded"] is True
+        assert records[5]["details"]["position"] == "after_source_inventory_and_immediately_before_merge_activity"
+        assert records[5]["stage_status"] == "NEEDS_REVIEW"
+        assert records[6]["details"]["merge_plan"]
+        assert records[7]["stage_status"] == "BLOCKED"
+        assert records[7]["details"]["ofca_prMergeIncluded"] is True
+        assert records[7]["details"]["repository_surface_audit_complete"] is False
         premerge = records[1]["root_metrics"][str(repo.resolve())]
         assert any(item["path"] == "README.md" for item in premerge["files"])
         audit = QVersionManager(repo).audit_lifecycle(records[0]["execution_id"])

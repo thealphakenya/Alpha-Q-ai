@@ -104,9 +104,11 @@ from scripts.link_validator import LinkValidator
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
     INTERNAL_RESEARCH_CONTROLS,
+    VALIDATION_RESEARCH_MAP,
     build_external_research_plan,
     build_internal_research_plan,
     build_validation_research_matrix,
+    audit_repository_surfaces,
     fetch_official_resource,
     record_research_visit,
 )
@@ -409,6 +411,17 @@ MASTER_FILES: list[str] = [
     "ALLPORTS.md",
     "MODELEVOLUTIONO.md",
     "ALLMDFILESREFS.md",
+    "ALLLINKS.md",
+    "COMPONENTS.md",
+    "TREE.md",
+    "QAUDITS.md",
+    "INTERNALRESEARCH.md",
+    "INTERNALREFSEARCH.md",
+    "EXTERIORRESEARCH.md",
+    "EXTERNALRESEARCH.md",
+    "FEATURES_AND_PERCENTAGES.md",
+    "compare.md",
+    "Qtrade.md",
     "ALLAUTO.md",
     "ALLBACKEND.md",
     "ALLFRONTEND.md",
@@ -3130,6 +3143,8 @@ class CrossRepositoryAutonomyManager:
             ],
             "whole_repository_actions": [
                 "inventory every source path before planning",
+                "run the repository-surface audit for Markdown, API, endpoints, routes, ports, links, components, tree, workflows/hooks, styles/universals, QVillage/QVS, comparison, Qtrade, percentages, production candidates, and memory",
+                "map every audit category to exact paths, hashes, source scopes, local refs, structural checks, metrics, external research topics, tests, and remote-coverage blockers",
                 "read and classify relevant implementation and test surfaces",
                 "map dependencies, ownership, routes, UI surfaces, and auth boundaries",
                 "run targeted tests plus the complete repository test command",
@@ -3276,6 +3291,8 @@ class CrossRepositoryAutonomyManager:
                 "all files and directories in Alpha-Q-ai-2025",
                 "MERGE.md from every repository and history source",
                 "STYLES.md and UNIVERSALS.md",
+                "ALLMDFILESREFS.md, ALLLINKS.md, COMPONENTS.md, TREE.md, QAUDITS.md, INTERNALRESEARCH.md, EXTERNALRESEARCH.md, compare.md, and Qtrade.md",
+                "repository-surface, percentage/metric, production-gap, memory/QVillage, test, hook, and webhook audit artifacts",
                 "memory indexes, tracker state, and synchronization evidence",
                 "tests, workflows, routes, APIs, ports, and automation files",
             ],
@@ -4369,6 +4386,7 @@ class CrossRepositoryAutonomyManager:
                 "all locally available Git refs, including branches, tags, and fetched pull-request refs",
                 "target-owned remote enumeration of every pull request and its changed-file/tree manifest; missing or unfetched PR trees remain blockers",
                 "remote-ref freshness and completeness independently verified for each repository",
+                "all materialized Markdown, API, endpoint, route, port, link, component, tree, automation, QVS/QVillage, compare/Qtrade, percentage, memory, style, and universal candidates with hashes and explicit limits",
                 "all tracked files and directories, including symlinks",
                 "all markdown files from QE, AQ, and the historical ref",
                 "materialized history snapshot contents",
@@ -5477,6 +5495,8 @@ All timestamps use UTC ISO-8601 format.
                     "source_metrics": research_report["internal"]["source_roots"],
                     "control_count": research_report["internal_control_count"],
                     "coverage_limitations": research_report["internal"]["limitations"],
+                    "repository_surface_audit": research_report["internal"].get("repository_surface_audit"),
+                    "external_research_domains": research_report["external"].get("requested_topics", []),
                 },
                 include_inventory=False,
             )
@@ -5492,6 +5512,11 @@ All timestamps use UTC ISO-8601 format.
                     "failed_resources": research_report["external"]["failed_resources"],
                     "control_count": research_report["external_control_count"],
                     "status": research_report["external"]["status"],
+                    "requested_topics": research_report["external"]["requested_topics"],
+                    "surface_audit_manifest_sha256": research_report["external"].get("surface_audit_manifest_sha256"),
+                    "surface_audit_artifact": research_report["external"].get("surface_audit_artifact"),
+                    "all_domains_have_research_mapping": research_report["external"].get("all_domains_have_research_mapping"),
+                    "validation_matrix": research_report["validation_matrix"],
                 },
                 research_sources=research_report["external"]["sources"],
                 include_inventory=False,
@@ -5499,6 +5524,36 @@ All timestamps use UTC ISO-8601 format.
         else:
             pre_inventory = None
             research_report = self.build_autoresearch_report(repo_paths, fetch_external=False)
+
+        repository_surface_audit = research_report["internal"].get("repository_surface_audit", {})
+        repository_surface_audit_passed = bool(
+            repository_surface_audit.get("status") == "PASS"
+            and repository_surface_audit.get("coverage_complete") is True
+            and repository_surface_audit.get("remote_verified") is True
+        )
+        q_version_manager.record_lifecycle_stage(
+            q_execution_id,
+            "REPOSITORY_SURFACE_AUDIT",
+            repo_paths,
+            status="PASS" if repository_surface_audit_passed else "NEEDS_REVIEW",
+            details={
+                "audit_name": "repository_surface_audit",
+                "status": repository_surface_audit.get("status", "BLOCKED"),
+                "coverage_complete": repository_surface_audit_passed,
+                "source_manifest_sha256": repository_surface_audit.get("source_manifest_sha256"),
+                "file_count": repository_surface_audit.get("file_count", 0),
+                "directory_count": repository_surface_audit.get("directory_count", 0),
+                "markdown_file_count": repository_surface_audit.get("markdown_file_count", 0),
+                "surface_document_counts": repository_surface_audit.get("surface_document_counts", {}),
+                "metric_candidate_line_count": repository_surface_audit.get("metric_candidate_line_count", 0),
+                "percentage_occurrence_count": repository_surface_audit.get("percentage_occurrence_count", 0),
+                "production_gap_audit": repository_surface_audit.get("production_gap_audit", {}),
+                "remote_refs_prs_and_intermediate_trees_verified": False,
+                "artifact_path": repository_surface_audit.get("artifact_path"),
+                "unavailable_sources": repository_surface_audit.get("unavailable_roots", []),
+            },
+            include_inventory=False,
+        )
 
         ollama_full_coverage_audit = self.refresh_ollama_reference_audit(primary_root)
         feature_test_hook_coverage = self.refresh_test_hook_coverage_documents(primary_root)
@@ -5587,6 +5642,8 @@ All timestamps use UTC ISO-8601 format.
         merge_apply_blockers = []
         if not ollama_audit_passed:
             merge_apply_blockers.append("OFCA does not prove complete remote refs, PRs, and intermediate commit trees")
+        if not repository_surface_audit_passed:
+            merge_apply_blockers.append("Repository surface audit lacks complete exact-SHA dual-repository coverage")
         if not markdown_audit_passed:
             merge_apply_blockers.append("Markdown source index is incomplete")
         if merge_apply_blockers:
@@ -5629,6 +5686,8 @@ All timestamps use UTC ISO-8601 format.
                 "unresolved_conflicts": unresolved_conflicts,
                 "ofca_status": "PASS" if ollama_audit_passed else "NEEDS_REVIEW",
                 "ofca_prMergeIncluded": True,
+                "repository_surface_audit_status": repository_surface_audit.get("status", "BLOCKED"),
+                "repository_surface_audit_complete": repository_surface_audit_passed,
                 "blockers": merge_apply_blockers,
                 "decisions": decisions,
                 "merged_targets": merge_plan.get("merged_targets", {}),
@@ -5678,6 +5737,7 @@ All timestamps use UTC ISO-8601 format.
                 primary_root / "ollamatracks" / "q_versions" / q_execution_id / "lifecycle.jsonl"
             ),
             "ollama_full_coverage_audit": ollama_full_coverage_audit,
+            "repository_surface_audit": repository_surface_audit,
             "feature_test_hook_coverage": {
                 "status": coverage_summary.get("status"),
                 "test_file_count": feature_test_hook_coverage.get("test_file_count"),
@@ -5772,6 +5832,8 @@ All timestamps use UTC ISO-8601 format.
             "ready"
             if merge_metrics.get("total_files", 0) > 0
             and ollama_audit_passed
+                and repository_surface_audit_passed
+            and repository_surface_audit_passed
             and markdown_audit_passed
             and not merge_apply_blockers
             else "blocked"
@@ -6095,6 +6157,39 @@ All timestamps use UTC ISO-8601 format.
         """Research materialized sources and optionally fetch bounded official docs."""
         source_roots = [Path(item).resolve() for item in roots]
         internal = build_internal_research_plan(source_roots)
+        surface_audit = audit_repository_surfaces(source_roots)
+        audit_root = source_roots[0] if source_roots else self.root_dir
+        project_documents = self.model_card_generator.refresh_project_autoproject_coverage()
+        audit_path = audit_root / "ollamatracks" / "repository_surface_audit.json"
+        production_documents = self.refresh_production_manifests(audit_root)
+        production_audit_path = Path(production_documents["inventory"])
+        production_audit = json.loads(production_audit_path.read_text(encoding="utf-8"))
+        surface_audit["production_gap_audit"] = {
+            "status": production_audit["status"],
+            "coverage_complete": production_audit["coverage_complete"],
+            "scanned_files": production_audit["scanned_files"],
+            "candidate_count": production_audit["total_candidates"],
+            "unreadable_count": len(production_audit["unreadable_files"]),
+            "oversized_not_read": production_audit["oversized_files_not_read"],
+            "inventory_path": str(production_audit_path),
+            "automatic_replacement_authorized": False,
+        }
+        safe_json_write(audit_path, surface_audit)
+        surface_summary = {
+            key: value
+            for key, value in surface_audit.items()
+            if key not in {"roots", "all_file_records", "all_directory_records", "links", "percentage_candidates", "percentage_summary_by_path", "calculation_candidates", "comparison_and_qtrade_metric_candidates"}
+        }
+        surface_summary["artifact_path"] = str(audit_path)
+        surface_summary["project_autoproject_documents"] = [path.name for path in project_documents]
+        surface_summary["project_autoproject_registry_path_count"] = surface_audit.get("surface_document_counts", {}).get("projects_autoprojects", 0)
+        surface_summary["percentage_summary_file_count"] = len(surface_audit.get("percentage_summary_by_path", []))
+        surface_summary["calculation_candidate_line_count"] = surface_audit.get("calculation_candidate_line_count", 0)
+        surface_summary["instruction_candidate_line_count"] = surface_audit.get("instruction_candidate_line_count", 0)
+        surface_summary["instruction_candidate_file_count"] = surface_audit.get("instruction_candidate_file_count", 0)
+        surface_summary["production_gap_audit"] = surface_audit["production_gap_audit"]
+        internal["repository_surface_audit"] = surface_summary
+        self.refresh_repository_audit_documents(audit_root, surface_audit)
         topics = {
             "github-actions-auth",
             "github-rest-api",
@@ -6103,6 +6198,7 @@ All timestamps use UTC ISO-8601 format.
             "application-security",
             "accessibility",
         }
+        topics.update(surface_audit.get("research_topics", []))
         lowered_roots = " ".join(str(path).lower() for path in source_roots)
         if any(token in lowered_roots for token in ("vercel", "netlify", "deployment", "hosting")):
             topics.update({"vercel-deployment", "netlify-deployment"})
@@ -6147,7 +6243,11 @@ All timestamps use UTC ISO-8601 format.
         external["visited_count"] = len(visits)
         external["failed_resources"] = failures
         external["sources"] = visits
+        external["surface_audit_manifest_sha256"] = surface_audit.get("source_manifest_sha256")
+        external["surface_audit_artifact"] = str(audit_path)
+        external["all_domains_have_research_mapping"] = set(surface_audit.get("research_domains", [])).issubset(set(VALIDATION_RESEARCH_MAP))
         validation_matrix = build_validation_research_matrix(visits)
+        self.refresh_research_status_documents(audit_root, surface_audit, external)
         return {
             "generated_at": utc_iso(),
             "internal": internal,
@@ -6162,6 +6262,151 @@ All timestamps use UTC ISO-8601 format.
                 "Internal file counts do not establish semantic understanding or remote-history completeness.",
             ],
         }
+
+    def refresh_repository_audit_documents(
+        self,
+        root: Path | str,
+        audit: Mapping[str, Any],
+    ) -> dict[str, Path]:
+        """Refresh audit summaries and bounded path inventories without copying source prose."""
+        target = Path(root).resolve()
+        files = audit.get("all_file_records", [])
+        directories = audit.get("all_directory_records", [])
+        markdown_files = [item for item in files if item.get("suffix") == ".md"]
+        components = [item for item in files if "component_source" in item.get("roles", [])]
+        component_lines = [
+            "## Materialized component-source inventory",
+            "",
+            f"- Component candidates: `{len(components)}`; source text is not copied.",
+            "- Audit artifact: `ollamatracks/repository_surface_audit.json`; generated report is excluded from its own content digest.",
+            "- Remote refs, PR trees, and intermediate commit trees are separately gated and not implied by this local inventory.",
+            "",
+            "| Path | Source scope | Bytes | SHA-256 | Status |",
+            "| --- | --- | ---: | --- | --- |",
+            *[
+                f"| `{item['root']}/{item['path']}` | `{item['scope']}` | {item['bytes']} | `{item.get('sha256') or 'unavailable'}` | `{item['status']}` |"
+                for item in components
+            ],
+        ]
+        tree_lines = [
+            "## Materialized directory-tree inventory",
+            "",
+            f"- Directories: `{len(directories)}`; all paths are local materialized scope only.",
+            "- Source hashes and audit boundaries are stored in `ollamatracks/repository_surface_audit.json`; its own report bytes are excluded from the digest.",
+            "",
+            "| Repository root | Directory path | Files in subtree |",
+            "| --- | --- | ---: |",
+            *[
+                f"| `{item['root']}` | `{item['path']}` | {item['file_count_in_subtree']} |"
+                for item in directories
+            ],
+        ]
+        link_records = audit.get("links", [])
+        link_lines = [
+            "## Materialized Markdown link inventory",
+            "",
+            f"- Link references: `{len(link_records)}`; URL query strings and fragments are omitted from display.",
+            "- A listed link is not a reachability or permission check; local missing targets remain in `repository_surface_audit.json`.",
+            "",
+            "| Source path | Line | Sanitized target | Target SHA-256 | Kind |",
+            "| --- | ---: | --- | --- | --- |",
+            *[
+                f"| `{item['source_path']}` | {item['line']} | `{item['target']}` | `{item['target_sha256']}` | `{item['target_kind']}` |"
+                for item in link_records
+            ],
+        ]
+        docs = {
+            "QAUDITS.md": "# Q Audits",
+            "INTERNALREFSEARCH.md": "# Internal Reference Search",
+            "EXTERNALRESEARCH.md": "# External Research",
+            "COMPONENTS.md": "# Components",
+            "TREE.md": "# Repository Tree",
+            "ALLLINKS.md": "# All Links",
+        }
+        for filename, title in docs.items():
+            path = target / filename
+            if not path.exists():
+                safe_text_write(path, title + "\n")
+
+        summary_lines = [
+            "## Agent-managed repository surface audit",
+            "",
+            f"- Status: `{audit.get('status')}`; materialized files: `{audit.get('file_count')}`; directories: `{audit.get('directory_count')}`; Markdown: `{audit.get('markdown_file_count')}`.",
+            f"- API/endpoint candidates: `{audit.get('api_or_endpoint_source_count')}`; route candidates: `{audit.get('route_source_count')}`; components: `{audit.get('component_source_count')}`; automation/event candidates: `{audit.get('automation_or_event_source_count')}`.",
+            f"- Project/autoproject registry documents discovered: `{audit.get('surface_document_counts', {}).get('projects_autoprojects', 0)}`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.",
+            f"- Markdown structural checks passed: `{audit.get('markdown_structurally_validated_count')}`; needs review: `{audit.get('markdown_needs_review_count')}`; metric candidate lines: `{audit.get('metric_candidate_line_count')}`; percentage occurrences: `{audit.get('percentage_occurrence_count')}`.",
+            f"- Formula/calculation candidate lines: `{audit.get('calculation_candidate_line_count')}`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.",
+            "- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.",
+            f"- Instruction candidates: `{audit.get('instruction_candidate_line_count', 0)}` lines in `{audit.get('instruction_candidate_file_count', 0)}` files; each requires semantic requirement-to-code/test/workflow mapping.",
+            f"- Production-gap candidates: `{audit.get('production_gap_audit', {}).get('candidate_count', 'not_scanned')}`; status `{audit.get('production_gap_audit', {}).get('status', 'not_scanned')}`; automatic replacement authorized: `False`.",
+            "- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.",
+            "- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.",
+        ]
+        _upsert_managed_markdown_section(target / "QAUDITS.md", "QAUDITS.md", "repository-surface-audit", "\n".join(summary_lines))
+        _upsert_managed_markdown_section(target / "INTERNALREFSEARCH.md", "INTERNALREFSEARCH.md", "repository-surface-audit", "\n".join(summary_lines))
+        _upsert_managed_markdown_section(target / "COMPONENTS.md", "COMPONENTS.md", "component-source-inventory", "\n".join(component_lines))
+        _upsert_managed_markdown_section(target / "TREE.md", "TREE.md", "materialized-tree-inventory", "\n".join(tree_lines))
+        _upsert_managed_markdown_section(target / "ALLLINKS.md", "ALLLINKS.md", "materialized-link-inventory", "\n".join(link_lines))
+
+        for filename in ("INTERNALRESEARCH.md", "API.md", "ENDPOINTS.md", "ROUTES.md", "ALLPORTS.md", "ALLAUTO.md", "ALLLINKS.md", "COMPONENTS.md", "TREE.md", "compare.md", "Qtrade.md", "STYLES.md", "UNIVERSALS.md", "UNIVERSAL.md", "QVILLAGE.md", "Qvillageevolutions.md", "projectsandautoprojects.md", "projectsandautoprojectsenhanced.md", "projectandautoprojects.md", "projectsndautoprojects.md", "MODEL_CARD.md", "QMOI_MODEL_CARD.md", "FEATURES_AND_PERCENTAGES.md", "QAUDITS.md", "OFCA.md", "QVERSIONMANAGER.md", "MERGE.md", "ALLVALIDATIONS.md", "production.md", "productionenhanced.md", "oe2.txt", "remotecompletion.md", "MEMORY_INDEX.md", "QMOI_REALTIME_MEMORY_INDEX.md", "QMOI_MEMORY_AWARENESS_SYSTEM.md"):
+            path = target / filename
+            if path.is_file():
+                _upsert_managed_markdown_section(path, filename, "repository-surface-audit", "\n".join(summary_lines))
+        return {name: target / name for name in docs}
+
+    def refresh_research_status_documents(
+        self,
+        root: Path | str,
+        audit: Mapping[str, Any],
+        external: Mapping[str, Any],
+    ) -> dict[str, Path]:
+        """Keep internal/external research plans correlated with the current audit run."""
+        target = Path(root).resolve()
+        resources = external.get("selected_resources", [])
+        visits = external.get("sources", [])
+        external_lines = [
+            "## Agent-managed external research coverage",
+            "",
+            f"- Research status: `{external.get('status')}`; planned resources: `{len(resources)}`; successful visits: `{external.get('visited_count', 0)}`.",
+            "- The surface audit manifest and source hashes are in `ollamatracks/repository_surface_audit.json`; the report is excluded from its own digest.",
+            "- Resources are fetched only when explicitly enabled in an authorized GitHub-hosted run; plans are never visit evidence.",
+            "- Adoption remains gated by license, code/model availability, reproducible benchmarks, accuracy/speed/RAM/GPU/bandwidth/cost/reliability measurements, security, focused regression tests, rollback, and exact-SHA review.",
+            "",
+            "| Topic | Official source | Visit status | Content SHA-256 |",
+            "| --- | --- | --- | --- |",
+        ]
+        visited_by_url = {str(item.get("url")): item for item in visits}
+        for resource in resources:
+            visited = visited_by_url.get(str(resource.get("url")))
+            external_lines.append(
+                f"| `{resource.get('topic', '')}` | `{resource.get('url', '')}` | `{'VISITED' if visited else 'PLANNED_NOT_VISITED'}` | `{visited.get('content_sha256', '') if visited else ''}` |"
+            )
+        internal_lines = [
+            "## Agent-managed internal reference research coverage",
+            "",
+            f"- Audit status: `{audit.get('status')}`; local paths only; source hashes are in `ollamatracks/repository_surface_audit.json`.",
+            f"- Markdown files: `{audit.get('markdown_file_count')}`; local directories: `{audit.get('directory_count')}`; percentage candidates: `{audit.get('percentage_occurrence_count')}`; comparison/Qtrade metric lines: `{audit.get('metric_candidate_line_count')}`.",
+            f"- Formula/calculation candidates: `{audit.get('calculation_candidate_line_count')}`; path-grouped descriptive percentage summaries: `{len(audit.get('percentage_summary_by_path', []))}`.",
+            f"- Instruction candidates: `{audit.get('instruction_candidate_line_count', 0)}`; production-gap candidates: `{audit.get('production_gap_audit', {}).get('candidate_count', 'not_scanned')}`. These are unverified queues, not proof of fulfilled instructions or defects.",
+            f"- Production-gap scan: `{audit.get('production_gap_audit', {}).get('candidate_count', 'not_scanned')}` candidates across `{audit.get('production_gap_audit', {}).get('scanned_files', 'unknown')}` files; candidates are not confirmed defects and are never bulk-replaced.",
+            "- Every document receives a content hash, byte/line/word/sentence counts, structural checks, and local-link checks when within the configured parse bound. Sentence counts are heuristic; semantic meaning is not inferred.",
+            "- All API, endpoint, route, port, workflow, link, component, tree, style, universal, QVS/QVillage, comparison, Qtrade, and metrics surfaces are mapped by path in `ollamatracks/repository_surface_audit.json`.",
+            "- Unavailable roots, unreadable or oversized files, remote refs, PR trees, and intermediate commit trees remain visible blockers.",
+        ]
+        result = {}
+        for filename, marker, lines in (
+            ("INTERNALRESEARCH.md", "internal-surface-research", internal_lines),
+            ("EXTERIORRESEARCH.md", "external-surface-research", external_lines),
+            ("EXTERNALRESEARCH.md", "external-surface-research", external_lines),
+        ):
+            path = target / filename
+            if path.is_file():
+                _upsert_managed_markdown_section(path, filename, marker, "\n".join(lines))
+            else:
+                safe_text_write(path, f"# {filename}\n")
+                _upsert_managed_markdown_section(path, filename, marker, "\n".join(lines))
+            result[filename] = path
+        return result
 
     def run_autonomous_loop(self) -> dict[str, Any]:
         """Merge all repo histories, validate, and then finalize the update for each repo."""
@@ -10332,6 +10577,7 @@ All timestamps use UTC ISO-8601 format.
                     "artifact_path": ollama_reference_audit["artifact_path"],
                     "coverage_complete": ollama_reference_audit["coverage_complete"],
                 },
+                "repository_surface_audit": final_merge.get("repository_surface_audit"),
                 "production_readiness": {
                     "status": "PASS" if production_documents.get("status") == "clear" else "NEEDS_REVIEW",
                     "inventory_path": str(production_documents.get("inventory", "")),
@@ -10346,6 +10592,13 @@ All timestamps use UTC ISO-8601 format.
             completion_gates = {
                 "discovery": bool(repo_roots) and all(path.is_dir() for path in repo_roots),
                 "inspection": initial_merge.get("status") == "ready" and final_merge.get("status") == "ready",
+                "repository_surface_audit": (
+                    "PASS"
+                    if AutonomousCompletionEngine._repository_surface_audit_evidence_complete(
+                        final_merge.get("repository_surface_audit")
+                    )
+                    else None
+                ),
                 "ollama_reference_audit": (
                     "PASS"
                     if AutonomousCompletionEngine._ollama_reference_audit_evidence_complete(ollama_reference_audit)
@@ -10380,6 +10633,7 @@ All timestamps use UTC ISO-8601 format.
                     "primary": {"changed_files": []},
                     "secondary": {"changed_files": []},
                     "markdown_inventory": final_merge.get("remote_markdown_inventory_evidence"),
+                    "repository_surface_audit": final_merge.get("repository_surface_audit"),
                     "ollama_reference_audit": ollama_reference_audit,
                     "ui_test_hook_coverage": product_surface_docs["automation_coverage"]["styles_universals_coverage"],
                 },

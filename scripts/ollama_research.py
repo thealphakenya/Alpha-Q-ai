@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import os
 import re
+import subprocess
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -22,6 +24,11 @@ INTERNAL_RESEARCH_CONTROLS = (
     "record unresolved ownership, missing sources, unreadable files, and conflicting evidence as blockers",
     "turn each accepted research finding into a testable change hypothesis and focused validation",
     "refresh memory, merge, Markdown, validation, and Q-version evidence from measured results rather than estimates",
+    "hash and structurally validate every accessible Markdown document while keeping semantic review and remote-history proof separate",
+    "inventory API, endpoint, route, port, automation, link, component, tree, style, universal, clone, QVS, QVillage, compare, and Qtrade surfaces by exact path",
+    "extract metric and percentage candidate locations with source hashes, preserving values only for explicit percentage tokens and never treating claims as benchmark proof",
+    "turn production-gap matches into prioritized owner/test/security/rollback tasks; never bulk-rewrite candidates from search results",
+    "refresh awareness, memory, QVillage, and resumable action evidence from the same correlated audit without self-authorizing protected actions",
 )
 
 EXTERNAL_RESEARCH_CONTROLS = (
@@ -35,6 +42,10 @@ EXTERNAL_RESEARCH_CONTROLS = (
     "discover links as candidates but require domain-policy review before visiting unknown hosts",
     "mark inaccessible, stale, contradictory, or rate-limited resources as blocked instead of inferring facts",
     "retain citations and limitations in the research ledger and connect each finding to a validation case",
+    "select official research topics from discovered repository surfaces and maintain a per-domain visited/not-visited matrix",
+    "evaluate model comparisons with reproducible benchmark methodology and distinguish source claims from measured results",
+    "review license, code/model availability, resource cost, bandwidth, reliability, security, and rollback before proposing adoption",
+    "map external findings to exact implementation paths, tests, hooks, docs, and limitations; external research alone never authorizes changes",
 )
 
 OFFICIAL_RESEARCH_DOMAINS = frozenset({
@@ -56,6 +67,8 @@ OFFICIAL_RESEARCH_DOMAINS = frozenset({
     "docs.gitlab.com",
     "docs.gitpod.io",
     "huggingface.co",
+    "www.itl.nist.gov",
+    "cftc.gov",
     "docs.qdrant.tech",
     "w3.org",
     "www.rfc-editor.org",
@@ -77,6 +90,10 @@ OFFICIAL_RESOURCE_CATALOG = (
     {"url": "https://www.rfc-editor.org/rfc/rfc9110", "topic": "http-semantics", "purpose": "HTTP protocol behavior for APIs and endpoint validation"},
     {"url": "https://docs.gitlab.com/ee/", "topic": "gitlab-ci", "purpose": "cross-platform repository and pipeline integration research"},
     {"url": "https://huggingface.co/docs", "topic": "model-hosting", "purpose": "model, dataset, and hosted inference integration research"},
+    {"url": "https://huggingface.co/docs/evaluate/index", "topic": "model-evaluation", "purpose": "reproducible metric definitions and evaluation workflows"},
+    {"url": "https://huggingface.co/docs/hub/index", "topic": "huggingface-research", "purpose": "official model, dataset, Space, license, and Hub capability research"},
+    {"url": "https://www.itl.nist.gov/div898/handbook/", "topic": "statistical-methods", "purpose": "measurement, uncertainty, sampling, and statistical comparison methodology"},
+    {"url": "https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/index.htm", "topic": "financial-controls", "purpose": "official risk and consumer-protection guidance for financial/trading workflow audits"},
 )
 
 VALIDATION_RESEARCH_MAP = {
@@ -92,10 +109,58 @@ VALIDATION_RESEARCH_MAP = {
     "hosting_and_deployment": ("vercel-deployment", "netlify-deployment", "gitlab-ci"),
     "memory_and_q_seed": ("python-testing",),
     "production_and_release": ("python-packaging", "github-rest-api", "application-security"),
+    "metrics_and_comparisons": ("model-evaluation", "statistical-methods", "python-testing"),
+    "qtrade_and_financial_metrics": ("financial-controls", "statistical-methods", "application-security"),
+    "qvillage_qvs_and_research_adoption": ("huggingface-research", "model-hosting", "application-security"),
+    "tree_components_and_repo_inventory": ("github-rest-api", "python-testing"),
+    "styles_universals_hooks_and_webhooks": ("accessibility", "application-security", "github-actions-auth"),
+    "memory_awareness_and_q_versions": ("python-testing", "github-rest-api"),
+    "projects_and_autoprojects": ("github-rest-api", "application-security", "python-testing"),
 }
 
 MAX_RESOURCE_BYTES = 256 * 1024
 ALLOWED_CONTENT_TYPES = ("text/html", "text/plain", "text/markdown", "application/json", "application/xhtml+xml")
+SURFACE_DOCUMENTS = {
+    "markdown_index": ("ALLMDFILESREFS.md",),
+    "api": ("API.md",),
+    "endpoints": ("ENDPOINTS.md",),
+    "routes": ("ROUTES.md", "ALLROUTES.md"),
+    "ports": ("ALLPORTS.md",),
+    "automation": ("ALLAUTO.md",),
+    "links": ("ALLLINKS.md",),
+    "components": ("COMPONENTS.md",),
+    "tree": ("TREE.md", "TREE_FULL_STRUCTURE.md"),
+    "comparison": ("compare.md", "QMOI_MODEL_CARD.md", "QMOI_BEST_MODEL_PROOF.md"),
+    "trading": ("Qtrade.md", "TRADINGREADME.md"),
+    "styles": ("STYLES.md",),
+    "universals": ("UNIVERSALS.md", "UNIVERSAL.md"),
+    "qvillage_qvs": ("QVILLAGE.md", "Qvillageevolutions.md", "QVS.md", "ENHANCEDQVS.md"),
+    "internal_research": ("INTERNALRESEARCH.md", "INTERNALREFSEARCH.md"),
+    "external_research": ("EXTERIORRESEARCH.md", "EXTERNALRESEARCH.md"),
+    "instructions": ("AGENTS.md", "copilot-instructions.md"),
+    "production_metrics": ("production.md", "productionenhanced.md", "FEATURES_AND_PERCENTAGES.md", "compare.md", "Qtrade.md"),
+    "projects_autoprojects": ("projectsandautoprojects.md", "projectsandautoprojectsenhanced.md", "projectsndautoprojects.md", "projectandautoprojects.md"),
+}
+AUDIT_IGNORED_DIRECTORIES = frozenset({
+    ".git", "node_modules", ".venv", "venv", "__pycache__", ".pytest_cache",
+    ".mypy_cache", ".ruff_cache", ".next", ".turbo", "dist", "build", "target", "coverage",
+})
+AUDIT_MAX_FILE_BYTES = 100_000_000
+AUDIT_MAX_TEXT_BYTES = 5_000_000
+METRIC_TERM_PATTERN = re.compile(
+    r"\b(?:accuracy|precision|recall|f1|latency|throughput|speed|ram|memory|gpu|bandwidth|cost|reliability|benchmark|confidence|percentage|percent|ratio|sharpe|drawdown|win rate|profit|loss|slippage|roi)\b",
+    re.IGNORECASE,
+)
+INSTRUCTION_CANDIDATE_PATTERN = re.compile(
+    r"\b(?:must|shall|required|should|always|never|ensure|do not|cannot|can only|blocked unless)\b",
+    re.IGNORECASE,
+)
+INSTRUCTION_TEXT_SUFFIXES = frozenset({".md", ".txt", ".rst", ".py", ".js", ".jsx", ".ts", ".tsx", ".vue", ".svelte", ".yml", ".yaml", ".json", ".toml", ".ini", ".cfg", ".sh"})
+PERCENT_PATTERN = re.compile(r"(?<![\w.])\d+(?:\.\d+)?\s*%")
+CALCULATION_PATTERN = re.compile(r"(?:=|\+|\*|/|\b(?:formula|calculate|calculated|calculation|average|mean|median|sum|ratio|rate)\b)", re.IGNORECASE)
+MARKDOWN_LINK_PATTERN = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+COMPONENT_SUFFIXES = frozenset({".tsx", ".jsx", ".ts", ".js", ".vue", ".svelte", ".css", ".scss"})
+AUDIT_METRIC_SUFFIXES = frozenset({".py", ".js", ".jsx", ".ts", ".tsx", ".vue", ".svelte", ".css", ".scss", ".json", ".yml", ".yaml", ".toml", ".ini", ".cfg", ".txt", ".sh"})
 
 
 def utc_now() -> str:
@@ -163,6 +228,490 @@ def build_internal_research_plan(roots: Iterable[Path | str]) -> dict[str, Any]:
             "future commits and PRs do not exist yet and cannot be pre-audited",
             "unfetched refs, inaccessible repositories, and intermediate commit trees require target-owned remote enumeration",
             "inventory metadata is not proof that every file's semantic requirements were understood",
+        ],
+    }
+
+
+def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
+    """Inventory repository surfaces and document metrics without exporting source text."""
+    root_reports: list[dict[str, Any]] = []
+    all_file_records: list[dict[str, Any]] = []
+    all_directories: list[dict[str, Any]] = []
+    unavailable_roots: list[str] = []
+    audit_domains = set(VALIDATION_RESEARCH_MAP)
+    audit_topics = {topic for topics in VALIDATION_RESEARCH_MAP.values() for topic in topics}
+
+    for value in roots:
+        root = Path(value).resolve()
+        if not root.is_dir():
+            unavailable_roots.append(str(root))
+            root_reports.append({
+                "root": str(root),
+                "exists": False,
+                "status": "BLOCKED",
+                "file_count": 0,
+                "directory_count": 0,
+                "files": [],
+                "directories": [],
+                "source_contents_recorded": False,
+            })
+            continue
+
+        file_records: list[dict[str, Any]] = []
+        markdown_records: list[dict[str, Any]] = []
+        directories: list[dict[str, Any]] = []
+        unreadable: list[dict[str, str]] = []
+        skipped: list[dict[str, Any]] = []
+        links: list[dict[str, Any]] = []
+        metric_candidates: list[dict[str, Any]] = []
+        percentage_candidates: list[dict[str, Any]] = []
+        calculation_candidates: list[dict[str, Any]] = []
+        instruction_candidates: list[dict[str, Any]] = []
+        instruction_candidate_line_count = 0
+        all_metric_candidate_count = 0
+        directory_counts: dict[str, int] = {}
+        suffix_counts: dict[str, int] = {}
+        surface_files: dict[str, list[str]] = {name: [] for name in SURFACE_DOCUMENTS}
+        surface_paths: dict[str, list[str]] = {name: [] for name in SURFACE_DOCUMENTS}
+        file_count = 0
+        byte_count = 0
+        markdown_count = 0
+        component_count = 0
+        api_source_count = 0
+        endpoint_source_count = 0
+        route_source_count = 0
+        automation_source_count = 0
+        content_digest = hashlib.sha256()
+        self_referential_exclusions: list[str] = []
+
+        for current, dirnames, filenames in os.walk(root, followlinks=False):
+            current_path = Path(current)
+            retained = []
+            for dirname in sorted(dirnames):
+                child = current_path / dirname
+                relative_dir = child.relative_to(root).as_posix()
+                if dirname in AUDIT_IGNORED_DIRECTORIES:
+                    skipped.append({"path": relative_dir, "reason": "excluded_generated_or_dependency_directory"})
+                elif child.is_symlink():
+                    skipped.append({"path": relative_dir, "reason": "symlink_directory_not_followed"})
+                else:
+                    retained.append(dirname)
+                    directories.append(relative_dir)
+            dirnames[:] = retained
+
+            for filename in sorted(filenames):
+                path = current_path / filename
+                relative = path.relative_to(root).as_posix()
+                if path.is_symlink():
+                    skipped.append({"path": relative, "reason": "symlink_file_not_followed"})
+                    continue
+                try:
+                    size = path.stat(follow_symlinks=False).st_size
+                except OSError as exc:
+                    unreadable.append({"path": relative, "error_type": type(exc).__name__})
+                    continue
+                file_count += 1
+                byte_count += size
+                parent = Path(relative).parent
+                while str(parent) not in {"", "."}:
+                    key = parent.as_posix()
+                    directory_counts[key] = directory_counts.get(key, 0) + 1
+                    parent = parent.parent
+
+                suffix = path.suffix.lower()
+                name = path.name.lower()
+                lowered = relative.lower()
+                suffix_counts[suffix or "[no extension]"] = suffix_counts.get(suffix or "[no extension]", 0) + 1
+                roles = []
+                for surface, names in SURFACE_DOCUMENTS.items():
+                    if name in {item.lower() for item in names}:
+                        surface_files[surface].append(relative)
+                        roles.append(surface)
+                path_parts_lower = {part.lower() for part in Path(relative).parts}
+                if "qvillage" in lowered or "qvs" in path_parts_lower or "qve" in path_parts_lower or "qvs" in Path(relative).stem.lower():
+                    surface_paths["qvillage_qvs"].append(relative)
+                    roles.append("qvillage_qvs")
+                if ".github/instructions/" in lowered or name.endswith(".instructions.md"):
+                    roles.append("instruction_policy")
+                if suffix == ".md":
+                    roles.append("markdown")
+                    markdown_count += 1
+                if suffix in COMPONENT_SUFFIXES and any(token in lowered for token in ("component", "src/", "app/", "ui/", "frontend/")):
+                    roles.append("component_source")
+                    component_count += 1
+                if any(token in lowered for token in ("/api/", "/apis/", "api_", "endpoint")):
+                    roles.append("api_or_endpoint_source")
+                    api_source_count += 1
+                    if "endpoint" in lowered:
+                        endpoint_source_count += 1
+                if any(token in lowered for token in ("/route", "routes/", "_route.", "route_")):
+                    roles.append("route_source")
+                    route_source_count += 1
+                if ".github/workflows/" in lowered or any(token in lowered for token in ("automation", "autodev", "workflow", "hook", "webhook")):
+                    roles.append("automation_or_event_source")
+                    automation_source_count += 1
+
+                record: dict[str, Any] = {
+                    "path": relative,
+                    "scope": "materialized_repository",
+                    "suffix": suffix or "[no extension]",
+                    "bytes": size,
+                    "roles": sorted(set(roles)) or ["general_source"],
+                    "sha256": None,
+                    "status": "indexed",
+                }
+                if relative == "ollamatracks/repository_surface_audit.json":
+                    record["status"] = "self_referential_excluded"
+                    record["exclusion_reason"] = "audit_report_is_generated_from_this_inventory"
+                    self_referential_exclusions.append(relative)
+                    file_records.append(record)
+                    all_file_records.append({"root": str(root), **record})
+                    continue
+                if size > AUDIT_MAX_FILE_BYTES:
+                    record["status"] = "oversized_not_hashed"
+                    skipped.append({"path": relative, "reason": "oversized_file_not_hashed", "bytes": size})
+                    file_records.append(record)
+                    all_file_records.append({"root": str(root), **record})
+                    continue
+
+                digest = hashlib.sha256()
+                try:
+                    with path.open("rb") as stream:
+                        while chunk := stream.read(1024 * 1024):
+                            digest.update(chunk)
+                    record["sha256"] = digest.hexdigest()
+                    content_digest.update(relative.encode("utf-8", errors="replace"))
+                    content_digest.update(b"\0")
+                    content_digest.update(record["sha256"].encode("ascii"))
+                    content_digest.update(b"\n")
+                except OSError as exc:
+                    record["status"] = "unreadable"
+                    unreadable.append({"path": relative, "error_type": type(exc).__name__})
+                    file_records.append(record)
+                    all_file_records.append({"root": str(root), **record})
+                    continue
+
+                if suffix == ".md":
+                    if size > AUDIT_MAX_TEXT_BYTES:
+                        record["markdown_validation"] = "oversized_content_not_parsed"
+                        skipped.append({"path": relative, "reason": "oversized_markdown_not_parsed", "bytes": size})
+                    else:
+                        try:
+                            text = path.read_text(encoding="utf-8")
+                        except (OSError, UnicodeDecodeError) as exc:
+                            record["markdown_validation"] = "unreadable_or_invalid_utf8"
+                            unreadable.append({"path": relative, "error_type": type(exc).__name__})
+                        else:
+                            lines = text.splitlines()
+                            words = re.findall(r"\b[\w'-]+\b", text, re.UNICODE)
+                            sentences = [part for part in re.split(r"(?<=[.!?])\s+", text.strip()) if part]
+                            headings = sum(line.lstrip().startswith("#") for line in lines)
+                            fence_count = sum(line.lstrip().startswith(("```", "~~~")) for line in lines)
+                            unresolved = sorted(set(re.findall(r"\b(?:TODO|FIXME|TBD|PLACEHOLDER)\b", text, re.IGNORECASE)))
+                            missing_links = []
+                            for line_number, line in enumerate(lines, 1):
+                                for match in MARKDOWN_LINK_PATTERN.finditer(line):
+                                    raw_target = match.group(1).strip().split(maxsplit=1)[0].strip("<>")
+                                    parsed = urlsplit(raw_target)
+                                    if parsed.scheme or parsed.netloc or not parsed.path:
+                                        continue
+                                    link_path = Path(parsed.path.split("?", 1)[0].split("#", 1)[0])
+                                    resolved = (path.parent / link_path).resolve()
+                                    if root not in resolved.parents and resolved != root:
+                                        missing_links.append({"line": line_number, "target_sha256": hashlib.sha256(raw_target.encode("utf-8")).hexdigest(), "reason": "link_escapes_repository"})
+                                        continue
+                                    exists = resolved.is_file()
+                                    if not exists:
+                                        missing_links.append({"line": line_number, "target_sha256": hashlib.sha256(raw_target.encode("utf-8")).hexdigest(), "reason": "local_target_missing"})
+                                    parsed_target = urlsplit(raw_target)
+                                    if parsed_target.scheme.lower() in {"http", "https"} and parsed_target.hostname:
+                                        safe_target = urlunsplit((parsed_target.scheme.lower(), parsed_target.hostname.lower(), parsed_target.path, "", ""))
+                                    else:
+                                        safe_target = parsed_target.path
+                                    links.append({
+                                        "source_path": relative,
+                                        "line": line_number,
+                                        "target": safe_target,
+                                        "target_sha256": hashlib.sha256(raw_target.encode("utf-8")).hexdigest(),
+                                        "target_kind": "external" if parsed_target.scheme else "local",
+                                        "local_target_exists": exists if not parsed_target.scheme else None,
+                                    })
+                            metric_lines = []
+                            instruction_lines = []
+                            for line_number, line in enumerate(lines, 1):
+                                if INSTRUCTION_CANDIDATE_PATTERN.search(line):
+                                    instruction_lines.append(line_number)
+                                terms = sorted(set(match.group(0).lower() for match in METRIC_TERM_PATTERN.finditer(line)))
+                                percentages = [match.group(0).replace(" ", "") for match in PERCENT_PATTERN.finditer(line)]
+                                if terms or percentages:
+                                    metric_lines.append({"line": line_number, "metric_terms": terms, "percentages": percentages})
+                                    if percentages:
+                                        percentage_candidates.extend({"root": str(root), "path": relative, "line": line_number, "value": value} for value in percentages)
+                                    if terms and CALCULATION_PATTERN.search(line):
+                                        calculation_candidates.append({
+                                            "root": str(root), "path": relative, "line": line_number,
+                                            "metric_terms": terms,
+                                            "operator_count": len(re.findall(r"=|\+|\*|/", line)),
+                                            "sha256": record["sha256"],
+                                            "source_text_recorded": False,
+                                        })
+                            all_metric_candidate_count += len(metric_lines)
+                            if instruction_lines:
+                                instruction_candidate_line_count += len(instruction_lines)
+                                instruction_candidates.append({
+                                    "root": str(root), "path": relative, "sha256": record["sha256"],
+                                    "candidate_line_count": len(instruction_lines),
+                                    "line_numbers": instruction_lines[:500],
+                                    "line_numbers_truncated": len(instruction_lines) > 500,
+                                    "status": "instruction_candidate_needs_semantic_mapping",
+                                    "source_text_recorded": False,
+                                })
+                            comparison_rows = sum(line.lstrip().startswith("|") for line in lines)
+                            review_reasons = []
+                            if not text.strip():
+                                review_reasons.append("empty_document")
+                            if headings == 0:
+                                review_reasons.append("missing_heading")
+                            if fence_count % 2:
+                                review_reasons.append("unbalanced_code_fences")
+                            if unresolved:
+                                review_reasons.append("unresolved_markers")
+                            if missing_links:
+                                review_reasons.append("invalid_or_missing_local_links")
+                            markdown_record = {
+                                "path": relative,
+                                "scope": "materialized_repository",
+                                "bytes": size,
+                                "sha256": record["sha256"],
+                                "line_count": len(lines),
+                                "word_count": len(words),
+                                "sentence_count_heuristic": len(sentences),
+                                "semantic_validation": "not_automatable; content requires source-backed review",
+                                "heading_count": headings,
+                                "code_fence_count": fence_count,
+                                "balanced_code_fences": fence_count % 2 == 0,
+                                "unresolved_markers": unresolved,
+                                "local_link_error_count": len(missing_links),
+                                "local_link_errors": missing_links,
+                                "comparison_table_row_count": comparison_rows if "compare" in name or "model_card" in name else 0,
+                                "metric_candidate_line_count": len(metric_lines),
+                                "metric_candidate_lines": metric_lines,
+                                "status": "needs_review" if review_reasons else "structurally_validated",
+                                "review_reasons": review_reasons,
+                                "source_text_recorded": False,
+                            }
+                            markdown_records.append(markdown_record)
+                            record["markdown_validation"] = markdown_record["status"]
+                            record["line_count"] = len(lines)
+                            record["word_count"] = len(words)
+                            if name in {"compare.md", "qtrade.md", "tradingreadme.md"} or "model_card" in name:
+                                metric_candidates.extend({"path": relative, **item} for item in metric_lines)
+                elif suffix in AUDIT_METRIC_SUFFIXES:
+                    if size > AUDIT_MAX_TEXT_BYTES:
+                        skipped.append({"path": relative, "reason": "oversized_metric_source_not_parsed", "bytes": size})
+                    else:
+                        try:
+                            text = path.read_text(encoding="utf-8")
+                        except (OSError, UnicodeDecodeError) as exc:
+                            unreadable.append({"path": relative, "error_type": type(exc).__name__})
+                        else:
+                            code_metric_lines = []
+                            instruction_lines = []
+                            for line_number, line in enumerate(text.splitlines(), 1):
+                                if INSTRUCTION_CANDIDATE_PATTERN.search(line):
+                                    instruction_lines.append(line_number)
+                                terms = sorted(set(match.group(0).lower() for match in METRIC_TERM_PATTERN.finditer(line)))
+                                percentages = [match.group(0).replace(" ", "") for match in PERCENT_PATTERN.finditer(line)]
+                                if terms or percentages:
+                                    code_metric_lines.append({"line": line_number, "metric_terms": terms, "percentages": percentages})
+                                    if percentages:
+                                        percentage_candidates.extend({"root": str(root), "path": relative, "line": line_number, "value": item} for item in percentages)
+                                    if terms and CALCULATION_PATTERN.search(line):
+                                        calculation_candidates.append({
+                                            "root": str(root), "path": relative, "line": line_number,
+                                            "metric_terms": terms,
+                                            "operator_count": len(re.findall(r"=|\+|\*|/", line)),
+                                            "sha256": record["sha256"],
+                                            "source_text_recorded": False,
+                                        })
+                            record["metric_candidate_line_count"] = len(code_metric_lines)
+                            all_metric_candidate_count += len(code_metric_lines)
+                            if instruction_lines:
+                                instruction_candidate_line_count += len(instruction_lines)
+                                instruction_candidates.append({
+                                    "root": str(root), "path": relative, "sha256": record["sha256"],
+                                    "candidate_line_count": len(instruction_lines),
+                                    "line_numbers": instruction_lines[:500],
+                                    "line_numbers_truncated": len(instruction_lines) > 500,
+                                    "status": "instruction_candidate_needs_semantic_mapping",
+                                    "source_text_recorded": False,
+                                })
+                            if code_metric_lines and any(token in lowered for token in ("compare", "qtrade", "trading", "benchmark", "metric")):
+                                metric_candidates.extend({"path": relative, **item} for item in code_metric_lines)
+
+                file_records.append(record)
+                all_file_records.append({"root": str(root), **record})
+
+        for directory in sorted(directories):
+            all_directories.append({"root": str(root), "path": directory, "file_count_in_subtree": directory_counts.get(directory, 0)})
+
+        required_documents = {
+            name: {
+                "expected_basenames": list(basenames),
+                "found_paths": sorted(
+                    record["path"]
+                    for record in file_records
+                    if Path(record["path"]).name.lower() in {item.lower() for item in basenames}
+                ),
+                "status": "present" if any(
+                    Path(item["path"]).name.lower() in {name.lower() for name in basenames}
+                    for item in file_records
+                ) else "missing",
+            }
+            for name, basenames in SURFACE_DOCUMENTS.items()
+        }
+        try:
+            refs = subprocess.run(
+                ["git", "-C", str(root), "for-each-ref", "--format=%(refname)"],
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=20,
+            ).stdout.splitlines()
+            commit_count = int(subprocess.run(
+                ["git", "-C", str(root), "rev-list", "--all", "--count"],
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=30,
+            ).stdout.strip())
+            git_status = "enumerated_local_refs_and_commits"
+        except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired, ValueError):
+            refs = []
+            commit_count = None
+            git_status = "unavailable"
+
+        root_report = {
+            "root": str(root),
+            "exists": True,
+            "file_count": file_count,
+            "directory_count": len(directories),
+            "total_bytes": byte_count,
+            "markdown_file_count": markdown_count,
+            "component_source_count": component_count,
+            "api_or_endpoint_source_count": api_source_count,
+            "endpoint_named_source_count": endpoint_source_count,
+            "route_source_count": route_source_count,
+            "automation_or_event_source_count": automation_source_count,
+            "file_type_counts": dict(sorted(suffix_counts.items())),
+            "surface_documents": required_documents,
+            "surface_paths": {name: sorted(set(paths)) for name, paths in surface_paths.items() if paths},
+            "markdown_records": markdown_records,
+            "directories": sorted(directories),
+            "git_history": {
+                "status": git_status,
+                "ref_count": len(refs),
+                "refs": sorted(refs),
+                "commit_count": commit_count,
+                "intermediate_commit_trees_scanned": False,
+                "remote_completeness": "not_verified",
+            },
+            "unreadable": unreadable,
+            "skipped": skipped,
+            "self_referential_exclusions": self_referential_exclusions,
+            "content_digest": content_digest.hexdigest(),
+            "source_contents_recorded": False,
+            "semantic_requirements_understood": False,
+        }
+        root_reports.append(root_report)
+
+    manifest = json.dumps(
+        {"files": all_file_records, "directories": all_directories},
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    invalid_markdown = sum(
+        item["status"] != "structurally_validated"
+        for report in root_reports
+        for item in report.get("markdown_records", [])
+    )
+    unreadable_count = sum(len(report.get("unreadable", [])) for report in root_reports)
+    skipped_count = sum(len(report.get("skipped", [])) for report in root_reports)
+    surface_counts: dict[str, int] = {}
+    for name in SURFACE_DOCUMENTS:
+        surface_counts[name] = sum(
+            len(report.get("surface_documents", {}).get(name, {}).get("found_paths", []))
+            for report in root_reports
+        )
+    surface_counts["qvillage_qvs"] = sum(
+        len(report.get("surface_paths", {}).get("qvillage_qvs", []))
+        for report in root_reports
+    )
+    percentage_values_by_path: dict[tuple[str, str], list[float]] = {}
+    for item in percentage_candidates:
+        try:
+            value = float(item["value"].replace("%", ""))
+        except (TypeError, ValueError):
+            continue
+        percentage_values_by_path.setdefault((item["root"], item["path"]), []).append(value)
+    percentage_summary_by_path = [
+        {
+            "root": root,
+            "path": path,
+            "count": len(values),
+            "minimum": min(values),
+            "maximum": max(values),
+            "mean": round(sum(values) / len(values), 4),
+            "interpretation": "descriptive_unclassified_percentages_not_comparable_performance_proof",
+        }
+        for (root, path), values in sorted(percentage_values_by_path.items())
+    ]
+    return {
+        "schema_version": 1,
+        "generated_at": utc_now(),
+        "status": "NEEDS_REVIEW" if unavailable_roots or invalid_markdown or unreadable_count or skipped_count else "MATERIALIZED_AUDIT_COMPLETE_REMOTE_HISTORY_INCOMPLETE",
+        "scope": "materialized repository roots and local refs only",
+        "roots": root_reports,
+        "file_count": len(all_file_records),
+        "directory_count": len(all_directories),
+        "markdown_file_count": sum(report.get("markdown_file_count", 0) for report in root_reports),
+        "surface_document_counts": surface_counts,
+        "component_source_count": sum(report.get("component_source_count", 0) for report in root_reports),
+        "api_or_endpoint_source_count": sum(report.get("api_or_endpoint_source_count", 0) for report in root_reports),
+        "route_source_count": sum(report.get("route_source_count", 0) for report in root_reports),
+        "automation_or_event_source_count": sum(report.get("automation_or_event_source_count", 0) for report in root_reports),
+        "markdown_structurally_validated_count": sum(item["status"] == "structurally_validated" for report in root_reports for item in report.get("markdown_records", [])),
+        "markdown_needs_review_count": invalid_markdown,
+        "metric_candidate_line_count": all_metric_candidate_count,
+        "instruction_candidate_line_count": instruction_candidate_line_count,
+        "instruction_candidate_file_count": len(instruction_candidates),
+        "instruction_candidates": instruction_candidates,
+        "percentage_occurrence_count": len(percentage_candidates),
+        "percentage_candidates": percentage_candidates,
+        "percentage_summary_by_path": percentage_summary_by_path,
+        "calculation_candidate_line_count": len(calculation_candidates),
+        "calculation_candidates": calculation_candidates,
+        "comparison_and_qtrade_metric_candidates": metric_candidates,
+        "link_reference_count": len(links),
+        "links": links,
+        "all_file_records": all_file_records,
+        "all_directory_records": all_directories,
+        "unavailable_roots": unavailable_roots,
+        "self_referential_exclusions": sorted({path for report in root_reports for path in report.get("self_referential_exclusions", [])}),
+        "unreadable_file_count": unreadable_count,
+        "skipped_source_count": skipped_count,
+        "source_manifest_sha256": hashlib.sha256(manifest).hexdigest(),
+        "remote_refs_prs_and_intermediate_trees_verified": False,
+        "semantic_validation": "structure, UTF-8, local links, metrics, and hashes are machine-checked; semantic correctness of each sentence requires mapped source/tests and is not inferred",
+        "production_replacement_policy": "candidate discovery only; implementation, owner, security, focused tests, rollback, and remote evidence are required before replacement",
+        "source_text_recorded": False,
+        "research_domains": sorted(audit_domains),
+        "research_topics": sorted(audit_topics),
+        "next_actions": [
+            "resolve missing, unreadable, oversized, or structurally invalid materialized sources",
+            "map each requirement to implementation, tests, workflow hooks, owning docs, and exact SHA",
+            "obtain target-owned all-ref, PR, and intermediate-tree manifests for both repositories",
+            "review production candidates individually before implementation or replacement",
         ],
     }
 

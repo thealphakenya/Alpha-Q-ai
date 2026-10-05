@@ -18,6 +18,7 @@ from scripts.q_version_manager import QVersionManager
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
     INTERNAL_RESEARCH_CONTROLS,
+    audit_repository_surfaces,
     build_internal_research_plan,
     discover_resource_candidates,
     fetch_official_resource,
@@ -106,6 +107,41 @@ def q_version_ollama_reference_audit(shas: list[str]) -> dict[str, object]:
     }
 
 
+def q_version_repository_surface_audit(shas: list[str]) -> dict[str, object]:
+    surfaces = [
+        "markdown", "api", "endpoints", "routes", "ports", "automation", "links",
+        "components", "tree", "styles", "universals", "qvillage_qvs", "comparison",
+        "qtrade_metrics", "percentages", "production_gaps", "memory",
+    ]
+    return {
+        "status": "PASS",
+        "coverage_complete": True,
+        "remote_verified": True,
+        "semantic_review_complete": True,
+        "all_required_surfaces_inventoried": True,
+        "all_metrics_mapped": True,
+        "source_manifest_sha256": "e" * 64,
+        "unavailable_sources": [],
+        "repositories": {
+            name: {
+                "terminal_conclusion": "success",
+                "remote_verified": True,
+                "final_sha": sha,
+                "workflow_run_id": "run-surface-audit",
+                "validated_surfaces": surfaces,
+                "all_markdown_structurally_validated": True,
+                "all_percentages_mapped": True,
+                "all_metric_candidates_mapped": True,
+                "unavailable_sources": [],
+            }
+            for name, sha in zip(
+                ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
+                shas,
+            )
+        },
+    }
+
+
 def ui_test_hook_coverage_evidence(shas: list[str]) -> dict[str, object]:
     return {
         "status": "PASS",
@@ -160,6 +196,11 @@ def record_successful_q_lifecycle(manager: QVersionManager, roots: list[Path], e
         "REMOTE_VERIFICATION": {
             "terminal_conclusion": "success",
             "remote_verified": True,
+        },
+        "REPOSITORY_SURFACE_AUDIT": {
+            "coverage_complete": True,
+            "source_manifest_sha256": "e" * 64,
+            "unavailable_sources": [],
         },
     }
     for stage in QVersionManager.LIFECYCLE_STAGES[:-1]:
@@ -231,6 +272,7 @@ def test_completion_refreshes_current_state_and_keeps_remote_actions_gated(tmp_p
         gates,
         repository_results={
             "markdown_inventory": markdown_evidence,
+            "repository_surface_audit": q_version_repository_surface_audit(["a" * 40, "b" * 40]),
             "ollama_reference_audit": q_version_ollama_reference_audit(["a" * 40, "b" * 40]),
             "ui_test_hook_coverage": ui_test_hook_coverage_evidence(["a" * 40, "b" * 40]),
         },
@@ -271,6 +313,24 @@ def test_completion_requires_feature_level_style_test_and_hook_evidence(tmp_path
     assert result.gates["ui_test_hook_coverage"] == "UNKNOWN"
     assert result.evidence["ui_test_hook_coverage"]["coverage_complete"] is False
     assert result.status == "BLOCKED_REQUIRES_HUMAN"
+
+
+def test_completion_requires_surface_audit_with_all_metrics_and_exact_sha_evidence(tmp_path):
+    root = make_root(tmp_path)
+    gates = {name: "PASS" for name in REQUIRED_GATES}
+    gates["repository_surface_audit"] = None
+
+    missing = AutonomousCompletionEngine(root, "execution-surface-missing").evaluate(gates)
+    assert missing.gates["repository_surface_audit"] == "UNKNOWN"
+
+    complete = AutonomousCompletionEngine(root, "execution-surface-complete").evaluate(
+        gates,
+        repository_results={
+            "repository_surface_audit": q_version_repository_surface_audit(["a" * 40, "b" * 40]),
+        },
+    )
+    assert complete.gates["repository_surface_audit"] == "PASS"
+    assert complete.evidence["repository_surface_audit"]["coverage_complete"] is True
 
 
 def test_invalid_local_evidence_forces_final_verification_failure(tmp_path):
@@ -435,6 +495,91 @@ def test_internal_research_plan_records_roots_and_file_type_metrics(tmp_path):
     assert plan["source_roots"][0]["file_types"][".py"] == 1
     assert plan["source_roots"][0]["file_types"][".md"] == 1
     assert plan["automatic_merge_authorized"] is False
+
+
+def test_repository_surface_audit_tracks_markdown_metrics_without_source_text(tmp_path):
+    (tmp_path / "src" / "components").mkdir(parents=True)
+    (tmp_path / "src" / "api").mkdir(parents=True)
+    (tmp_path / ".github" / "workflows").mkdir(parents=True)
+    (tmp_path / "README.md").write_text(
+        "# Audit fixture\n\nNever emit this exact sentence. Accuracy is 70%.\n[API](API.md) [missing](missing.md)\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "API.md").write_text("# API\n\nGET /health\n", encoding="utf-8")
+    (tmp_path / "compare.md").write_text(
+        "# Model comparison\n\n| Model | Accuracy |\n| --- | --- |\n| QMOI | 80% |\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "Qtrade.md").write_text(
+        "# Qtrade metrics\n\nWin rate: 61%; Sharpe ratio is a metric candidate.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "projectsandautoprojects.md").write_text(
+        "# Master projects\n\nExisting project registry.\n", encoding="utf-8"
+    )
+    (tmp_path / "QVILLAGE.md").write_text("# QVillage\n", encoding="utf-8")
+    (tmp_path / "QVS.md").write_text("# QVS\n", encoding="utf-8")
+    historical_qvs = tmp_path / "qmoi-enhanced-history-14" / "QVS"
+    historical_qvs.mkdir(parents=True)
+    (historical_qvs / "ENHANCEDQVS.md").write_text("# Enhanced QVS\n", encoding="utf-8")
+    (tmp_path / "src" / "components" / "Button.tsx").write_text(
+        "export const Button = () => null;\n", encoding="utf-8"
+    )
+    (tmp_path / "src" / "api" / "route.py").write_text(
+        "def get_health():\n    return {}\n", encoding="utf-8"
+    )
+    (tmp_path / "src" / "metrics.py").write_text(
+        "# confidence threshold 55%\n", encoding="utf-8"
+    )
+    (tmp_path / ".github" / "workflows" / "audit.yml").write_text(
+        "name: Audit\non: [push]\n", encoding="utf-8"
+    )
+    tracker_dir = tmp_path / "ollamatracks"
+    tracker_dir.mkdir()
+    (tracker_dir / "repository_surface_audit.json").write_text(
+        '{"previous":"generated report"}\n', encoding="utf-8"
+    )
+
+    report = audit_repository_surfaces([tmp_path])
+    serialized = json.dumps(report)
+    root_report = report["roots"][0]
+    markdown = {item["path"]: item for item in root_report["markdown_records"]}
+
+    assert report["status"] == "NEEDS_REVIEW"
+    assert report["surface_document_counts"]["api"] == 1
+    assert report["surface_document_counts"]["comparison"] == 1
+    assert report["surface_document_counts"]["trading"] == 1
+    assert report["surface_document_counts"]["qvillage_qvs"] == 3
+    assert report["surface_document_counts"]["projects_autoprojects"] == 1
+    assert report["component_source_count"] == 1
+    assert report["api_or_endpoint_source_count"] == 1
+    assert report["percentage_occurrence_count"] == 4
+    assert len(report["percentage_summary_by_path"]) == 4
+    assert report["calculation_candidate_line_count"] >= 1
+    assert report["instruction_candidate_line_count"] >= 1
+    assert report["instruction_candidate_file_count"] >= 1
+    assert all(
+        item["interpretation"] == "descriptive_unclassified_percentages_not_comparable_performance_proof"
+        for item in report["percentage_summary_by_path"]
+    )
+    assert "model-evaluation" in report["research_topics"]
+    assert "metrics_and_comparisons" in report["research_domains"]
+    assert "projects_and_autoprojects" in report["research_domains"]
+    assert markdown["README.md"]["local_link_error_count"] == 1
+    assert markdown["compare.md"]["comparison_table_row_count"] == 3
+    assert root_report["git_history"]["intermediate_commit_trees_scanned"] is False
+    assert "Never emit this exact sentence." not in serialized
+    assert "must be fulfilled" not in serialized
+    assert report["source_text_recorded"] is False
+    self_record = next(
+        item for item in report["all_file_records"]
+        if item["path"] == "ollamatracks/repository_surface_audit.json"
+    )
+    assert self_record["status"] == "self_referential_excluded"
+    assert self_record["sha256"] is None
+    assert report["self_referential_exclusions"] == ["ollamatracks/repository_surface_audit.json"]
+    assert all(item["source_text_recorded"] is False for item in report["instruction_candidates"])
+    assert all(len(item["sha256"]) == 64 for item in report["all_file_records"] if item["sha256"])
 
 
 def test_external_research_allowlist_rejects_credentials_and_unapproved_domains():
@@ -787,6 +932,9 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         "correlation_id": "qversion-test-1",
         "instruction_inventories": q_version_instruction_evidence(roots),
         "autonomous_completion": q_version_autonomous_completion(),
+        "repository_surface_audit": q_version_repository_surface_audit(
+            [item["final_sha"] for item in repository_evidence.values()]
+        ),
         "ollama_reference_audit": q_version_ollama_reference_audit(
             [item["final_sha"] for item in repository_evidence.values()]
         ),
@@ -805,6 +953,10 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
     with pytest.raises(RuntimeError, match="complete styles/universals test and hook evidence"):
         manager.write_final_metrics("Q.0.0.3", roots, evidence)
     evidence["ui_test_hook_coverage"] = ui_coverage
+    surface_audit = evidence.pop("repository_surface_audit")
+    with pytest.raises(RuntimeError, match="complete dual-repository surface-audit evidence"):
+        manager.write_final_metrics("Q.0.0.3", roots, evidence)
+    evidence["repository_surface_audit"] = surface_audit
 
     result = manager.write_final_metrics("Q.0.0.3", roots, evidence)
 
@@ -820,6 +972,7 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         assert metrics["autonomous_completion"]["next_actions"] == []
         assert metrics["ollama_reference_audit"]["coverage_complete"] is True
         assert metrics["ui_test_hook_coverage"]["coverage_verified"] is True
+        assert metrics["repository_surface_audit"]["coverage_complete"] is True
         assert metrics["production_readiness"]["candidate_count"] == 0
         assert document_path.is_file()
         assert "Directories inventoried:" in document_path.read_text(encoding="utf-8")
@@ -882,6 +1035,7 @@ def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path)
         "correlation_id": "qversion-test-2",
         "instruction_inventories": q_version_instruction_evidence(roots),
         "autonomous_completion": q_version_autonomous_completion(),
+            "repository_surface_audit": q_version_repository_surface_audit(["a" * 40, "a" * 40]),
         "ollama_reference_audit": q_version_ollama_reference_audit(["a" * 40, "a" * 40]),
         "ui_test_hook_coverage": ui_test_hook_coverage_evidence(["a" * 40, "a" * 40]),
         "production_readiness": q_version_production_readiness(),

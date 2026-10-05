@@ -2584,3 +2584,17 @@ Every UI feature must map a stable feature ID to app/platform, style token and i
 - Candidate migration inventory: `QMOItracks/style_universal_replacement_inventory.json` tracks file hashes, source scopes, and directories for shared style/access contracts; automatic replacement is disabled until ownership, compatibility, tests, rollback, and authorization pass.
 - Do not mark a style feature complete until focused UI/accessibility/state tests and event-hook applicability are mapped; event-driven features also require delivery, denial, retry, and recovery tests.
 <!-- END QMOI MANAGED: ui-feature-implementation-accountability -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

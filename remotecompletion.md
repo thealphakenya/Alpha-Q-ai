@@ -1,3 +1,26 @@
+## User-requested pause — 2026-10-05T03:24:09Z
+
+- Correlation ID `96d42948-5835-4332-8e8b-17ae4f984bb0`; repository `thealphakenya/Alpha-Q-ai`; requested branch `codespace-orange-space-train-x5gp965wppgv39qvj`.
+- Local state: `HEAD=8a7a911665d76d6c285204cd61abe55da9c53b59`, merge parent `aa7f4c09779c4ab85a1037e3005aa2e45c45e854`, latest observed `origin/main=b5e6681a489738566735f086dcf71c07682068eb`, remote PR head `0e81aef21f6015745fa616f26f92c9d490f89c7c`. The normal merge is still in progress, `origin/main` has since advanced beyond the merge parent, and the worktree is dirty. No push or PR merge occurred. Preserve all local changes; first fetch/classify `b5e6681` and finish the ancestry-preserving merge.
+- Implemented locally: common repository-surface audit, metadata-only instruction/metric/percentage/link/component/tree/QVillage-QVS and app-surface indexes, research-topic mapping, production candidate report refresh, managed QAUDITS/research/production/style/universal/QVillage docs, required surface-audit and OFCA lifecycle/completion/Q-version gates, and blocked merge apply when required audits/indexes are incomplete. Focused tests passed for surface redaction, Q-version gating, pre-merge audit ordering, production docs, and validation pipeline; the full affected modules have not been rerun after the latest edits.
+- Last measured audit was `NEEDS_REVIEW` and is stale after subsequent edits: 10,408 files, 1,267 directories, 2,412 Markdown (2,186 pass / 218 review), 46,823 metric lines, 22,236 percentages, 11,364 calculation candidates, 36,263 instruction-like lines in 3,090 files, and 285 production candidates / 13 unreadable. External research: 18 topics planned, 0 visited. Re-run before publication; do not claim semantic or production completeness from these counts.
+- Outstanding user scope: finish OFCA across local/remote refs, all PRs/intermediate trees, both repos, qmoi-enhanced-history-14 and Alpha-Q-ai-2025; validate every Markdown document and reconcile all API/endpoint/tree/route/port/automation/link/component inventories; map every implementation, test, hook/webhook, comparison claim, Qtrade metric, percentage, style/universal, QVS/QVillage evolution, project/autoproject and memory feature; inspect all instruction sources and keep `projectsandautoprojects.md` plus enhanced project/model-card docs current; refresh `production.md`, `productionenhanced.md`, all related docs, QAUDITS, and machine ledgers. Instruction-like line discovery is not proof the instruction was fulfilled.
+- Production replacements remain candidate-only: no blanket rewrite. Each candidate requires ownership/requirements, security and compatibility review, focused tests, rollback, authorization, and exact-SHA verification. External research is allowlisted and bounded; it remains unvisited until an explicitly authorized hosted workflow fetches it. Model comparisons require reproducible benchmark evidence; no best-model claim is proven.
+- Remote status: no current remote-agent liveness proof. Last observed PR #50 checks were on the old head; Advanced Security and three Netlify checks failed, while PR validation and CodeQL succeeded. Main-protection read returned HTTP 403, rules unknown. Refresh exact-SHA PR/workflow/worker evidence before any push or completion claim. Credentials, protected branches, releases/deployments, finances/trading/payroll, and Q-version finalization remain authorization-gated.
+- Resume queue: fetch and merge latest main safely; rerun full affected tests/workflow/syntax/data checks; rerun and refresh all audit/production/project/Markdown metrics; update the requested docs and machine ledgers; commit/push only the PR branch with a normal push; verify new exact-SHA remote checks. Do not merge the PR or claim remote production completion while checks/history/protection gates are open.
+- Status: `PAUSED_AS_REQUESTED_LOCAL_MERGE_AND_AUDITS_UNFINISHED_REMOTE_PROOF_UNVERIFIED`.
+
+## Latest audit-driven research and production checkpoint — 2026-10-05T03:11:35Z
+
+- Correlation ID `bcd0f75b-f15a-41a9-9e23-515f7a407c8c`; repository `thealphakenya/Alpha-Q-ai`; requested branch `codespace-orange-space-train-x5gp965wppgv39qvj`.
+- Local integration HEAD `8a7a911665d76d6c285204cd61abe55da9c53b59`; in-progress merge parent `aa7f4c09779c4ab85a1037e3005aa2e45c45e854`; latest observed `origin/main` `b5e6681a489738566735f086dcf71c07682068eb`; remote PR branch remains `0e81aef21f6015745fa616f26f92c9d490f89c7c`. The latest `main` SHA is not yet integrated. No push or remote mutation occurred.
+- Repository-surface audit measures 10,408 files / 1,267 directories / 2,412 Markdown documents (2,186 structurally valid, 218 review); 962 API/endpoint, 737 route, 1,384 component, 553 automation/event, 8,536 link, and 40 QVillage/QVS/QVE candidates.
+- Metric inventory: 46,819 metric candidate lines; 22,236 percentage occurrences in 734 source files; 11,360 formula/calculation candidate lines; 36,263 instruction-like candidate lines across 3,090 files. These are discovery/metrics only, not semantic validation or fulfillment proof.
+- Production-gap inventory: 285 scoped candidates, 13 unreadable, status `NEEDS_REVIEW`. Production docs are refreshed from the scan, but automatic replacement remains disabled pending source ownership, requirements, security/compatibility, focused tests, rollback, authorization, and exact-SHA proof.
+- Internal audit artifact `ollamatracks/repository_surface_audit.json`, manifest SHA-256 `448222e501482187f3dd87b8b426cdecbbe613285646d690b71fbcffa808ec21`. External plan covers 18 mapped topics but is `PLANNED_NOT_VISITED`; network fetching remained disabled.
+- Focused regressions pass: surface audit/redaction `1`, Q-version gates `16`, merge lifecycle/fail-closed apply `1`, validation doc refresh `1`. Full affected modules have not yet been rerun after this integration.
+- Current status: local audit `NEEDS_REVIEW`; latest main commit, remote history/PR/intermediate trees, exact-SHA checks, semantic instruction validation, production candidates, and Markdown indexing remain open. No remote completion or production-ready claim.
+
 ## Latest requested branch continuation — 2026-10-05T01:38:18Z
 
 - Correlation ID `ab2c9c5a-1a43-424a-b973-8af06f7b5ce4`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-orange-space-train-x5gp965wppgv39qvj`.
@@ -1857,3 +1880,17 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 - `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
 - Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
 <!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

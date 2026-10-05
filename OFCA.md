@@ -4,7 +4,7 @@ OFCA is a required pre-merge audit stage. The agent runs it after source invento
 
 Merge planning and read-only inventory may continue when the audit is incomplete, but merge application is blocked unless OFCA and the Markdown source index are complete. The blocked lifecycle stage retains its reasons and resumable next action.
 
-The metadata-only report in `ollamatracks/ollama_reference_audit.json` records mention-bearing paths, hashes, line numbers, responsibility categories, local ref and commit counts, and a source-manifest hash. It never copies source lines into evidence. `ollamatracks/style_universal_replacement_inventory.json` tracks candidate files and directories, hashes, source scope, and required test/hook review for migration to `STYLES.md`, `UNIVERSALS.md`, and `UNIVERSAL.md`.
+The metadata-only report in `ollamatracks/ollama_reference_audit.json` records mention-bearing paths, hashes, line numbers, responsibility categories, local ref and commit counts, and a source-manifest hash. It never copies source lines into evidence. The companion `ollamatracks/repository_surface_audit.json` is consumed by internal/external research and tracks all accessible file hashes, Markdown structure/word/sentence metrics, API/endpoint/route/port/link/component/tree/automation categories, comparison and Qtrade metrics, percentage locations, production candidates, and memory/QVillage/QVS surfaces. `ollamatracks/style_universal_replacement_inventory.json` tracks candidate files and directories, hashes, source scope, and required test/hook review for migration to `STYLES.md`, `UNIVERSALS.md`, and `UNIVERSAL.md`.
 
 ## Coverage boundaries
 
@@ -14,6 +14,7 @@ The metadata-only report in `ollamatracks/ollama_reference_audit.json` records m
 - A match is a candidate responsibility record, not proof of a defect or a reason to rewrite a file.
 - Style/universal candidates require ownership, compatibility, accessibility/security, focused tests, hook/webhook applicability, rollback, and authorization review before changes.
 - Test and hook discovery is not coverage. A feature remains unmapped until implementation, positive/negative tests, event behavior, and exact-SHA validation are linked.
+- Markdown hashes and structural checks do not prove sentence meaning. Semantic requirement mapping must cite implementation, tests, workflows, documentation, owner, and exact-SHA evidence; unresolved items remain queued.
 - Merge, release, deployment, credential, financial, and protected-branch actions remain subject to their existing authorization and evidence gates.
 
 ## Q version gate
@@ -31,3 +32,17 @@ Q version lifecycle gate 21 requires OFCA on each merge execution. Finalization 
 - `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
 - Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
 <!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

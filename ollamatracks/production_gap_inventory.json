@@ -5244,7 +5244,7 @@
     },
     {
       "automatic_replacement_authorized": false,
-      "bytes": 219375,
+      "bytes": 235678,
       "candidate_markers": [
         "fixme",
         "placeholder",
@@ -5261,8 +5261,10 @@
           3208,
           5249,
           5257,
-          5888,
-          5897
+          6768,
+          6777,
+          6829,
+          6836
         ],
         "placeholder": [
           69,
@@ -5552,15 +5554,21 @@
           5202,
           5208,
           5250,
-          5267,
-          5890,
-          5907,
-          5950,
-          5957,
-          5973,
-          5979,
-          6015,
-          6019
+          5269,
+          5880,
+          5884,
+          5900,
+          5904,
+          6770,
+          6787,
+          6830,
+          6839,
+          6862,
+          6869,
+          6885,
+          6891,
+          6927,
+          6931
         ],
         "stub": [
           144,
@@ -5610,51 +5618,53 @@
           5203,
           5227,
           5251,
-          5565,
-          5891,
-          5916,
-          5974,
-          5986,
-          6035,
-          6039,
-          6056,
-          6060,
-          6076,
-          6080,
-          6096,
-          6100,
-          6143,
-          6147,
-          6330,
-          6334,
-          6350,
-          6354,
-          6546,
-          6553,
-          6624,
-          6628,
-          6736,
-          6740,
-          6768,
-          6775,
-          6819,
-          6823,
-          6904,
-          6908,
-          6924,
-          6928,
-          6944,
-          6948,
-          6966,
-          6970,
-          6986,
-          6990
+          5573,
+          6771,
+          6796,
+          6886,
+          6898,
+          6947,
+          6951,
+          6968,
+          6972,
+          6988,
+          6992,
+          7008,
+          7012,
+          7055,
+          7059,
+          7242,
+          7246,
+          7262,
+          7266,
+          7458,
+          7465,
+          7536,
+          7540,
+          7648,
+          7652,
+          7680,
+          7687,
+          7731,
+          7735,
+          7816,
+          7820,
+          7836,
+          7840,
+          7856,
+          7860,
+          7878,
+          7882,
+          7898,
+          7902
         ],
         "tbd": [
           5252,
-          5653,
-          5892,
-          5922
+          5661,
+          6772,
+          6802,
+          6831,
+          6842
         ],
         "todo": [
           48,
@@ -5846,24 +5856,46 @@
           5204,
           5230,
           5253,
-          5659,
-          5893,
-          5928,
-          5975,
-          5993
+          5669,
+          6773,
+          6808,
+          6832,
+          6845,
+          6887,
+          6905
         ]
       },
       "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
       "path": "ollamatracks/production_gap_inventory.json",
       "priority": "review_first",
-      "sha256": "c16486abf57556fb8e5b647443bc757932c6c9fb29a09cc2b5ddc0a4216ccd54",
+      "sha256": "d5d3faa7105b6df4c52ba87792176dd9606d6da5231487b453906785f4ac0381",
       "status": "discovered_unmapped",
       "target_repo": "qmoi-enhanced",
       "tests_verified": false
     },
     {
       "automatic_replacement_authorized": false,
-      "bytes": 752032,
+      "bytes": 1647217,
+      "candidate_markers": [
+        "placeholder"
+      ],
+      "implementation_verified": false,
+      "line_numbers": {
+        "placeholder": [
+          36492
+        ]
+      },
+      "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
+      "path": "ollamatracks/style_universal_replacement_inventory.json",
+      "priority": "review_first",
+      "sha256": "e6a2edc8ce25ae93c4dc11be715f9448b58f87f6e4585e948c9b8091defe493d",
+      "status": "discovered_unmapped",
+      "target_repo": "qmoi-enhanced",
+      "tests_verified": false
+    },
+    {
+      "automatic_replacement_authorized": false,
+      "bytes": 777901,
       "candidate_markers": [
         "placeholder"
       ],
@@ -6704,34 +6736,34 @@
       "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
       "path": "production.md",
       "priority": "review_first",
-      "sha256": "f5c18ddcb8e1d3a7ca2804dfe12d44ce43f016b9dbafffaae8972765e525c723",
+      "sha256": "004cb95dc0189eb6271bf4bff6ec0528817bbbaeb4bf3b92b8a118727bae7f77",
       "status": "discovered_unmapped",
       "target_repo": "qmoi-enhanced",
       "tests_verified": false
     },
     {
       "automatic_replacement_authorized": false,
-      "bytes": 23763,
+      "bytes": 44545,
       "candidate_markers": [
         "not_implemented"
       ],
       "implementation_verified": false,
       "line_numbers": {
         "not_implemented": [
-          411
+          15
         ]
       },
       "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
       "path": "remote-completion.json",
       "priority": "review_first",
-      "sha256": "5e7f97d85c1cca34830f0877a4bf1698ab0af72f5c31136892b011dbf9322313",
+      "sha256": "32e047819c25511ba6295eaf0d0dadc61682d91963cabaec2fdcdc7542407026",
       "status": "discovered_unmapped",
       "target_repo": "qmoi-enhanced",
       "tests_verified": false
     },
     {
       "automatic_replacement_authorized": false,
-      "bytes": 449213,
+      "bytes": 494293,
       "candidate_markers": [
         "fixme",
         "pass_statement",
@@ -6743,51 +6775,83 @@
       "implementation_verified": false,
       "line_numbers": {
         "fixme": [
-          823,
-          3226,
-          3469,
-          3478,
-          3534
+          841,
+          3339,
+          3582,
+          3591,
+          3647
         ],
         "pass_statement": [
-          8613
+          9197
         ],
         "placeholder": [
-          823,
-          3226,
-          3471,
-          3480,
-          3534,
-          3573,
-          7966
+          841,
+          3339,
+          3584,
+          3593,
+          3647,
+          3686,
+          8453
         ],
         "stub": [
-          3473,
-          3573,
-          4347,
-          7966
+          3586,
+          3686,
+          4461,
+          8453
         ],
         "tbd": [
-          823,
-          3226,
-          3470,
-          3479
+          841,
+          3339,
+          3583,
+          3592
         ],
         "todo": [
-          823,
-          3226,
-          3468,
-          3477,
-          3534,
-          4347
+          841,
+          3339,
+          3581,
+          3590,
+          3647,
+          4461
         ]
       },
       "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
       "path": "scripts/ollama_autonomous_agent.py",
       "priority": "review_first",
-      "sha256": "53827243e3b6927cf017eaf31bbf1cefd183fbe928cfe5148568f39a965f22c0",
+      "sha256": "05e3802644354b8c7278c41fbe8b3aee05b16be6f676c336cf0c6e2737345a7e",
       "status": "discovered_unmapped",
       "target_repo": "Alpha-Q-ai",
+      "tests_verified": false
+    },
+    {
+      "automatic_replacement_authorized": false,
+      "bytes": 51077,
+      "candidate_markers": [
+        "fixme",
+        "placeholder",
+        "tbd",
+        "todo"
+      ],
+      "implementation_verified": false,
+      "line_numbers": {
+        "fixme": [
+          408
+        ],
+        "placeholder": [
+          408
+        ],
+        "tbd": [
+          408
+        ],
+        "todo": [
+          408
+        ]
+      },
+      "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
+      "path": "scripts/ollama_research.py",
+      "priority": "review_first",
+      "sha256": "410d9c5e0df762e37a373d3e3fa49f9ee6142ed6a8fb413515f7233c84a76780",
+      "status": "discovered_unmapped",
+      "target_repo": "qmoi-enhanced",
       "tests_verified": false
     },
     {
@@ -6816,7 +6880,7 @@
     },
     {
       "automatic_replacement_authorized": false,
-      "bytes": 101813,
+      "bytes": 108274,
       "candidate_markers": [
         "placeholder",
         "stub",
@@ -6825,33 +6889,33 @@
       "implementation_verified": false,
       "line_numbers": {
         "placeholder": [
-          424,
-          912,
-          937,
-          1809,
-          1814
+          446,
+          999,
+          1024,
+          1920,
+          1925
         ],
         "stub": [
-          415,
-          416,
-          417,
-          913,
-          1809
+          437,
+          438,
+          439,
+          1000,
+          1920
         ],
         "todo": [
-          912,
-          917,
-          919,
-          928,
-          935,
-          937,
-          1809
+          999,
+          1004,
+          1006,
+          1015,
+          1022,
+          1024,
+          1920
         ]
       },
       "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
       "path": "tests/test_ollama_autonomous_agent.py",
       "priority": "review_first",
-      "sha256": "c06673a9c64da7cfa120e2f72eaac66dac831868db947c43b710af87c14b51b3",
+      "sha256": "05e331e30ca8eaff952e1d68480dbde73141153101900a04d343a40139eadd9d",
       "status": "discovered_unmapped",
       "target_repo": "Alpha-Q-ai",
       "tests_verified": false
@@ -7870,6 +7934,26 @@
     },
     {
       "automatic_replacement_authorized": false,
+      "bytes": 43538,
+      "candidate_markers": [
+        "pass_statement"
+      ],
+      "implementation_verified": false,
+      "line_numbers": {
+        "pass_statement": [
+          370
+        ]
+      },
+      "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
+      "path": "scripts/autonomous_completion_engine.py",
+      "priority": "review",
+      "sha256": "e8246e68513bdc86b44904ff9a44f84cf88bcf612cc2f813fda9cd6c5a3831cb",
+      "status": "discovered_unmapped",
+      "target_repo": "qmoi-enhanced",
+      "tests_verified": false
+    },
+    {
+      "automatic_replacement_authorized": false,
       "bytes": 3302,
       "candidate_markers": [
         "pass_statement"
@@ -7912,53 +7996,53 @@
     },
     {
       "automatic_replacement_authorized": false,
-      "bytes": 40582,
+      "bytes": 49647,
       "candidate_markers": [
         "pass_statement"
       ],
       "implementation_verified": false,
       "line_numbers": {
         "pass_statement": [
-          150,
-          160,
-          320
+          152,
+          162,
+          322
         ]
       },
       "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
       "path": "scripts/q_version_manager.py",
       "priority": "review",
-      "sha256": "d2f9ea49881dd175e47c464ed7810f46b28e1a02c10a880752bc7239630f8d2b",
+      "sha256": "d8dca684bee2f252699a435596b320bf64d3c56a3e3687c847e7e3c60e63aa2f",
       "status": "discovered_unmapped",
       "target_repo": "qmoi-enhanced",
       "tests_verified": false
     },
     {
       "automatic_replacement_authorized": false,
-      "bytes": 32547,
+      "bytes": 47933,
       "candidate_markers": [
         "pass_statement"
       ],
       "implementation_verified": false,
       "line_numbers": {
         "pass_statement": [
-          436
+          747
         ]
       },
       "next_action": "Inspect the owning implementation, identify a focused test and safe replacement plan; do not replace from markers alone.",
       "path": "tests/test_control_plane.py",
       "priority": "review",
-      "sha256": "d005763cfba9bb796eb52c9c0e6b0bf16848bd939af8a336682cfa1e0ab908e9",
+      "sha256": "100a61ae00a485081b93739363ecd518166a127b2e008072a2e927c70cccb0e0",
       "status": "discovered_unmapped",
       "target_repo": "qmoi-enhanced",
       "tests_verified": false
     }
   ],
-  "oversized_files_not_read": 4,
+  "oversized_files_not_read": 6,
   "root": "/workspaces/Alpha-Q-ai",
-  "scanned_files": 3141,
+  "scanned_files": 3222,
   "status": "NEEDS_REVIEW",
-  "total_candidates": 282,
-  "total_missing": 282,
+  "total_candidates": 285,
+  "total_missing": 285,
   "unreadable_files": [
     {
       "error_type": "UnicodeDecodeError",

@@ -7596,10 +7596,10 @@ This file records the production replacement work performed by the Ollama autono
 ## Agent-managed production inventory
 
 Production candidate review status: needs_review; production readiness is not established.
-Last updated: 2026-10-02T23:54:06.425779Z.
+Last updated: 2026-10-05T03:15:04.402606Z.
 This file distinguishes candidate discovery, mapped plans, implemented changes, tested replacements, and remotely verified production state.
-Machine inventory: `QMOItracks/production_gap_inventory.json` (SHA-256 `4b38a4d229044485be71cc23882d9ef8ec492ef73a53b3db592d152ecc36e84a`).
-Scope: active materialized workspace; not remote branches or unfetched history; scanned `3141` files and found `282` unmapped candidate files.
+Machine inventory: `QMOItracks/production_gap_inventory.json` (SHA-256 `7384e3d7b68a7a8bd7c9443f02844d0914a812f22a226bc76bfea8ceb3580e9f`).
+Scope: active materialized workspace; not remote branches or unfetched history; scanned `3222` files and found `285` unmapped candidate files.
 
 ## Production replacement policy
 - Scan every file and directory for placeholder, stub, minimal, shallow, or error-driven implementations.
@@ -7814,8 +7814,22 @@ Scope: active materialized workspace; not remote branches or unfetched history; 
 - `Alpha-Q-ai-2025/src/components/q-city/SchedulePanel.tsx`: placeholder; status=`discovered_unmapped`.
 - `Alpha-Q-ai-2025/src/components/q-city/SelfHealPanel.tsx`: placeholder; status=`discovered_unmapped`.
 - `Alpha-Q-ai-2025/src/components/q-city/SocialAutomationPanel.tsx`: placeholder, todo; status=`discovered_unmapped`.
-- 82 additional candidates are in `QMOItracks/production_gap_inventory.json`.
+- 85 additional candidates are in `QMOItracks/production_gap_inventory.json`.
 
 ## Reported replacement claims (not independently verified)
 - None supplied; no replacement is claimed.
 <!-- END QMOI MANAGED: PRODUCTION_INVENTORY -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

@@ -30,6 +30,7 @@ except ImportError:  # pragma: no cover - direct script execution
 REQUIRED_GATES = (
     "discovery",
     "inspection",
+    "repository_surface_audit",
     "ollama_reference_audit",
     "ui_test_hook_coverage",
     "instruction_inventory",
@@ -52,6 +53,7 @@ TERMINAL_STATUSES = {
 GATE_ACTIONS = {
     "discovery": ("Refresh refs, source roots, and repository identity", "READ_ONLY_AUTOMATIC", False),
     "inspection": ("Map requirements to source, tests, workflows, and documentation", "READ_ONLY_AUTOMATIC", False),
+    "repository_surface_audit": ("Verify file, Markdown, API, route, link, component, tree, metrics, and percentage coverage at exact SHAs", "TARGET_WORKFLOW_REQUIRED", True),
     "ollama_reference_audit": ("Inventory Ollama responsibilities across materialized and remote histories", "TARGET_WORKFLOW_REQUIRED", True),
     "ui_test_hook_coverage": ("Map every styles/universals feature to tests and reviewed hook/webhook applicability", "TARGET_WORKFLOW_REQUIRED", True),
     "instruction_inventory": ("Read and hash all applicable repository instructions without rewriting policy", "READ_ONLY_AUTOMATIC", False),
@@ -546,6 +548,12 @@ class AutonomousCompletionEngine:
         instruction_inventory = audit_instruction_files(self.root)
         if instruction_inventory["status"] != "PASS":
             normalized["instruction_inventory"] = "FAIL"
+        surface_audit_evidence = (repository_results or {}).get("repository_surface_audit")
+        surface_audit_complete = self._repository_surface_audit_evidence_complete(surface_audit_evidence)
+        if normalized["repository_surface_audit"] == "UNKNOWN" and surface_audit_complete:
+            normalized["repository_surface_audit"] = "PASS"
+        elif normalized["repository_surface_audit"] == "PASS" and not surface_audit_complete:
+            normalized["repository_surface_audit"] = "UNKNOWN"
         ollama_audit_evidence = (repository_results or {}).get("ollama_reference_audit")
         ollama_audit_complete = self._ollama_reference_audit_evidence_complete(ollama_audit_evidence)
         if normalized["ollama_reference_audit"] == "UNKNOWN" and ollama_audit_complete:
@@ -589,6 +597,11 @@ class AutonomousCompletionEngine:
                 "q_version": discover_q_version(self.root),
                 "q_version_audit": QVersionManager(self.root).audit(),
                 "topic_metrics": topic_metrics(self.root),
+                "repository_surface_audit": {
+                    "status": normalized["repository_surface_audit"],
+                    "evidence_supplied": isinstance(surface_audit_evidence, Mapping),
+                    "coverage_complete": surface_audit_complete,
+                },
                 "ollama_reference_audit": {
                     "status": normalized["ollama_reference_audit"],
                     "evidence_supplied": isinstance(ollama_audit_evidence, Mapping),
@@ -703,6 +716,54 @@ class AutonomousCompletionEngine:
                 or item.get("all_refs_enumerated") is not True
                 or item.get("all_pull_requests_included") is not True
                 or item.get("all_intermediate_commit_trees_scanned") is not True
+                or item.get("unavailable_sources") != []
+            ):
+                return False
+        return True
+
+    @classmethod
+    def _repository_surface_audit_evidence_complete(cls, evidence: Any) -> bool:
+        """Require complete, exact-SHA dual-repository evidence for all registered audit surfaces."""
+        if not isinstance(evidence, Mapping):
+            return False
+        if (
+            evidence.get("status") != "PASS"
+            or evidence.get("coverage_complete") is not True
+            or evidence.get("remote_verified") is not True
+            or evidence.get("semantic_review_complete") is not True
+            or evidence.get("all_required_surfaces_inventoried") is not True
+            or evidence.get("all_metrics_mapped") is not True
+            or not re.fullmatch(r"[0-9a-f]{64}", str(evidence.get("source_manifest_sha256", "")))
+            or evidence.get("unavailable_sources") != []
+        ):
+            return False
+        repositories = evidence.get("repositories")
+        required_repositories = {
+            "thealphakenya/Alpha-Q-ai",
+            "thealphakenya/qmoi-enhanced",
+        }
+        if not isinstance(repositories, Mapping) or set(repositories) != required_repositories:
+            return False
+        required_surfaces = {
+            "markdown", "api", "endpoints", "routes", "ports", "automation",
+            "links", "components", "tree", "styles", "universals", "qvillage_qvs",
+            "comparison", "qtrade_metrics", "percentages", "production_gaps", "memory",
+        }
+        for repository in required_repositories:
+            item = repositories.get(repository)
+            if not isinstance(item, Mapping):
+                return False
+            surfaces = item.get("validated_surfaces")
+            if (
+                item.get("terminal_conclusion") != "success"
+                or item.get("remote_verified") is not True
+                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
+                or not item.get("workflow_run_id")
+                or not isinstance(surfaces, list)
+                or not required_surfaces.issubset(set(surfaces))
+                or item.get("all_markdown_structurally_validated") is not True
+                or item.get("all_percentages_mapped") is not True
+                or item.get("all_metric_candidates_mapped") is not True
                 or item.get("unavailable_sources") != []
             ):
                 return False

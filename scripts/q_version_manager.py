@@ -21,6 +21,7 @@ class QVersionManager:
         "PRE_MERGE_INVENTORY",
         "INTERNAL_RESEARCH",
         "EXTERNAL_RESEARCH",
+        "REPOSITORY_SURFACE_AUDIT",
         "OLLAMA_FULL_COVERAGE_AUDIT",
         "MERGE_PLAN",
         "MERGE_APPLY",
@@ -514,6 +515,15 @@ class QVersionManager:
         if not lifecycle.get("valid") or lifecycle.get("status") != "complete":
             raise RuntimeError("Q-version metrics require all ordered lifecycle stages to pass")
         stage_records = {item["stage"]: item for item in lifecycle["stage_records"]}
+        surface_stage = stage_records.get("REPOSITORY_SURFACE_AUDIT", {})
+        surface_stage_details = surface_stage.get("details", {})
+        if (
+            surface_stage.get("stage_status") != "PASS"
+            or surface_stage_details.get("coverage_complete") is not True
+            or not re.fullmatch(r"[0-9a-f]{64}", str(surface_stage_details.get("source_manifest_sha256", "")))
+            or surface_stage_details.get("unavailable_sources") != []
+        ):
+            raise RuntimeError("Q-version metrics require a complete repository-surface audit lifecycle stage")
         required_decisions = stage_records.get("MERGE_APPLY", {}).get("details", {})
         if (
             required_decisions.get("decision_ledger_complete") is not True
@@ -547,6 +557,59 @@ class QVersionManager:
         repository_evidence = final_evidence.get("repositories")
         if not isinstance(repository_evidence, dict):
             raise RuntimeError("Q-version metrics require exact evidence for every repository")
+        repository_surface_audit = final_evidence.get("repository_surface_audit")
+        surface_repositories = (
+            repository_surface_audit.get("repositories")
+            if isinstance(repository_surface_audit, dict)
+            else None
+        )
+        expected_shas = {
+            str(item.get("final_sha", ""))
+            for item in repository_evidence.values()
+            if isinstance(item, dict)
+        }
+        audited_surface_shas = {
+            str(item.get("final_sha", ""))
+            for item in surface_repositories.values()
+            if isinstance(item, dict)
+        } if isinstance(surface_repositories, dict) else set()
+        required_surfaces = {
+            "markdown", "api", "endpoints", "routes", "ports", "automation",
+            "links", "components", "tree", "styles", "universals", "qvillage_qvs",
+            "comparison", "qtrade_metrics", "percentages", "production_gaps", "memory",
+        }
+        if (
+            not isinstance(repository_surface_audit, dict)
+            or repository_surface_audit.get("status") != "PASS"
+            or repository_surface_audit.get("coverage_complete") is not True
+            or repository_surface_audit.get("remote_verified") is not True
+            or repository_surface_audit.get("semantic_review_complete") is not True
+            or repository_surface_audit.get("all_required_surfaces_inventoried") is not True
+            or repository_surface_audit.get("all_metrics_mapped") is not True
+            or not re.fullmatch(r"[0-9a-f]{64}", str(repository_surface_audit.get("source_manifest_sha256", "")))
+            or repository_surface_audit.get("unavailable_sources") != []
+            or not isinstance(surface_repositories, dict)
+            or set(surface_repositories) != {
+                "thealphakenya/Alpha-Q-ai",
+                "thealphakenya/qmoi-enhanced",
+            }
+            or audited_surface_shas != expected_shas
+            or any(
+                item.get("terminal_conclusion") != "success"
+                or item.get("remote_verified") is not True
+                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
+                or not item.get("workflow_run_id")
+                or not required_surfaces.issubset(set(item.get("validated_surfaces", [])))
+                or item.get("all_markdown_structurally_validated") is not True
+                or item.get("all_percentages_mapped") is not True
+                or item.get("all_metric_candidates_mapped") is not True
+                or item.get("unavailable_sources") != []
+                for item in surface_repositories.values()
+                if isinstance(item, dict)
+            )
+            or any(not isinstance(item, dict) for item in surface_repositories.values())
+        ):
+            raise RuntimeError("Q-version metrics require complete dual-repository surface-audit evidence")
         ollama_reference_audit = final_evidence.get("ollama_reference_audit")
         expected_shas = {
             str(item.get("final_sha", ""))
@@ -603,6 +666,7 @@ class QVersionManager:
             or any(value != "PASS" for value in autonomous_completion["gates"].values())
             or autonomous_completion["gates"].get("instruction_inventory") != "PASS"
             or autonomous_completion["gates"].get("final_verification") != "PASS"
+            or autonomous_completion["gates"].get("repository_surface_audit") != "PASS"
             or autonomous_completion["gates"].get("ollama_reference_audit") != "PASS"
             or autonomous_completion["gates"].get("ui_test_hook_coverage") != "PASS"
             or autonomous_completion.get("next_actions") != []
@@ -728,6 +792,7 @@ class QVersionManager:
                     "gates": autonomous_completion["gates"],
                     "next_actions": [],
                 },
+                "repository_surface_audit": repository_surface_audit,
                 "ollama_reference_audit": ollama_reference_audit,
                 "ui_test_hook_coverage": ui_test_hook_coverage,
                 "production_readiness": production_readiness,
@@ -749,6 +814,7 @@ class QVersionManager:
                 f"Total file bytes: {inventory['total_bytes']}",
                 f"Instruction files inventoried: {instruction_inventories[str(root)]['files_read']}",
                 "Autonomous completion gates: all PASS; pending actions: 0.",
+                f"Repository surface audit: complete; source manifest SHA-256 `{repository_surface_audit['source_manifest_sha256']}`.",
                 f"Ollama history audit: complete; source manifest SHA-256 `{ollama_reference_audit['source_manifest_sha256']}`.",
                 f"Styles/universals feature test and hook coverage: complete; source manifest SHA-256 `{ui_test_hook_coverage['source_manifest_sha256']}`.",
                 "Production readiness: complete inventory; zero unresolved candidates.",
