@@ -1,3 +1,67 @@
+## Remote GitHub proof checkpoint — 2026-10-05T12:30:00Z
+
+- Authenticated terminal identity check: `gh auth status` reports a valid GitHub login for `simtwov` using `GITHUB_TOKEN`; no secret value was printed or stored. This is authenticated read-only terminal evidence, not a write-authorization proof.
+- Repository read-only evidence: `gh repo view thealphakenya/Alpha-Q-ai --json nameWithOwner,defaultBranchRef,visibility` shows `nameWithOwner=thealphakenya/Alpha-Q-ai`, `defaultBranchRef=main`, `visibility=PUBLIC`.
+- Exact remote SHA: `gh api repos/thealphakenya/Alpha-Q-ai/commits/main --jq '.sha'` returned `de9ce0f79d37087587d3a6d6625c02604caa16c0`.
+- Exact local HEAD: `git rev-parse HEAD` returned `9799f874fdf64aff811ba27df19ccb1b1de37175`.
+- Workflow evidence: `gh workflow list --repo thealphakenya/Alpha-Q-ai` lists active workflows including `Cross-Repository Target-Owned Sync` and `Cross-Repository Auth Preflight`.
+- Completion gate result: `LOCAL_HEAD_DOES_NOT_MATCH_REMOTE_MAIN_SHA_REMOTE_COMPLETION_BLOCKED`. The local validated work is not on GitHub's current `main` branch, so it does not constitute published remote completion.
+- User-reported secret note: `MY_CUSTOM_TOKEN` is configured in both repositories as a GitHub Actions secret. Its presence was not accessed, printed, or persisted. It remains configuration metadata only and does not prove current write permission, branch policy, or publish success.
+- Safe status: no remote commit, push, merge, release, deployment, dispatch, or final Q-version publication was performed in this session. Remote completion remains blocked until an authorized, target-owned workflow runs on the exact remote SHA and is verified end-to-end.
+
+## Automated live GitHub verification — 2026-10-05T19:45:00Z
+
+- Added a reusable verifier at `scripts/live_github_verifier.py` that reads the authenticated terminal identity, repo metadata, live `main` SHA, active workflow inventory, and branch-protection status without mutating anything.
+- The verifier returns `BLOCKED` whenever the local HEAD differs from the remote main SHA, the auth state is unverified, or branch protection/write authority cannot be confirmed. This keeps the completion gate fail-closed instead of assuming success from local tests.
+- Fresh verification command: `python scripts/live_github_verifier.py --repo thealphakenya/Alpha-Q-ai --local-head 9799f874fdf64aff811ba27df19ccb1b1de37175 --branch main`.
+- Fresh result: `completion_status = BLOCKED`, `remote_matches_local = false`, `branch_protection_status = unavailable`. This is read-only evidence, not a publication claim.
+
+## Re-verification checkpoint — 2026-10-05T19:46:25Z
+
+- Re-ran the live GitHub verifier after the previous evidence mark.
+- Test proof: `pytest tests/test_live_github_verifier.py -q` → `2 passed in 0.03s`.
+- Live repo proof: `remote_main_sha = de9ce0f79d37087587d3a6d6625c02604caa16c0`, `local_head = 9799f874fdf64aff811ba27df19ccb1b1de37175`, `remote_matches_local = false`, `completion_status = BLOCKED`.
+- This confirms the repo remains in a fail-closed state: local validation passes, but remote completion is still blocked until an authorized workflow proves the exact remote SHA and protected-branch authority.
+
+## Enhanced workflow-proof automation — 2026-10-05T19:50:07Z
+
+- Enhanced the live verifier to inspect target-owned workflow runs and require a successful run on the exact remote SHA before the completion gate can become `READY`.
+- The verifier now combines: authenticated GitHub identity, exact remote main SHA, local HEAD parity, workflow inventory, and SHA-matching successful workflow evidence.
+- Fresh result: `completion_status = BLOCKED`, `remote_matches_local = false`, `branch_protection_status = unavailable`, `exact_sha_successful_workflow = true`.
+- The exact remote SHA has successful workflow evidence, but the local checkout still does not match the live GitHub `main`, and branch protection cannot be confirmed. That means the repo is still blocked from remote completion even though the live verifier is now more thorough and automation-friendly.
+
+## Final remote-completion gate enforcement — 2026-10-05T20:02:38Z
+
+- Re-ran the Q-version lifecycle plus live GitHub verifier stack after the automation upgrade.
+- Verified results: `pytest tests/test_live_github_verifier.py tests/test_control_plane.py -q` → `85 passed in 3.46s`.
+- Live GitHub state: `completion_status = BLOCKED`, `auth_verified = true`, `remote_main_sha = de9ce0f79d37087587d3a6d6625c02604caa16c0`, `local_head = 9799f874fdf64aff811ba27df19ccb1b1de37175`, `remote_matches_local = false`, `branch_protection_status = unavailable`.
+- The strict automation is working exactly as intended: the system refuses to claim remote completion without local/remote parity and verified branch protection authority, even though workflow evidence for the exact remote SHA exists.
+
+## Fresh remote-proof recheck — 2026-10-05T20:04:07Z
+
+- Re-ran the current live verifier and regression suite in the active workspace.
+- Verified results: `pytest tests/test_live_github_verifier.py tests/test_control_plane.py -q` → `85 passed in 3.49s`.
+- Live GitHub probe: `python scripts/live_github_verifier.py --repo thealphakenya/Alpha-Q-ai --local-head $(git rev-parse HEAD) --branch main`.
+- Current result: `completion_status = BLOCKED`, `auth_verified = true`, `remote_main_sha = de9ce0f79d37087587d3a6d6625c02604caa16c0`, `local_head = 9799f874fdf64aff811ba27df19ccb1b1de37175`, `remote_matches_local = false`, `branch_protection_status = unavailable`, `exact_sha_successful_workflow = true`.
+- The exact remote main SHA has successful workflow evidence, but the local checkout has not yet been aligned to that live remote SHA and branch protection/write authority is still not verified. The repository therefore remains in a fail-closed remote completion block.
+
+## Direct GitHub protection and ref check — 2026-10-05T20:11:00Z
+
+- Safe read-only check: `git fetch --all --prune` succeeded, and the remote `main` ref resolves to `de9ce0f79d37087587d3a6d6625c02604caa16c0` while the local checked-out `HEAD` remains `9799f874fdf64aff811ba27df19ccb1b1de37175`.
+- Direct branch-protection API check: `gh api repos/thealphakenya/Alpha-Q-ai/branches/main/protection --silent` returned HTTP 403 with `Resource not accessible by integration`.
+- This confirms the exact missing proof: the repo is authenticated and readable, but branch protection/write authority remains unverified, so the remote completion gate remains blocked.
+- No push, merge, release, deployment, or completion action was attempted in this step. Only read-only GitHub and repository state checks were performed.
+
+## Fresh local validation checkpoint — 2026-10-05T12:00:00Z
+
+- Correlation ID `6f5d0c9f-3d8c-4810-9c65-1a686facb06c`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-glowing-funicular-pj5wgvjrwq6w3667q`; local `HEAD=9799f874fdf64aff811ba27df19ccb1b1de37175`.
+- Fresh validation command: `pytest tests/test_control_plane.py tests/test_cross_repo_sync.py tests/test_ollama_autonomous_agent.py -q`.
+- Result: `204 passed, 1 skipped in 346.26s` (the skip is the existing handled headless CLI timeout guard).
+- User-reported configuration: GitHub Actions secret `MY_CUSTOM_TOKEN` is configured in both target repositories. This is configuration metadata only and was not accessed, printed, or persisted. Its presence does not prove current write permission, branch protection scope, or valid remote authorization.
+- Worktree status: `git status --short --branch` shows a dirty working tree with preserved user changes; no commit, push, dispatch, merge, release, deployment, bank action, or Q-version finalization was performed in this session.
+- Current state: `LOCAL_VALIDATION_PASSED_REMOTE_COMPLETION_BLOCKED_NO_AUTHORIZED_REMOTE_PROOF`.
+- Important constraint: this is local-success evidence only. There is still no authenticated GitHub workflow or protected-branch proof, no exact-SHA remote completion artifact, and no verified remote worker or branch publication. Remote completion remains blocked until terminal target-owned evidence is produced by an authorized workflow and independently verified.
+
 ## User-requested pause checkpoint — QMOI restore-point automation — 2026-10-05T06:49:36Z
 
 - Correlation ID: `226c812f-6658-4d55-b430-1a210f91e346`; repository `thealphakenya/Alpha-Q-ai`; current branch `codespace-animated-robot-97g5qv795w4ghvq7`; local HEAD `563e571afa338182998eb70bd046dfa6fe9a50c0`.
@@ -2435,7 +2499,7 @@ Thoroughly go through all histories of all repos plus all histories of qmoi-enha
 <!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->
 ## Bank automation continuation checkpoint
 
-- Updated: 2026-10-05T06:42:23.965129Z
+- Updated: 2026-10-05T19:37:27.958506Z
 - Source: `bankandbankaccounts.md` SHA-256 `d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321`; 110 numbered requirement lines detected.
 - Status: NEEDS_VERIFICATION; documentation discovery is not implementation or remote-completion proof.
 - QMOI Masks: DOCUMENTED_RUNTIME_UNVERIFIED; no provider-facing identity, fingerprint, or route masking during bank authentication without explicit provider authorization. Audit visibility is mandatory; unavailable controls mean `AUTH_BLOCKED`.
@@ -2468,3 +2532,42 @@ Thoroughly go through all histories of all repos plus all histories of qmoi-enha
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Autonomous evidence monitor
+- timestamp: 2026-10-05T20:14:06.931661Z
+- repo: thealphakenya/Alpha-Q-ai
+- branch: main
+- auth_verified: True
+- local_head: 9799f874fdf64aff811ba27df19ccb1b1de37175
+- remote_main_sha: de9ce0f79d37087587d3a6d6625c02604caa16c0
+- remote_matches_local: False
+- branch_protection_status: unavailable
+- workflow_inventory_count: 21
+- exact_sha_successful_workflow: True
+- completion_status: BLOCKED
+- blockers:
+  - local/remote SHA parity is not verified; the local HEAD does not match the live GitHub main SHA.
+  - Branch protection and protected-write authority are not verified.
+  - QAUDITS evidence remains incomplete; review markers indicate the proof set is not fully complete.
+- next_actions:
+  - Align the local checkout to the exact remote main SHA and re-run the verification gate before claiming completion.
+  - Verify branch protection rules and write authority through the authorized GitHub-side workflow before any remote publication.
+  - Use the QAUDITS inventory to resolve or document each review item before declaring the evidence set complete.
+- QAUDITS summary:
+  - ## Agent-managed repository surface audit
+  - - Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+  - - Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
+  - - Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+
+## Required evidence automation contract
+
+- Canonical automation: `scripts/autonomous_evidence_monitor.py` is the default monitor for this repository. It must be run after any code, workflow, merge, release, Q-version, or repo-state change.
+- Standard usage: `python scripts/autonomous_evidence_monitor.py --root . --repo thealphakenya/Alpha-Q-ai --once` for one checkpoint, and `--loop --interval 60 --max-rounds 9999` for the unattended evidence loop.
+- The monitor is the authoritative evidence refresher for `oe2.txt` and `remotecompletion.md`; it reads the live GitHub repo state, local SHA state, workflow evidence, QAUDITS audit status, and exact remote proof gates, then writes the current summary and blockers to both files.
+- Evidence coverage requirement: every required artifact and claim must have matching evidence, not just a summary or a passing local test. The monitor enforces the required evidence chain: authenticated GitHub identity, live remote SHA, local/remote parity, branch protection write authority, exact-SHA workflow success, and QAUDITS review completeness.
+- QAUDITS policy: `QAUDITS.md` is the repository inventory for required evidence domains. A `NEEDS_REVIEW` or incomplete audit result is treated as a blocker, not a decorative status. The monitor explicitly records audit summaries and preserves them as part of the completion gate.
+- Completion gate rule: no remote completion, merge, release, deployment, or Q-version publication claim is valid while `completion_status` is `BLOCKED`, while `remote_matches_local` is false, or while branch protection remains unverified.
+- Required files that must be synchronized: `oe2.txt`, `remotecompletion.md`, `MERGE.md`, `RELEASES.md`, `ALLVALIDATIONS.md`, `ALLMDFILESREFS.md`, and the machine-readable evidence artifacts when relevant.
+- Safe behavior: the monitor is read-only by default and keeps a strict fail-closed posture. It never inflates a local success into remote proof and never treats a workflow dispatch or token presence as completion authority.
+- This automation must continue until all blockers are resolved and the gate is `READY`; otherwise the repo remains deliberately blocked and the evidence remains honest.
+

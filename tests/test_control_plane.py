@@ -411,6 +411,31 @@ def test_q_version_lifecycle_requires_every_stage_in_canonical_order(tmp_path):
         assert audit["missing_or_unpassed_stages"] == [missing_stage]
 
 
+def test_q_version_lifecycle_requires_live_remote_completion_gate_before_any_final_readiness(tmp_path):
+    root = tmp_path / "repo"
+    root.mkdir()
+    manager = QVersionManager(root)
+    execution_id = "remote-completion-gate"
+    record_successful_q_lifecycle(manager, [root], execution_id)
+
+    result = manager.verify_remote_completion_gate(
+        execution_id,
+        [root],
+        {
+            "completion_status": "BLOCKED",
+            "auth_verified": True,
+            "branch_protection_status": "unavailable",
+            "remote_matches_local": False,
+            "remote_main_sha": "abc" * 10,
+            "local_head": "def" * 10,
+        },
+    )
+
+    assert result["status"] == "BLOCKED"
+    assert any("remote completion" in item.lower() for item in result["blockers"])
+    assert result["lifecycle_complete"] is True
+
+
 @pytest.mark.parametrize("failed_stage", QVersionManager.LIFECYCLE_STAGES[:-1])
 def test_q_version_lifecycle_latest_non_pass_blocks_each_stage(tmp_path, failed_stage):
     root = tmp_path / failed_stage.lower()

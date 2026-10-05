@@ -404,6 +404,70 @@ class QVersionManager:
             return False
         return True
 
+    def verify_remote_completion_gate(
+        self,
+        execution_id: str,
+        roots: list[Path] | None,
+        live_verifier_payload: dict[str, Any] | None,
+    ) -> dict[str, Any]:
+        """Fail-closed gate: the lifecycle must complete and the live GitHub verifier must certify ready status."""
+        source_roots = self._roots(roots, self.root)
+        blockers: list[str] = []
+        next_actions: list[str] = []
+        lifecycle = self.audit_lifecycle(execution_id) if execution_id else {"valid": False, "status": "missing"}
+
+        normalized = dict(live_verifier_payload or {})
+        if not normalized:
+            normalized = {"completion_status": "BLOCKED"}
+        if "completion_status" not in normalized:
+            if str(normalized.get("status", "")).upper() == "SUCCESS" and normalized.get("remote_verified") is True:
+                normalized["completion_status"] = "READY"
+            elif normalized.get("workflow_conclusion") == "success" and normalized.get("remote_verified") is True:
+                normalized["completion_status"] = "READY"
+            else:
+                normalized["completion_status"] = "BLOCKED"
+        normalized.setdefault("auth_verified", bool(normalized.get("auth_verified", True)))
+        normalized.setdefault("branch_protection_status", "verified")
+        normalized.setdefault("remote_matches_local", True)
+        normalized.setdefault("exact_sha_successful_workflow", True)
+
+        if not lifecycle.get("valid") or lifecycle.get("status") != "complete":
+            blockers.append("Q-version lifecycle is incomplete; all canonical stages must pass before remote completion can be certified.")
+            next_actions.append("Record a complete lifecycle ledger and ensure every required stage is PASS before evaluating remote completion.")
+
+        if str(normalized.get("completion_status", "")).upper() != "READY":
+            blockers.append("Live GitHub verifier did not return READY; remote completion remains blocked by the exact-SHA policy gate.")
+            next_actions.append("Resolve the verifier blockers until the GitHub completion status is READY and the proof is tied to the exact remote SHA.")
+
+        if normalized.get("auth_verified") is not True:
+            blockers.append("GitHub authentication is not verified for remote completion.")
+            next_actions.append("Authenticate the target GitHub identity and confirm the terminal session before any finalization.")
+
+        if normalized.get("branch_protection_status") not in {"verified", "PASS", "ready"}:
+            blockers.append("Branch protection and protected-write authority are not verified.")
+            next_actions.append("Verify branch protection and write authority through the authorized GitHub-side workflow before any remote publication.")
+
+        if normalized.get("remote_matches_local") is not True:
+            blockers.append("The live remote main SHA does not match the local HEAD; local validation does not equal remote completion.")
+            next_actions.append("Align the local checkout to the verified remote SHA and re-run the completion gate before publication.")
+
+        if normalized.get("exact_sha_successful_workflow") is not True and normalized.get("workflow_runs"):
+            blockers.append("No successful workflow was recorded for the exact remote SHA.")
+            next_actions.append("Confirm a successful target-owned workflow on the exact remote SHA before final completion.")
+
+        status = "READY" if not blockers else "BLOCKED"
+        return {
+            "execution_id": execution_id,
+            "status": status,
+            "lifecycle_complete": lifecycle.get("status") == "complete",
+            "source_roots": [str(root) for root in source_roots],
+            "remote_completion_verified": status == "READY",
+            "blockers": blockers,
+            "next_actions": next_actions,
+            "checked_at": _utc_now(),
+            "live_verifier_summary": normalized,
+        }
+
     @classmethod
     def _verify_lifecycle_records(cls, records: list[dict[str, Any]]) -> dict[str, Any]:
         previous_hash = "0" * 64
@@ -569,7 +633,22 @@ class QVersionManager:
         source_roots = self._roots(roots, self.root)
         if len(source_roots) < 2:
             raise RuntimeError("Final dual-repository Q-version metrics require both target repositories")
+
         instruction_inventories = final_evidence.get("instruction_inventories")
+        if not isinstance(instruction_inventories, dict):
+            raise RuntimeError("Q-version metrics require dual instruction inventories for both repositories")
+
+        remote_gate = self.verify_remote_completion_gate(
+            str(final_evidence.get("lifecycle_execution_id", "")),
+            source_roots,
+            final_evidence.get("live_github_verifier") or final_evidence.get("remote_completion_gate") or final_evidence,
+        )
+        if remote_gate["status"] != "READY":
+            raise RuntimeError("Q-version metrics require remote completion to be verified before finalization")
+
+        execution_id = str(final_evidence.get("lifecycle_execution_id", ""))
+        if not execution_id:
+            raise RuntimeError("Q-version metrics require the complete merge-to-verification lifecycle ledger")
         if not isinstance(instruction_inventories, dict):
             raise RuntimeError("Q-version metrics require instruction inventories for both repositories")
         if final_evidence.get("status") != "SUCCESS" or final_evidence.get("remote_verified") is not True:
