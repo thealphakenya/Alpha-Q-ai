@@ -158,3 +158,14 @@ This makes the monitoring stack more resilient, more audit-friendly, and better 
 
 ## Notes
 The workflow and monitoring stack are intentionally designed to be resilient, autonomous, and independent from the local codespace. The project continues to improve reliability, speed, and observability so the agent remains auditable while executing on GitHub.
+
+<!-- BEGIN QMOI MANAGED: ollama-reference-audit-gate -->
+## QMOI reference audit and Q-version gate
+
+This generated audit indexes paths, hashes, line numbers, and responsibility categories only; source text is never copied into the evidence artifact.
+
+- Materialized files scanned: `10384`; QMOI-matching files: `4125`.
+- Local scan status: `PASS`; historical source scopes are listed in `QMOItracks/QMOI_reference_audit.json`.
+- Local tree and archived source scans do not cover every remote ref, pull request, or intermediate commit tree; Q-version completion stays blocked until both repositories have terminal exact-SHA audit evidence.
+- Styles and universal UI requirements remain incomplete until each registered feature maps to focused tests and event-driven hook/webhook validation; registry discovery is not coverage proof.
+<!-- END QMOI MANAGED: ollama-reference-audit-gate -->

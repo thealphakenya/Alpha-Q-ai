@@ -61,7 +61,7 @@ Tests must use synthetic values only and cover encrypted persistence, permission
 <!-- BEGIN QMOI MANAGED: wallet-bank-provider-credential-coverage -->
 ## Agent-managed provider consumer coverage
 
-The current source-name inventory found `1114` credential-reference occurrences across materialized active, snapshot, and historical code paths; details are in `QMOItracks/credential_reference_inventory.json`.
+The current source-name inventory found `1130` credential-reference occurrences across materialized active, snapshot, and historical code paths; details are in `QMOItracks/credential_reference_inventory.json`.
 - This is a pattern-based candidate audit, not proof that all secrets, external stores, future refs, or providers were found.
 - Keep values in approved vaults only. The inventory records names, consumers, scopes, and line numbers without copying assignment contents or inspecting vault values.
 - Provider-specific tests and explicit owner authorization are required before verification, rotation, or live trading. Only Bitget has an active provider-specific read-only verifier; no other provider is marked verified by this inventory.

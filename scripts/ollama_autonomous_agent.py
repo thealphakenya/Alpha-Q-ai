@@ -5500,6 +5500,45 @@ All timestamps use UTC ISO-8601 format.
             pre_inventory = None
             research_report = self.build_autoresearch_report(repo_paths, fetch_external=False)
 
+        ollama_full_coverage_audit = self.refresh_ollama_reference_audit(primary_root)
+        feature_test_hook_coverage = self.refresh_test_hook_coverage_documents(primary_root)
+        coverage_summary = feature_test_hook_coverage.get("styles_universals_coverage", {})
+        ollama_audit_local = ollama_full_coverage_audit.get("local_scan", {})
+        ollama_audit_history = ollama_full_coverage_audit.get("local_git_history", {})
+        ollama_audit_remote = ollama_full_coverage_audit.get("remote_history", {})
+        ollama_audit_passed = bool(
+            ollama_audit_local.get("complete")
+            and ollama_audit_history.get("status") == "all_local_ref_diffs_scanned"
+            and ollama_full_coverage_audit.get("coverage_complete")
+        )
+        q_version_manager.record_lifecycle_stage(
+            q_execution_id,
+            "OLLAMA_FULL_COVERAGE_AUDIT",
+            repo_paths,
+            status="PASS" if ollama_audit_passed else "NEEDS_REVIEW",
+            details={
+                "audit_name": "OFCA",
+                "prMergeIncluded": True,
+                "position": "after_source_inventory_and_immediately_before_merge_activity",
+                "matched_file_count": ollama_audit_local.get("matched_file_count", 0),
+                "files_scanned": ollama_audit_local.get("files_scanned", 0),
+                "bytes_scanned": ollama_audit_local.get("bytes_scanned", 0),
+                "local_ref_count": ollama_audit_history.get("ref_count", 0),
+                "local_commit_count": ollama_audit_history.get("commit_count"),
+                "mention_diff_commit_count": ollama_audit_history.get("ollama_mention_diff_commit_count", 0),
+                "mention_diff_path_count": ollama_audit_history.get("ollama_mention_diff_path_count", 0),
+                "source_manifest_sha256": ollama_full_coverage_audit.get("source_manifest_sha256"),
+                "remote_history": ollama_audit_remote,
+                "coverage_complete": bool(ollama_full_coverage_audit.get("coverage_complete")),
+                "next_action": ollama_full_coverage_audit.get("next_action"),
+                "feature_count": coverage_summary.get("feature_count"),
+                "test_mapped_feature_count": coverage_summary.get("test_mapped_feature_count"),
+                "hook_applicability_reviewed_count": coverage_summary.get("hook_applicability_reviewed_count"),
+                "replacement_inventory": coverage_summary.get("style_universal_replacement_inventory"),
+            },
+            include_inventory=False,
+        )
+
         self.record_tracker_event(
             "merge_sync_started",
             "Repository merge and sync audit started.",
@@ -5544,18 +5583,33 @@ All timestamps use UTC ISO-8601 format.
             include_inventory=False,
         )
 
-        merge_plan = self.merge_duplicate_markdown_files(
-            repo_paths,
-            target_root=primary_root,
-            include_history=True,
-            include_memory=True,
-        )
+        markdown_audit_passed = bool(markdown_index_refresh.get("audit", {}).get("index_complete"))
+        merge_apply_blockers = []
+        if not ollama_audit_passed:
+            merge_apply_blockers.append("OFCA does not prove complete remote refs, PRs, and intermediate commit trees")
+        if not markdown_audit_passed:
+            merge_apply_blockers.append("Markdown source index is incomplete")
+        if merge_apply_blockers:
+            merge_plan = {
+                "status": "blocked",
+                "merge_decisions": {},
+                "duplicate_basenames": planned_duplicates,
+                "merged_targets": {},
+                "blockers": merge_apply_blockers,
+            }
+        else:
+            merge_plan = self.merge_duplicate_markdown_files(
+                repo_paths,
+                target_root=primary_root,
+                include_history=True,
+                include_memory=True,
+            )
         cross_repository_plan = self.cross_repo_manager.build_cross_repository_merge_plan(
             repo_paths
         )
         decisions = merge_plan.get("merge_decisions", {})
         safe_actions = {"identical_content", "identical_sections", "merge_additive_sections"}
-        unresolved_conflicts = sum(
+        unresolved_conflicts = len(merge_apply_blockers) + sum(
             item.get("action") not in safe_actions
             for item in decisions.values()
         )
@@ -5564,11 +5618,18 @@ All timestamps use UTC ISO-8601 format.
             q_execution_id,
             apply_stage_name,
             repo_paths,
-            status="PASS" if unresolved_conflicts == 0 else "NEEDS_REVIEW",
+            status=(
+                "BLOCKED" if merge_apply_blockers
+                else "PASS" if unresolved_conflicts == 0
+                else "NEEDS_REVIEW"
+            ),
             details={
                 "decision_ledger_complete": len(decisions) == len(merge_plan.get("duplicate_basenames", [])),
                 "conflicts_reviewed": unresolved_conflicts == 0,
                 "unresolved_conflicts": unresolved_conflicts,
+                "ofca_status": "PASS" if ollama_audit_passed else "NEEDS_REVIEW",
+                "ofca_prMergeIncluded": True,
+                "blockers": merge_apply_blockers,
                 "decisions": decisions,
                 "merged_targets": merge_plan.get("merged_targets", {}),
             },
@@ -5594,7 +5655,14 @@ All timestamps use UTC ISO-8601 format.
         safe_json_write(audit_dir / "topic_metrics.json", topic_metrics)
         audit_path = audit_dir / "merge_audit.json"
         audit_payload = {
-            "status": "ready" if merge_metrics.get("total_files", 0) > 0 else "blocked",
+            "status": (
+                "ready"
+                if merge_metrics.get("total_files", 0) > 0
+                and ollama_audit_passed
+                and markdown_audit_passed
+                and not merge_apply_blockers
+                else "blocked"
+            ),
             "repositories": [str(path) for path in repo_paths],
             "primary_root": str(primary_root),
             "merge_metrics": merge_metrics,
@@ -5609,10 +5677,17 @@ All timestamps use UTC ISO-8601 format.
             "q_version_lifecycle_path": str(
                 primary_root / "ollamatracks" / "q_versions" / q_execution_id / "lifecycle.jsonl"
             ),
+            "ollama_full_coverage_audit": ollama_full_coverage_audit,
+            "feature_test_hook_coverage": {
+                "status": coverage_summary.get("status"),
+                "test_file_count": feature_test_hook_coverage.get("test_file_count"),
+                "workflow_file_count": feature_test_hook_coverage.get("workflow_file_count"),
+                "webhook_reference_file_count": feature_test_hook_coverage.get("webhook_reference_file_count"),
+                "replacement_inventory": coverage_summary.get("style_universal_replacement_inventory"),
+            },
             "autoresearch": research_report,
         }
         post_merge_stage = "POST_MERGE_AUDIT" if lifecycle_phase == "initial" else "POST_AGENT_MERGE_AUDIT"
-        markdown_audit_passed = bool(markdown_index_refresh.get("audit", {}).get("index_complete"))
         q_version_manager.record_lifecycle_stage(
             q_execution_id,
             post_merge_stage,
@@ -5693,7 +5768,14 @@ All timestamps use UTC ISO-8601 format.
                         "push_failed": True,
                     }
 
-        final_status = "ready" if merge_metrics.get("total_files", 0) > 0 else "blocked"
+        final_status = (
+            "ready"
+            if merge_metrics.get("total_files", 0) > 0
+            and ollama_audit_passed
+            and markdown_audit_passed
+            and not merge_apply_blockers
+            else "blocked"
+        )
         self.record_tracker_event(
             "merge_sync_complete",
             "Repository merge and sync audit completed.",
@@ -7100,6 +7182,34 @@ All timestamps use UTC ISO-8601 format.
         report_path = target / "ollamatracks" / "ollama_reference_audit.json"
         safe_json_write(report_path, report)
         report["artifact_path"] = str(report_path)
+        status_lines = [
+            "## Agent-managed OFCA status",
+            "",
+            f"- Audit name: `OFCA`; local scan status: `{report['local_scan']['status']}`.",
+            f"- Materialized files scanned: `{report['local_scan']['files_scanned']}`; mention-bearing files: `{report['local_scan']['matched_file_count']}`.",
+            f"- Local refs: `{report['local_git_history']['ref_count']}`; local commits: `{report['local_git_history']['commit_count']}`; mention-change commits: `{report['local_git_history']['ollama_mention_diff_commit_count']}`.",
+            f"- Source manifest SHA-256: `{report['source_manifest_sha256']}`; full remote-history coverage: `{report['coverage_complete']}`.",
+            f"- QVillage/QVS materialized references: `{report['qvillage_qvs_inventory']['file_count']}` files, `{report['qvillage_qvs_inventory']['markdown_file_count']}` Markdown files; remote/history completeness: `not_verified`.",
+            "- `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.",
+            f"- Next action: {report['next_action']}",
+        ]
+        for filename in (
+            "OFCA.md",
+            "oe2.txt",
+            "remotecompletion.md",
+            "QVILLAGE.md",
+            "Qvillageevolutions.md",
+            "QMOIORCHESTRATOR.md",
+            "QMOIMASKS.md",
+        ):
+            path = target / filename
+            if path.is_file():
+                _upsert_managed_markdown_section(
+                    path,
+                    filename,
+                    "ollama-full-coverage-audit-status",
+                    "\n".join(status_lines),
+                )
         return report
 
     def build_runtime_status_snapshot(
@@ -8621,6 +8731,99 @@ All timestamps use UTC ISO-8601 format.
                 return "snapshot"
             return "active_checkout"
 
+        replacement_inventory: dict[str, Any] = {
+            "schema_version": 1,
+            "repository": target.name,
+            "scope": "materialized tracked and non-ignored paths only",
+            "status": "CANDIDATE_ONLY",
+            "files_scanned": 0,
+            "style_candidate_count": 0,
+            "universal_candidate_count": 0,
+            "files": [],
+            "directories": [],
+            "skipped_sources": [],
+            "source_contents_recorded": False,
+            "automatic_replacement_enabled": False,
+        }
+        replacement_file_suffixes = {".css", ".scss", ".sass", ".less", ".html", ".htm", ".js", ".jsx", ".ts", ".tsx", ".py"}
+        style_pattern = re.compile(
+            r"\b(?:className|stylesheet|tailwind|theme|typography|font|color|spacing|layout|responsive|breakpoint|aria-)\b",
+            re.IGNORECASE,
+        )
+        universal_pattern = re.compile(
+            r"\b(?:auth|authentication|authorization|login|identity|permission|role|session|mfa|consent|csrf|rbac|protected data)\b",
+            re.IGNORECASE,
+        )
+        ui_directory_names = {"ui", "frontend", "components", "pages", "views", "styles", "themes"}
+        replacement_files: list[dict[str, Any]] = []
+        replacement_directories: dict[str, dict[str, int]] = {}
+        replacement_skips: list[dict[str, str]] = []
+        for path in relative_paths:
+            candidate = target / path
+            if ignored(path) or candidate.suffix.lower() not in replacement_file_suffixes:
+                continue
+            try:
+                if candidate.is_symlink() or not candidate.is_file():
+                    continue
+                stat = candidate.stat()
+                if stat.st_size > 1_000_000:
+                    replacement_skips.append({"path": path, "reason": "oversized_file_not_read"})
+                    continue
+                content = candidate.read_bytes()
+            except OSError as exc:
+                replacement_skips.append({"path": path, "reason": type(exc).__name__})
+                continue
+
+            replacement_inventory["files_scanned"] += 1
+            parts = {part.lower() for part in Path(path).parts}
+            is_ui_path = bool(parts & ui_directory_names) or candidate.suffix.lower() in {".css", ".scss", ".sass", ".less", ".html", ".htm"}
+            decoded = content.decode("utf-8", errors="replace")
+            domains = []
+            if is_ui_path or style_pattern.search(decoded):
+                domains.append("styles")
+            if universal_pattern.search(path) or universal_pattern.search(decoded):
+                domains.append("universals")
+            if not domains:
+                continue
+
+            parent_paths = []
+            parent = Path(path).parent
+            while str(parent) not in {"", "."}:
+                parent_paths.append(parent.as_posix())
+                parent = parent.parent
+            replacement_files.append({
+                "path": path,
+                "scope": test_source_scope(path),
+                "bytes": stat.st_size,
+                "sha256": hashlib.sha256(content).hexdigest(),
+                "domains": domains,
+                "directory_paths": list(reversed(parent_paths)),
+                "status": "review_required",
+                "tests_required_before_replacement": True,
+                "hook_applicability_review_required": "universals" in domains,
+                "replacement_authorized": False,
+            })
+            for directory in parent_paths:
+                counts = replacement_directories.setdefault(directory, {"styles": 0, "universals": 0})
+                for domain in domains:
+                    counts[domain] += 1
+
+        replacement_inventory["files"] = replacement_files
+        replacement_inventory["directories"] = [
+            {"path": path, **counts, "status": "review_required"}
+            for path, counts in sorted(replacement_directories.items())
+        ]
+        replacement_inventory["style_candidate_count"] = sum(
+            "styles" in item["domains"] for item in replacement_files
+        )
+        replacement_inventory["universal_candidate_count"] = sum(
+            "universals" in item["domains"] for item in replacement_files
+        )
+        replacement_inventory["skipped_sources"] = replacement_skips
+        replacement_inventory["materialized_scan_complete"] = not replacement_skips
+        replacement_inventory_path = target / "ollamatracks" / "style_universal_replacement_inventory.json"
+        safe_json_write(replacement_inventory_path, replacement_inventory)
+
         test_paths_by_scope = {
             scope: [path for path in test_paths if test_source_scope(path) == scope]
             for scope in ("active_checkout", "snapshot", "historical_archive")
@@ -9176,6 +9379,16 @@ All timestamps use UTC ISO-8601 format.
             feature_test_hook_manifest["features"], sort_keys=True, separators=(",", ":")
         ).encode("utf-8")
         feature_test_hook_manifest["source_manifest_sha256"] = hashlib.sha256(feature_manifest_bytes).hexdigest()
+        feature_test_hook_manifest["style_universal_replacement_inventory"] = {
+            "path": replacement_inventory_path.relative_to(target).as_posix(),
+            "status": replacement_inventory["status"],
+            "materialized_scan_complete": replacement_inventory["materialized_scan_complete"],
+            "files_scanned": replacement_inventory["files_scanned"],
+            "style_candidate_count": replacement_inventory["style_candidate_count"],
+            "universal_candidate_count": replacement_inventory["universal_candidate_count"],
+            "directory_candidate_count": len(replacement_inventory["directories"]),
+            "automatic_replacement_enabled": False,
+        }
         feature_test_hook_manifest_path = target / "ollamatracks" / "feature_test_hook_coverage.json"
         safe_json_write(feature_test_hook_manifest_path, feature_test_hook_manifest)
 
@@ -9220,6 +9433,7 @@ All timestamps use UTC ISO-8601 format.
             f"### Styles and universals test/hook mapping: `{feature_test_hook_manifest_path.relative_to(target).as_posix()}`",
             "",
             f"Registered feature count: `{feature_test_hook_manifest['feature_count']}`; test mappings: `{feature_test_hook_manifest['test_mapped_feature_count']}`; reviewed hook applicability: `{feature_test_hook_manifest['hook_applicability_reviewed_count']}/{feature_test_hook_manifest['feature_count']}`; status: `{feature_test_hook_manifest['status']}`.",
+            f"Styles/universals replacement plan: `{replacement_inventory_path.relative_to(target).as_posix()}`; `{replacement_inventory['style_candidate_count']}` style files, `{replacement_inventory['universal_candidate_count']}` universal/access files, `{len(replacement_inventory['directories'])}` directories; candidates require review and tests, and replacements are not authorized by discovery.",
             "",
         ])
 
@@ -9264,6 +9478,7 @@ All timestamps use UTC ISO-8601 format.
             "- Preserve app identity and accessibility while applying shared tokens; do not hide security, financial, consent, billing, or deployment risk.",
             "- Record each changed path, repository/ref/base SHA, before/after content hash, owner, reason, tests, and approvals in the change evidence.",
             f"- Feature-level test and hook applicability manifest: `{feature_test_hook_manifest_path.relative_to(target).as_posix()}`; {feature_test_hook_manifest['feature_count']} registered features currently require explicit mappings.",
+            f"- Candidate migration inventory: `{replacement_inventory_path.relative_to(target).as_posix()}` tracks file hashes, source scopes, and directories for shared style/access contracts; automatic replacement is disabled until ownership, compatibility, tests, rollback, and authorization pass.",
             "- Do not mark a style feature complete until focused UI/accessibility/state tests and event-hook applicability are mapped; event-driven features also require delivery, denial, retry, and recovery tests.",
         ]
         universals_lines = [
@@ -9276,6 +9491,7 @@ All timestamps use UTC ISO-8601 format.
             "- Hooks/webhooks require authentication/signatures, replay and idempotency controls, bounded retries, secret-reference-only handling, audit logging, and tested failure paths.",
             "- A feature without a mapped test or verified event integration remains `unmapped` or `blocked`; total automation claims cannot exceed inspected scope.",
             f"- Current styles/universals mapping state: `{feature_test_hook_manifest['status']}`; tests mapped: `{feature_test_hook_manifest['test_mapped_feature_count']}/{feature_test_hook_manifest['feature_count']}`; hook applicability reviewed: `{feature_test_hook_manifest['hook_applicability_reviewed_count']}/{feature_test_hook_manifest['feature_count']}`.",
+            f"- Candidate migration inventory: `{replacement_inventory_path.relative_to(target).as_posix()}`; each candidate remains review-required and is not treated as a completed replacement.",
             "- Trading automation remains paused on stale market/account data, invalid authorization, provider outage, risk-limit breach, or ledger mismatch; runtime independence requires separately verified hosts and fresh heartbeat evidence.",
         ]
 

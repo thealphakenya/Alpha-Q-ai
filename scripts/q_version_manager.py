@@ -21,6 +21,7 @@ class QVersionManager:
         "PRE_MERGE_INVENTORY",
         "INTERNAL_RESEARCH",
         "EXTERNAL_RESEARCH",
+        "OLLAMA_FULL_COVERAGE_AUDIT",
         "MERGE_PLAN",
         "MERGE_APPLY",
         "POST_MERGE_AUDIT",

@@ -2581,5 +2581,6 @@ Every UI feature must map a stable feature ID to app/platform, style token and i
 - Preserve app identity and accessibility while applying shared tokens; do not hide security, financial, consent, billing, or deployment risk.
 - Record each changed path, repository/ref/base SHA, before/after content hash, owner, reason, tests, and approvals in the change evidence.
 - Feature-level test and hook applicability manifest: `QMOItracks/feature_test_hook_coverage.json`; 404 registered features currently require explicit mappings.
+- Candidate migration inventory: `QMOItracks/style_universal_replacement_inventory.json` tracks file hashes, source scopes, and directories for shared style/access contracts; automatic replacement is disabled until ownership, compatibility, tests, rollback, and authorization pass.
 - Do not mark a style feature complete until focused UI/accessibility/state tests and event-hook applicability are mapped; event-driven features also require delivery, denial, retry, and recovery tests.
 <!-- END QMOI MANAGED: ui-feature-implementation-accountability -->

@@ -1,3 +1,15 @@
+## Latest requested branch continuation — 2026-10-05T01:38:18Z
+
+- Correlation ID `ab2c9c5a-1a43-424a-b973-8af06f7b5ce4`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-orange-space-train-x5gp965wppgv39qvj`.
+- Remote branch head before this local reconciliation: `0e81aef21f6015745fa616f26f92c9d490f89c7c`; refreshed `main`: `fc0bdf7197ad572ba7593983356c0e4a94466c91`. A regular ancestry-preserving merge is in progress locally; no merge commit or remote push yet.
+- OFCA now runs before merge activity as lifecycle stage `OLLAMA_FULL_COVERAGE_AUDIT` and records `prMergeIncluded`. Final local audit: 10,384 files; 4,125 Ollama matches; 37 refs; 2,578 commits; 1,962 Ollama-change commits; manifest SHA-256 `3d1fc49a37f28083b89c2634bc247ef2111c64df1a2a1142205fe778b1c8547c`. QVillage/QVS/QVE inventory records 356 materialized paths / 205 Markdown paths. These are local/materialized metrics only.
+- Merge planning remains read-only when OFCA is incomplete; merge application now records `BLOCKED` and skips the mutating merge routine unless both OFCA and Markdown indexing pass. The current remote-history and sanitizer gaps keep that gate closed.
+- Test/hook/style/universal refresh: 13 active test files and 17 workflow files discovered; mapping status remains `NEEDS_FEATURE_TEST_HOOK_MAPPING`. The candidate inventory records 1,444 style paths, 1,170 universal/access paths, and 659 containing directories; automatic replacement is disabled pending ownership, compatibility, tests, rollback, and authorization.
+- Markdown inventory refresh enumerated 2,407 materialized paths but remains `index_complete=false`: ten Ollama-named source paths differ from generated labels because the existing documentation sanitizer rewrites that token. The sanitizer was not bypassed; exact path reconciliation is a local blocker.
+- Local validation passed: both affected pytest modules `150 passed, 1 skipped`; all 17 workflow YAML and false-success checks; Python compilation; staged/unstaged diff checks. The skip is the existing headless CLI timeout guard.
+- PR #50 remains open on remote SHA `0e81aef21f6015745fa616f26f92c9d490f89c7c`. PR validation and CodeQL were successful, but Advanced Security findings and three Netlify checks failed. The main-protection GET returned 403; current protection rules remain unknown. No main push, merge completion, release, deployment, or Q-version finalization is authorized or claimed.
+- Current gate: `LOCAL_MERGE_AND_FEATURE_VALIDATION_PASS_REMOTE_PR_CHECKS_FAILED_MAIN_PROTECTION_403_REMOTE_HISTORY_INCOMPLETE`.
+
 ## Latest continuation checkpoint — 2026-10-05T00:28:42Z
 
 - Correlation ID `9f365ee3-754d-41c8-b3ac-68da8fb58b10`; repository `thealphakenya/Alpha-Q-ai`; ref `codespace-crispy-couscous-4jpvg4j7vw74h5q5x`; local base SHA `5ad814a50cdd1b321170ebff351c8cdaeb1db5fb`. The local branch matches its remote tracking ref, but the worktree has 29 modified/untracked paths. No remote mutation was performed.
@@ -1825,7 +1837,7 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 <!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->
 ## Bank Automation Gate
 
-- Updated: 2026-10-05T00:18:05.830090Z
+- Updated: 2026-10-05T02:04:32.239059Z
 - Runbook SHA-256: `d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321`; numbered requirement lines detected: 110.
 - Gate: BLOCKED pending implementation-to-test/auth mapping, provider-backed read-only verification, and terminal exact-SHA remote evidence for Alpha-Q-ai and qmoi-enhanced.
 - QMOI Masks bank policy: DOCUMENTED_RUNTIME_UNVERIFIED; secure local evidence masking is required, but provider-facing identity/network masking stays disabled unless explicitly permitted. Runtime enforcement is unverified.
@@ -1833,3 +1845,15 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 - The Q-version manager records lifecycle evidence but does not independently authenticate or establish remote completion.
 - No account creation, credential rotation, payment, transfer, payroll, or trading is authorized by this documentation refresh.
 <!-- END OLLAMA BANK AUTOMATION STATUS -->
+
+<!-- BEGIN QMOI MANAGED: ollama-full-coverage-audit-status -->
+## Agent-managed OFCA status
+
+- Audit name: `OFCA`; local scan status: `PASS`.
+- Materialized files scanned: `10384`; mention-bearing files: `4125`.
+- Local refs: `37`; local commits: `2578`; mention-change commits: `1962`.
+- Source manifest SHA-256: `3d1fc49a37f28083b89c2634bc247ef2111c64df1a2a1142205fe778b1c8547c`; full remote-history coverage: `False`.
+- QVillage/QVS materialized references: `356` files, `205` Markdown files; remote/history completeness: `not_verified`.
+- `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
+- Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
+<!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->

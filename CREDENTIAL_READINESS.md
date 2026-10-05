@@ -36,7 +36,7 @@ Each provider record tracks provider name, tags, source, reported source-created
 
 The source-reference audit stores variable names and consumer paths only. It never reads `.env`, key/certificate files, encrypted vault contents, environment values, or provider responses.
 
-- Discovered references: `1114`; provider groups: `{"binance": 16, "bitget": 118, "cashon": 9, "github": 100, "huggingface": 10, "megavault": 11, "paypal": 22, "pesapal": 10, "stripe": 3, "unmapped_provider": 815}`.
+- Discovered references: `1130`; provider groups: `{"binance": 16, "bitget": 118, "cashon": 9, "github": 100, "huggingface": 10, "megavault": 11, "paypal": 22, "pesapal": 10, "stripe": 3, "unmapped_provider": 831}`.
 - Consumer map: `QMOItracks/credential_reference_inventory.json`; `credential_values_read_from_secret_stores=false`; `credential_values_persisted_or_emitted=false`.
 - Generic vault storage does not mean an account or provider adapter is verified. Only the Bitget read-only verifier exists in the active credential manager; its last evidence is a rejected request (`40085`) and is not success. Other providers remain unverified here.
 - Banks, wallets, exchanges, payment APIs, and webhooks require provider-specific verification, minimum scopes, expiry/rotation policy, and tested consumers. Unknown owners or verifiers remain `blocked`.

@@ -1,14 +1,14 @@
 {
-  "captured_at": "2026-10-05T00:38:04.210753Z",
+  "captured_at": "2026-10-05T02:12:48.956527Z",
   "counts_by_role": {
     "backend_api_or_adapter": 175,
-    "documentation": 42,
+    "documentation": 43,
     "frontend_ui": 81,
-    "runtime_or_integration_candidate": 223,
+    "runtime_or_integration_candidate": 224,
     "test": 39
   },
   "counts_by_scope": {
-    "active_checkout": 14,
+    "active_checkout": 16,
     "historical_archive": 432,
     "snapshot": 101
   },
@@ -25,7 +25,7 @@
   },
   "coverage_verified": false,
   "credential_references": {
-    "captured_at": "2026-10-05T00:38:04.204434Z",
+    "captured_at": "2026-10-05T02:12:48.950063Z",
     "coverage_verified": false,
     "credential_values_persisted_or_emitted": false,
     "credential_values_read_from_secret_stores": false,
@@ -44,10 +44,10 @@
       "paypal": 22,
       "pesapal": 10,
       "stripe": 3,
-      "unmapped_provider": 815
+      "unmapped_provider": 831
     },
     "provider_verification": "not_performed",
-    "reference_count": 1114,
+    "reference_count": 1130,
     "references": [
       {
         "credential_value_stored": false,
@@ -164,8 +164,8 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          748,
-          817
+          757,
+          838
         ],
         "name": "BINANCE_API_KEY",
         "path": "tests/test_ollama_autonomous_agent.py",
@@ -176,7 +176,7 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          748
+          757
         ],
         "name": "BINANCE_API_SECRET",
         "path": "tests/test_ollama_autonomous_agent.py",
@@ -3998,7 +3998,33 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          8806
+          3977,
+          3988,
+          3999
+        ],
+        "name": "ACCESS_KEY",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          4003,
+          4014,
+          4025
+        ],
+        "name": "ACCESS_KEY",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          9009
         ],
         "name": "ACCESS_KEY",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -4009,7 +4035,33 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          8806
+          4010,
+          4021,
+          4032
+        ],
+        "name": "ACCESS_TOKEN",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          4036,
+          4047,
+          4058
+        ],
+        "name": "ACCESS_TOKEN",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          9009
         ],
         "name": "ACCESS_TOKEN",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -5023,6 +5075,82 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
+          4968,
+          4979,
+          4991,
+          5002,
+          5013,
+          5024,
+          5035,
+          5071,
+          5107,
+          5118,
+          5129,
+          5141,
+          5152,
+          5163,
+          5174,
+          5185,
+          5196,
+          5208,
+          5219,
+          5230,
+          5246,
+          5262,
+          5276,
+          5288,
+          5299,
+          5310,
+          5322,
+          5333
+        ],
+        "name": "API_KEY",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          4994,
+          5005,
+          5017,
+          5028,
+          5039,
+          5050,
+          5061,
+          5097,
+          5133,
+          5144,
+          5155,
+          5167,
+          5178,
+          5189,
+          5200,
+          5211,
+          5222,
+          5234,
+          5245,
+          5256,
+          5272,
+          5288,
+          5302,
+          5314,
+          5325,
+          5336,
+          5348,
+          5359
+        ],
+        "name": "API_KEY",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
           2
         ],
         "name": "API_KEY",
@@ -5227,7 +5355,7 @@
         "credential_value_stored": false,
         "line_numbers": [
           702,
-          8806
+          9009
         ],
         "name": "API_KEY",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -5238,7 +5366,7 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          1009
+          1053
         ],
         "name": "API_KEY",
         "path": "tests/test_ollama_autonomous_agent.py",
@@ -5249,7 +5377,33 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          8806
+          5344,
+          5355,
+          5366
+        ],
+        "name": "API_SECRET",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          5370,
+          5381,
+          5392
+        ],
+        "name": "API_SECRET",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          9009
         ],
         "name": "API_SECRET",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -5513,7 +5667,33 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          8806
+          5630,
+          5641,
+          5652
+        ],
+        "name": "CLIENT_SECRET",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          5656,
+          5667,
+          5678
+        ],
+        "name": "CLIENT_SECRET",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          9009
         ],
         "name": "CLIENT_SECRET",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -10226,7 +10406,7 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          1009
+          1053
         ],
         "name": "MY_CUSTOM_TOKEN",
         "path": "tests/test_ollama_autonomous_agent.py",
@@ -10367,6 +10547,80 @@
         "path": "Alpha-Q-ai-2025/src/config/trading.ts",
         "provider": "unmapped_provider",
         "scope": "snapshot",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          10476,
+          10487,
+          10500,
+          10535,
+          10570,
+          10581,
+          10592,
+          10605,
+          10651,
+          10662,
+          10673,
+          10686,
+          10697,
+          10708,
+          10719,
+          10730,
+          10741,
+          10752,
+          10763,
+          10775,
+          10786,
+          10797,
+          10808,
+          10926,
+          10939,
+          10951,
+          10962
+        ],
+        "name": "PASSPHRASE",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          10502,
+          10513,
+          10526,
+          10561,
+          10596,
+          10607,
+          10618,
+          10631,
+          10677,
+          10688,
+          10699,
+          10712,
+          10723,
+          10734,
+          10745,
+          10756,
+          10767,
+          10778,
+          10789,
+          10801,
+          10812,
+          10823,
+          10834,
+          10952,
+          10965,
+          10977,
+          10988
+        ],
+        "name": "PASSPHRASE",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
         "status": "reference_only_not_verified"
       },
       {
@@ -10741,8 +10995,8 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          8806,
-          8836
+          9009,
+          9039
         ],
         "name": "PASSPHRASE",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -10775,8 +11029,34 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
+          10984,
+          10995,
+          11007
+        ],
+        "name": "PRIVATE_KEY",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          11010,
+          11021,
+          11033
+        ],
+        "name": "PRIVATE_KEY",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
           702,
-          8806
+          9009
         ],
         "name": "PRIVATE_KEY",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -14811,7 +15091,33 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          8806
+          15042,
+          15053,
+          15064
+        ],
+        "name": "WEBHOOK_SECRET",
+        "path": "ollamatracks/credential_reference_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          15068,
+          15079,
+          15090
+        ],
+        "name": "WEBHOOK_SECRET",
+        "path": "ollamatracks/trading_surface_inventory.json",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          9009
         ],
         "name": "WEBHOOK_SECRET",
         "path": "scripts/ollama_autonomous_agent.py",
@@ -15173,7 +15479,7 @@
     "schema_version": 1,
     "scope": "source_code_reference_names_and_consumers_only"
   },
-  "file_count": 547,
+  "file_count": 549,
   "files": [
     {
       "bytes": 11882,
@@ -16907,7 +17213,7 @@
       "venues": []
     },
     {
-      "bytes": 30964,
+      "bytes": 33800,
       "content_scanned": false,
       "matched_by": [
         "path:qtrade",
@@ -16924,7 +17230,7 @@
       "venues": []
     },
     {
-      "bytes": 4295,
+      "bytes": 7131,
       "content_scanned": false,
       "matched_by": [
         "path:trading"
@@ -16968,6 +17274,38 @@
       ],
       "scope": "active_checkout",
       "sha256": "not_hashed_size_limit_or_read_error",
+      "status": "discovered_unmapped_not_coverage_proof",
+      "venues": []
+    },
+    {
+      "bytes": 728753,
+      "content_scanned": false,
+      "matched_by": [
+        "path:trading"
+      ],
+      "path": "ollamatracks/trading_surface_inventory.json",
+      "repository_scope": "Alpha-Q-ai",
+      "roles": [
+        "runtime_or_integration_candidate"
+      ],
+      "scope": "active_checkout",
+      "sha256": "not_hashed_size_limit_or_read_error",
+      "status": "discovered_unmapped_not_coverage_proof",
+      "venues": []
+    },
+    {
+      "bytes": 49877,
+      "content_scanned": true,
+      "matched_by": [
+        "content:trading-domain-term"
+      ],
+      "path": "projectsandautoprojects.md",
+      "repository_scope": "Alpha-Q-ai",
+      "roles": [
+        "documentation"
+      ],
+      "scope": "active_checkout",
+      "sha256": "926eb30311bc9d94826499047b8c0d4ea2e3755bca23b55ab6739a5436a08635",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": []
     },
@@ -24436,7 +24774,7 @@
       "venues": []
     },
     {
-      "bytes": 37956,
+      "bytes": 40150,
       "content_scanned": true,
       "matched_by": [
         "content:trading-domain-term"
@@ -24447,12 +24785,12 @@
         "runtime_or_integration_candidate"
       ],
       "scope": "active_checkout",
-      "sha256": "8776f7b1ed024e27ec56cc58c22d196e9155bab099863bb39bc03275f231ed88",
+      "sha256": "8f8149c1956326c2a12feaf65e2fb531d32ac61fd9cb710e07d52e4fa2042409",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": []
     },
     {
-      "bytes": 463104,
+      "bytes": 475480,
       "content_scanned": true,
       "matched_by": [
         "content:trading-domain-term"
@@ -24463,7 +24801,7 @@
         "runtime_or_integration_candidate"
       ],
       "scope": "active_checkout",
-      "sha256": "3ffa497c72557f75b08dc26a36f328dbe2d74e8d495fc7aa23a16b30818b7ce3",
+      "sha256": "9fb71d56ca56c2e70fb26171859a3fac319ef54466db37dd64e6ab9bf6c565f2",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": [
         "binance",
@@ -24478,7 +24816,7 @@
       ]
     },
     {
-      "bytes": 45787,
+      "bytes": 45825,
       "content_scanned": true,
       "matched_by": [
         "content:trading-domain-term"
@@ -24489,7 +24827,7 @@
         "runtime_or_integration_candidate"
       ],
       "scope": "active_checkout",
-      "sha256": "a3d0e06a128e362964ec317a954860b6ad1a15b8f1b1f4f2f971c3a98f508cef",
+      "sha256": "c14eb3b91b5708c9aa0035cb28610dc9a32f40a3d09a9e8e5f1be3464d095197",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": []
     },
@@ -24549,7 +24887,7 @@
       ]
     },
     {
-      "bytes": 104851,
+      "bytes": 107271,
       "content_scanned": true,
       "matched_by": [
         "content:trading-domain-term"
@@ -24560,7 +24898,7 @@
         "test"
       ],
       "scope": "active_checkout",
-      "sha256": "e3bbcf3a617e430079f85e52284f6b35bc9565907fe19d1bbc9467977555156f",
+      "sha256": "43a1930edec1c3c05ee07010549eca9dd91a0e7f2f55fc5c288477bf8322291c",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": [
         "binance",
@@ -24614,7 +24952,7 @@
   ],
   "history_scope": "materialized_paths_only; local ref tip trading path candidates are recorded by the merge audit; intermediate commit trees and unfetched remote refs are not scanned here",
   "live_execution_status": "not_verified_by_source_inventory",
-  "local_git_ref_count": 36,
+  "local_git_ref_count": 37,
   "local_git_refs_available": true,
   "remote_completeness": "not_verified",
   "repository_root_name": "Alpha-Q-ai",

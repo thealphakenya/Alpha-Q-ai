@@ -158,3 +158,15 @@ Any PR or merge operation must consider the central orchestrator plan. If a PR t
 ## Final objective
 
 The repo should evolve from isolated automation scripts into a single orchestrator-aware operating system: one central decision layer that understands every workflow, network boundary, security gate, style rule, and autonomous loop, and automatically produces the next best improvement set for each orchestrator it finds.
+
+<!-- BEGIN QMOI MANAGED: ollama-full-coverage-audit-status -->
+## Agent-managed OFCA status
+
+- Audit name: `OFCA`; local scan status: `PASS`.
+- Materialized files scanned: `10384`; mention-bearing files: `4125`.
+- Local refs: `37`; local commits: `2578`; mention-change commits: `1962`.
+- Source manifest SHA-256: `3d1fc49a37f28083b89c2634bc247ef2111c64df1a2a1142205fe778b1c8547c`; full remote-history coverage: `False`.
+- QVillage/QVS materialized references: `356` files, `205` Markdown files; remote/history completeness: `not_verified`.
+- `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
+- Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
+<!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->

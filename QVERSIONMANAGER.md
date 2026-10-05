@@ -28,7 +28,7 @@ A final version is written only by `write_final_metrics()` after the caller supp
 18. Autonomous completion evidence includes ranked next actions, current-state refresh, local evidence JSON/JSONL integrity results, and an explicit authorization state for every pending action.
 19. Production-gap scanning is a scoped candidate inventory, not a blanket replacement engine: it records file hashes and marker line numbers, makes dependency/cache/history/build exclusions and unreadable/oversized coverage gaps explicit, and queues candidates as `discovered_unmapped` until owner, implementation, focused tests, security impact, rollback, and remote proof are supplied.
 20. Final metrics require a `CLEAR` production inventory with complete scan coverage, zero candidates, zero unreadable files, and zero oversized files skipped; unresolved candidates keep production and Q-version gates blocked.
-21. Autonomous completion and Q-version finalization require a hash-backed Ollama reference audit covering both repositories, all refs, pull requests, and intermediate commit trees; materialized local history alone remains incomplete.
+21. Every merge lifecycle runs the Ollama Full Coverage Audit (OFCA) after source inventory and immediately before merge activity. It records path/hash/line-number responsibility metrics from materialized files and local ref history, marks `prMergeIncluded`, and blocks completion when remote refs, PRs, or intermediate commit trees lack target-owned exact-SHA evidence.
 22. Every styles/universals registry feature requires a stable ID, focused test mapping, and reviewed hook/webhook applicability; event-driven features require passing delivery/security/recovery tests before finalization.
 
 ## Unattended completion and instruction coverage
@@ -116,8 +116,14 @@ Current remote completion remains blocked by unverified GitHub App key rotation,
 
 This generated audit indexes paths, hashes, line numbers, and responsibility categories only; source text is never copied into the evidence artifact.
 
-- Materialized files scanned: `10321`; QMOI-matching files: `4061`.
+- Materialized files scanned: `10384`; QMOI-matching files: `4125`.
 - Local scan status: `PASS`; historical source scopes are listed in `QMOItracks/QMOI_reference_audit.json`.
 - Local tree and archived source scans do not cover every remote ref, pull request, or intermediate commit tree; Q-version completion stays blocked until both repositories have terminal exact-SHA audit evidence.
 - Styles and universal UI requirements remain incomplete until each registered feature maps to focused tests and event-driven hook/webhook validation; registry discovery is not coverage proof.
 <!-- END QMOI MANAGED: ollama-reference-audit-gate -->
+
+## OFCA lifecycle evidence
+
+`OLLAMA_FULL_COVERAGE_AUDIT` is a required lifecycle stage between source inventory/research and merge activity. It records local file/ref/commit counts, mention-bearing path counts, a source-manifest SHA-256, `prMergeIncluded`, and any remaining remote-history blocker. Local scans do not establish remote branch, PR, or intermediate-tree completeness. The stage remains `NEEDS_REVIEW` until target-owned evidence proves complete coverage at the exact repository SHA; merge application is blocked while OFCA or the Markdown source index is incomplete.
+
+Style/universal migration candidates are tracked in `ollamatracks/style_universal_replacement_inventory.json` with path, hash, affected directory, source scope, and required test/hook review. This inventory is a plan only: it does not authorize bulk replacement or claim coverage from discovery.

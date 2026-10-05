@@ -180,6 +180,7 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
     skipped: list[dict[str, str]] = []
     excluded_directories: dict[str, int] = {}
     matched_files: list[dict[str, Any]] = []
+    qvillage_qvs_files: list[dict[str, Any]] = []
     category_counts: dict[str, int] = {}
     scope_counts: dict[str, int] = {}
     self_excluded_files = 0
@@ -249,6 +250,38 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
             tree_digest.update(b"\n")
             scanned_files += 1
             scanned_bytes += size
+
+            path_parts_lower = {part.lower() for part in Path(relative).parts}
+            lowered_relative = relative.lower()
+            decoded_content = content.decode("utf-8", errors="replace")
+            qvillage_mentions = len(re.findall(r"\bqvillage\b", decoded_content, re.IGNORECASE))
+            qvs_mentions = len(re.findall(r"\bqvs\b", decoded_content, re.IGNORECASE))
+            qve_mentions = len(re.findall(r"\bqve\b", decoded_content, re.IGNORECASE))
+            if (
+                "qvillage" in lowered_relative
+                or "qvs" in path_parts_lower
+                or "qve" in path_parts_lower
+                or "qvs" in Path(relative).stem.lower()
+                or qvillage_mentions
+                or qvs_mentions
+                or qve_mentions
+            ):
+                if "qmoi-enhanced-history-14" in path_parts_lower or "_archive_qmoi-enhanced" in path_parts_lower:
+                    source_scope = "qmoi_enhanced_history"
+                elif "alpha-q-ai-2025" in path_parts_lower:
+                    source_scope = "alpha_source_snapshot"
+                else:
+                    source_scope = "active_repository"
+                qvillage_qvs_files.append({
+                    "path": relative,
+                    "scope": source_scope,
+                    "bytes": size,
+                    "sha256": content_sha256,
+                    "kind": "markdown" if path.suffix.lower() == ".md" else "source_or_data",
+                    "qvillage_mention_count": qvillage_mentions,
+                    "qvs_mention_count": qvs_mentions,
+                    "qve_mention_count": qve_mentions,
+                })
 
             path_match = "ollama" in relative.lower()
             lines = content.decode("utf-8", errors="replace").splitlines()
@@ -369,6 +402,15 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
             "source_contents_recorded": False,
         },
         "matched_files": sorted(matched_files, key=lambda item: item["path"]),
+        "qvillage_qvs_inventory": {
+            "status": "MATERIALIZED_PATHS_ONLY",
+            "coverage_complete": False,
+            "file_count": len(qvillage_qvs_files),
+            "markdown_file_count": sum(item["kind"] == "markdown" for item in qvillage_qvs_files),
+            "files": sorted(qvillage_qvs_files, key=lambda item: item["path"]),
+            "source_contents_recorded": False,
+            "remote_refs_prs_and_intermediate_trees_verified": False,
+        },
         "source_manifest_sha256": hashlib.sha256(manifest).hexdigest(),
         "local_git_history": {
             "status": git_history_status,

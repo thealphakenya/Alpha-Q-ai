@@ -163,8 +163,9 @@ class TestCrossRepositoryAutonomyManager:
             agent.cross_repo_manager,
             "build_cross_repository_merge_plan",
             return_value={"ready_for_apply": False, "metrics": {}},
-        ):
+        ), patch.object(agent, "merge_duplicate_markdown_files") as merge_files:
             result = agent.execute_merge_and_sync([repo], auto_push=False)
+        merge_files.assert_not_called()
 
         ledger_path = Path(result["q_version_lifecycle_path"])
         records = [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").splitlines()]
@@ -173,6 +174,7 @@ class TestCrossRepositoryAutonomyManager:
             "PRE_MERGE_INVENTORY",
             "INTERNAL_RESEARCH",
             "EXTERNAL_RESEARCH",
+            "OLLAMA_FULL_COVERAGE_AUDIT",
             "MERGE_PLAN",
             "MERGE_APPLY",
             "POST_MERGE_AUDIT",
@@ -181,6 +183,13 @@ class TestCrossRepositoryAutonomyManager:
         assert records[2]["stage_status"] == "PASS"
         assert records[3]["stage_status"] == "NEEDS_REVIEW"
         assert records[3]["details"]["visited_count"] == 0
+        assert records[4]["details"]["audit_name"] == "OFCA"
+        assert records[4]["details"]["prMergeIncluded"] is True
+        assert records[4]["details"]["position"] == "after_source_inventory_and_immediately_before_merge_activity"
+        assert records[4]["stage_status"] == "NEEDS_REVIEW"
+        assert records[5]["details"]["merge_plan"]
+        assert records[6]["stage_status"] == "BLOCKED"
+        assert records[6]["details"]["ofca_prMergeIncluded"] is True
         premerge = records[1]["root_metrics"][str(repo.resolve())]
         assert any(item["path"] == "README.md" for item in premerge["files"])
         audit = QVersionManager(repo).audit_lifecycle(records[0]["execution_id"])
@@ -779,6 +788,18 @@ class TestFeatureTester:
         assert result["workflow_file_count"] == 2
         assert result["webhook_reference_file_count"] == 1
         assert result["coverage_verified"] is False
+        replacement_coverage = json.loads(
+            (tmp_path / "ollamatracks" / "feature_test_hook_coverage.json").read_text(encoding="utf-8")
+        )["style_universal_replacement_inventory"]
+        assert replacement_coverage["automatic_replacement_enabled"] is False
+        assert replacement_coverage["style_candidate_count"] > 0
+        assert replacement_coverage["directory_candidate_count"] > 0
+        replacement_report = json.loads(
+            (tmp_path / replacement_coverage["path"]).read_text(encoding="utf-8")
+        )
+        assert replacement_report["source_contents_recorded"] is False
+        assert replacement_report["materialized_scan_complete"] is True
+        assert all(item["replacement_authorized"] is False for item in replacement_report["files"])
         trading_inventory = result["trading_inventory"]
         finance_inventory = result["financial_claim_inventory"]
         trading_records = {record["path"]: record for record in trading_inventory["files"]}
@@ -844,6 +865,14 @@ class TestFeatureTester:
         assert "feature-test-event-accountability" in (
             tmp_path / "UNIVERSALS.md"
         ).read_text(encoding="utf-8")
+        replacement_plan = json.loads(
+            (tmp_path / "ollamatracks" / "style_universal_replacement_inventory.json").read_text(encoding="utf-8")
+        )
+        assert any(
+            record["path"] == "src/components/trading/TradingDashboard.tsx"
+            for record in replacement_plan["files"]
+        )
+        assert "Candidate migration inventory" in styles_path.read_text(encoding="utf-8")
 
         agent.refresh_markdown_category_index(tmp_path)
         index_text = (tmp_path / "ALLMDFILESREFS.md").read_text(encoding="utf-8")
@@ -916,7 +945,18 @@ class TestFeatureTester:
 
     def test_refresh_ollama_reference_audit_updates_owned_contract_docs(self, tmp_path):
         agent = OllamaAutonomousAgent(base_path=tmp_path)
-        for filename in ("QVERSIONMANAGER.md", "OLLAMA_AUTOMATION_GUIDE.md", "ollama.md"):
+        for filename in (
+            "QVERSIONMANAGER.md",
+            "OLLAMA_AUTOMATION_GUIDE.md",
+            "ollama.md",
+            "OFCA.md",
+            "oe2.txt",
+            "remotecompletion.md",
+            "QVILLAGE.md",
+            "Qvillageevolutions.md",
+            "QMOIORCHESTRATOR.md",
+            "QMOIMASKS.md",
+        ):
             (tmp_path / filename).write_text(f"# {filename}\n", encoding="utf-8")
         (tmp_path / "scripts").mkdir()
         (tmp_path / "scripts" / "ollama_agent.py").write_text(
@@ -935,6 +975,10 @@ class TestFeatureTester:
             text = (tmp_path / filename).read_text(encoding="utf-8")
             assert "reference audit and Q-version gate" in text
             assert "do not cover every remote ref" in text
+        for filename in ("OFCA.md", "oe2.txt", "remotecompletion.md", "QVILLAGE.md", "Qvillageevolutions.md", "QMOIORCHESTRATOR.md", "QMOIMASKS.md"):
+            text = (tmp_path / filename).read_text(encoding="utf-8")
+            assert "Agent-managed OFCA status" in text
+            assert "QVillage/QVS materialized references" in text
 
     def test_agent_refreshes_productionenhanced_manifest_for_nonproduction_markers(self, tmp_path):
         """The autonomous agent should scan for shallow or non-production implementations and update productionenhanced.md."""

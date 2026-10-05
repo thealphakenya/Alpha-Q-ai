@@ -347,5 +347,6 @@ Automation may inventory and test preauthorized repository changes without a per
 - Hooks/webhooks require authentication/signatures, replay and idempotency controls, bounded retries, secret-reference-only handling, audit logging, and tested failure paths.
 - A feature without a mapped test or verified event integration remains `unmapped` or `blocked`; total automation claims cannot exceed inspected scope.
 - Current styles/universals mapping state: `NEEDS_FEATURE_TEST_HOOK_MAPPING`; tests mapped: `0/404`; hook applicability reviewed: `0/404`.
+- Candidate migration inventory: `QMOItracks/style_universal_replacement_inventory.json`; each candidate remains review-required and is not treated as a completed replacement.
 - Trading automation remains paused on stale market/account data, invalid authorization, provider outage, risk-limit breach, or ledger mismatch; runtime independence requires separately verified hosts and fresh heartbeat evidence.
 <!-- END QMOI MANAGED: feature-test-event-accountability -->

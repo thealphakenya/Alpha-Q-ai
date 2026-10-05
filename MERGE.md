@@ -1,5 +1,16 @@
 # MERGE.md - Merge Procedures and Guidelines
 
+## Requested Codespaces branch reconciliation — 2026-10-05
+
+- Correlation ID: `ab2c9c5a-1a43-424a-b973-8af06f7b5ce4`.
+- Requested PR branch `codespace-orange-space-train-x5gp965wppgv39qvj` was at `0e81aef21f6015745fa616f26f92c9d490f89c7c`; current Alpha `main` was `fc0bdf7197ad572ba7593983356c0e4a94466c91`. Current `main` is being merged with normal ancestry preservation; the merge is local and not yet committed or pushed.
+- Two unique branch commits are retained. The merge conflict resolution preserved both history streams in telemetry/status files and regenerated the Markdown path inventory. No branch history was rewritten.
+- OFCA is required after source inventory and immediately before merge activity. The local artifact tracks Ollama mentions and QVillage/QVS/QVE path/hash/scope metrics; remote ref, PR, and intermediate-tree coverage remains incomplete. `prMergeIncluded` is required in merge evidence.
+- Merge planning can continue for diagnostics, but merge application is fail-closed: incomplete OFCA or Markdown indexing records `BLOCKED` and skips the file-merge mutation. Current remote-history and sanitizer gaps keep apply blocked.
+- Markdown indexing enumerated 2,407 materialized paths but remains incomplete: ten Ollama-named source paths do not match generated labels because the existing documentation sanitizer rewrites the token. The sanitizer remains unchanged; no complete-index claim is made.
+- Local validation: control-plane and agent modules `150 passed, 1 skipped`; 17 workflow definitions and false-success contracts valid; touched Python compilation and staged/unstaged diff checks passed.
+- PR #50 exact old head checks include failed Advanced Security and three Netlify checks. Main protection returned HTTP 403. No remote merge, parity, release, deployment, or completion is proven.
+
 ## Current cross-repository audit checkpoint — 2026-09-29
 
 - Correlation ID: `bb69ea6a-2c63-4324-9045-dd6ece677abf`.

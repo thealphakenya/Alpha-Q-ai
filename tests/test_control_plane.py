@@ -352,6 +352,10 @@ def test_ollama_reference_audit_indexes_materialized_history_without_source_text
     (archived / "agent.md").write_text(
         "Ollama workflow history and Q.0.0.N evidence\n", encoding="utf-8"
     )
+    qvs_docs = tmp_path / "qmoi-enhanced-history-14" / "QVS"
+    qvs_docs.mkdir()
+    (qvs_docs / "QVSREADME.md").write_text("# QVS history\n", encoding="utf-8")
+    (tmp_path / "QVILLAGE.md").write_text("# QVillage\n", encoding="utf-8")
     (tmp_path / "node_modules" / "third-party").mkdir(parents=True)
     (tmp_path / "node_modules" / "third-party" / "README.md").write_text(
         "Ollama dependency mention\n", encoding="utf-8"
@@ -368,6 +372,14 @@ def test_ollama_reference_audit_indexes_materialized_history_without_source_text
     assert "runtime_and_models" not in archived_file["categories"]
     assert report["coverage_complete"] is False
     assert report["remote_history"]["all_intermediate_commit_trees_scanned"] is False
+    qvs_inventory = report["qvillage_qvs_inventory"]
+    assert qvs_inventory["coverage_complete"] is False
+    assert qvs_inventory["markdown_file_count"] == 2
+    assert {item["path"] for item in qvs_inventory["files"]} == {
+        "QVILLAGE.md",
+        "qmoi-enhanced-history-14/QVS/QVSREADME.md",
+    }
+    assert all(len(item["sha256"]) == 64 for item in qvs_inventory["files"])
     assert "source_text" not in json.dumps(report)
     assert all(len(item["sha256"]) == 64 for item in report["matched_files"])
 
