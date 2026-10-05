@@ -90,7 +90,7 @@ Each system must cover deterministic inputs, schema checks, positive tests, nega
 <!-- BEGIN QMOI MANAGED: trading-and-hook-validation-evidence -->
 ## Agent-managed trading and automation validation
 
-- Materialized trading candidates: `549`; source artifact: `QMOItracks/trading_surface_inventory.json`; coverage state: `discovered_unmapped`.
+- Materialized trading candidates: `551`; source artifact: `QMOItracks/trading_surface_inventory.json`; coverage state: `discovered_unmapped`.
 - Per-venue gates include credential readiness (metadata only), market/account freshness, sandbox/paper execution, risk limits, reconciliation, kill switch, UI state, and positive/negative tests.
 - Live orders, transfers, account creation, and payouts remain blocked until explicit authorization and provider-side evidence exist; local reports do not prove real funds or balances.
 - Remote automation reports require exact repo/ref/SHA, workflow/run URL, terminal conclusion, artifact hash, and independent branch/ref verification.
@@ -99,12 +99,13 @@ Each system must cover deterministic inputs, schema checks, positive tests, nega
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.

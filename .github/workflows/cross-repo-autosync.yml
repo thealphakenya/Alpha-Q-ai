@@ -2,7 +2,7 @@ name: QMOI Bidirectional Cross-Repository Autosync
 
 on:
   push:
-    branches: [main, autosync-backup]
+    branches: [main, autosync-backup, master]
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
@@ -13,9 +13,14 @@ on:
         default: auto
         type: choice
         options: [auto, audit, qmoi-to-alpha, alpha-to-qmoi]
+  workflow_run:
+    workflows:
+      - "Ollama Autonomous Agent & Live Tracker"
+    types: [completed]
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: qmoi-cross-repo-autosync
@@ -24,7 +29,7 @@ concurrency:
 env:
   QMOI_REPOSITORY: thealphakenya/qmoi-enhanced
   ALPHA_REPOSITORY: thealphakenya/Alpha-Q-ai
-  SYNC_TOKEN: ${{ secrets.MY_CUSTOM_TOKEN }}
+  SYNC_TOKEN: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN }}
   QMOI_BRANCH_PUBLICATION_AUTHORIZED: ${{ vars.QMOI_BRANCH_PUBLICATION_AUTHORIZED || 'false' }}
 
 jobs:
@@ -37,7 +42,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-          token: ${{ secrets.MY_CUSTOM_TOKEN }}
+          token: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN }}
 
       - name: Checkout counterpart repository
         uses: actions/checkout@v4
@@ -47,7 +52,7 @@ jobs:
           path: counterpart
           fetch-depth: 0
           persist-credentials: true
-          token: ${{ secrets.MY_CUSTOM_TOKEN }}
+          token: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN }}
 
       - name: Select direction and validate token
         id: plan
@@ -56,7 +61,7 @@ jobs:
           REQUESTED_DIRECTION: ${{ inputs.direction || 'auto' }}
         run: |
           set -euo pipefail
-          test -n "${SYNC_TOKEN:-}" || { echo "::error::MY_CUSTOM_TOKEN is required for automatic bidirectional sync."; exit 1; }
+          test -n "${SYNC_TOKEN:-}" || { echo "::error::MY_CUSTUOM_TOKEN or MY_CUSTOM_TOKEN is required for automatic bidirectional sync."; exit 1; }
           if [ "${REQUESTED_DIRECTION}" = audit ]; then
             direction=audit
           elif [ "${REQUESTED_DIRECTION}" != auto ]; then
@@ -68,6 +73,49 @@ jobs:
           fi
           echo "direction=${direction}" >> "${GITHUB_OUTPUT}"
           echo "Selected direction: ${direction}"
+
+      - name: Verify completed Ollama agent run
+        id: agent_success
+        if: github.event_name == 'workflow_run'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const run = context.payload.workflow_run;
+            const expectedName = "Ollama Autonomous Agent & Live Tracker";
+            const expectedRepository = `${context.repo.owner}/${context.repo.repo}`;
+            const expectedSteps = [
+              "Execute Autonomous Agent with Circuit-Breaker Loop Protection",
+              "Execute repository test suite",
+              "Final lightweight validation",
+              "Validate repository and hosted links",
+              "Enforce final health gate",
+            ];
+            let verified = run?.name === expectedName &&
+              run?.conclusion === "success" &&
+              run?.head_branch === context.payload.repository.default_branch &&
+              run?.head_repository?.full_name === expectedRepository &&
+              /^[0-9a-f]{40}$/.test(run?.head_sha || "");
+            let failure = "Workflow run was not a successful default-branch Ollama execution.";
+            if (verified) {
+              const { data } = await github.rest.actions.listJobsForWorkflowRun({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: run.id,
+                per_page: 100,
+              });
+              const job = data.jobs.find((item) => item.name === "Ollama Autonomous Agent + Universal Self-Healing Engine");
+              const steps = new Map((job?.steps || []).map((step) => [step.name, step.conclusion]));
+              const failedSteps = expectedSteps.filter((name) => steps.get(name) !== "success");
+              verified = job?.conclusion === "success" && failedSteps.length === 0;
+              if (!verified) failure = `Agent run lacks passing required steps: ${failedSteps.join(", ") || "agent job"}`;
+            }
+            core.setOutput("verified", verified ? "true" : "false");
+            core.setOutput("run_id", String(run?.id || ""));
+            core.setOutput("source_sha", String(run?.head_sha || ""));
+            core.setOutput("conclusion", String(run?.conclusion || ""));
+            core.setOutput("source_repository", String(run?.head_repository?.full_name || ""));
+            core.notice(verified ? `Verified terminal Ollama success run ${run.id} at ${run.head_sha}.` : failure);
 
       - name: Bootstrap counterpart autosync contract
         shell: bash
@@ -90,6 +138,11 @@ jobs:
       - name: Run guarded cross-repository sync
         env:
           DIRECTION: ${{ steps.plan.outputs.direction }}
+          QMOI_AGENT_SUCCESS_VERIFIED: ${{ steps.agent_success.outputs.verified || 'false' }}
+          QMOI_AGENT_SUCCESS_CONCLUSION: ${{ steps.agent_success.outputs.conclusion || '' }}
+          QMOI_AGENT_SUCCESS_RUN_ID: ${{ steps.agent_success.outputs.run_id || '' }}
+          QMOI_AGENT_SUCCESS_SOURCE_SHA: ${{ steps.agent_success.outputs.source_sha || '' }}
+          QMOI_AGENT_SUCCESS_REPOSITORY: ${{ steps.agent_success.outputs.source_repository || '' }}
         run: |
           set -euo pipefail
           if [ "${GITHUB_REPOSITORY}" = "${QMOI_REPOSITORY}" ]; then

@@ -3941,7 +3941,7 @@
       "path": "scripts",
       "status": "review_required",
       "styles": 5,
-      "universals": 14
+      "universals": 18
     },
     {
       "path": "scripts/trading",
@@ -3953,7 +3953,7 @@
       "path": "tests",
       "status": "review_required",
       "styles": 0,
-      "universals": 4
+      "universals": 5
     }
   ],
   "files": [
@@ -46414,7 +46414,7 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 40150,
+      "bytes": 46394,
       "directory_paths": [
         "scripts"
       ],
@@ -46425,7 +46425,23 @@
       "path": "scripts/autonomous_completion_engine.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8f8149c1956326c2a12feaf65e2fb531d32ac61fd9cb710e07d52e4fa2042409",
+      "sha256": "90ec8150f3de20118d40fbc5dec50b3b412d3e294bc2bb18867867ffc8b2debe",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 13183,
+      "directory_paths": [
+        "scripts"
+      ],
+      "domains": [
+        "universals"
+      ],
+      "hook_applicability_review_required": true,
+      "path": "scripts/autonomous_evidence_monitor.py",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "449a74db65399c2acf6836423aa9e86c141f72d3082e14c4ad4932c772bbed63",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -46442,6 +46458,22 @@
       "replacement_authorized": false,
       "scope": "active_checkout",
       "sha256": "ea88ab012e7e2a44190cda06df423d588a95328929346c23a8f0703fd69d99ea",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 18374,
+      "directory_paths": [
+        "scripts"
+      ],
+      "domains": [
+        "universals"
+      ],
+      "hook_applicability_review_required": true,
+      "path": "scripts/cross_repo_sync.py",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "0f4d31769d2e9c363310028fb1318153d12278f22246e1b6118728246dfe4261",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -46478,7 +46510,7 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 11421,
+      "bytes": 13740,
       "directory_paths": [
         "scripts"
       ],
@@ -46489,12 +46521,28 @@
       "path": "scripts/live_activity_stream.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8b6e0cd228b5647b45dfcd95d6947d6b32a3c736bad05f83c29e539c871ca2b1",
+      "sha256": "494ee7b96020d78224b4dc4f6b6d70be1202c0aaad4ad455b12aa2b536f3d4e9",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 475480,
+      "bytes": 9500,
+      "directory_paths": [
+        "scripts"
+      ],
+      "domains": [
+        "universals"
+      ],
+      "hook_applicability_review_required": true,
+      "path": "scripts/live_github_verifier.py",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "15d5f48dd011e31120d9c1ed1d8e84509417b07f5ea392023b38f638bc0d4805",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 515059,
       "directory_paths": [
         "scripts"
       ],
@@ -46506,12 +46554,12 @@
       "path": "scripts/ollama_autonomous_agent.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "9fb71d56ca56c2e70fb26171859a3fac319ef54466db37dd64e6ab9bf6c565f2",
+      "sha256": "58758faa77a674009188550599cef9535f1f5f91e3bd977ec148ed946e52d686",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 17145,
+      "bytes": 51330,
       "directory_paths": [
         "scripts"
       ],
@@ -46522,7 +46570,7 @@
       "path": "scripts/ollama_research.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "564b7c3300d0f5f260ea88b201f2df3be0ef0df0c8f45bb327b5f74145bc2b13",
+      "sha256": "ff3f1591dd304b54961ccedd5ff781b010e9228ee7bd9da3822d771c6c5da7b5",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -46539,6 +46587,22 @@
       "replacement_authorized": false,
       "scope": "active_checkout",
       "sha256": "6cd7cde59380c8e9d7fd306efdce257ecd2e8fc98cad19dfc27c09774284700d",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 68779,
+      "directory_paths": [
+        "scripts"
+      ],
+      "domains": [
+        "universals"
+      ],
+      "hook_applicability_review_required": true,
+      "path": "scripts/q_version_manager.py",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "7beac7ec9186ac13edbd1fce1ece2414e88b5d128c4cc80027ddb6d5ce2ead2b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -46659,7 +46723,7 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 40894,
+      "bytes": 72680,
       "directory_paths": [
         "tests"
       ],
@@ -46670,12 +46734,12 @@
       "path": "tests/test_control_plane.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "a36afd75443ad5b00c8f7a8d9fea7597804b97e972ee2268d75bd9a4eb193a4b",
+      "sha256": "bf1cd5603db300ee01ec8e4a36b8ba5a3d5102e6fbd584c1ded3a2d3819226e7",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 22003,
+      "bytes": 24237,
       "directory_paths": [
         "tests"
       ],
@@ -46686,12 +46750,28 @@
       "path": "tests/test_enhanced_tracking_and_workflows.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8337153a13b1dfa4340e540511c9826498e06564ae2df3559c06fd04038a4232",
+      "sha256": "8dc0502b133f7220672dedc77c1016060c11b3293bb9ad41802619c73685052d",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 107271,
+      "bytes": 2318,
+      "directory_paths": [
+        "tests"
+      ],
+      "domains": [
+        "universals"
+      ],
+      "hook_applicability_review_required": true,
+      "path": "tests/test_live_github_verifier.py",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "f6924d89f5c8dcafc4fe54bc69b3a0f95a03f9f6de27b415fb7c9706540d1565",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 116269,
       "directory_paths": [
         "tests"
       ],
@@ -46702,7 +46782,7 @@
       "path": "tests/test_ollama_autonomous_agent.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "43a1930edec1c3c05ee07010549eca9dd91a0e7f2f55fc5c288477bf8322291c",
+      "sha256": "2214f059bc8e665d37f2bbc5f712088280d2741eb9612d9e3f8362b78490ff5d",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -46723,7 +46803,7 @@
       "tests_required_before_replacement": true
     }
   ],
-  "files_scanned": 4875,
+  "files_scanned": 4879,
   "materialized_scan_complete": false,
   "repository": "Alpha-Q-ai",
   "schema_version": 1,
@@ -46753,5 +46833,5 @@
   "source_contents_recorded": false,
   "status": "CANDIDATE_ONLY",
   "style_candidate_count": 1444,
-  "universal_candidate_count": 1170
+  "universal_candidate_count": 1175
 }

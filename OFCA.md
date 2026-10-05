@@ -21,14 +21,20 @@ The metadata-only report in `ollamatracks/ollama_reference_audit.json` records m
 
 Q version lifecycle gate 21 requires OFCA on each merge execution. Finalization additionally requires terminal target-owned audit evidence for both repositories covering current refs, pull requests, and intermediate commit trees at exact final SHAs. Until that evidence exists, the audit stays `NEEDS_REVIEW` and Q-version finalization stays blocked.
 
+## Restore point and branch coverage
+
+OFCA evidence for restore operations must bind the audit SHA to both repositories' `main`, `autosync-backup`, `qmoi`, and `master` refs, the corresponding tree SHA, required completion-document hashes, and the terminal Ollama workflow run that authorized restore publication. `master` is a fast-forward mirror of validated `main`, not an independent development branch. The pre-agent check may report `BOOTSTRAP_READY` only when both `qmoi` and `master` refs are absent and both `main`/backup pairs exactly match the trusted checkout under the explicit `QMOI_BRANCH_PUBLICATION_AUTHORIZED` gate. It may report `MASTER_BOOTSTRAP_READY` only when `qmoi`, `main`, and backup already agree and `master` is absent in both repositories. Any one-sided or stale ref remains blocked.
+
+Push and scheduled autosync can maintain fast-forward-only main/backup synchronization, but they do not publish `qmoi` unless the completed default-branch agent workflow and its agent, tests, final validation, hosted-link, and health steps are verified successful. The publisher rechecks all relevant refs before and after publication and records partial outcomes without force-updating or hiding them. User-reported Actions secret name `MY_CUSTUOM_TOKEN` is supported with `MY_CUSTOM_TOKEN` as a compatibility alias; values are never recorded, and secret presence does not establish authorization.
+
 <!-- BEGIN QMOI MANAGED: ollama-full-coverage-audit-status -->
 ## Agent-managed OFCA status
 
 - Audit name: `OFCA`; local scan status: `PASS`.
-- Materialized files scanned: `10384`; mention-bearing files: `4125`.
-- Local refs: `37`; local commits: `2578`; mention-change commits: `1962`.
-- Source manifest SHA-256: `3d1fc49a37f28083b89c2634bc247ef2111c64df1a2a1142205fe778b1c8547c`; full remote-history coverage: `False`.
-- QVillage/QVS materialized references: `356` files, `205` Markdown files; remote/history completeness: `not_verified`.
+- Materialized files scanned: `10397`; mention-bearing files: `4129`.
+- Local refs: `39`; local commits: `2597`; mention-change commits: `1977`.
+- Source manifest SHA-256: `405ec6deebaacded259ea6d7b5c7286d8378a930e56b91ff87d389c63f5274f5`; full remote-history coverage: `False`.
+- QVillage/QVS materialized references: `363` files, `210` Markdown files; remote/history completeness: `not_verified`.
 - `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
 - Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
 <!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->
@@ -36,12 +42,13 @@ Q version lifecycle gate 21 requires OFCA on each merge execution. Finalization 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.

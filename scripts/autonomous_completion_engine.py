@@ -828,7 +828,7 @@ class AutonomousCompletionEngine:
 
     @staticmethod
     def _qmoi_restore_point_evidence_complete(evidence: Any) -> bool:
-        """Require both repositories' qmoi/main/backup refs to prove one committed tree."""
+        """Require both repositories' main/backup/qmoi/master refs to prove one committed tree."""
         if not isinstance(evidence, Mapping):
             return False
         workspace_sha = str(evidence.get("workspace_sha", ""))
@@ -838,6 +838,7 @@ class AutonomousCompletionEngine:
             or evidence.get("branch") != "qmoi"
             or evidence.get("remote_verified") is not True
             or evidence.get("coverage_complete") is not True
+            or evidence.get("master_verified") is not True
             or not evidence.get("workflow_run_id")
             or not re.fullmatch(r"[0-9a-f]{40}", workspace_sha)
             or not re.fullmatch(r"[0-9a-f]{40}", tree_sha)
@@ -862,6 +863,7 @@ class AutonomousCompletionEngine:
                 or item.get("qmoi_sha") != workspace_sha
                 or item.get("main_sha") != workspace_sha
                 or item.get("backup_sha") != workspace_sha
+                or item.get("master_sha") != workspace_sha
                 or item.get("branch_tree_sha") != tree_sha
                 or item.get("required_docs_present") is not True
             ):

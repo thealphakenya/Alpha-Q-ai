@@ -110,3 +110,37 @@ The autonomous validation contract covers:
 - GitHub proof contracts
 - Security automation and vulnerability remediation
 - Dataset recovery and benchmark validation
+
+<!-- BEGIN QMOI MANAGED: project-autoproject-coverage -->
+## Project and AutoProject coverage
+
+The autonomous repo engine treats project and autoproject state as first-class operational evidence and keeps its registry, lifecycle, financial, and production surfaces synchronized with the current repository state.
+
+- Master and sister roles may configure bank accounts, wallets, payment APIs, and project-linked payment destinations for autonomous project and autoproject execution.
+- Public and authenticated users do not receive these administrative configuration controls without separate authorization and explicit policy approval.
+
+- projectsandautoprojects.md: project automation contract
+- projectsandautoprojectsenhanced.md: project automation contract
+- QVERSIONMANAGER.md: Q Version Manager; Purpose and authority; Canonical autonomous lifecycle; Autonomous agent responsibilities covered by Q-version and OFCA gates; Required Q.0.0.N artifact contracts; Implemented enhancements
+- production.md: production.md; Required replacement policy; Files flagged for production replacement; Agent-managed production inventory; Required replacement policy; Unmapped production candidates
+- productionenhanced.md: productionenhanced.md; Production replacement policy; Enhancements; Files addressed; Agent-managed production inventory; Production replacement policy
+- bankandbankaccounts.md: Agent Automation Status
+- FINANCIALMANAGER.md: QMOI Financial Manager; Purpose; Operating principles; Core finance objectives; Wallet and account model; Financial layers
+- QMOI_MODEL_CARD.md: QMOI Model Card; Overview; Applications; QMOIAIUI; QCity; QMOI Space
+- QVILLAGE.md: QVILLAGE.md; Active automation
+<!-- END QMOI MANAGED: project-autoproject-coverage -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

@@ -384,7 +384,7 @@ Production-oriented financial management model: active and under continued enhan
 
 Trading and balance displays must distinguish provider-observed, simulated, stale, and unavailable values. Path discovery does not prove account ownership, current balances, settlement, or provider integration.
 
-- Materialized trading candidates: `549`; detailed inventory: `QMOItracks/trading_surface_inventory.json`.
+- Materialized trading candidates: `551`; detailed inventory: `QMOItracks/trading_surface_inventory.json`.
 - Financial claim audit: `196` files, `2614` redacted candidate lines; values are excluded from the report and no balances are verified.
 - Only authorized read-only provider responses can produce current balance evidence; include account scope, currency, observed-at timestamp, and reconciliation status without exposing account secrets.
 - Transfers, deposits, withdrawals, payroll, and live trading remain blocked without explicit authorization, verified provider capability, risk checks, and auditable confirmation.
@@ -398,6 +398,6 @@ This scan indexes claim locations and metadata only; it does not verify balances
 - Account-ID-like lines: `4`; actual balances independently verified by this scan: `0`.
 - Currency mentions by owner label: `{"binance": {}, "cashon": {"KES": 18}, "coinbase": {}, "kraken": {}, "megavault": {}, "paypal": {"KES": 2, "USD": 1}, "unassigned_account_wallet_bank": {"KES": 28, "USD": 2}, "unassigned_financial_claim": {"EUR": 1, "GBP": 1, "KES": 1149, "USD": 25, "USDT": 5}}`.
 - Candidate locations, line numbers, hashes, scopes, and owner groups: `QMOItracks/financial_claim_inventory.json`.
-- Untracked financial Markdown excluded: `1`; oversized Markdown excluded: `5`.
+- Untracked financial Markdown excluded: `0`; oversized Markdown excluded: `5`.
 - Unsupported claims remain `needs_independent_review_not_verified`; do not silently delete or replace historical amounts with invented evidence. Resolve each claim with authorized source proof or retain it clearly marked unverified.
 <!-- END QMOI MANAGED: trading-evidence-and-balance-accountability -->

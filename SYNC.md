@@ -106,7 +106,7 @@ The following critical files are synced bidirectionally:
 ### Bidirectional Autosync Workflow
 
 Both repositories include `.github/workflows/cross-repo-autosync.yml`. It runs
-on pushes to `main`, every 15 minutes, and manual dispatch. The workflow checks
+on pushes to `main`, `autosync-backup`, or `master`, every 15 minutes, manual dispatch, and completed Ollama-agent workflow runs. The workflow checks
 out the current repository and its counterpart, runs
 `scripts/cross_repo_sync.py`, publishes `autosync-backup` first, and promotes
 to `main` only when the target tip is a verified fast-forward. QMOI remains the
@@ -127,9 +127,10 @@ blocked JSON report and no push attempt. A remote push failure is recorded with
 completed and failed branch names so partial publication is never reported as
 full synchronization.
 
-The workflow uses `MY_CUSTOM_TOKEN` for write access to both repositories. That
-secret must already exist in each repository's Actions settings; no code-only
-change can grant GitHub write permission. Local Codespaces can use the same
+The workflow prefers the user-reported `MY_CUSTUOM_TOKEN` secret and accepts
+`MY_CUSTOM_TOKEN` as a compatibility alias for write access to both repositories.
+The secret must already exist in each repository's Actions settings; this code
+does not inspect its value or grant GitHub write permission. Local Codespaces can use the same
 runner in either checkout:
 
 ```bash
@@ -150,6 +151,15 @@ resulting synchronization commit. This prevents push-trigger recursion and
 competing Ollama servers. The agent records branch, file inventory, checksums,
 authors, timestamps, and conflict decisions in `MERGE.md` and
 `ollamatracks/SYNC_STATUS.txt`.
+
+### Four-branch plan
+
+- `main`: default development and promotion branch; the default-branch setting remains unchanged.
+- `autosync-backup`: first fast-forward staging target for cross-repository promotion.
+- `master`: automatically created if absent and fast-forwarded from validated `main` after backup/main promotion. It is a stable parity/recovery mirror, not an independent development branch or a policy authority. Master-only changes block sync for review; the agent never force-updates it.
+- `qmoi`: restore point for the last successfully completed agent cycle. It is created/advanced only after terminal agent success and the explicit publication authorization gate.
+
+Both repositories must converge on one exact commit/tree across all four refs before Q-version finalization. Audit output includes a machine-readable `master_branch_plan`; restore and Q-version evidence records each repository's `master_sha`. Push/schedule runs keep backup, main, and master synchronized when fast-forward-safe; only a verified successful-agent workflow can create/update `qmoi`. The 15-minute schedule is a bounded recovery attempt, not a guarantee of continuous availability: permissions, protections, divergence, failed checks, and unavailable runners stay explicit blockers.
 
 ## File Distribution Strategy
 
@@ -212,10 +222,18 @@ Finalize sync:
 - Merge to main on success
 
 ## Token Policy
-- **Primary Token**: MY_CUSTOM_TOKEN (GitHub Personal Access Token)
+- **Primary Token**: MY_CUSTUOM_TOKEN (user-reported GitHub Actions secret)
+- **Compatibility Alias**: MY_CUSTOM_TOKEN
 - **Fallback**: GitHub token via `gh auth token`
 - **Scope**: Full repo access for both repositories
 - **Security**: Token never logged or exposed in output
+
+`qmoi` restore publication is separate from routine synchronization. Push and
+scheduled runs can fast-forward `autosync-backup` and `main`, but they defer the
+restore ref unless the completed Ollama workflow's agent, tests, final
+validation, hosted-link, and final health steps are verified successful. First
+bootstrap additionally requires both repositories' main/backup refs to match
+and the explicit `QMOI_BRANCH_PUBLICATION_AUTHORIZED=true` repository variable.
 
 ## Conflict Resolution
 

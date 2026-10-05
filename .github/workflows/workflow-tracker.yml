@@ -904,7 +904,7 @@ jobs:
           VALIDATION_BRANCH: ${{ needs.track-status.outputs.head_branch }}
           VALIDATION_SHA: ${{ needs.track-status.outputs.head_sha }}
         with:
-          github-token: ${{ secrets.MY_CUSTOM_TOKEN || github.token }}
+          github-token: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN || github.token }}
 
           script: |
             const owner = context.repo.owner;

@@ -738,7 +738,7 @@ The QMOI Ollama Autonomous Agent provides:
 
 This generated audit indexes paths, hashes, line numbers, and responsibility categories only; source text is never copied into the evidence artifact.
 
-- Materialized files scanned: `10384`; QMOI-matching files: `4125`.
+- Materialized files scanned: `10397`; QMOI-matching files: `4129`.
 - Local scan status: `PASS`; historical source scopes are listed in `QMOItracks/QMOI_reference_audit.json`.
 - Local tree and archived source scans do not cover every remote ref, pull request, or intermediate commit tree; Q-version completion stays blocked until both repositories have terminal exact-SHA audit evidence.
 - Styles and universal UI requirements remain incomplete until each registered feature maps to focused tests and event-driven hook/webhook validation; registry discovery is not coverage proof.

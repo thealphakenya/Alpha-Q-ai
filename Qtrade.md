@@ -583,7 +583,7 @@ The trading source inventory is a discovery artifact. Every venue, UI, API, test
 
 - Project and autoproject financial configuration are governed by the master/sister account policy: only authorized operators may bind a bank account, wallet, payment API, or project-linked financial destination to QMOI automation.
 - The repository keeps `bankandbankaccounts.md`, `FINANCIALMANAGER.md`, `projectsandautoprojects.md`, and `projectsandautoprojectsenhanced.md` synchronized with the active configuration model so every financial action remains traceable and reviewable.
-- Current materialized trading candidates: `549`; platform mentions: `{"binance": 27, "bitget": 62, "bybit": 2, "cashon": 101, "coinbase": 10, "kraken": 10, "megavault": 34, "okx": 2, "paypal": 39}`.
+- Current materialized trading candidates: `551`; platform mentions: `{"binance": 27, "bitget": 62, "bybit": 2, "cashon": 101, "coinbase": 10, "kraken": 10, "megavault": 34, "okx": 2, "paypal": 39}`.
 - Feature and source coverage remains `discovered_unmapped` until each candidate maps to active implementation, tests, and exact-SHA evidence.
 - Provider verification is `provider-sourced` only when an authorized provider response is independently recorded; repository discovery is not provider proof.
 - Credential names and consumers discovered: `1130`; metadata inventory: `QMOItracks/credential_reference_inventory.json`; values not read from stores or emitted.
@@ -597,12 +597,13 @@ The trading source inventory is a discovery artifact. Every venue, UI, API, test
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.

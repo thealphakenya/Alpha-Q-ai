@@ -6,7 +6,7 @@
 Scope: current checkout only. Inventory discovery is not proof that a hook is registered remotely, reachable, authenticated, or successfully delivered.
 
 - Workflow files discovered: `17`.
-- Source/config files mentioning webhook identifiers: `3`.
+- Source/config files mentioning webhook identifiers: `4`.
 - Workflow parse errors: `0`.
 - External registration and delivery state: `not_verified` unless a provider read and signed delivery/test evidence are recorded for the exact repository/ref.
 - Styles/universals feature event coverage is tracked in `QMOItracks/feature_test_hook_coverage.json`; applicability reviews: `0/404`; event-hook tests must be mapped separately from static style tests.
@@ -39,6 +39,7 @@ Scope: current checkout only. Inventory discovery is not proof that a hook is re
 | --- | --- | --- |
 | `scripts/autonomous_completion_engine.py` | `unmapped` | `reference_only_not_runtime_verified` |
 | `scripts/QMOI_autonomous_agent.py` | `unmapped` | `reference_only_not_runtime_verified` |
+| `scripts/QMOI_research.py` | `unmapped` | `reference_only_not_runtime_verified` |
 | `tests/test_QMOI_autonomous_agent.py` | `unmapped` | `reference_only_not_runtime_verified` |
 
 ### Required hook/webhook safety evidence

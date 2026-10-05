@@ -46,12 +46,13 @@ Every merge/internal-research run writes `ollamatracks/repository_surface_audit.
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
@@ -61,10 +62,10 @@ Every merge/internal-research run writes `ollamatracks/repository_surface_audit.
 ## Agent-managed internal reference research coverage
 
 - Audit status: `NEEDS_REVIEW`; local paths only; source hashes are in `QMOItracks/repository_surface_audit.json`.
-- Markdown files: `2412`; local directories: `1267`; percentage candidates: `22236`; comparison/Qtrade metric lines: `46823`.
-- Formula/calculation candidates: `11364`; path-grouped descriptive percentage summaries: `734`.
-- Instruction candidates: `36263`; production-gap candidates: `285`. These are unverified queues, not proof of fulfilled instructions or defects.
-- Production-gap scan: `285` candidates across `3222` files; candidates are not confirmed defects and are never bulk-replaced.
+- Markdown files: `2413`; local directories: `1267`; percentage candidates: `22236`; comparison/Qtrade metric lines: `46842`.
+- Formula/calculation candidates: `11373`; path-grouped descriptive percentage summaries: `734`.
+- Instruction candidates: `36455`; production-gap candidates: `285`. These are unverified queues, not proof of fulfilled instructions or defects.
+- Production-gap scan: `285` candidates across `3227` files; candidates are not confirmed defects and are never bulk-replaced.
 - Every document receives a content hash, byte/line/word/sentence counts, structural checks, and local-link checks when within the configured parse bound. Sentence counts are heuristic; semantic meaning is not inferred.
 - All API, endpoint, route, port, workflow, link, component, tree, style, universal, QVS/QVillage, comparison, Qtrade, and metrics surfaces are mapped by path in `QMOItracks/repository_surface_audit.json`.
 - Unavailable roots, unreadable or oversized files, remote refs, PR trees, and intermediate commit trees remain visible blockers.

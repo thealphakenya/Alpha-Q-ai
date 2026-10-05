@@ -78,12 +78,12 @@ jobs:
       - name: Validate synchronization token
         shell: bash
         env:
-          SYNC_TOKEN: ${{ secrets.MY_CUSTOM_TOKEN }}
+          SYNC_TOKEN: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN }}
         run: |
           set -euo pipefail
 
           if [ -z "${SYNC_TOKEN:-}" ]; then
-            echo "::error::MY_CUSTOM_TOKEN is missing."
+            echo "::error::MY_CUSTUOM_TOKEN or MY_CUSTOM_TOKEN is missing."
             echo "::error::A cross-repository token with write access to both repositories is required."
             exit 1
           fi
@@ -97,7 +97,7 @@ jobs:
       - name: Configure authenticated source remote
         shell: bash
         env:
-          SYNC_TOKEN: ${{ secrets.MY_CUSTOM_TOKEN }}
+          SYNC_TOKEN: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -255,7 +255,7 @@ jobs:
       - name: Configure authenticated Alpha-Q-ai remote
         shell: bash
         env:
-          SYNC_TOKEN: ${{ secrets.MY_CUSTOM_TOKEN }}
+          SYNC_TOKEN: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN }}
         run: |
           set -euo pipefail
 
@@ -277,7 +277,7 @@ jobs:
 
           if ! git ls-remote --exit-code alpha-q-ai HEAD >/dev/null 2>&1; then
             echo "::error::Unable to access target repository ${TARGET_REPOSITORY}."
-            echo "::error::MY_CUSTOM_TOKEN must have write access to ${TARGET_REPOSITORY}."
+            echo "::error::MY_CUSTUOM_TOKEN or MY_CUSTOM_TOKEN must have write access to ${TARGET_REPOSITORY}."
             exit 1
           fi
 

@@ -176,6 +176,7 @@ def q_version_qmoi_restore_point_evidence(roots: list[Path], shas: list[str], wo
     return {
         "status": "SUCCESS",
         "branch": "qmoi",
+        "master_verified": True,
         "coverage_complete": True,
         "remote_verified": True,
         "workflow_conclusion": "success",
@@ -190,6 +191,7 @@ def q_version_qmoi_restore_point_evidence(roots: list[Path], shas: list[str], wo
                 "qmoi_sha": sha,
                 "main_sha": sha,
                 "backup_sha": sha,
+                "master_sha": sha,
                 "branch_tree_sha": subprocess.run(
                     ["git", "-C", str(root), "rev-parse", f"{sha}^{{tree}}"],
                     check=True,
@@ -207,6 +209,7 @@ def completion_qmoi_restore_point_evidence(sha: str = "a" * 40) -> dict[str, obj
     return {
         "status": "PASS",
         "branch": "qmoi",
+        "master_verified": True,
         "workspace_sha": sha,
         "tree_sha": "b" * 40,
         "coverage_complete": True,
@@ -221,6 +224,7 @@ def completion_qmoi_restore_point_evidence(sha: str = "a" * 40) -> dict[str, obj
                 "qmoi_sha": sha,
                 "main_sha": sha,
                 "backup_sha": sha,
+                "master_sha": sha,
                 "branch_tree_sha": "b" * 40,
                 "required_docs_present": True,
             }
@@ -264,6 +268,7 @@ def record_successful_q_lifecycle(
         "QMOI_RESTORE_POINT": {
             "status": "SUCCESS",
             "branch": "qmoi",
+            "master_verified": True,
             "remote_verified": True,
             "coverage_complete": True,
             "workflow_run_id": "run-qmoi-restore",
@@ -693,6 +698,14 @@ def test_completion_requires_current_dual_repository_qmoi_restore_point(tmp_path
     )
     assert verified.gates["qmoi_restore_point"] == "PASS"
     assert verified.evidence["qmoi_restore_point"]["coverage_complete"] is True
+
+    missing_master = completion_qmoi_restore_point_evidence()
+    del missing_master["repositories"]["thealphakenya/Alpha-Q-ai"]["master_sha"]
+    incomplete_master = AutonomousCompletionEngine(root, "execution-qmoi-master-missing").evaluate(
+        gates,
+        repository_results={"qmoi_restore_point": missing_master},
+    )
+    assert incomplete_master.gates["qmoi_restore_point"] == "UNKNOWN"
 
     evidence["repositories"]["thealphakenya/qmoi-enhanced"]["backup_sha"] = "c" * 40
     divergent = AutonomousCompletionEngine(root, "execution-qmoi-divergent").evaluate(
@@ -1514,6 +1527,12 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
     with pytest.raises(RuntimeError, match="terminal exact-SHA qmoi restore-point evidence"):
         manager.write_final_metrics("Q.0.0.3", roots, evidence)
     evidence["qmoi_restore_point"] = restore_point
+
+    repository_key = str(roots[0].resolve())
+    missing_master = restore_point["repositories"][repository_key].pop("master_sha")
+    with pytest.raises(RuntimeError, match="qmoi restore-point evidence is incomplete"):
+        manager.write_final_metrics("Q.0.0.3", roots, evidence)
+    restore_point["repositories"][repository_key]["master_sha"] = missing_master
 
     result = manager.write_final_metrics("Q.0.0.3", roots, evidence)
 

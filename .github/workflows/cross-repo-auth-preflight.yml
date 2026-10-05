@@ -26,7 +26,7 @@ jobs:
         env:
           PEER_REPOSITORY: ${{ github.repository == 'thealphakenya/Alpha-Q-ai' && 'thealphakenya/qmoi-enhanced' || 'thealphakenya/Alpha-Q-ai' }}
         with:
-          github-token: ${{ secrets.MY_CUSTOM_TOKEN || github.token }}
+          github-token: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN || github.token }}
           script: |
             const peer = process.env.PEER_REPOSITORY;
             const repositories = [context.repo.owner + "/" + context.repo.repo, peer];
@@ -52,7 +52,7 @@ jobs:
 
             const payload = {
               status: results.every((item) => item.repository_access === "PASS" && item.workflow_access === "PASS") ? "AUTH_READY" : "AUTH_BLOCKED",
-              credential_role: "MY_CUSTOM_TOKEN_or_github.token",
+              credential_role: "MY_CUSTUOM_TOKEN_or_MY_CUSTOM_TOKEN_or_github.token",
               source_repository: context.repo.owner + "/" + context.repo.repo,
               results,
               timestamp_utc: new Date().toISOString(),

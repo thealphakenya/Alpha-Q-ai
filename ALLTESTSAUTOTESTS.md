@@ -5,10 +5,10 @@
 
 Scope: current checkout's tracked and non-ignored files only. Historical refs, peer repositories, and unfetched PR trees require separate audit artifacts.
 
-- Active-checkout test files discovered: `13`.
+- Active-checkout test files discovered: `15`.
 - Snapshot test files discovered (not active coverage): `25`.
 - Historical/archive test files discovered (not active coverage): `525`.
-- Total test-like paths discovered across these scopes: `563`.
+- Total test-like paths discovered across these scopes: `565`.
 - UI feature registry rows: `24`; registry entries are requirements, not proof of implementation or test coverage.
 - Coverage state: `discovered_unmapped` until a feature ID maps to implementation files, positive/negative tests, and an exact-SHA run result.
 - Completion state: `tested_local` and `tested_remote` are separate; remote status requires a terminal target-owned run for the exact source SHA.
@@ -568,10 +568,12 @@ Scope: current checkout's tracked and non-ignored files only. Historical refs, p
 | `qmoi-enhanced-history-14/tests/unit/test_qi.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
 | `qmoi-enhanced-history-14/tests/wallet.test.ts` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
 | `tests/test_alpha_q_ai_2025_security.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_autonomous_evidence_monitor.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_command_inventory.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_control_plane.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_cross_repo_sync.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_enhanced_tracking_and_workflows.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_live_github_verifier.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_merge_inventory.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_QMOI_autonomous_agent.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_QMOI_enhanced_features.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
@@ -614,10 +616,10 @@ Scope: current checkout's tracked and non-ignored files only. Historical refs, p
 
 Materialized source paths are candidates, not proof of implementation, authorization, or test coverage. Complete branch/PR history is a separate remote audit gate.
 
-- Candidate files: `549`; materialized scope counts: `{"active_checkout": 16, "historical_archive": 432, "snapshot": 101}`.
-- Candidate role counts: `{"backend_api_or_adapter": 175, "documentation": 43, "frontend_ui": 81, "runtime_or_integration_candidate": 224, "test": 39}`.
+- Candidate files: `551`; materialized scope counts: `{"active_checkout": 18, "historical_archive": 432, "snapshot": 101}`.
+- Candidate role counts: `{"backend_api_or_adapter": 175, "documentation": 43, "frontend_ui": 81, "runtime_or_integration_candidate": 225, "test": 40}`.
 - Venue mentions: `{"binance": 27, "bitget": 62, "bybit": 2, "cashon": 101, "coinbase": 10, "kraken": 10, "megavault": 34, "okx": 2, "paypal": 39}`.
-- Local refs discovered: `37`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.
+- Local refs discovered: `39`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.
 - Machine-readable path, size, hash, source scope, role, and venue evidence: `QMOItracks/trading_surface_inventory.json`.
 - Coverage state: `discovered_unmapped`; platform execution, credential validity, balances, provider webhook registration, and live-order readiness are not verified by path discovery.
 ### Credential references and provider verification
@@ -1173,10 +1175,12 @@ This inventory scans source references only. It does not read environment values
 | `qmoi-enhanced-history-14/types/trading.ts` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/autonomous_completion_engine.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/QMOI_autonomous_agent.py` | `active_checkout` | `runtime_or_integration_candidate` | `binance, bitget, bybit, cashon, coinbase, kraken, megavault, okx, paypal` | `discovered_unmapped` |
+| `scripts/QMOI_research.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/q_version_manager.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/qmoi_credentials.py` | `active_checkout` | `runtime_or_integration_candidate` | `bitget` | `discovered_unmapped` |
 | `scripts/realtime_workflow_monitor.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/trading/production_trading_autopilot.py` | `active_checkout` | `runtime_or_integration_candidate` | `binance, bitget, cashon` | `discovered_unmapped` |
+| `tests/test_control_plane.py` | `active_checkout` | `test` | `unspecified` | `discovered_unmapped` |
 | `tests/test_QMOI_autonomous_agent.py` | `active_checkout` | `test` | `binance, bitget, cashon, megavault` | `discovered_unmapped` |
 | `tests/test_production_trading_autopilot.py` | `active_checkout` | `test` | `binance, bitget, bybit, cashon, kraken, okx` | `discovered_unmapped` |
 | `tests/test_qmoi_credentials.py` | `active_checkout` | `test` | `bitget` | `discovered_unmapped` |
@@ -1197,5 +1201,5 @@ Every UI/API/backend feature must have a stable feature ID, owning repository/re
 ### Styles and universals test/hook mapping: `QMOItracks/feature_test_hook_coverage.json`
 
 Registered feature count: `404`; test mappings: `0`; reviewed hook applicability: `0/404`; status: `NEEDS_FEATURE_TEST_HOOK_MAPPING`.
-Styles/universals replacement plan: `QMOItracks/style_universal_replacement_inventory.json`; `1444` style files, `1170` universal/access files, `659` directories; candidates require review and tests, and replacements are not authorized by discovery.
+Styles/universals replacement plan: `QMOItracks/style_universal_replacement_inventory.json`; `1444` style files, `1175` universal/access files, `659` directories; candidates require review and tests, and replacements are not authorized by discovery.
 <!-- END QMOI MANAGED: active-test-feature-coverage -->

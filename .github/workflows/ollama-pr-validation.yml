@@ -33,7 +33,7 @@ name: Ollama PR Validation - 293+ Platform Features
 # --------------
 # Normal GitHub Actions API operations use github.token.
 #
-# A custom MY_CUSTOM_TOKEN may still be used by the agent-dispatch step
+# MY_CUSTUOM_TOKEN (legacy MY_CUSTOM_TOKEN) may be used by the agent-dispatch step
 # if the repository has configured that secret.
 #
 # ============================================================================
@@ -1229,7 +1229,7 @@ jobs:
       - name: Dispatch Autonomous Agent Workflow
         uses: actions/github-script@v8
         with:
-          github-token: ${{ secrets.MY_CUSTOM_TOKEN || github.token }}
+          github-token: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN || github.token }}
 
           script: |
             console.log('============================================================');

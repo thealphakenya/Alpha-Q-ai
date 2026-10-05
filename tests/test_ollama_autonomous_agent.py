@@ -33,6 +33,9 @@ from ollama_autonomous_agent import (
     resolve_github_token,
     mask_github_token,
     configure_github_git_auth,
+    main as autonomous_agent_main,
+    refresh_legacy_sync_artifact_inventory,
+    restore_point_memory_snapshot,
     detect_resume_file_origin,
     update_resume_file_metadata,
 )
@@ -96,6 +99,165 @@ class TestAutonomousContinuation:
         assert continue_stage["stage_status"] == "PASS"
         assert continue_stage["details"]["loop_completed"] is True
         assert continue_stage["details"]["retry_limit_respected"] is True
+
+
+class TestAuditInventoryCommand:
+    def test_audit_inventory_refreshes_local_evidence_without_remote_success_claims(
+        self, tmp_path, monkeypatch, capsys
+    ):
+        calls = {}
+
+        def build_research(self, roots, *, fetch_external=False):
+            calls["research"] = {"roots": roots, "fetch_external": fetch_external}
+            return {
+                "internal": {
+                    "repository_surface_audit": {
+                        "status": "NEEDS_REVIEW",
+                        "coverage_complete": False,
+                        "remote_verified": False,
+                        "artifact_path": "ollamatracks/repository_surface_audit.json",
+                    }
+                },
+                "external": {"status": "PLANNED_NOT_VISITED", "visited_count": 0},
+            }
+
+        def refresh_ofca(self, root=None):
+            calls["ofca_root"] = root
+            return {
+                "status": "NEEDS_REMOTE_HISTORY_EVIDENCE",
+                "coverage_complete": False,
+                "source_manifest_sha256": "manifest-hash",
+                "next_action": "Run the authorized target-owned audit.",
+            }
+
+        def refresh_feature_coverage(self, root=None):
+            calls["feature_root"] = root
+            return {
+                "coverage_verified": False,
+                "styles_universals_coverage": {
+                    "status": "NEEDS_FEATURE_TEST_HOOK_MAPPING",
+                    "feature_count": 4,
+                },
+            }
+
+        def instruction_inventory(root):
+            calls["instruction_root"] = root
+            return {"status": "PASS", "files_discovered": 8, "files_read": 8}
+
+        monkeypatch.setattr(OllamaAutonomousAgent, "build_autoresearch_report", build_research)
+        monkeypatch.setattr(OllamaAutonomousAgent, "refresh_ollama_reference_audit", refresh_ofca)
+        monkeypatch.setattr(OllamaAutonomousAgent, "refresh_test_hook_coverage_documents", refresh_feature_coverage)
+        monkeypatch.setattr("ollama_autonomous_agent.audit_instruction_files", instruction_inventory)
+
+        assert autonomous_agent_main(["audit-inventory", "--base-path", str(tmp_path)]) == 0
+
+        result = json.loads(capsys.readouterr().out)
+        assert calls["research"]["fetch_external"] is False
+        assert calls["research"]["roots"] == [tmp_path.resolve()]
+        assert calls["ofca_root"] == tmp_path.resolve()
+        assert calls["feature_root"] == tmp_path.resolve()
+        assert calls["instruction_root"] == tmp_path.resolve()
+        assert result["repository_surface_audit"]["status"] == "NEEDS_REVIEW"
+        assert result["ofca"]["status"] == "NEEDS_REMOTE_HISTORY_EVIDENCE"
+        assert result["styles_universals"]["status"] == "NEEDS_FEATURE_TEST_HOOK_MAPPING"
+        assert result["remote_mutation_performed"] is False
+        assert result["external_research"]["fetch_enabled"] is False
+
+
+class TestRestorePointMemoryAndLegacyInventory:
+    def test_restore_memory_requires_matching_four_branch_evidence(self, tmp_path):
+        artifact_dir = tmp_path / "ollamatracks"
+        artifact_dir.mkdir()
+        workspace_sha = "a" * 40
+        tree_sha = "b" * 40
+        repositories = {
+            name: {
+                "branch_tree_sha": tree_sha,
+                "remote_verified": True,
+                "main_sha": workspace_sha,
+                "backup_sha": workspace_sha,
+                "qmoi_sha": workspace_sha,
+                "master_sha": workspace_sha,
+            }
+            for name in ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced")
+        }
+        evidence = {
+            "status": "PASS",
+            "remote_verified": True,
+            "coverage_complete": True,
+            "master_verified": True,
+            "workspace_sha": workspace_sha,
+            "tree_sha": tree_sha,
+            "workflow_run_id": "agent-run-42",
+            "timestamp": "2026-10-05T12:00:00Z",
+            "repositories": repositories,
+        }
+        source = artifact_dir / "qmoi_restore_point_preflight.json"
+        source.write_text(json.dumps(evidence), encoding="utf-8")
+
+        synchronized = restore_point_memory_snapshot(tmp_path)
+
+        assert synchronized["memory_sync_status"] == "SYNCED"
+        assert synchronized["master_verified"] is True
+        assert synchronized["source_sha256"]
+        assert synchronized["repositories"]["thealphakenya/Alpha-Q-ai"]["refs"]["master"] == workspace_sha
+
+        repositories["thealphakenya/Alpha-Q-ai"]["master_sha"] = "c" * 40
+        source.write_text(json.dumps(evidence), encoding="utf-8")
+        divergent = restore_point_memory_snapshot(tmp_path)
+        assert divergent["memory_sync_status"] == "BLOCKED_OR_REVIEW_REQUIRED"
+        assert divergent["master_verified"] is False
+
+    def test_legacy_sync_inventory_matches_snapshot_artifacts_without_inferring_dates(self, tmp_path):
+        alpha = tmp_path / "Alpha-Q-ai-2025" / "scripts"
+        qmoi = tmp_path / "qmoi-enhanced-history-14" / "scripts"
+        alpha.mkdir(parents=True)
+        qmoi.mkdir(parents=True)
+        content = "# snapshot date 2025-07-16\n"
+        alpha_file = alpha / "backup_restore_2025-07-16.py"
+        qmoi_file = qmoi / "backup_restore_2025-07-16.py"
+        alpha_file.write_text(content, encoding="utf-8")
+        qmoi_file.write_text(content, encoding="utf-8")
+        (qmoi / "sync_memory.py").write_text("# memory sync\n", encoding="utf-8")
+
+        report = refresh_legacy_sync_artifact_inventory(tmp_path)
+
+        alpha_inventory = report["snapshots"]["alpha_2025_snapshot"]["artifacts"]
+        candidate = next(item for item in alpha_inventory if item["path"].endswith("backup_restore_2025-07-16.py"))
+        assert report["status"] == "NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE"
+        assert report["live_qmoi_enhanced_checkout_present"] is False
+        assert candidate["historical_qmoi_exact_path"]["sha256_equal"] is True
+        assert candidate["embedded_date_tokens"] == ["2025-07-16"]
+        assert candidate["sync_disposition"] == "historical_comparison_candidate_only"
+        assert report["automatic_copy_or_overwrite_enabled"] is False
+        assert "not treated as source dates" in report["date_policy"]
+
+    def test_memory_model_card_qvillage_and_evolution_share_restore_status(self, tmp_path):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        (tmp_path / "ollamatracks").mkdir(exist_ok=True)
+        documents = (
+            "QVILLAGE.md",
+            "Qvillageevolutions.md",
+            "QMOI_REALTIME_MEMORY_INDEX.md",
+            "QMOI_MEMORY_AWARENESS_SYSTEM.md",
+            "AUTODEV.md",
+            "ALLAUTO.md",
+        )
+        for filename in documents:
+            (tmp_path / filename).write_text(f"# {filename}\n", encoding="utf-8")
+
+        snapshot = agent.refresh_restore_point_memory_documents(tmp_path)
+        memory_index = MemoryIndexGenerator(tmp_path).generate_index()
+        model_card = agent.model_card_generator.generate_card()
+
+        assert snapshot["memory_sync_status"] == "BLOCKED_MISSING_EVIDENCE"
+        assert json.loads((tmp_path / snapshot["artifact_path"]).read_text(encoding="utf-8"))["master_verified"] is False
+        assert "Restore-point memory and branch continuity" in memory_index.read_text(encoding="utf-8")
+        assert "Restore-point memory and branch continuity" in model_card.read_text(encoding="utf-8")
+        for filename in documents:
+            text = (tmp_path / filename).read_text(encoding="utf-8")
+            assert "restore-point-memory-sync" in text
+            assert "master" in text
 
     def test_run_continue_cycle_exhaustion_is_not_a_lifecycle_pass(self, tmp_path, monkeypatch):
         repo = tmp_path / "repo"
@@ -213,7 +375,10 @@ class TestCrossRepositoryAutonomyManager:
         assert "QVillage" in awareness["platform_surfaces"]
         assert "model tests" in awareness["feature_surfaces"]
         assert "QMOI_MODEL_CARD.md" in awareness["required_artifacts"]
+        assert "ollamatracks/restore_point_memory.json" in awareness["required_artifacts"]
+        assert "Qvillageevolutions.md" in awareness["required_artifacts"]
         assert any("fresh artifacts" in gate for gate in awareness["hard_gates"])
+        assert any("all four refs" in gate for gate in awareness["hard_gates"])
 
     def test_topic_execution_metrics_require_individual_evidence(self, tmp_path):
         (tmp_path / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md").write_text(
@@ -1948,13 +2113,14 @@ class TestResumeCheckpoint:
 class TestBranchSyncManager:
     """Tests for branch sync automation across the supported repo set."""
 
-    def test_branch_sync_requires_main_backup_and_qmoi_restore_point(self):
-        """The agent must maintain main, autosync-backup, and the qmoi restore point."""
+    def test_branch_sync_requires_all_four_managed_branches(self):
+        """The agent must maintain main, backup, master, and qmoi restore refs."""
         manager = BranchSyncManager()
         branches = manager.required_branches()
         assert "main" in branches
         assert "autosync-backup" in branches
         assert "qmoi" in branches
+        assert "master" in branches
 
     def test_sync_targets_include_qmoi_and_alpha_q_ai(self):
         """The agent must synchronize both the current repo and Alpha-Q-ai."""
@@ -1969,6 +2135,8 @@ class TestBranchSyncManager:
         plan = manager.build_sync_plan()
         assert plan["default_branch"] == "main"
         assert "autosync-backup" in plan["branches"]
+        assert "master" in plan["branches"]
+        assert plan["master_branch_plan"]["independent_changes_allowed"] is False
         assert "qmoi" in plan["branches"]
         assert "thealphakenya/qmoi-enhanced" in plan["repositories"]
 

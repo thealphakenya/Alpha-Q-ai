@@ -759,6 +759,7 @@ class QVersionManager:
             or restore_stage_details.get("branch") != "qmoi"
             or restore_stage_details.get("remote_verified") is not True
             or restore_stage_details.get("coverage_complete") is not True
+            or restore_stage_details.get("master_verified") is not True
         ):
             raise RuntimeError("Q-version lifecycle lacks a verified qmoi restore point")
         correlation_id = str(final_evidence.get("correlation_id", ""))
@@ -773,6 +774,7 @@ class QVersionManager:
             not isinstance(restore_evidence, dict)
             or restore_evidence.get("status") != "SUCCESS"
             or restore_evidence.get("branch") != "qmoi"
+            or restore_evidence.get("master_verified") is not True
             or restore_evidence.get("remote_verified") is not True
             or restore_evidence.get("coverage_complete") is not True
             or restore_evidence.get("workflow_conclusion") != "success"
@@ -797,6 +799,7 @@ class QVersionManager:
                 or item.get("qmoi_sha") != repository_sha
                 or item.get("main_sha") != repository_sha
                 or item.get("backup_sha") != repository_sha
+                or item.get("master_sha") != repository_sha
                 or item.get("branch_tree_sha") != expected_tree_sha
                 or item.get("required_docs_present") is not True
             ):
@@ -1145,6 +1148,7 @@ class QVersionManager:
             not isinstance(restore_evidence, dict)
             or restore_evidence.get("status") != "SUCCESS"
             or restore_evidence.get("branch") != "qmoi"
+            or restore_evidence.get("master_verified") is not True
             or restore_evidence.get("remote_verified") is not True
             or restore_evidence.get("coverage_complete") is not True
             or restore_evidence.get("workflow_conclusion") != "success"
@@ -1178,6 +1182,7 @@ class QVersionManager:
                 or restore_item.get("qmoi_sha") != final_sha
                 or restore_item.get("main_sha") != final_sha
                 or restore_item.get("backup_sha") != final_sha
+                or restore_item.get("master_sha") != final_sha
                 or restore_item.get("branch_tree_sha") != expected_tree_sha
                 or restore_item.get("required_docs_present") is not True
                 or restore_item.get("workflow_run_id") != restore_evidence.get("workflow_run_id")

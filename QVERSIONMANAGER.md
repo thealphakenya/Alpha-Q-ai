@@ -64,6 +64,34 @@ The agent is required to perform all of the following without human prompting:
 - finish with `AUTONOMOUS_COMPLETION` only when every gate passes and the queue is empty
 - preserve Q.0.0.N finalization as a repository artifact gated by exact remote SHA and workflow evidence, never as a local-only claim
 
+For local, non-finalizing inventory refresh, run `python scripts/ollama_autonomous_agent.py audit-inventory --base-path <repository-root>`. This refreshes local research/surface, production, OFCA, feature-test-hook/style-universal, and instruction inventories, with external fetching disabled. It is diagnostic only: it does not merge, dispatch, publish, verify remote history, or promote `NEEDS_REVIEW` to `PASS`. Its JSON summary and generated manifests must be reviewed before planning any remediation; finalization still requires the complete lifecycle and terminal remote evidence above.
+
+## Restore point automation safeguards
+
+The target-owned autosync workflow may advance `main` and `autosync-backup` through its existing fast-forward-only contract, but it may publish `qmoi` only after a terminal successful Ollama agent run is independently checked. A push event, schedule, dispatch acceptance, nonempty secret, local test, or agent success file by itself is not a restore-point authorization.
+
+The four branch roles are distinct: `main` is the default development/promotion ref; `autosync-backup` is the first fast-forward staging ref; `qmoi` is the post-success restore point; and `master` is a fast-forward-only mirror of the validated `main` tip used for parity/recovery checks. Git `master` is not an independent development branch and does not replace `main` as the default branch or `qmoi-enhanced` as the policy/master repository. Cross-repository audit evidence includes a machine-readable `master_branch_plan` with this operating policy.
+
+The restore-point implementation enforces these safeguards:
+
+1. Require exactly two distinct repository checkouts and a valid exact candidate SHA.
+2. Require clean checkouts and candidate objects available in both repositories.
+3. Require both repositories' `main`, `autosync-backup`, and `master` refs at the candidate SHA before restore publication.
+4. Require candidate trees to match across repositories and refuse non-fast-forward `qmoi` or `master` updates.
+5. Require `oe2.txt` and `remotecompletion.md` at the candidate SHA and record their SHA-256 values.
+6. Require a completed Ollama workflow whose head repository is the trusted current repository and whose default-branch run has successful agent execution, repository tests, final validation, hosted-link validation, and final health gate.
+7. Bind the completion evidence to the workflow run ID and source SHA; require that source SHA to be an ancestor of the candidate in both repositories.
+8. Permit first-run bootstrap only when both `qmoi` and `master` refs are absent and all `main`/backup refs equal the hosted checkout; permit master migration only when `qmoi`, `main`, and backup already agree. Both require readable docs/tree and `QMOI_BRANCH_PUBLICATION_AUTHORIZED=true`.
+9. Block one-sided, stale, divergent, or partially missing refs; bootstrap is never a repair path for mismatched branches.
+10. Re-read `main`, backup, `qmoi`, and `master` immediately before publication to detect preflight-to-push ref drift.
+11. Re-read and verify all four refs after each repository publication; record per-repository SHAs, tree, action, and verification result.
+12. Preserve partial publication as `BLOCKED_PARTIAL`; never force-push or silently roll back a valid remote ref.
+13. Keep ordinary push/scheduled sync independent from restore publication; without terminal agent evidence it records `SKIPPED_NO_VERIFIED_AGENT_SUCCESS` and does not create `qmoi`. Routine promotion still advances master from main when fast-forward-safe.
+14. Record a correlation ID, UTC timestamp, workflow identifiers, authorization state, blockers, and resumable next action without recording token values.
+15. Prefer the user-reported `MY_CUSTUOM_TOKEN` Actions secret and accept `MY_CUSTOM_TOKEN` as a compatibility alias; secret presence is not proof of validity, scope, or branch authorization.
+
+These local contracts and workflow definitions do not prove that either remote currently has aligned refs or that a workflow actually passed. Q-version finalization still requires terminal artifacts and independent exact-SHA verification for both repositories.
+
 ## Required Q.0.0.N artifact contracts
 
 Q.0.0.N is not a shortcut to completion; it is the final evidence archive for the autonomous system. A materialized version must include:
@@ -75,6 +103,7 @@ Q.0.0.N is not a shortcut to completion; it is the final evidence archive for th
 - production-readiness, UI-hook, and remote-verification results
 - the autonomous completion gate map with zero pending actions
 - terminal `qmoi` restore-point evidence showing both repositories' `qmoi`, `main`, and `autosync-backup` refs at their exact verified SHAs
+- terminal `master` mirror evidence for both repositories at the same exact final SHA and tracked tree
 - exact final SHAs and workflow IDs from target-owned success evidence
 
 The companion files are generated only after the terminal workflow result is successful and the repository tree is clean and matched to that exact SHA. They must not overwrite an existing Q-version artifact or be used to mask missing remote evidence.
@@ -192,7 +221,7 @@ Current remote completion remains blocked by unverified GitHub App key rotation,
 
 This generated audit indexes paths, hashes, line numbers, and responsibility categories only; source text is never copied into the evidence artifact.
 
-- Materialized files scanned: `10384`; QMOI-matching files: `4125`.
+- Materialized files scanned: `10397`; QMOI-matching files: `4129`.
 - Local scan status: `PASS`; historical source scopes are listed in `QMOItracks/QMOI_reference_audit.json`.
 - Local tree and archived source scans do not cover every remote ref, pull request, or intermediate commit tree; Q-version completion stays blocked until both repositories have terminal exact-SHA audit evidence.
 - Styles and universal UI requirements remain incomplete until each registered feature maps to focused tests and event-driven hook/webhook validation; registry discovery is not coverage proof.
@@ -211,13 +240,33 @@ Internal and external research share `ollamatracks/repository_surface_audit.json
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+<!-- BEGIN QMOI MANAGED: project-autoproject-coverage -->
+## Project and AutoProject coverage
+
+The autonomous repo engine treats project and autoproject state as first-class operational evidence and keeps its registry, lifecycle, financial, and production surfaces synchronized with the current repository state.
+
+- Master and sister roles may configure bank accounts, wallets, payment APIs, and project-linked payment destinations for autonomous project and autoproject execution.
+- Public and authenticated users do not receive these administrative configuration controls without separate authorization and explicit policy approval.
+
+- projectsandautoprojects.md: project automation contract
+- projectsandautoprojectsenhanced.md: project automation contract
+- QVERSIONMANAGER.md: Q Version Manager; Purpose and authority; Canonical autonomous lifecycle; Autonomous agent responsibilities covered by Q-version and OFCA gates; Required Q.0.0.N artifact contracts; Implemented enhancements
+- production.md: production.md; Required replacement policy; Files flagged for production replacement; Agent-managed production inventory; Required replacement policy; Unmapped production candidates
+- productionenhanced.md: productionenhanced.md; Production replacement policy; Enhancements; Files addressed; Agent-managed production inventory; Production replacement policy
+- bankandbankaccounts.md: Agent Automation Status
+- FINANCIALMANAGER.md: QMOI Financial Manager; Purpose; Operating principles; Core finance objectives; Wallet and account model; Financial layers
+- QMOI_MODEL_CARD.md: QMOI Model Card; Overview; Applications; QMOIAIUI; QCity; QMOI Space
+- QVILLAGE.md: QVILLAGE.md; Active automation
+<!-- END QMOI MANAGED: project-autoproject-coverage -->

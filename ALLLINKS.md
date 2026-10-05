@@ -250,9 +250,9 @@
 | `STYLES.md` | 112 | `qmoi-enhanced-history-14/STYLES.md` | `d65308a76e8116770d3fe357d978835c0dce2c75a0bb749fe6f105ca79dcd3c4` | `local` |
 | `STYLES.md` | 113 | `qmoi-enhanced-history-14/UNIVERSALS.md` | `c0f47cced70c423e588bd7d40af2c8e65335cd03422b22d6aa37906540a34a72` | `local` |
 | `STYLES.md` | 114 | `qmoi-enhanced-history-14/ALLMDFILESREFS.md` | `6e67cb97d703008b0b3db815cba88e23cf2cb3f21e0b6c5f71acd34ed5ef9275` | `local` |
-| `SYNC.md` | 298 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
-| `SYNC.md` | 299 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
-| `SYNC.md` | 300 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
+| `SYNC.md` | 301 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
+| `SYNC.md` | 302 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
+| `SYNC.md` | 303 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
 | `TRADINGREADME.md` | 94 | `FINANCIALMANAGER.md` | `28deb4af15ab67ea6e1629f2374beaab5d175bedc3e73d455f16787d559ee80b` | `local` |
 | `TRADINGREADME.md` | 95 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `TRADINGREADME.md` | 96 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
@@ -326,15 +326,15 @@
 | `oe2.md` | 92 | `tests/test_enhanced_tracking_and_workflows.py` | `d91192cc02e85b2b92fd5f5a3f6af95b1d0aa5a606eaa32c2643768738ac7e31` | `local` |
 | `oe2.md` | 93 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
 | `oe2.md` | 94 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
-| `remotecompletion.md` | 479 | `CREDENTIALS_ROTATION_PLAYBOOK.md` | `520e4a0c5ab49a1f071ca40496a7a324183c8c9e3c6d7abb278213b24d503035` | `local` |
-| `remotecompletion.md` | 567 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
-| `remotecompletion.md` | 567 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
-| `remotecompletion.md` | 572 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
-| `remotecompletion.md` | 572 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
-| `remotecompletion.md` | 572 | `QVILLAGE.md` | `248510c789e822028329cdc540c23ce19a7243237ac3da968c32bc831ada06ed` | `local` |
-| `remotecompletion.md` | 572 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
-| `remotecompletion.md` | 573 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
-| `remotecompletion.md` | 573 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
+| `remotecompletion.md` | 602 | `CREDENTIALS_ROTATION_PLAYBOOK.md` | `520e4a0c5ab49a1f071ca40496a7a324183c8c9e3c6d7abb278213b24d503035` | `local` |
+| `remotecompletion.md` | 690 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
+| `remotecompletion.md` | 690 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
+| `remotecompletion.md` | 695 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
+| `remotecompletion.md` | 695 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
+| `remotecompletion.md` | 695 | `QVILLAGE.md` | `248510c789e822028329cdc540c23ce19a7243237ac3da968c32bc831ada06ed` | `local` |
+| `remotecompletion.md` | 695 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
+| `remotecompletion.md` | 696 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
+| `remotecompletion.md` | 696 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
 | `trigger.md` | 179 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
 | `trigger.md` | 179 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `trigger.md` | 179 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
@@ -8549,12 +8549,13 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10408`; directories: `1267`; Markdown: `2412`.
+- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Markdown structural checks passed: `2186`; needs review: `218`; metric candidate lines: `46823`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11364`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
+- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36263` lines in `3090` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.

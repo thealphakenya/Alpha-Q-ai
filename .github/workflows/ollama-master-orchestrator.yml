@@ -1081,7 +1081,7 @@ jobs:
         # default token remains a same-repository fallback and is validated
         # by the dispatch result before completion can be claimed.
         with:
-          github-token: ${{ secrets.MY_CUSTOM_TOKEN || github.token }}
+          github-token: ${{ secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN || github.token }}
 
           script: |
             const workflowId =

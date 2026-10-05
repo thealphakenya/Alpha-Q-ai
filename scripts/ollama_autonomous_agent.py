@@ -203,6 +203,7 @@ ALPHA_Q_AI_REPOSITORY = "thealphakenya/Alpha-Q-ai"
 
 DEFAULT_BRANCH = "main"
 BACKUP_BRANCH = "autosync-backup"
+MASTER_BRANCH = "master"
 HISTORICAL_BRANCH = (
     "origin/codespace-potential-space-happiness-wrv69x5j6qjq2g7wp"
 )
@@ -483,6 +484,238 @@ def safe_json_write(path: Path, data: Any) -> None:
         + "\n",
         encoding="utf-8",
     )
+
+
+def restore_point_memory_snapshot(root: Path | str) -> dict[str, Any]:
+    """Return sanitized, freshness-bound four-branch state for memory and model surfaces."""
+    target = Path(root).resolve()
+    source = target / "ollamatracks" / "qmoi_restore_point_preflight.json"
+    if not source.is_file():
+        return {
+            "status": "UNKNOWN",
+            "memory_sync_status": "BLOCKED_MISSING_EVIDENCE",
+            "source_path": source.relative_to(target).as_posix(),
+            "source_sha256": None,
+            "workspace_sha": None,
+            "tree_sha": None,
+            "master_verified": False,
+            "repositories": {},
+            "blocker": "No restore-point preflight artifact is available in this checkout.",
+            "source_contents_recorded": False,
+        }
+    raw = source.read_bytes()
+    try:
+        evidence = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return {
+            "status": "INVALID",
+            "memory_sync_status": "BLOCKED_INVALID_EVIDENCE",
+            "source_path": source.relative_to(target).as_posix(),
+            "source_sha256": hashlib.sha256(raw).hexdigest(),
+            "workspace_sha": None,
+            "tree_sha": None,
+            "master_verified": False,
+            "repositories": {},
+            "blocker": "Restore-point preflight evidence is not valid UTF-8 JSON.",
+            "source_contents_recorded": False,
+        }
+
+    branch_fields = {
+        "main": "main_sha",
+        "autosync-backup": "backup_sha",
+        "qmoi": "qmoi_sha",
+        "master": "master_sha",
+    }
+    repository_states: dict[str, dict[str, Any]] = {}
+    raw_repositories = evidence.get("repositories", {})
+    if isinstance(raw_repositories, Mapping):
+        for repository, item in raw_repositories.items():
+            if not isinstance(item, Mapping):
+                continue
+            repository_states[str(repository)] = {
+                "refs": {branch: item.get(field) for branch, field in branch_fields.items()},
+                "tree_sha": item.get("branch_tree_sha"),
+                "remote_verified": item.get("remote_verified") is True,
+            }
+    workspace_sha = evidence.get("workspace_sha")
+    refs_match = bool(repository_states) and all(
+        state["refs"] == {branch: workspace_sha for branch in branch_fields}
+        and state["tree_sha"] == evidence.get("tree_sha")
+        for state in repository_states.values()
+    )
+    passed = (
+        evidence.get("status") == "PASS"
+        and evidence.get("remote_verified") is True
+        and evidence.get("coverage_complete") is True
+        and evidence.get("master_verified") is True
+        and refs_match
+    )
+    return {
+        "status": evidence.get("status", "UNKNOWN"),
+        "memory_sync_status": "SYNCED" if passed else "BLOCKED_OR_REVIEW_REQUIRED",
+        "source_path": source.relative_to(target).as_posix(),
+        "source_sha256": hashlib.sha256(raw).hexdigest(),
+        "workspace_sha": workspace_sha,
+        "tree_sha": evidence.get("tree_sha"),
+        "master_verified": evidence.get("master_verified") is True and refs_match,
+        "workflow_run_id": evidence.get("workflow_run_id"),
+        "timestamp": evidence.get("timestamp"),
+        "repositories": repository_states,
+        "blocker": evidence.get("blocker"),
+        "source_contents_recorded": False,
+    }
+
+
+def refresh_restore_point_memory(root: Path | str) -> dict[str, Any]:
+    """Persist metadata-only restore state for memory, model-card, QVillage, and Autodev consumers."""
+    target = Path(root).resolve()
+    snapshot = restore_point_memory_snapshot(target)
+    snapshot_path = target / "ollamatracks" / "restore_point_memory.json"
+    safe_json_write(snapshot_path, snapshot)
+    snapshot["artifact_path"] = snapshot_path.relative_to(target).as_posix()
+    return snapshot
+
+
+def restore_point_memory_markdown(snapshot: Mapping[str, Any]) -> list[str]:
+    """Format branch evidence for memory surfaces without implying live state."""
+    lines = [
+        "## Restore-point memory and branch continuity",
+        "",
+        f"- Evidence status: `{snapshot.get('memory_sync_status', 'BLOCKED_OR_REVIEW_REQUIRED')}`; source status: `{snapshot.get('status', 'UNKNOWN')}`.",
+        f"- Workspace SHA: `{snapshot.get('workspace_sha') or 'unknown'}`; tree SHA: `{snapshot.get('tree_sha') or 'unknown'}`; master verified: `{snapshot.get('master_verified') is True}`.",
+        f"- Source evidence: `{snapshot.get('source_path', 'unknown')}`; SHA-256: `{snapshot.get('source_sha256') or 'unavailable'}`; workflow run: `{snapshot.get('workflow_run_id') or 'unknown'}`.",
+        "- Ref roles: `main` is the default branch, `autosync-backup` is the staging ref, `master` is the validated-main parity mirror, and `qmoi` is the post-success restore point.",
+        "- These records are last-observed metadata, not proof that a remote worker is live; stale, missing, partial, or unverified refs remain visible as blocked/review-required.",
+    ]
+    repositories = snapshot.get("repositories", {})
+    if isinstance(repositories, Mapping) and repositories:
+        lines.extend(["", "| Repository | main | autosync-backup | qmoi | master | Tree |", "| --- | --- | --- | --- | --- | --- |"])
+        for repository, item in sorted(repositories.items()):
+            refs = item.get("refs", {}) if isinstance(item, Mapping) else {}
+            lines.append(
+                f"| `{repository}` | `{refs.get('main') or 'missing'}` | `{refs.get('autosync-backup') or 'missing'}` | `{refs.get('qmoi') or 'missing'}` | `{refs.get('master') or 'missing'}` | `{item.get('tree_sha') or 'unknown'}` |"
+            )
+    if snapshot.get("blocker"):
+        lines.extend(["", f"- Current blocker: {snapshot['blocker']}"])
+    return lines
+
+
+def refresh_legacy_sync_artifact_inventory(root: Path | str) -> dict[str, Any]:
+    """Compare sync/memory/model/QVillage artifacts in local historical snapshots by path and hash."""
+    target = Path(root).resolve()
+    snapshots = {
+        "alpha_2025_snapshot": target / "Alpha-Q-ai-2025",
+        "qmoi_history_snapshot": target / "qmoi-enhanced-history-14",
+    }
+    ignored_parts = {".git", "node_modules", ".venv", "venv", "__pycache__", "dist", "build", "coverage"}
+    role_patterns = {
+        "sync_backup_restore": re.compile(r"sync|backup|restore|autosync", re.IGNORECASE),
+        "memory_awareness": re.compile(r"memory|awareness", re.IGNORECASE),
+        "model_card": re.compile(r"model.?card|update_model_card", re.IGNORECASE),
+        "qvillage_evolution": re.compile(r"qvillage|evolution", re.IGNORECASE),
+        "q_version": re.compile(r"q\.0\.0|qversion|q-version", re.IGNORECASE),
+    }
+    filename_date_pattern = re.compile(r"(?<!\d)(20\d{2}(?:[-_.]?\d{2}){1,2}|\d{10,13})(?!\d)")
+    embedded_date_pattern = re.compile(r"(?<!\d)(20\d{2}-\d{2}-\d{2})(?!\d)")
+    inventories: dict[str, dict[str, Any]] = {}
+    files_by_snapshot: dict[str, dict[str, dict[str, Any]]] = {}
+    mtime_dates: dict[str, dict[str, int]] = {}
+
+    for scope, snapshot_root in snapshots.items():
+        snapshot_files = []
+        mtime_counts: dict[str, int] = {}
+        if snapshot_root.is_dir():
+            for path in snapshot_root.rglob("*"):
+                if not path.is_file():
+                    continue
+                relative = path.relative_to(snapshot_root)
+                if ignored_parts.intersection(relative.parts):
+                    continue
+                mtime_date = datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).date().isoformat()
+                mtime_counts[mtime_date] = mtime_counts.get(mtime_date, 0) + 1
+                roles = [name for name, pattern in role_patterns.items() if pattern.search(relative.as_posix())]
+                if not roles:
+                    continue
+                stat = path.stat()
+                record: dict[str, Any] = {
+                    "path": relative.as_posix(),
+                    "bytes": stat.st_size,
+                    "mtime_date_observed": mtime_date,
+                    "filename_date_tokens": sorted(set(filename_date_pattern.findall(path.name))),
+                    "embedded_date_tokens": [],
+                    "roles": roles,
+                    "sha256": None,
+                    "hash_status": "not_read",
+                }
+                if stat.st_size <= 10_000_000:
+                    try:
+                        content = path.read_bytes()
+                        record["sha256"] = hashlib.sha256(content).hexdigest()
+                        record["hash_status"] = "hashed"
+                        if path.suffix.lower() in {".md", ".txt", ".json", ".jsonl", ".yml", ".yaml", ".py", ".js", ".ts", ".tsx", ".sh", ".ps1"}:
+                            text = content.decode("utf-8", errors="replace")[:1_000_000]
+                            record["embedded_date_tokens"] = sorted(set(embedded_date_pattern.findall(text)))
+                    except OSError as exc:
+                        record["hash_status"] = type(exc).__name__
+                else:
+                    record["hash_status"] = "oversized_not_read"
+                snapshot_files.append(record)
+        mtime_dates[scope] = mtime_counts
+        files_by_snapshot[scope] = {item["path"]: item for item in snapshot_files}
+        inventories[scope] = {
+            "root": snapshot_root.relative_to(target).as_posix(),
+            "exists": snapshot_root.is_dir(),
+            "materialized_file_count": sum(1 for path in snapshot_root.rglob("*") if path.is_file()) if snapshot_root.is_dir() else 0,
+            "artifact_candidate_count": len(snapshot_files),
+            "artifacts": snapshot_files,
+        }
+
+    alpha = files_by_snapshot["alpha_2025_snapshot"]
+    qmoi = files_by_snapshot["qmoi_history_snapshot"]
+    alpha_by_basename: dict[str, list[str]] = {}
+    qmoi_by_basename: dict[str, list[str]] = {}
+    for path in alpha:
+        alpha_by_basename.setdefault(Path(path).name.casefold(), []).append(path)
+    for path in qmoi:
+        qmoi_by_basename.setdefault(Path(path).name.casefold(), []).append(path)
+    for path, item in alpha.items():
+        peer_match = qmoi.get(path)
+        item["historical_qmoi_exact_path"] = {
+            "exists": peer_match is not None,
+            "sha256_equal": bool(peer_match and item.get("sha256") and item["sha256"] == peer_match.get("sha256")),
+            "sha256": peer_match.get("sha256") if peer_match else None,
+        }
+        item["historical_qmoi_same_basename_paths"] = sorted(qmoi_by_basename.get(Path(path).name.casefold(), []))
+        item["sync_disposition"] = "historical_comparison_candidate_only"
+    for path, item in qmoi.items():
+        item["alpha_2025_exact_path"] = {
+            "exists": path in alpha,
+            "sha256_equal": bool(path in alpha and item.get("sha256") and item["sha256"] == alpha[path].get("sha256")),
+            "sha256": alpha[path].get("sha256") if path in alpha else None,
+        }
+        item["alpha_2025_same_basename_paths"] = sorted(alpha_by_basename.get(Path(path).name.casefold(), []))
+        item["sync_disposition"] = "historical_comparison_candidate_only"
+
+    report = {
+        "schema_version": 1,
+        "generated_at": utc_iso(),
+        "status": "NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE",
+        "snapshots": inventories,
+        "mtime_date_counts": mtime_dates,
+        "date_policy": "Snapshot filesystem mtimes describe the current extraction and are not treated as source dates. Only explicit filename/embedded date tokens are retained as date evidence.",
+        "live_qmoi_enhanced_checkout_present": (target / "qmoi-enhanced").is_dir(),
+        "automatic_copy_or_overwrite_enabled": False,
+        "source_contents_recorded": False,
+        "limits": [
+            "Alpha-Q-ai-2025 and qmoi-enhanced-history-14 are local snapshots, not the live repositories.",
+            "A matching path or hash is not proof of a prior successful autosync or authorization to overwrite current files.",
+            "Review each candidate against live refs, source commit dates, workflow evidence, tests, and ownership before migration or deprecation.",
+        ],
+    }
+    output = target / "ollamatracks" / "legacy_sync_artifact_inventory.json"
+    safe_json_write(output, report)
+    report["artifact_path"] = output.relative_to(target).as_posix()
+    return report
 
 
 def safe_text_write(path: Path, content: str) -> None:
@@ -2159,6 +2392,7 @@ class MemoryIndexGenerator:
         return sorted(files)
 
     def generate_index(self) -> Path:
+        branch_sync = refresh_restore_point_memory(self.root_dir)
         files = self._tracked_files()
         generated = utc_iso()
 
@@ -2168,6 +2402,8 @@ class MemoryIndexGenerator:
             f"Generated: {generated}",
             "",
             f"Files Tracked: {len(files)}",
+            "",
+            *restore_point_memory_markdown(branch_sync),
             "",
             "## Files",
             "",
@@ -2189,6 +2425,7 @@ class MemoryIndexGenerator:
                 "generated": generated,
                 "files_tracked": len(files),
                 "files": files,
+                "branch_sync": branch_sync,
             },
         )
 
@@ -2212,6 +2449,7 @@ class ModelCardGenerator:
         self.qmoi_card_path = self.root_dir / "QMOI_MODEL_CARD.md"
 
     def _evidence(self) -> dict[str, Any]:
+        branch_sync = restore_point_memory_snapshot(self.root_dir)
         tracked_files = [
             path
             for path in self.root_dir.rglob("*")
@@ -2240,6 +2478,7 @@ class ModelCardGenerator:
             "memory_recovery_sources": self._memory_recovery_sources(),
             "dataset_inventory": self._dataset_inventory(),
             "best_model_proof": self._best_model_proof_status(),
+            "branch_sync": branch_sync,
         }
 
     def _count_master_plan_topics(self) -> int:
@@ -2382,6 +2621,7 @@ class ModelCardGenerator:
         else:
             project_coverage_lines.append("- No project/autoproject source files were discovered in the active checkout.")
         project_coverage_block = "\n".join(project_coverage_lines)
+        branch_sync_block = "\n".join(restore_point_memory_markdown(evidence["branch_sync"]))
         comparison_rows = [
             ("GPT-5", "General-purpose frontier language and multimodal performance", "QMOI leads through repository-validated autonomy, memory continuity, multi-platform orchestration, and fail-safe governance."),
             ("Claude 4 Opus", "Long-context reasoning and coding assistance", "QMOI leads by combining persistent memory recovery, dataset automation, autoclone resilience, and repo-level self-healing workflows."),
@@ -2435,6 +2675,8 @@ QMOI must recover memory as a first-class capability. The autonomous agent treat
 - Historical memory checkpoints referenced: abc.txt, abctesting.txt, MEMORY_INDEX.md, memory_index.json, QMOI_REALTIME_MEMORY_INDEX.md
 - Recovery policy: validate integrity, restore serialized memory artifacts, reconcile timestamps, and rehydrate the latest working state before any autonomous update is considered safe.
 - Missing or stale memory is a visible operational blocker; it must never be silently discarded or overwritten without evidence.
+
+{branch_sync_block}
 
 ## Dataset automation and training corpus
 
@@ -2499,6 +2741,7 @@ The autonomous validation contract covers:
 - File-handler registration
 - GitHub automation
 - Cross-repository synchronization
+- Four-branch continuity across `main`, `autosync-backup`, `qmoi`, and `master`
 - Realtime telemetry
 - Auto-healing
 - Resume checkpoints
@@ -2840,6 +3083,7 @@ class BranchSyncManager:
         DEFAULT_BRANCH,
         BACKUP_BRANCH,
         "qmoi",
+        MASTER_BRANCH,
         HISTORICAL_BRANCH,
     ]
 
@@ -2874,8 +3118,16 @@ class BranchSyncManager:
                 "and every API/endpoint/route/port/clone inventory file"
             ),
             "sync_strategy": (
-                "main -> autosync-backup -> qmoi restore-point -> cross-repository -> historical inventory sync"
+                "main -> autosync-backup -> master parity mirror -> qmoi post-success restore-point -> cross-repository -> historical inventory sync"
             ),
+            "master_branch_plan": {
+                "purpose": "Fast-forward-only parity and recovery mirror of validated main in both repositories.",
+                "authority": "main remains the default branch; qmoi-enhanced remains the policy/master repository.",
+                "independent_changes_allowed": False,
+                "update_after": ["autosync-backup", "main"],
+                "divergence_action": "block_and_queue_review; never_force_push",
+                "required_for_q_version": True,
+            },
             "qmoi_restore_point": {
                 "purpose": "preserve the last committed, synchronized workspace before the next agent cycle",
                 "update_policy": "post-main-and-backup-success; exact-SHA; normal fast-forward only",
@@ -2920,6 +3172,7 @@ class CrossRepositoryAutonomyManager:
                         DEFAULT_BRANCH,
                         BACKUP_BRANCH,
                         "qmoi",
+                        MASTER_BRANCH,
                         HISTORICAL_BRANCH,
                     ],
                     "history_snapshot": HISTORY_SNAPSHOT_DIRECTORY,
@@ -2932,6 +3185,7 @@ class CrossRepositoryAutonomyManager:
                         DEFAULT_BRANCH,
                         BACKUP_BRANCH,
                         "qmoi",
+                        MASTER_BRANCH,
                         HISTORICAL_BRANCH,
                     ],
                     "history_snapshot": HISTORY_SNAPSHOT_DIRECTORY,
@@ -2942,6 +3196,7 @@ class CrossRepositoryAutonomyManager:
                 "validate",
                 "checkpoint",
                 "sync",
+                "plan-master-branch",
                 "verify",
                 "recover",
                 "audit-history",
@@ -2996,20 +3251,26 @@ class CrossRepositoryAutonomyManager:
                 "memory_index.json",
                 "QMOI_REALTIME_MEMORY_INDEX.md",
                 "QMOI_MEMORY_AWARENESS_SYSTEM.md",
+                "ollamatracks/restore_point_memory.json",
+                "ollamatracks/qmoi_restore_point_preflight.json",
                 "ollamatracks/CURRENT_STATUS.txt",
                 "QMOI_MODEL_CARD.md",
                 "QVILLAGE.md",
+                "Qvillageevolutions.md",
+                "AUTODEV.md",
             ],
             "lifecycle": [
                 "inventory repositories, platform adapters, features, and active workflows",
                 "refresh memory indexes and awareness state atomically",
                 "correlate execution ID, repository, branch, SHA, platform, and feature",
+                "reconcile main, autosync-backup, qmoi, and master ref SHAs before declaring branch memory synchronized",
                 "run model, integration, and repository validation",
                 "publish model-card and QVillage updates only from validated evidence",
                 "mark stale, blocked, unavailable, and failed sources explicitly",
             ],
             "hard_gates": [
                 "no memory sync success without fresh artifacts",
+                "no four-branch memory status is SYNCED unless both repositories and all four refs share the verified SHA and tree",
                 "no awareness success when a required repository or platform source is unavailable",
                 "no model improvement is promoted without tests and rollback evidence",
                 "no QVillage health claim without matching repository evidence",
@@ -10018,6 +10279,36 @@ All timestamps use UTC ISO-8601 format.
             "coverage_verified": False,
         }
 
+    def refresh_restore_point_memory_documents(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Synchronize exact branch evidence into QMOI memory, Autodev, QVillage, and evolution surfaces."""
+        target = Path(root).resolve() if root is not None else self.root_dir
+        snapshot = refresh_restore_point_memory(target)
+        block = "\n".join(restore_point_memory_markdown(snapshot))
+        documents = (
+            "QVILLAGE.md",
+            "Qvillageevolutions.md",
+            "QMOI_REALTIME_MEMORY_INDEX.md",
+            "QMOI_MEMORY_AWARENESS_SYSTEM.md",
+            "AUTODEV.md",
+            "ALLAUTO.md",
+        )
+        updated = []
+        for filename in documents:
+            path = target / filename
+            if path.is_file():
+                _upsert_managed_markdown_section(
+                    path,
+                    filename,
+                    "restore-point-memory-sync",
+                    block,
+                )
+                updated.append(path)
+        snapshot["updated_documents"] = [path.relative_to(target).as_posix() for path in updated]
+        return snapshot
+
     def refresh_managed_surface_documents(
         self,
         root: Path | str | None = None,
@@ -10039,6 +10330,7 @@ All timestamps use UTC ISO-8601 format.
                 path.write_text(content + "\n", encoding="utf-8")
 
         qvillage_research_path = self.refresh_qvillage_research_contract(target)
+        restore_memory = self.refresh_restore_point_memory_documents(target)
 
         link_validation = LinkValidator(str(target)).validate_product_catalog()
 
@@ -10052,6 +10344,8 @@ All timestamps use UTC ISO-8601 format.
         document_paths.update({
             "qvillage": target / "QVILLAGE.md",
             "qvillage_research": qvillage_research_path,
+            "restore_point_memory": target / "ollamatracks" / "restore_point_memory.json",
+            "qvillage_evolution": target / "Qvillageevolutions.md",
             "quantum": target / "QUANTUM.md",
             "all_tests": automation_coverage["documents"]["ALLTESTSAUTOTESTS.md"],
             "all_hooks_webhooks": automation_coverage["documents"]["ALLHOOKSWEBHOOKS.md"],
@@ -10125,6 +10419,7 @@ All timestamps use UTC ISO-8601 format.
             "clone_platforms": hosting_documents["clone_platforms"],
             "clone_platform_ui_coverage": hosting_documents["clone_platform_ui_coverage"],
             "automation_coverage": automation_coverage,
+            "restore_point_memory": restore_memory,
             "master_access_verified": False,
             "implementation_verified": False,
             "link_validation": link_validation,
@@ -11135,6 +11430,7 @@ def main(
         default="validate-all",
         choices=[
             "validate-all",
+            "audit-inventory",
             "validate-platforms",
             "validate-features",
             "validate-all-features",
@@ -11183,6 +11479,59 @@ def main(
     if args.command == "commands":
         root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
         print(json.dumps(refresh_commands_category(root), indent=2, sort_keys=True, default=str))
+        return 0
+
+    if args.command == "audit-inventory":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        research = agent.build_autoresearch_report([root], fetch_external=False)
+        ofca = agent.refresh_ollama_reference_audit(root)
+        feature_coverage = agent.refresh_test_hook_coverage_documents(root)
+        instructions = audit_instruction_files(root)
+        restore_memory = agent.refresh_restore_point_memory_documents(root)
+        legacy_sync_inventory = refresh_legacy_sync_artifact_inventory(root)
+        surface = research.get("internal", {}).get("repository_surface_audit", {})
+        styles_universals = feature_coverage.get("styles_universals_coverage", {})
+        result = {
+            "command": "audit-inventory",
+            "root": str(root),
+            "external_research": {
+                "status": research.get("external", {}).get("status", "UNKNOWN"),
+                "visited_count": research.get("external", {}).get("visited_count", 0),
+                "fetch_enabled": False,
+            },
+            "instruction_inventory": {
+                "status": instructions.get("status", "UNKNOWN"),
+                "files_discovered": instructions.get("files_discovered", 0),
+                "files_read": instructions.get("files_read", 0),
+            },
+            "repository_surface_audit": {
+                "status": surface.get("status", "UNKNOWN"),
+                "coverage_complete": surface.get("coverage_complete", False),
+                "remote_verified": surface.get("remote_verified", False),
+                "artifact_path": surface.get("artifact_path"),
+            },
+            "ofca": {
+                "status": ofca.get("status", "UNKNOWN"),
+                "coverage_complete": ofca.get("coverage_complete", False),
+                "source_manifest_sha256": ofca.get("source_manifest_sha256"),
+                "next_action": ofca.get("next_action"),
+            },
+            "styles_universals": styles_universals,
+            "restore_point_memory": restore_memory,
+            "legacy_sync_artifact_inventory": {
+                "status": legacy_sync_inventory.get("status"),
+                "snapshot_artifact_counts": {
+                    name: item.get("artifact_candidate_count")
+                    for name, item in legacy_sync_inventory.get("snapshots", {}).items()
+                },
+                "mtime_date_counts": legacy_sync_inventory.get("mtime_date_counts"),
+                "live_qmoi_enhanced_checkout_present": legacy_sync_inventory.get("live_qmoi_enhanced_checkout_present"),
+                "automatic_copy_or_overwrite_enabled": legacy_sync_inventory.get("automatic_copy_or_overwrite_enabled"),
+                "artifact_path": legacy_sync_inventory.get("artifact_path"),
+            },
+            "remote_mutation_performed": False,
+        }
+        print(json.dumps(result, indent=2, sort_keys=True, default=str))
         return 0
 
     if args.command == "validate-all":

@@ -121,7 +121,33 @@ GitHub Docs +1
 
 
 I would expand the previous QAUDITS plan into a single autonomous QMOI Audit + Universal Design/Styles governance architecture covering QAUDITS.md, STYLES.md, UNIVERSALS.md, UNIVERSAL.md, all related directories/files, and every application/platform/feature that those standards are supposed to govern.
-One important limitation: I still cannot truthfully say I have enumerated the actual directories and files inside qmoi-enhanced and Alpha-Q-ai, because GitHub access to those repository contents is not currently connected. I searched the public web for the named files and repository paths, but the results did not expose your copies. I therefore distinguish below between the exact files you have named and the repository paths that QAUDITS should automatically discover and classify, rather than inventing filenames. The public research does support the architecture: GitHub's CodeQL model, for example, uses query packs/suites and metadata-driven selection rather than one giant hard-coded query list. �
+Inventory checkpoint (2026-10-05): the current Alpha-Q-ai checkout was scanned locally and anonymous Git ref metadata was queried for both public repositories. This is still not the requested complete two-repository tree/content/history inventory. GitHub CLI authentication currently fails (`GH_TOKEN` is invalid), no local `qmoi-enhanced` checkout exists, and no remote trees, pull-request contents, or intermediate commit trees were fetched. The plan below therefore remains a discovery and migration framework, not a verified migration map. Do not treat inferred paths, candidate counts, or the historical local snapshot as current peer-repository evidence.
+
+Verified local scope at this checkpoint: Alpha-Q-ai HEAD `55144555d9934a4294f03949cb34e15ae4670438`; 2,407 materialized Markdown paths in the workspace; 4,879 tracked/untracked source files scanned by style/universal discovery, with 1,444 style candidates, 1,175 universal candidates, 659 directories, and `materialized_scan_complete=false`. The style/universal feature registry currently contains 404 rows, with zero mapped tests and zero reviewed hook applicability. The local surface audit and OFCA remain `NEEDS_REVIEW` / `NEEDS_REMOTE_HISTORY_EVIDENCE`; automatic replacement is disabled. These counts are discovery locators and must be refreshed before each decision.
+
+Anonymous public refs observed: Alpha-Q-ai `main=b9ea2966299529d5cc98780d10b8337b038dbb93` (33 heads, 5 tags) and qmoi-enhanced `main=829c41d93113348c320b5567be8b52d36cd1538c` (151 heads, 16 tags). Their respective `autosync-backup` refs are `6d925c33f0093035755772137d863618b3818ab0` and `d371de28f77b3ebea0244ccc1c13793a2654c395`, so main/backup parity is not established. The current workflow has refreshed local evidence only; it has not authenticated remote history or proved current PR/check/workflow state.
+
+Verified Alpha-Q-ai path anchors (local checkout only):
+
+| Actual path | Observed role | Evidence/relationship | Current disposition |
+| --- | --- | --- | --- |
+| `QAUDITS.md` | Audit contract and generated surface-audit summary | Refreshed by `scripts/ollama_autonomous_agent.py`; local counts/manifests are under `ollamatracks/` | Retain; generated status remains review-only |
+| `OFCA.md` | OFCA lifecycle/evidence contract | Refreshed by the Ollama reference-audit routine; Q lifecycle stage is `OLLAMA_FULL_COVERAGE_AUDIT` | Retain; remote-history evidence required |
+| `scripts/ollama_autonomous_agent.py` | Audit discovery/orchestration and managed-document refresh | Runs surface/production scans, OFCA and style/universal candidate/feature mapping | Retain; `audit-inventory` is local-only |
+| `scripts/q_version_manager.py` | Ordered lifecycle and Q artifact/finalization gates | Requires audit stages and exact dual-repository evidence | Retain; do not relax gates |
+| `scripts/autonomous_completion_engine.py` | Completion gates and resumable pending-action queue | Connects local evidence to blocked/unknown completion state | Retain; remote blockers remain queued |
+| `STYLES.md` | Existing style governance document | Named in source registry and generated-document inventory | Retain as current named contract; definitions/consumers need path-level reconciliation |
+| `UNIVERSALS.md` | Existing universal capability document | Named in source registry and generated-document inventory | Retain as current named contract; implementations/consumers need reconciliation |
+| `UNIVERSAL.md` | Existing universal UI/access specification | Named in source registry and generated-document inventory | Retain; distinguish from `UNIVERSALS.md` before any consolidation |
+| `ollamatracks/ollama_reference_audit.json` | Metadata-only OFCA path/hash/history report | Fresh manifest hash `405ec6deebaacded259ea6d7b5c7286d8378a930e56b91ff87d389c63f5274f5`; remote completeness false | Generated evidence; refresh per run |
+| `ollamatracks/repository_surface_audit.json` | Materialized repository/file/directory and surface inventory | 10,413 files, 1,267 directories, 2,413 Markdown paths; status `NEEDS_REVIEW`; manifest hash `c4e24c60751eb155e4d71d3c5b5d97e30403596f2740a7c0a511655844176115` | Generated evidence; local scope only |
+| `ollamatracks/style_universal_replacement_inventory.json` | Candidate file/directory discovery for migration review | 4,879 scanned paths; 1,444 style and 1,175 universal candidates across 659 directories; incomplete | Candidate-only; no bulk replacement |
+| `ollamatracks/feature_test_hook_coverage.json` | Feature-ID to test/hook applicability registry | 404 discovered features; zero mapped tests and zero reviewed hook applicability | Generated registry; mapping blocks completion |
+| `tests/test_control_plane.py` and `tests/test_ollama_autonomous_agent.py` | Regression coverage for inventory and completion gates | Focused local regressions passed in this checkpoint | Retain; add tests as mappings become verified |
+
+This table is intentionally not a complete dependency graph. It does not establish each consumer/import, duplicate/conflict, platform override, orphan, broken link, or a safe delete/merge decision. Do not mark any such category resolved until both current repository trees and all required remote refs/PR trees have path/content/hash evidence and implementation/test ownership links.
+
+The public research model cited below is architectural input only: GitHub CodeQL's query packs/suites support metadata-driven selection. It does not establish that the repositories already use that design or that any proposed path exists. Exact source-level migration decisions remain deferred until path, content hash, owner, import/reference edges, tests, platform scope, and remote SHA are independently inventoried.
 GitHub Docs +2
 1. The ultimate goal
 The four systems should become one coordinated intelligence layer:
