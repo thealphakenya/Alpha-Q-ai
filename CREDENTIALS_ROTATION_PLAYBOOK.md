@@ -57,3 +57,12 @@ Block use when values are missing, decryption fails, permissions are broader tha
 ## Validation requirements
 
 Tests must use synthetic values only and cover encrypted persistence, permissions, lifecycle tags, immutable audit history, secret redaction, malformed/incomplete source sections, atomic migration behavior, history scans, provider error classification, successful read-only balance parsing, encrypted balance snapshots, output redaction, stale/blocked states, and unauthorized control requests. Live provider checks are operational evidence and must not be simulated as passing by unit tests.
+
+<!-- BEGIN QMOI MANAGED: wallet-bank-provider-credential-coverage -->
+## Agent-managed provider consumer coverage
+
+The current source-name inventory found `1114` credential-reference occurrences across materialized active, snapshot, and historical code paths; details are in `QMOItracks/credential_reference_inventory.json`.
+- This is a pattern-based candidate audit, not proof that all secrets, external stores, future refs, or providers were found.
+- Keep values in approved vaults only. The inventory records names, consumers, scopes, and line numbers without copying assignment contents or inspecting vault values.
+- Provider-specific tests and explicit owner authorization are required before verification, rotation, or live trading. Only Bitget has an active provider-specific read-only verifier; no other provider is marked verified by this inventory.
+<!-- END QMOI MANAGED: wallet-bank-provider-credential-coverage -->

@@ -905,6 +905,36 @@ class TestFeatureTester:
                 "ALLHOOKSWEBHOOKS.md",
             )
         )
+        feature_coverage = json.loads(
+            (tmp_path / "ollamatracks" / "feature_test_hook_coverage.json").read_text(encoding="utf-8")
+        )
+        assert feature_coverage["status"] == "NEEDS_FEATURE_TEST_HOOK_MAPPING"
+        assert feature_coverage["unmapped_feature_count"] == feature_coverage["feature_count"]
+        feature_ids = [item["feature_id"] for item in feature_coverage["features"]]
+        assert len(feature_ids) == len(set(feature_ids))
+        assert report["autonomous_completion"]["gates"]["ui_test_hook_coverage"] == "UNKNOWN"
+
+    def test_refresh_ollama_reference_audit_updates_owned_contract_docs(self, tmp_path):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        for filename in ("QVERSIONMANAGER.md", "OLLAMA_AUTOMATION_GUIDE.md", "ollama.md"):
+            (tmp_path / filename).write_text(f"# {filename}\n", encoding="utf-8")
+        (tmp_path / "scripts").mkdir()
+        (tmp_path / "scripts" / "ollama_agent.py").write_text(
+            "# Ollama execution history\n", encoding="utf-8"
+        )
+
+        report = agent.refresh_ollama_reference_audit(tmp_path)
+
+        assert report["status"] == "NEEDS_REMOTE_HISTORY_EVIDENCE"
+        assert any(
+            item["path"] == "scripts/ollama_agent.py"
+            for item in report["matched_files"]
+        )
+        assert (tmp_path / "ollamatracks" / "ollama_reference_audit.json").is_file()
+        for filename in ("QVERSIONMANAGER.md", "OLLAMA_AUTOMATION_GUIDE.md", "ollama.md"):
+            text = (tmp_path / filename).read_text(encoding="utf-8")
+            assert "reference audit and Q-version gate" in text
+            assert "do not cover every remote ref" in text
 
     def test_agent_refreshes_productionenhanced_manifest_for_nonproduction_markers(self, tmp_path):
         """The autonomous agent should scan for shallow or non-production implementations and update productionenhanced.md."""
@@ -1313,6 +1343,30 @@ class TestModelCardGenerator:
         assert "Model comparison against leading frontier models" in content
         assert "QMOI is the best model" in content
         assert "GPT-5" in content
+
+    def test_model_card_tracks_project_and_autoproject_coverage(self, tmp_path):
+        project_files = {
+            "projectsandautoprojects.md": "## Project registry\n## Lifecycle automation",
+            "projectsandautoprojectsenhanced.md": "## Universal autonomous project engine\n## Research sync",
+            "QVERSIONMANAGER.md": "## Q version lifecycle\n## Finalization gates",
+            "production.md": "## Production delivery\n## Deployment readiness",
+            "productionenhanced.md": "## Enhanced production automation\n## Research to release",
+            "bankandbankaccounts.md": "## Bank and wallet configuration\n## Master and sister controls",
+        }
+        for filename, content in project_files.items():
+            (tmp_path / filename).write_text(content, encoding="utf-8")
+
+        generator = ModelCardGenerator(tmp_path)
+        generator.generate_card()
+        content = generator.qmoi_card_path.read_text(encoding="utf-8")
+
+        assert "Project and AutoProject coverage" in content
+        assert "projectsandautoprojects.md" in content
+        assert "projectsandautoprojectsenhanced.md" in content
+        assert "QVERSIONMANAGER.md" in content
+        assert "productionenhanced.md" in content
+        assert "bankandbankaccounts.md" in content
+        assert "master and sister" in content.lower()
 
 
 class TestRealtimeTracker:

@@ -50,3 +50,12 @@ Each system must cover deterministic inputs, schema checks, positive tests, nega
 - [ ] Deployment and remote publication validation
 - [ ] Documentation, memory, and autodoc validation
 - [ ] Q.O.Q.N/model/runtime/QLTS validation
+
+<!-- BEGIN QMOI MANAGED: trading-and-hook-validation-evidence -->
+## Agent-managed trading and automation validation
+
+- Materialized trading candidates: `547`; source artifact: `QMOItracks/trading_surface_inventory.json`; coverage state: `discovered_unmapped`.
+- Per-venue gates include credential readiness (metadata only), market/account freshness, sandbox/paper execution, risk limits, reconciliation, kill switch, UI state, and positive/negative tests.
+- Live orders, transfers, account creation, and payouts remain blocked until explicit authorization and provider-side evidence exist; local reports do not prove real funds or balances.
+- Remote automation reports require exact repo/ref/SHA, workflow/run URL, terminal conclusion, artifact hash, and independent branch/ref verification.
+<!-- END QMOI MANAGED: trading-and-hook-validation-evidence -->

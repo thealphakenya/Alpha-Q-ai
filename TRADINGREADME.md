@@ -104,3 +104,21 @@ This live README is aligned with historical trading references in the repository
 ## Status
 
 Trading operations model: active and under continuous production enhancement.
+
+<!-- BEGIN QMOI MANAGED: trading-audit-source-inventory -->
+## Agent-managed trading audit and remote-continuity contract
+
+The trading source inventory is a discovery artifact. Every venue, UI, API, test, and workflow must be tied to an owner, repository/ref/SHA, implementation path, risk/auth boundary, and validation record before being marked verified.
+
+- Project and autoproject financial configuration are governed by the master/sister account policy: only authorized operators may bind a bank account, wallet, payment API, or project-linked financial destination to QMOI automation.
+- The repository keeps `bankandbankaccounts.md`, `FINANCIALMANAGER.md`, `projectsandautoprojects.md`, and `projectsandautoprojectsenhanced.md` synchronized with the active configuration model so every financial action remains traceable and reviewable.
+- Current materialized trading candidates: `547`; platform mentions: `{"binance": 27, "bitget": 62, "bybit": 2, "cashon": 101, "coinbase": 10, "kraken": 10, "megavault": 34, "okx": 2, "paypal": 39}`.
+- Feature and source coverage remains `discovered_unmapped` until each candidate maps to active implementation, tests, and exact-SHA evidence.
+- Provider verification is `provider-sourced` only when an authorized provider response is independently recorded; repository discovery is not provider proof.
+- Credential names and consumers discovered: `1114`; metadata inventory: `QMOItracks/credential_reference_inventory.json`; values not read from stores or emitted.
+- Audit active, snapshot, and archive scopes separately; merge-audit local ref-tip path metrics are distinct from materialized-file scanning. Unfetched refs, PRs, intermediate commit trees, and peer roots remain explicit blockers.
+- For every Qtrade metric and exchange, map market-data source, freshness, no-trade decision, backtest/walk-forward/paper tests, execution/risk limits, fees/slippage, reconciliation, kill switch, UI states, and event handlers. Missing/stale proof remains `blocked`.
+- Remote runtime independence is a design target, not a present availability guarantee: require an independently hosted worker, durable idempotent queue, leased ownership, signed fresh heartbeats, monitoring/failover, and provider-authorized access. GitHub/Hugging Face outages must not create false healthy status.
+- On stale market/account data, lost authorization, provider outage, ledger mismatch, or failed heartbeat, stop opening orders and mark trading unavailable; only separately authorized risk-reducing actions may proceed.
+- Never invent balances, credentials, profits, accounts, webhook registrations, or live-run success. Real-money orders, transfers, deposits, withdrawals, and credential changes require explicit scoped authorization and provider evidence.
+<!-- END QMOI MANAGED: trading-audit-source-inventory -->

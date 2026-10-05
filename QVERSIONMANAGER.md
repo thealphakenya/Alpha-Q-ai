@@ -28,6 +28,8 @@ A final version is written only by `write_final_metrics()` after the caller supp
 18. Autonomous completion evidence includes ranked next actions, current-state refresh, local evidence JSON/JSONL integrity results, and an explicit authorization state for every pending action.
 19. Production-gap scanning is a scoped candidate inventory, not a blanket replacement engine: it records file hashes and marker line numbers, makes dependency/cache/history/build exclusions and unreadable/oversized coverage gaps explicit, and queues candidates as `discovered_unmapped` until owner, implementation, focused tests, security impact, rollback, and remote proof are supplied.
 20. Final metrics require a `CLEAR` production inventory with complete scan coverage, zero candidates, zero unreadable files, and zero oversized files skipped; unresolved candidates keep production and Q-version gates blocked.
+21. Autonomous completion and Q-version finalization require a hash-backed Ollama reference audit covering both repositories, all refs, pull requests, and intermediate commit trees; materialized local history alone remains incomplete.
+22. Every styles/universals registry feature requires a stable ID, focused test mapping, and reviewed hook/webhook applicability; event-driven features require passing delivery/security/recovery tests before finalization.
 
 ## Unattended completion and instruction coverage
 
@@ -40,6 +42,10 @@ Production readiness follows the same evidence boundary. `production.md`, `produ
 Each completion evaluation refreshes `ollamatracks/current_state.json`, validates available local JSON/JSONL evidence, and writes a priority-ordered resumable action queue for every non-passing gate. Safe local/read-only work can proceed automatically. Remote dispatch/publication, cross-repository promotion, releases, deployments, credential changes, financial activity, and Q-version finalization stay blocked until their explicit authorization and evidence requirements pass. Retries must be bounded and checkpointed; inaccessible or failed remote services are recorded as blockers rather than retried indefinitely or treated as success.
 
 The agent must not claim equivalence to Copilot Chat or human judgment merely because it can inventory instructions or generate a queue. A final `Q.0.0.N` requires a terminal `SUCCESS` or `NO_CHANGES_REQUIRED` completion result, every required gate `PASS`, zero queued actions, valid instruction inventories for both repositories, a complete production scan with zero candidates, exact clean remote SHAs, and terminal target-owned workflow evidence.
+
+The required `ollama_reference_audit` gate inventories Ollama-mentioned source and documentation files with paths, hashes, line numbers, and responsibility categories while excluding source text from evidence. Finalization additionally requires target-owned terminal evidence for both repositories covering every current ref, pull request, and intermediate commit tree at the exact final SHAs. A local scan of `qmoi-enhanced-history-14`, snapshots, or the current checkout cannot satisfy remote-history completeness by itself.
+
+The `ui_test_hook_coverage` gate uses `ollamatracks/feature_test_hook_coverage.json` to track stable feature IDs, test paths, reviewed hook applicability, and event-driven hook tests. Static style features may record a reviewed not-applicable hook decision; event-driven features require tested authentication, denial, delivery, retry/idempotency, and recovery behavior. Unmapped rows block Q-version finalization.
 
 ## Q seed lineage
 
@@ -91,6 +97,8 @@ The first materialized Q-version directory after the policy gate is `Q.0.0.1`. I
 - `Q.0.0.1.md` companion summary
 - any required lifecycle and sync records created by the branch publication flow
 - per-repository instruction inventory and hash evidence embedded in `REPOSITORY_METRICS.json`
+- complete dual-repository Ollama reference audit and source-manifest hash embedded in `REPOSITORY_METRICS.json`
+- complete styles/universals test-hook coverage manifest with exact-SHA evidence embedded in `REPOSITORY_METRICS.json`
 - the terminal autonomous-completion gate map and empty pending-action queue embedded in `REPOSITORY_METRICS.json`
 - the complete production inventory summary with zero candidate files, unreadable files, and oversized skipped files
 - instruction-file count in the companion Markdown summary; no instruction source text or secret values
@@ -102,3 +110,14 @@ This directory is a final artifact, not an everyday working directory. It is not
 Focused tests cover strict parsing, cross-root discovery, reservation integrity and locking, pair metrics, per-file hashes, finalization blockers, exact-SHA finalization, and dirty/mismatched tree rejection. Local tests prove these deterministic contracts only.
 
 Current remote completion remains blocked by unverified GitHub App key rotation, HTTP 403 branch-protection reads, failed earlier-SHA tracker/autosync runs, and local branch divergence. No final Q version was created by this continuation. Remote completion and final repository metrics remain pending independently verified target-owned evidence.
+
+<!-- BEGIN QMOI MANAGED: ollama-reference-audit-gate -->
+## QMOI reference audit and Q-version gate
+
+This generated audit indexes paths, hashes, line numbers, and responsibility categories only; source text is never copied into the evidence artifact.
+
+- Materialized files scanned: `10321`; QMOI-matching files: `4061`.
+- Local scan status: `PASS`; historical source scopes are listed in `QMOItracks/QMOI_reference_audit.json`.
+- Local tree and archived source scans do not cover every remote ref, pull request, or intermediate commit tree; Q-version completion stays blocked until both repositories have terminal exact-SHA audit evidence.
+- Styles and universal UI requirements remain incomplete until each registered feature maps to focused tests and event-driven hook/webhook validation; registry discovery is not coverage proof.
+<!-- END QMOI MANAGED: ollama-reference-audit-gate -->

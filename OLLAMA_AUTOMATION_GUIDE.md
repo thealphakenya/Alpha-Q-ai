@@ -732,3 +732,14 @@ The QMOI Ollama Autonomous Agent provides:
 **Maintained by:** QMOI Development Team  
 **Last Updated:** 2026-08-13  
 **Status:** Production Ready
+
+<!-- BEGIN QMOI MANAGED: ollama-reference-audit-gate -->
+## QMOI reference audit and Q-version gate
+
+This generated audit indexes paths, hashes, line numbers, and responsibility categories only; source text is never copied into the evidence artifact.
+
+- Materialized files scanned: `10321`; QMOI-matching files: `4061`.
+- Local scan status: `PASS`; historical source scopes are listed in `QMOItracks/QMOI_reference_audit.json`.
+- Local tree and archived source scans do not cover every remote ref, pull request, or intermediate commit tree; Q-version completion stays blocked until both repositories have terminal exact-SHA audit evidence.
+- Styles and universal UI requirements remain incomplete until each registered feature maps to focused tests and event-driven hook/webhook validation; registry discovery is not coverage proof.
+<!-- END QMOI MANAGED: ollama-reference-audit-gate -->

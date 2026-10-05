@@ -14,6 +14,7 @@ This contract derives from the archived MASTEROWNS dashboard, monitoring, contro
 - [ ] Deployment preview, approval, promotion, rollback, and audit trail.
 - [ ] Domain, DNS, TLS, and ownership management with confirmation before changes.
 - [ ] Documentation, styles, app-catalog, and validation report management.
+- [ ] Master and sister account configuration for bank accounts, wallets, payment APIs, and project-linked financial destinations.
 - [ ] Revenue, wallet, and financial dashboards with read/write permissions separated.
 - [ ] Monitoring, notifications, incidents, recovery, and automation controls.
 - [ ] Security events, audit history, export, retention, and access-revocation controls.

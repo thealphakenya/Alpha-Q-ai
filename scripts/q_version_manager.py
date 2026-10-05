@@ -546,6 +546,50 @@ class QVersionManager:
         repository_evidence = final_evidence.get("repositories")
         if not isinstance(repository_evidence, dict):
             raise RuntimeError("Q-version metrics require exact evidence for every repository")
+        ollama_reference_audit = final_evidence.get("ollama_reference_audit")
+        expected_shas = {
+            str(item.get("final_sha", ""))
+            for item in repository_evidence.values()
+            if isinstance(item, dict)
+        }
+        audit_repositories = (
+            ollama_reference_audit.get("repositories")
+            if isinstance(ollama_reference_audit, dict)
+            else None
+        )
+        audited_shas = {
+            str(item.get("final_sha", ""))
+            for item in audit_repositories.values()
+            if isinstance(item, dict)
+        } if isinstance(audit_repositories, dict) else set()
+        if (
+            not isinstance(ollama_reference_audit, dict)
+            or ollama_reference_audit.get("status") != "PASS"
+            or ollama_reference_audit.get("coverage_complete") is not True
+            or ollama_reference_audit.get("materialized_scope_complete") is not True
+            or not re.fullmatch(r"[0-9a-f]{64}", str(ollama_reference_audit.get("source_manifest_sha256", "")))
+            or ollama_reference_audit.get("unavailable_sources") != []
+            or not isinstance(audit_repositories, dict)
+            or set(audit_repositories) != {
+                "thealphakenya/Alpha-Q-ai",
+                "thealphakenya/qmoi-enhanced",
+            }
+            or audited_shas != expected_shas
+            or any(
+                item.get("terminal_conclusion") != "success"
+                or item.get("remote_verified") is not True
+                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
+                or not item.get("workflow_run_id")
+                or item.get("all_refs_enumerated") is not True
+                or item.get("all_pull_requests_included") is not True
+                or item.get("all_intermediate_commit_trees_scanned") is not True
+                or item.get("unavailable_sources") != []
+                for item in audit_repositories.values()
+                if isinstance(item, dict)
+            )
+            or any(not isinstance(item, dict) for item in audit_repositories.values())
+        ):
+            raise RuntimeError("Q-version metrics require complete dual-repository Ollama history evidence")
         for root in source_roots:
             self.verify_instruction_inventory(root, instruction_inventories.get(str(root)))
         autonomous_completion = final_evidence.get("autonomous_completion")
@@ -558,9 +602,56 @@ class QVersionManager:
             or any(value != "PASS" for value in autonomous_completion["gates"].values())
             or autonomous_completion["gates"].get("instruction_inventory") != "PASS"
             or autonomous_completion["gates"].get("final_verification") != "PASS"
+            or autonomous_completion["gates"].get("ollama_reference_audit") != "PASS"
+            or autonomous_completion["gates"].get("ui_test_hook_coverage") != "PASS"
             or autonomous_completion.get("next_actions") != []
         ):
             raise RuntimeError("Q-version metrics require terminal autonomous completion with no pending actions")
+        ui_test_hook_coverage = final_evidence.get("ui_test_hook_coverage")
+        ui_repositories = (
+            ui_test_hook_coverage.get("repositories")
+            if isinstance(ui_test_hook_coverage, dict)
+            else None
+        )
+        ui_shas = {
+            str(item.get("final_sha", ""))
+            for item in ui_repositories.values()
+            if isinstance(item, dict)
+        } if isinstance(ui_repositories, dict) else set()
+        if (
+            not isinstance(ui_test_hook_coverage, dict)
+            or ui_test_hook_coverage.get("status") != "PASS"
+            or ui_test_hook_coverage.get("coverage_verified") is not True
+            or not re.fullmatch(r"[0-9a-f]{64}", str(ui_test_hook_coverage.get("source_manifest_sha256", "")))
+            or ui_test_hook_coverage.get("unavailable_sources") != []
+            or not isinstance(ui_repositories, dict)
+            or set(ui_repositories) != {
+                "thealphakenya/Alpha-Q-ai",
+                "thealphakenya/qmoi-enhanced",
+            }
+            or ui_shas != expected_shas
+            or any(
+                item.get("terminal_conclusion") != "success"
+                or item.get("remote_verified") is not True
+                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
+                or not item.get("workflow_run_id")
+                or isinstance(item.get("feature_count"), bool)
+                or not isinstance(item.get("feature_count"), int)
+                or item.get("feature_count", 0) < 1
+                or item.get("test_mapped_feature_count") != item.get("feature_count")
+                or item.get("hook_applicability_reviewed_count") != item.get("feature_count")
+                or item.get("unmapped_feature_count") != 0
+                or item.get("unreviewed_hook_applicability_count") != 0
+                or item.get("unmapped_event_hook_count") != 0
+                or item.get("all_feature_tests_passed") is not True
+                or item.get("all_event_hook_tests_passed") is not True
+                or item.get("unavailable_sources") != []
+                for item in ui_repositories.values()
+                if isinstance(item, dict)
+            )
+            or any(not isinstance(item, dict) for item in ui_repositories.values())
+        ):
+            raise RuntimeError("Q-version metrics require complete styles/universals test and hook evidence")
         production_readiness = final_evidence.get("production_readiness")
         if (
             not isinstance(production_readiness, dict)
@@ -636,7 +727,9 @@ class QVersionManager:
                     "gates": autonomous_completion["gates"],
                     "next_actions": [],
                 },
-                                "production_readiness": production_readiness,
+                "ollama_reference_audit": ollama_reference_audit,
+                "ui_test_hook_coverage": ui_test_hook_coverage,
+                "production_readiness": production_readiness,
                 "external_research_sources": lifecycle["external_research_sources"],
                 "metrics": inventory,
                 "self_referential_outputs_excluded": [str(metrics_path.relative_to(root)), version_document.name],
@@ -655,7 +748,9 @@ class QVersionManager:
                 f"Total file bytes: {inventory['total_bytes']}",
                 f"Instruction files inventoried: {instruction_inventories[str(root)]['files_read']}",
                 "Autonomous completion gates: all PASS; pending actions: 0.",
-                                "Production readiness: complete inventory; zero unresolved candidates.",
+                f"Ollama history audit: complete; source manifest SHA-256 `{ollama_reference_audit['source_manifest_sha256']}`.",
+                f"Styles/universals feature test and hook coverage: complete; source manifest SHA-256 `{ui_test_hook_coverage['source_manifest_sha256']}`.",
+                "Production readiness: complete inventory; zero unresolved candidates.",
                 f"Per-file SHA-256 and path metrics: `{version}/{metrics_path.name}`",
                 "The JSON manifest excludes itself and this companion document to avoid recursive self-hashing.",
                 "",

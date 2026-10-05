@@ -97,6 +97,7 @@ if str(REPOSITORY_ROOT) not in sys.path:
 from scripts.autonomous_completion_engine import (
     AutonomousCompletionEngine,
     audit_instruction_files,
+    audit_ollama_reference_files,
 )
 from scripts.command_inventory import refresh_commands_category
 from scripts.link_validator import LinkValidator
@@ -282,6 +283,7 @@ MASTER_OWNED_UI_FEATURES: tuple[str, ...] = (
     "Deployment preview, approval, promotion, rollback, and audit trail.",
     "Domain, DNS, TLS, and ownership management with confirmation before changes.",
     "Documentation, styles, app-catalog, and validation report management.",
+    "Master and sister account configuration for bank accounts, wallets, payment APIs, and project-linked financial destinations.",
     "Revenue, wallet, and financial dashboards with read/write permissions separated.",
     "Monitoring, notifications, incidents, recovery, and automation controls.",
     "Security events, audit history, export, retention, and access-revocation controls.",
@@ -338,7 +340,7 @@ UNIVERSAL_UI_ACCESS_MODES: dict[str, tuple[str, ...]] = {
     ),
     "master_operator": (
         "Explicit master role, MFA or equivalent step-up verification, current capability, and audit context.",
-        "Administrative mutations require backend authorization and human confirmation where impact is high.",
+        "Administrative mutations require backend authorization and human confirmation where impact is high; master and sister may configure bank accounts, wallets, payment APIs, and project-linked payment destinations.",
     ),
 }
 
@@ -2270,12 +2272,103 @@ class ModelCardGenerator:
             return "QMOI is the best model currently proven by the benchmark gate and the validation evidence in this repository."
         return "Best-model claim is pending independent benchmark validation; no proven top-rank claim is yet inserted into the model card."
 
+    def _project_autoproject_inventory(self) -> list[tuple[str, list[str]]]:
+        candidate_files = [
+            "projectsandautoprojects.md",
+            "projectsandautoprojectsenhanced.md",
+            "QVERSIONMANAGER.md",
+            "production.md",
+            "productionenhanced.md",
+            "bankandbankaccounts.md",
+            "FINANCIALMANAGER.md",
+            "QMOI_MODEL_CARD.md",
+            "QVILLAGE.md",
+        ]
+        discovered: list[tuple[str, list[str]]] = []
+        for filename in candidate_files:
+            path = self.root_dir / filename
+            if not path.is_file():
+                continue
+            headings: list[str] = []
+            for raw_line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+                stripped = raw_line.strip()
+                if stripped.startswith("#") and stripped.strip("# "):
+                    headings.append(stripped.lstrip("#").strip())
+            if not headings:
+                headings = ["project automation contract"]
+            discovered.append((filename, headings[:6]))
+        return discovered
+
+    def refresh_project_autoproject_coverage(self) -> list[Path]:
+        """Refresh the repo's project/autoproject coverage sections across managed docs."""
+        coverage = self._project_autoproject_inventory()
+        summary_lines = [
+            "## Project and AutoProject coverage",
+            "",
+            "The autonomous repo engine treats project and autoproject state as first-class operational evidence and keeps its registry, lifecycle, financial, and production surfaces synchronized with the current repository state.",
+            "",
+            "- Master and sister roles may configure bank accounts, wallets, payment APIs, and project-linked payment destinations for autonomous project and autoproject execution.",
+            "- Public and authenticated users do not receive these administrative configuration controls without separate authorization and explicit policy approval.",
+            "",
+        ]
+        if not coverage:
+            summary_lines.extend([
+                "- No project or autoproject registry documents were discovered in the current checkout.",
+                "- The repository must add and maintain project registry, Q-version, and production records before final completion is considered safe.",
+            ])
+        else:
+            for filename, headings in coverage:
+                heading_join = "; ".join(headings)
+                summary_lines.append(f"- {filename}: {heading_join}")
+
+        summary_text = "\n".join(summary_lines).rstrip() + "\n"
+        managed_targets = [
+            self.root_dir / "projectsandautoprojects.md",
+            self.root_dir / "projectsandautoprojectsenhanced.md",
+            self.root_dir / "QVERSIONMANAGER.md",
+            self.root_dir / "production.md",
+            self.root_dir / "productionenhanced.md",
+            self.root_dir / "QMOI_MODEL_CARD.md",
+        ]
+        written: list[Path] = []
+        for path in managed_targets:
+            if path.exists() or path.name in {p.name for p in managed_targets if p.exists()}:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                _upsert_managed_markdown_section(
+                    path,
+                    path.name,
+                    "project-autoproject-coverage",
+                    summary_text,
+                )
+                written.append(path)
+            else:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(f"# {path.name}\n\n{summary_text}", encoding="utf-8")
+                written.append(path)
+        return written
+
     def generate_card(self) -> Path:
+        self.refresh_project_autoproject_coverage()
         evidence = self._evidence()
         model_test_paths = evidence["model_test_paths"] or ["No dedicated model-test path discovered"]
         memory_sources = evidence["memory_recovery_sources"] or ["No memory recovery source discovered"]
         dataset_inventory = evidence["dataset_inventory"] or ["No dataset inventory discovered"]
         best_model_status = evidence["best_model_proof"]
+        project_coverage = self._project_autoproject_inventory()
+        project_coverage_lines = [
+            "## Project and AutoProject coverage",
+            "",
+            "- Master and sister role policy: configure bank accounts, wallets, payment APIs, and project-linked financial destinations for autoproject execution.",
+            "- Public and basic users remain blocked from direct bank, wallet, or account configuration; only authorized account-linked roles may set these values.",
+            "",
+        ]
+        if project_coverage:
+            for filename, headings in project_coverage:
+                heading_join = "; ".join(headings)
+                project_coverage_lines.append(f"- {filename}: {heading_join}")
+        else:
+            project_coverage_lines.append("- No project/autoproject source files were discovered in the active checkout.")
+        project_coverage_block = "\n".join(project_coverage_lines)
         comparison_rows = [
             ("GPT-5", "General-purpose frontier language and multimodal performance", "QMOI leads through repository-validated autonomy, memory continuity, multi-platform orchestration, and fail-safe governance."),
             ("Claude 4 Opus", "Long-context reasoning and coding assistance", "QMOI leads by combining persistent memory recovery, dataset automation, autoclone resilience, and repo-level self-healing workflows."),
@@ -2357,6 +2450,8 @@ The model-card comparison section is intended to provide a benchmark-oriented ov
 ## Best-model validation gate
 
 {best_model_status}
+
+{project_coverage_block}
 
 ## QVillage UI and Card Synchronization
 
@@ -6973,6 +7068,40 @@ All timestamps use UTC ISO-8601 format.
         safe_json_write(target / "ollamatracks" / "bank_automation_status.json", report)
         return report
 
+    def refresh_ollama_reference_audit(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Refresh metadata-only Ollama mention coverage and its Q-version gate contract."""
+        target = Path(root) if root is not None else self.root_dir
+        initial = audit_ollama_reference_files(target)
+        audit_lines = [
+            "## Ollama reference audit and Q-version gate",
+            "",
+            "This generated audit indexes paths, hashes, line numbers, and responsibility categories only; source text is never copied into the evidence artifact.",
+            "",
+            f"- Materialized files scanned: `{initial['local_scan']['files_scanned']}`; Ollama-matching files: `{initial['local_scan']['matched_file_count']}`.",
+            f"- Local scan status: `{initial['local_scan']['status']}`; historical source scopes are listed in `ollamatracks/ollama_reference_audit.json`.",
+            "- Local tree and archived source scans do not cover every remote ref, pull request, or intermediate commit tree; Q-version completion stays blocked until both repositories have terminal exact-SHA audit evidence.",
+            "- Styles and universal UI requirements remain incomplete until each registered feature maps to focused tests and event-driven hook/webhook validation; registry discovery is not coverage proof.",
+        ]
+        for filename in ("QVERSIONMANAGER.md", "OLLAMA_AUTOMATION_GUIDE.md", "ollama.md"):
+            path = target / filename
+            if path.is_file():
+                _upsert_managed_markdown_section(
+                    path,
+                    filename,
+                    "ollama-reference-audit-gate",
+                    "\n".join(audit_lines),
+                )
+
+        report = audit_ollama_reference_files(target)
+        report["correlation_id"] = uuid.uuid4().hex
+        report_path = target / "ollamatracks" / "ollama_reference_audit.json"
+        safe_json_write(report_path, report)
+        report["artifact_path"] = str(report_path)
+        return report
+
     def build_runtime_status_snapshot(
         self,
     ) -> dict[str, Any]:
@@ -6999,6 +7128,7 @@ All timestamps use UTC ISO-8601 format.
         instruction_inventory = audit_instruction_files(self.root_dir)
 
         financial_documents = self.refresh_financial_manager_catalog(self.root_dir)
+        ollama_reference_audit = self.refresh_ollama_reference_audit(self.root_dir)
 
         agent_status = {
             "status": "running",
@@ -7035,6 +7165,13 @@ All timestamps use UTC ISO-8601 format.
                 "files_discovered": instruction_inventory["files_discovered"],
                 "unreadable_or_invalid": instruction_inventory["unreadable_or_invalid"],
                 "source_contents_recorded": False,
+            },
+            "ollama_reference_audit": {
+                "status": ollama_reference_audit["status"],
+                "local_scan": ollama_reference_audit["local_scan"]["status"],
+                "matched_file_count": ollama_reference_audit["local_scan"]["matched_file_count"],
+                "coverage_complete": ollama_reference_audit["coverage_complete"],
+                "artifact_path": ollama_reference_audit["artifact_path"],
             },
             "financial_manager_catalog": {
                 "status": financial_documents["status"],
@@ -8545,7 +8682,7 @@ All timestamps use UTC ISO-8601 format.
         trading_path_terms = (
             "trading", "trade", "qtrade", "exchange", "wallet", "balance",
             "order", "portfolio", "risk", "finance", "payment", "cashon",
-            "megavault", "binance", "bitget",
+            "megavault", "binance", "bitget", "bank",
         )
         trading_content_pattern = re.compile(
             r"\btrading\b|\btrade(?:r|rs|d)?\b|\bwallets?\b|\bbalances?\b|"
@@ -8563,6 +8700,12 @@ All timestamps use UTC ISO-8601 format.
         source_directory_names = {
             "scripts", "src", "apps", "api", "backend", "frontend", "ui",
             "components", "routes", "services", "adapters", "tests", "functions",
+        }
+        project_registry_docs = {
+            "projectandautoprojects.md",
+            "projectsandautoprojects.md",
+            "projectsandautoprojectsenhanced.md",
+            "projectsndautoprojects.md",
         }
         trading_files: list[dict[str, Any]] = []
         role_counts: dict[str, int] = {}
@@ -8594,7 +8737,7 @@ All timestamps use UTC ISO-8601 format.
             file_digest: str | None = None
             lowered_content = ""
             scan_content = (
-                suffix == ".md"
+                suffix == ".md" and candidate.name.lower() in project_registry_docs
                 or suffix in source_code_suffixes and bool(source_parts & source_directory_names)
             )
             if scan_content and stat.st_size <= 1_000_000:
@@ -8993,11 +9136,48 @@ All timestamps use UTC ISO-8601 format.
         ]
 
         feature_rows = []
+        feature_test_hook_records: list[dict[str, Any]] = []
         for platform, apps in FEATURE_REGISTRY.items():
             for app, features in apps.items():
                 feature_rows.append(
                     f"| `{platform}` | `{app}` | {len(features)} | `registry_only_not_implementation_proof` | `unmapped` |"
                 )
+                for feature_index, feature in enumerate(features, 1):
+                    slug = re.sub(r"[^a-z0-9]+", "-", feature.lower()).strip("-")[:96]
+                    feature_test_hook_records.append({
+                        "feature_id": f"ui.{platform}.{app}.{feature_index:03d}.{slug}",
+                        "platform": platform,
+                        "app": app,
+                        "requirement": feature,
+                        "test_paths": [],
+                        "test_mapping_status": "unmapped",
+                        "hook_applicability": "review_required",
+                        "hook_test_paths": [],
+                        "status": "discovered_unmapped",
+                    })
+
+        feature_test_hook_manifest = {
+            "schema_version": 1,
+            "generated_at": utc_iso(),
+            "repository": target.name,
+            "scope": "styles_and_universals_feature_registry",
+            "feature_count": len(feature_test_hook_records),
+            "test_mapped_feature_count": 0,
+            "hook_applicability_reviewed_count": 0,
+            "unmapped_feature_count": len(feature_test_hook_records),
+            "unreviewed_hook_applicability_count": len(feature_test_hook_records),
+            "unmapped_event_hook_count": None,
+            "coverage_verified": False,
+            "status": "NEEDS_FEATURE_TEST_HOOK_MAPPING",
+            "source_contents_recorded": False,
+            "features": feature_test_hook_records,
+        }
+        feature_manifest_bytes = json.dumps(
+            feature_test_hook_manifest["features"], sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        feature_test_hook_manifest["source_manifest_sha256"] = hashlib.sha256(feature_manifest_bytes).hexdigest()
+        feature_test_hook_manifest_path = target / "ollamatracks" / "feature_test_hook_coverage.json"
+        safe_json_write(feature_test_hook_manifest_path, feature_test_hook_manifest)
 
         tests_lines = [
             "## Agent-managed active test inventory",
@@ -9035,6 +9215,14 @@ All timestamps use UTC ISO-8601 format.
             "",
             "Every UI/API/backend feature must have a stable feature ID, owning repository/ref, implementation paths, route/API and authorization boundary where applicable, accessibility/state expectations, positive and negative/boundary tests, hook/webhook tests when event-driven, artifact/result hashes, and a terminal exact-SHA validation record. Missing links stay `unmapped`, `blocked`, or `needs_review`; never infer coverage from a nearby test filename.",
         ]
+        tests_lines.extend([
+            "",
+            f"### Styles and universals test/hook mapping: `{feature_test_hook_manifest_path.relative_to(target).as_posix()}`",
+            "",
+            f"Registered feature count: `{feature_test_hook_manifest['feature_count']}`; test mappings: `{feature_test_hook_manifest['test_mapped_feature_count']}`; reviewed hook applicability: `{feature_test_hook_manifest['hook_applicability_reviewed_count']}/{feature_test_hook_manifest['feature_count']}`; status: `{feature_test_hook_manifest['status']}`.",
+            "",
+        ])
+
         hooks_lines = [
             "## Agent-managed active workflow and webhook inventory",
             "",
@@ -9044,6 +9232,7 @@ All timestamps use UTC ISO-8601 format.
             f"- Source/config files mentioning webhook identifiers: `{len(webhook_paths)}`.",
             f"- Workflow parse errors: `{len(parse_errors)}`.",
             "- External registration and delivery state: `not_verified` unless a provider read and signed delivery/test evidence are recorded for the exact repository/ref.",
+            f"- Styles/universals feature event coverage is tracked in `ollamatracks/feature_test_hook_coverage.json`; applicability reviews: `{feature_test_hook_manifest['hook_applicability_reviewed_count']}/{feature_test_hook_manifest['feature_count']}`; event-hook tests must be mapped separately from static style tests.",
             "",
             "### Workflow event hooks",
             "",
@@ -9074,6 +9263,8 @@ All timestamps use UTC ISO-8601 format.
             "- Include loading, empty, error, offline, stale, disabled, success, and permission-denied states in the UI contract and tests.",
             "- Preserve app identity and accessibility while applying shared tokens; do not hide security, financial, consent, billing, or deployment risk.",
             "- Record each changed path, repository/ref/base SHA, before/after content hash, owner, reason, tests, and approvals in the change evidence.",
+            f"- Feature-level test and hook applicability manifest: `{feature_test_hook_manifest_path.relative_to(target).as_posix()}`; {feature_test_hook_manifest['feature_count']} registered features currently require explicit mappings.",
+            "- Do not mark a style feature complete until focused UI/accessibility/state tests and event-hook applicability are mapped; event-driven features also require delivery, denial, retry, and recovery tests.",
         ]
         universals_lines = [
             "## Agent-managed feature, test, and event accountability contract",
@@ -9084,6 +9275,7 @@ All timestamps use UTC ISO-8601 format.
             "- Every file mutation records path, owner, prior/new hashes, reason, validation, and authorization context; failed or skipped work remains visible.",
             "- Hooks/webhooks require authentication/signatures, replay and idempotency controls, bounded retries, secret-reference-only handling, audit logging, and tested failure paths.",
             "- A feature without a mapped test or verified event integration remains `unmapped` or `blocked`; total automation claims cannot exceed inspected scope.",
+            f"- Current styles/universals mapping state: `{feature_test_hook_manifest['status']}`; tests mapped: `{feature_test_hook_manifest['test_mapped_feature_count']}/{feature_test_hook_manifest['feature_count']}`; hook applicability reviewed: `{feature_test_hook_manifest['hook_applicability_reviewed_count']}/{feature_test_hook_manifest['feature_count']}`.",
             "- Trading automation remains paused on stale market/account data, invalid authorization, provider outage, risk-limit breach, or ledger mismatch; runtime independence requires separately verified hosts and fresh heartbeat evidence.",
         ]
 
@@ -9092,6 +9284,8 @@ All timestamps use UTC ISO-8601 format.
             "",
             "The trading source inventory is a discovery artifact. Every venue, UI, API, test, and workflow must be tied to an owner, repository/ref/SHA, implementation path, risk/auth boundary, and validation record before being marked verified.",
             "",
+            "- Project and autoproject financial configuration are governed by the master/sister account policy: only authorized operators may bind a bank account, wallet, payment API, or project-linked financial destination to QMOI automation.",
+            "- The repository keeps `bankandbankaccounts.md`, `FINANCIALMANAGER.md`, `projectsandautoprojects.md`, and `projectsandautoprojectsenhanced.md` synchronized with the active configuration model so every financial action remains traceable and reviewable.",
             f"- Current materialized trading candidates: `{len(trading_files)}`; platform mentions: `{json.dumps(trading_inventory['counts_by_venue'], sort_keys=True)}`.",
             "- Feature and source coverage remains `discovered_unmapped` until each candidate maps to active implementation, tests, and exact-SHA evidence.",
             "- Provider verification is `provider-sourced` only when an authorized provider response is independently recorded; repository discovery is not provider proof.",
@@ -9276,6 +9470,10 @@ All timestamps use UTC ISO-8601 format.
             "feature_registry_rows": len(feature_rows),
             "trading_inventory": trading_inventory,
             "trading_inventory_path": trading_inventory_path,
+            "styles_universals_coverage": {
+                key: value for key, value in feature_test_hook_manifest.items() if key != "features"
+            },
+            "styles_universals_coverage_path": feature_test_hook_manifest_path,
             "financial_claim_inventory": financial_claim_inventory,
             "financial_claim_inventory_path": financial_claim_inventory_path,
             "parse_errors": parse_errors,
@@ -9292,6 +9490,7 @@ All timestamps use UTC ISO-8601 format.
         qstore_documents = self.refresh_qstream_qstore_documents(target)
         hosting_documents = self.refresh_hosting_quantum_ui_documents(target)
         research_documents = self.refresh_research_contract_documents(target)
+        self.model_card_generator.refresh_project_autoproject_coverage()
         automation_coverage = self.refresh_test_hook_coverage_documents(target)
 
         for filename, content in {
@@ -9765,6 +9964,8 @@ All timestamps use UTC ISO-8601 format.
             repo_roots = self.discover_repo_roots(include_history=True)
             bank_automation_evidence = self.refresh_bank_automation_evidence(self.root_dir)
             self.results["bank_automation_evidence"] = bank_automation_evidence
+            ollama_reference_audit = self.refresh_ollama_reference_audit(self.root_dir)
+            self.results["ollama_reference_audit"] = ollama_reference_audit
             initial_merge = self.execute_merge_and_sync(repo_roots, auto_push=False)
             lifecycle_execution_id = initial_merge.get("q_version_lifecycle_execution_id")
             self.results["pre_validation_merge"] = initial_merge
@@ -9905,6 +10106,16 @@ All timestamps use UTC ISO-8601 format.
                 },
                 "bank_automation_evidence": bank_automation_evidence,
                 "instruction_inventory": instruction_inventory,
+                "ollama_reference_audit": {
+                    "status": ollama_reference_audit["status"],
+                    "local_scan": ollama_reference_audit["local_scan"],
+                    "matched_files_by_scope": ollama_reference_audit["local_scan"]["matched_files_by_scope"],
+                    "matched_files_by_category": ollama_reference_audit["local_scan"]["matched_files_by_category"],
+                    "source_manifest_sha256": ollama_reference_audit["source_manifest_sha256"],
+                    "remote_history": ollama_reference_audit["remote_history"],
+                    "artifact_path": ollama_reference_audit["artifact_path"],
+                    "coverage_complete": ollama_reference_audit["coverage_complete"],
+                },
                 "production_readiness": {
                     "status": "PASS" if production_documents.get("status") == "clear" else "NEEDS_REVIEW",
                     "inventory_path": str(production_documents.get("inventory", "")),
@@ -9919,6 +10130,18 @@ All timestamps use UTC ISO-8601 format.
             completion_gates = {
                 "discovery": bool(repo_roots) and all(path.is_dir() for path in repo_roots),
                 "inspection": initial_merge.get("status") == "ready" and final_merge.get("status") == "ready",
+                "ollama_reference_audit": (
+                    "PASS"
+                    if AutonomousCompletionEngine._ollama_reference_audit_evidence_complete(ollama_reference_audit)
+                    else None
+                ),
+                "ui_test_hook_coverage": (
+                    "PASS"
+                    if AutonomousCompletionEngine._ui_test_hook_coverage_evidence_complete(
+                        product_surface_docs["automation_coverage"]["styles_universals_coverage"]
+                    )
+                    else None
+                ),
                 "instruction_inventory": instruction_inventory["status"] == "PASS",
                 "production_readiness": (
                     production_documents.get("status") == "clear"
@@ -9941,6 +10164,8 @@ All timestamps use UTC ISO-8601 format.
                     "primary": {"changed_files": []},
                     "secondary": {"changed_files": []},
                     "markdown_inventory": final_merge.get("remote_markdown_inventory_evidence"),
+                    "ollama_reference_audit": ollama_reference_audit,
+                    "ui_test_hook_coverage": product_surface_docs["automation_coverage"]["styles_universals_coverage"],
                 },
             )
             report["autonomous_completion"] = completion_result.as_dict()

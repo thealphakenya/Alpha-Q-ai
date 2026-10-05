@@ -5,7 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from scripts.autonomous_completion_engine import AutonomousCompletionEngine, REQUIRED_GATES, audit_instruction_files
+from scripts.autonomous_completion_engine import (
+    AutonomousCompletionEngine,
+    REQUIRED_GATES,
+    audit_instruction_files,
+    audit_ollama_reference_files,
+)
 from scripts.checkpoint_manager import CheckpointManager
 from scripts.execution_lock import ExecutionLock
 from scripts.live_activity_events import LiveActivity
@@ -75,6 +80,62 @@ def q_version_production_readiness() -> dict[str, object]:
     }
 
 
+def q_version_ollama_reference_audit(shas: list[str]) -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "coverage_complete": True,
+        "materialized_scope_complete": True,
+        "source_manifest_sha256": "c" * 64,
+        "unavailable_sources": [],
+        "repositories": {
+            name: {
+                "terminal_conclusion": "success",
+                "remote_verified": True,
+                "final_sha": sha,
+                "workflow_run_id": "run-ollama-audit",
+                "all_refs_enumerated": True,
+                "all_pull_requests_included": True,
+                "all_intermediate_commit_trees_scanned": True,
+                "unavailable_sources": [],
+            }
+            for name, sha in zip(
+                ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
+                shas,
+            )
+        },
+    }
+
+
+def ui_test_hook_coverage_evidence(shas: list[str]) -> dict[str, object]:
+    return {
+        "status": "PASS",
+        "coverage_verified": True,
+        "source_manifest_sha256": "d" * 64,
+        "unavailable_sources": [],
+        "repositories": {
+            name: {
+                "remote_verified": True,
+                "terminal_conclusion": "success",
+                "final_sha": sha,
+                "workflow_run_id": "run-ui-coverage",
+                "feature_count": 2,
+                "test_mapped_feature_count": 2,
+                "hook_applicability_reviewed_count": 2,
+                "unmapped_feature_count": 0,
+                "unreviewed_hook_applicability_count": 0,
+                "unmapped_event_hook_count": 0,
+                "all_feature_tests_passed": True,
+                "all_event_hook_tests_passed": True,
+                "unavailable_sources": [],
+            }
+            for name, sha in zip(
+                ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
+                shas,
+            )
+        },
+    }
+
+
 def record_successful_q_lifecycle(manager: QVersionManager, roots: list[Path], execution_id: str) -> None:
     stage_details = {
         "MERGE_APPLY": {
@@ -141,6 +202,8 @@ def test_completion_refreshes_current_state_and_keeps_remote_actions_gated(tmp_p
     first_state = json.loads((root / "ollamatracks" / "current_state.json").read_text(encoding="utf-8"))
 
     gates = {name: "PASS" for name in REQUIRED_GATES}
+    gates["ollama_reference_audit"] = None
+    gates["ui_test_hook_coverage"] = None
     markdown_evidence = {
         "remote_verified": True,
         "all_document_content_validated": True,
@@ -166,13 +229,19 @@ def test_completion_refreshes_current_state_and_keeps_remote_actions_gated(tmp_p
     }
     second = AutonomousCompletionEngine(root, "execution-second").evaluate(
         gates,
-        repository_results={"markdown_inventory": markdown_evidence},
+        repository_results={
+            "markdown_inventory": markdown_evidence,
+            "ollama_reference_audit": q_version_ollama_reference_audit(["a" * 40, "b" * 40]),
+            "ui_test_hook_coverage": ui_test_hook_coverage_evidence(["a" * 40, "b" * 40]),
+        },
     )
     current_state = json.loads((root / "ollamatracks" / "current_state.json").read_text(encoding="utf-8"))
 
     assert first.status == "BLOCKED_REQUIRES_HUMAN"
     assert first_state["status"] == "BLOCKED_REQUIRES_HUMAN"
     assert second.status == "NO_CHANGES_REQUIRED"
+    assert second.gates["ollama_reference_audit"] == "PASS"
+    assert second.gates["ui_test_hook_coverage"] == "PASS"
     assert current_state["execution_id"] == "execution-second"
     assert current_state["status"] == "NO_CHANGES_REQUIRED"
     assert current_state["pending_actions"] == []
@@ -180,6 +249,28 @@ def test_completion_refreshes_current_state_and_keeps_remote_actions_gated(tmp_p
     remote_action = next(action for action in first.evidence["next_actions"] if action["gate"] == "remote_main")
     assert remote_action["status"] == "BLOCKED_REQUIRES_AUTHORIZATION"
     assert remote_action["authorization_required"] is True
+
+
+def test_completion_requires_complete_dual_repository_ollama_history_audit(tmp_path):
+    root = make_root(tmp_path)
+    gates = {name: "PASS" for name in REQUIRED_GATES}
+
+    result = AutonomousCompletionEngine(root, "execution-ollama-history").evaluate(gates)
+
+    assert result.gates["ollama_reference_audit"] == "UNKNOWN"
+    assert result.evidence["ollama_reference_audit"]["coverage_complete"] is False
+    assert result.status == "BLOCKED_REQUIRES_HUMAN"
+
+
+def test_completion_requires_feature_level_style_test_and_hook_evidence(tmp_path):
+    root = make_root(tmp_path)
+    gates = {name: "PASS" for name in REQUIRED_GATES}
+
+    result = AutonomousCompletionEngine(root, "execution-ui-test-hooks").evaluate(gates)
+
+    assert result.gates["ui_test_hook_coverage"] == "UNKNOWN"
+    assert result.evidence["ui_test_hook_coverage"]["coverage_complete"] is False
+    assert result.status == "BLOCKED_REQUIRES_HUMAN"
 
 
 def test_invalid_local_evidence_forces_final_verification_failure(tmp_path):
@@ -249,6 +340,68 @@ def test_instruction_inventory_blocks_symlinked_policy_sources(tmp_path):
     assert result["unreadable_or_invalid"] == [
         {"path": ".github/instructions/linked.instructions.md", "error_type": "SymlinkInstruction"}
     ]
+
+
+def test_ollama_reference_audit_indexes_materialized_history_without_source_text(tmp_path):
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "ollama_agent.py").write_text(
+        "# Ollama runtime and model inference\n", encoding="utf-8"
+    )
+    archived = tmp_path / "qmoi-enhanced-history-14" / "docs"
+    archived.mkdir(parents=True)
+    (archived / "agent.md").write_text(
+        "Ollama workflow history and Q.0.0.N evidence\n", encoding="utf-8"
+    )
+    (tmp_path / "node_modules" / "third-party").mkdir(parents=True)
+    (tmp_path / "node_modules" / "third-party" / "README.md").write_text(
+        "Ollama dependency mention\n", encoding="utf-8"
+    )
+
+    report = audit_ollama_reference_files(tmp_path)
+
+    assert report["status"] == "NEEDS_REMOTE_HISTORY_EVIDENCE"
+    assert report["local_scan"]["complete"] is True
+    assert report["local_scan"]["matched_file_count"] == 2
+    assert report["local_scan"]["matched_files_by_scope"]["qmoi_enhanced_history"] == 1
+    archived_file = next(item for item in report["matched_files"] if item["scope"] == "qmoi_enhanced_history")
+    assert "history_and_merges" in archived_file["categories"]
+    assert "runtime_and_models" not in archived_file["categories"]
+    assert report["coverage_complete"] is False
+    assert report["remote_history"]["all_intermediate_commit_trees_scanned"] is False
+    assert "source_text" not in json.dumps(report)
+    assert all(len(item["sha256"]) == 64 for item in report["matched_files"])
+
+
+def test_ollama_reference_audit_includes_all_local_ref_diff_candidates(tmp_path):
+    repository = make_git_repo(tmp_path, "history")
+    source = repository / "docs" / "agent.md"
+    source.parent.mkdir()
+    source.write_text("Ollama is referenced here.\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(repository), "add", "docs/agent.md"], check=True)
+    subprocess.run(
+        ["git", "-C", str(repository), "commit", "-m", "document Ollama agent"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    source.write_text("Agent documentation remains.\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(repository), "add", "docs/agent.md"], check=True)
+    subprocess.run(
+        ["git", "-C", str(repository), "commit", "-m", "remove old runtime name"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    report = audit_ollama_reference_files(repository)
+
+    assert report["local_git_history"]["ollama_mention_diff_status"] == "all_local_ref_diffs_scanned"
+    assert report["local_git_history"]["ollama_mention_diff_commit_count"] == 2
+    historical_path = next(
+        item for item in report["local_git_history"]["ollama_mention_diff_paths"]
+        if item["path"] == "docs/agent.md"
+    )
+    assert historical_path["matching_change_commit_count"] == 2
 
 
 def test_research_system_has_ten_internal_and_ten_external_controls():
@@ -416,6 +569,12 @@ def test_completion_accepts_markdown_gate_only_with_complete_dual_repo_evidence(
             "primary": {"changed_files": ["QVERSIONMANAGER.md"]},
             "secondary": {"changed_files": ["QVERSIONMANAGER.md"]},
             "markdown_inventory": markdown_evidence,
+                "ollama_reference_audit": q_version_ollama_reference_audit(
+                    [item["final_sha"] for item in repository_evidence.values()]
+                ),
+                "ui_test_hook_coverage": ui_test_hook_coverage_evidence(
+                    [item["final_sha"] for item in repository_evidence.values()]
+                ),
         },
     )
 
@@ -616,9 +775,24 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         "correlation_id": "qversion-test-1",
         "instruction_inventories": q_version_instruction_evidence(roots),
         "autonomous_completion": q_version_autonomous_completion(),
+        "ollama_reference_audit": q_version_ollama_reference_audit(
+            [item["final_sha"] for item in repository_evidence.values()]
+        ),
+        "ui_test_hook_coverage": ui_test_hook_coverage_evidence(
+            [item["final_sha"] for item in repository_evidence.values()]
+        ),
         "production_readiness": q_version_production_readiness(),
         "repositories": repository_evidence,
     }
+
+    ollama_reference_audit = evidence.pop("ollama_reference_audit")
+    with pytest.raises(RuntimeError, match="complete dual-repository Ollama history evidence"):
+        manager.write_final_metrics("Q.0.0.3", roots, evidence)
+    evidence["ollama_reference_audit"] = ollama_reference_audit
+    ui_coverage = evidence.pop("ui_test_hook_coverage")
+    with pytest.raises(RuntimeError, match="complete styles/universals test and hook evidence"):
+        manager.write_final_metrics("Q.0.0.3", roots, evidence)
+    evidence["ui_test_hook_coverage"] = ui_coverage
 
     result = manager.write_final_metrics("Q.0.0.3", roots, evidence)
 
@@ -632,6 +806,8 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         assert metrics["metrics"]["file_count"] >= 1
         assert metrics["instruction_inventory"]["files_read"] == 2
         assert metrics["autonomous_completion"]["next_actions"] == []
+        assert metrics["ollama_reference_audit"]["coverage_complete"] is True
+        assert metrics["ui_test_hook_coverage"]["coverage_verified"] is True
         assert metrics["production_readiness"]["candidate_count"] == 0
         assert document_path.is_file()
         assert "Directories inventoried:" in document_path.read_text(encoding="utf-8")
@@ -694,6 +870,8 @@ def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path)
         "correlation_id": "qversion-test-2",
         "instruction_inventories": q_version_instruction_evidence(roots),
         "autonomous_completion": q_version_autonomous_completion(),
+        "ollama_reference_audit": q_version_ollama_reference_audit(["a" * 40, "a" * 40]),
+        "ui_test_hook_coverage": ui_test_hook_coverage_evidence(["a" * 40, "a" * 40]),
         "production_readiness": q_version_production_readiness(),
         "repositories": {
             str(root.resolve()): {

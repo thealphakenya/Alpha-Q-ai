@@ -30,6 +30,8 @@ except ImportError:  # pragma: no cover - direct script execution
 REQUIRED_GATES = (
     "discovery",
     "inspection",
+    "ollama_reference_audit",
+    "ui_test_hook_coverage",
     "instruction_inventory",
     "production_readiness",
     "markdown_inventory",
@@ -50,6 +52,8 @@ TERMINAL_STATUSES = {
 GATE_ACTIONS = {
     "discovery": ("Refresh refs, source roots, and repository identity", "READ_ONLY_AUTOMATIC", False),
     "inspection": ("Map requirements to source, tests, workflows, and documentation", "READ_ONLY_AUTOMATIC", False),
+    "ollama_reference_audit": ("Inventory Ollama responsibilities across materialized and remote histories", "TARGET_WORKFLOW_REQUIRED", True),
+    "ui_test_hook_coverage": ("Map every styles/universals feature to tests and reviewed hook/webhook applicability", "TARGET_WORKFLOW_REQUIRED", True),
     "instruction_inventory": ("Read and hash all applicable repository instructions without rewriting policy", "READ_ONLY_AUTOMATIC", False),
     "production_readiness": ("Map production candidates to owners, requirements, focused tests, and safe replacement plans", "LOCAL_ANALYSIS_AND_FOCUSED_TESTS", False),
     "markdown_inventory": ("Run complete target-owned Markdown/ref/PR inventory", "TARGET_WORKFLOW_REQUIRED", True),
@@ -165,6 +169,230 @@ def audit_instruction_files(root: Path | str) -> dict[str, Any]:
     }
 
 
+def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
+    """Inventory Ollama mentions without copying source lines into evidence."""
+    target = Path(root).resolve()
+    excluded_directory_names = {
+        ".git", "node_modules", ".venv", "venv", "__pycache__",
+        ".pytest_cache", "dist", "build", "coverage",
+    }
+    max_file_bytes = 100_000_000
+    skipped: list[dict[str, str]] = []
+    excluded_directories: dict[str, int] = {}
+    matched_files: list[dict[str, Any]] = []
+    category_counts: dict[str, int] = {}
+    scope_counts: dict[str, int] = {}
+    self_excluded_files = 0
+    scanned_files = 0
+    scanned_bytes = 0
+    tree_digest = hashlib.sha256()
+
+    category_patterns = {
+        "runtime_and_models": re.compile(r"runtime|model|inference|server", re.IGNORECASE),
+        "workflows_and_remote_git": re.compile(r"workflow|github|remote|sync|push|pull request|branch", re.IGNORECASE),
+        "history_and_merges": re.compile(r"history|archive|backup|merge|reconcile", re.IGNORECASE),
+        "validation_and_security": re.compile(r"test|validation|lint|security|production|feature", re.IGNORECASE),
+        "memory_and_research": re.compile(r"memory|research|awareness|dataset|qvillage", re.IGNORECASE),
+        "q_version_lifecycle": re.compile(r"q\.0\.0|q_version|q-version|finaliz|reservation", re.IGNORECASE),
+        "activity_and_evidence": re.compile(r"activity|telemetry|heartbeat|checkpoint|evidence|completion", re.IGNORECASE),
+        "styles_hooks_and_universals": re.compile(r"styles|universal|hook|webhook|accessibility|ui feature", re.IGNORECASE),
+        "financial_surfaces": re.compile(r"bank|wallet|payment|trading|finance|account", re.IGNORECASE),
+    }
+
+    if not target.is_dir():
+        return {
+            "schema_version": 1,
+            "status": "BLOCKED",
+            "coverage_complete": False,
+            "root": str(target),
+            "reason": "repository root is missing",
+            "source_contents_recorded": False,
+        }
+
+    for current, directory_names, filenames in os.walk(target, topdown=True, followlinks=False):
+        current_path = Path(current)
+        retained_directories = []
+        for name in directory_names:
+            directory = current_path / name
+            relative = directory.relative_to(target).as_posix()
+            if name in excluded_directory_names or name.startswith((".venv", "venv")):
+                excluded_directories[relative] = excluded_directories.get(relative, 0) + 1
+            elif directory.is_symlink():
+                skipped.append({"path": relative, "reason": "symlink_directory_not_followed"})
+            else:
+                retained_directories.append(name)
+        directory_names[:] = retained_directories
+
+        for filename in filenames:
+            path = current_path / filename
+            relative = path.relative_to(target).as_posix()
+            if relative == "ollamatracks/ollama_reference_audit.json":
+                self_excluded_files += 1
+                continue
+            if path.is_symlink():
+                skipped.append({"path": relative, "reason": "symlink_file_not_followed"})
+                continue
+            try:
+                size = path.stat().st_size
+                if size > max_file_bytes:
+                    skipped.append({"path": relative, "reason": "oversized_file_not_read"})
+                    continue
+                content = path.read_bytes()
+            except OSError as exc:
+                skipped.append({"path": relative, "reason": type(exc).__name__})
+                continue
+
+            content_sha256 = hashlib.sha256(content).hexdigest()
+            tree_digest.update(relative.encode("utf-8", errors="replace"))
+            tree_digest.update(b"\0")
+            tree_digest.update(content_sha256.encode("ascii"))
+            tree_digest.update(b"\n")
+            scanned_files += 1
+            scanned_bytes += size
+
+            path_match = "ollama" in relative.lower()
+            lines = content.decode("utf-8", errors="replace").splitlines()
+            matching_line_numbers = [
+                index for index, line in enumerate(lines, 1)
+                if "ollama" in line.lower()
+            ]
+            if not path_match and not matching_line_numbers:
+                continue
+
+            scope = "active_repository"
+            path_parts = Path(relative).parts
+            if "qmoi-enhanced-history-14" in path_parts or "_archive_qmoi-enhanced" in path_parts:
+                scope = "qmoi_enhanced_history"
+            elif "Alpha-Q-ai-2025" in path_parts:
+                scope = "alpha_source_snapshot"
+            matched_lines = [lines[index - 1] for index in matching_line_numbers]
+            searchable_text = relative + "\n" + "\n".join(matched_lines)
+            categories = sorted(
+                name for name, pattern in category_patterns.items()
+                if pattern.search(searchable_text)
+            ) or ["other"]
+            record = {
+                "path": relative,
+                "scope": scope,
+                "bytes": size,
+                "sha256": content_sha256,
+                "path_match": path_match,
+                "matching_line_count": len(matching_line_numbers),
+                "mention_count": sum(line.lower().count("ollama") for line in matched_lines),
+                "matching_line_numbers": matching_line_numbers[:100],
+                "line_numbers_truncated": len(matching_line_numbers) > 100,
+                "categories": categories,
+            }
+            matched_files.append(record)
+            scope_counts[scope] = scope_counts.get(scope, 0) + 1
+            for category in categories:
+                category_counts[category] = category_counts.get(category, 0) + 1
+
+    local_complete = not skipped
+    try:
+        refs = subprocess.run(
+            ["git", "-C", str(target), "for-each-ref", "--format=%(refname)"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        commit_count = int(subprocess.run(
+            ["git", "-C", str(target), "rev-list", "--all", "--count"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip())
+        git_history_status = "enumerated_local_refs_and_commit_count"
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        refs = []
+        commit_count = None
+        git_history_status = "unavailable"
+
+    history_diff_paths: dict[str, set[str]] = {}
+    history_diff_status = "unavailable"
+    history_diff_commit_count = 0
+    try:
+        history_diff = subprocess.run(
+            [
+                "git", "-C", str(target), "-c", "core.quotePath=false", "log",
+                "--all", "--regexp-ignore-case", "-Gollama", "--format=%H", "--name-only",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        current_commit = None
+        commit_ids: set[str] = set()
+        for line in history_diff.stdout.splitlines():
+            if re.fullmatch(r"[0-9a-f]{40}", line):
+                current_commit = line
+                commit_ids.add(line)
+            elif line.strip() and current_commit:
+                history_diff_paths.setdefault(line.strip(), set()).add(current_commit)
+        history_diff_commit_count = len(commit_ids)
+        history_diff_status = "all_local_ref_diffs_scanned"
+    except (OSError, subprocess.CalledProcessError):
+        pass
+
+    historical_paths = [
+        {
+            "path": path,
+            "matching_change_commit_count": len(commit_ids),
+            "matching_change_commits": sorted(commit_ids),
+        }
+        for path, commit_ids in sorted(history_diff_paths.items())
+    ]
+    manifest = json.dumps(
+        {"materialized_matches": matched_files, "local_history_diffs": historical_paths},
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return {
+        "schema_version": 1,
+        "status": "NEEDS_REMOTE_HISTORY_EVIDENCE" if local_complete else "INCOMPLETE_LOCAL_SCAN",
+        "generated_at": utc_now(),
+        "repository": target.name,
+        "head_sha": _git(target, "rev-parse", "HEAD"),
+        "scope": "all materialized files excluding explicitly listed dependency, build, cache, and Git roots",
+        "local_scan": {
+            "status": "PASS" if local_complete else "INCOMPLETE",
+            "complete": local_complete,
+            "files_scanned": scanned_files,
+            "bytes_scanned": scanned_bytes,
+            "matched_file_count": len(matched_files),
+            "matched_files_by_scope": dict(sorted(scope_counts.items())),
+            "matched_files_by_category": dict(sorted(category_counts.items())),
+            "tree_sha256": tree_digest.hexdigest(),
+            "excluded_directories": dict(sorted(excluded_directories.items())),
+            "self_referential_files_excluded": self_excluded_files,
+            "skipped_sources": skipped,
+            "source_contents_recorded": False,
+        },
+        "matched_files": sorted(matched_files, key=lambda item: item["path"]),
+        "source_manifest_sha256": hashlib.sha256(manifest).hexdigest(),
+        "local_git_history": {
+            "status": git_history_status,
+            "ref_count": len(refs),
+            "refs": sorted(refs),
+            "commit_count": commit_count,
+            "ollama_mention_diff_status": history_diff_status,
+            "ollama_mention_diff_commit_count": history_diff_commit_count,
+            "ollama_mention_diff_path_count": len(historical_paths),
+            "ollama_mention_diff_paths": historical_paths,
+            "intermediate_commit_trees_scanned": False,
+        },
+        "remote_history": {
+            "verified": False,
+            "all_refs_enumerated": False,
+            "all_pull_requests_included": False,
+            "all_intermediate_commit_trees_scanned": False,
+        },
+        "coverage_complete": False,
+        "unavailable_sources": [item["path"] for item in skipped],
+        "next_action": "Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.",
+    }
+
+
 def discover_q_version(root: Path) -> str | None:
     return QVersionManager(root).latest_artifact()
 
@@ -276,6 +504,18 @@ class AutonomousCompletionEngine:
         instruction_inventory = audit_instruction_files(self.root)
         if instruction_inventory["status"] != "PASS":
             normalized["instruction_inventory"] = "FAIL"
+        ollama_audit_evidence = (repository_results or {}).get("ollama_reference_audit")
+        ollama_audit_complete = self._ollama_reference_audit_evidence_complete(ollama_audit_evidence)
+        if normalized["ollama_reference_audit"] == "UNKNOWN" and ollama_audit_complete:
+            normalized["ollama_reference_audit"] = "PASS"
+        elif normalized["ollama_reference_audit"] == "PASS" and not ollama_audit_complete:
+            normalized["ollama_reference_audit"] = "UNKNOWN"
+        ui_coverage_evidence = (repository_results or {}).get("ui_test_hook_coverage")
+        ui_coverage_complete = self._ui_test_hook_coverage_evidence_complete(ui_coverage_evidence)
+        if normalized["ui_test_hook_coverage"] == "UNKNOWN" and ui_coverage_complete:
+            normalized["ui_test_hook_coverage"] = "PASS"
+        elif normalized["ui_test_hook_coverage"] == "PASS" and not ui_coverage_complete:
+            normalized["ui_test_hook_coverage"] = "UNKNOWN"
         local_evidence_checks = self._validate_local_evidence_files()
         if local_evidence_checks["status"] != "PASS":
             normalized["final_verification"] = "FAIL"
@@ -307,6 +547,16 @@ class AutonomousCompletionEngine:
                 "q_version": discover_q_version(self.root),
                 "q_version_audit": QVersionManager(self.root).audit(),
                 "topic_metrics": topic_metrics(self.root),
+                "ollama_reference_audit": {
+                    "status": normalized["ollama_reference_audit"],
+                    "evidence_supplied": isinstance(ollama_audit_evidence, Mapping),
+                    "coverage_complete": ollama_audit_complete,
+                },
+                "ui_test_hook_coverage": {
+                    "status": normalized["ui_test_hook_coverage"],
+                    "evidence_supplied": isinstance(ui_coverage_evidence, Mapping),
+                    "coverage_complete": ui_coverage_complete,
+                },
                 "instruction_inventory": instruction_inventory,
                 "local_evidence_checks": local_evidence_checks,
                 "next_actions": next_actions,
@@ -375,6 +625,87 @@ class AutonomousCompletionEngine:
                 or item.get("unfetched_refs") != 0
                 or item.get("unfetched_pull_requests") != 0
                 or item.get("unvalidated_intermediate_trees") != 0
+            ):
+                return False
+        return True
+
+    @classmethod
+    def _ollama_reference_audit_evidence_complete(cls, evidence: Any) -> bool:
+        """Require complete, dual-repository remote evidence for Ollama-history coverage."""
+        if not isinstance(evidence, Mapping):
+            return False
+        if (
+            evidence.get("status") != "PASS"
+            or evidence.get("coverage_complete") is not True
+            or evidence.get("materialized_scope_complete") is not True
+            or not re.fullmatch(r"[0-9a-f]{64}", str(evidence.get("source_manifest_sha256", "")))
+            or evidence.get("unavailable_sources") != []
+        ):
+            return False
+        repositories = evidence.get("repositories")
+        required_repositories = {
+            "thealphakenya/Alpha-Q-ai",
+            "thealphakenya/qmoi-enhanced",
+        }
+        if not isinstance(repositories, Mapping) or set(repositories) != required_repositories:
+            return False
+        for repository in required_repositories:
+            item = repositories.get(repository)
+            if not isinstance(item, Mapping):
+                return False
+            if (
+                item.get("terminal_conclusion") != "success"
+                or item.get("remote_verified") is not True
+                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
+                or not item.get("workflow_run_id")
+                or item.get("all_refs_enumerated") is not True
+                or item.get("all_pull_requests_included") is not True
+                or item.get("all_intermediate_commit_trees_scanned") is not True
+                or item.get("unavailable_sources") != []
+            ):
+                return False
+        return True
+
+    @classmethod
+    def _ui_test_hook_coverage_evidence_complete(cls, evidence: Any) -> bool:
+        """Require feature-level tests and reviewed hook applicability at an exact remote SHA."""
+        if not isinstance(evidence, Mapping):
+            return False
+        if (
+            evidence.get("status") != "PASS"
+            or evidence.get("coverage_verified") is not True
+            or not re.fullmatch(r"[0-9a-f]{64}", str(evidence.get("source_manifest_sha256", "")))
+            or evidence.get("unavailable_sources") != []
+        ):
+            return False
+        repositories = evidence.get("repositories")
+        required_repositories = {
+            "thealphakenya/Alpha-Q-ai",
+            "thealphakenya/qmoi-enhanced",
+        }
+        if not isinstance(repositories, Mapping) or set(repositories) != required_repositories:
+            return False
+        for repository in required_repositories:
+            item = repositories.get(repository)
+            if not isinstance(item, Mapping):
+                return False
+            feature_count = item.get("feature_count")
+            if (
+                item.get("remote_verified") is not True
+                or item.get("terminal_conclusion") != "success"
+                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
+                or not item.get("workflow_run_id")
+                or isinstance(feature_count, bool)
+                or not isinstance(feature_count, int)
+                or feature_count < 1
+                or item.get("test_mapped_feature_count") != feature_count
+                or item.get("hook_applicability_reviewed_count") != feature_count
+                or item.get("unmapped_feature_count") != 0
+                or item.get("unreviewed_hook_applicability_count") != 0
+                or item.get("unmapped_event_hook_count") != 0
+                or item.get("all_feature_tests_passed") is not True
+                or item.get("all_event_hook_tests_passed") is not True
+                or item.get("unavailable_sources") != []
             ):
                 return False
         return True

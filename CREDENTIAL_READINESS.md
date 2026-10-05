@@ -30,3 +30,14 @@
 ## Metadata lifecycle
 
 Each provider record tracks provider name, tags, source, reported source-created date, record creation/add/update times, last verification time/status, and value-free audit events. An exact upstream credential creation time must remain unknown unless the provider supplies it. Verification status is separate from storage status and from authorization to use a credential.
+
+<!-- BEGIN QMOI MANAGED: wallet-bank-provider-credential-consumers -->
+## Agent-managed wallet, bank, and trading credential consumers
+
+The source-reference audit stores variable names and consumer paths only. It never reads `.env`, key/certificate files, encrypted vault contents, environment values, or provider responses.
+
+- Discovered references: `1114`; provider groups: `{"binance": 16, "bitget": 118, "cashon": 9, "github": 100, "huggingface": 10, "megavault": 11, "paypal": 22, "pesapal": 10, "stripe": 3, "unmapped_provider": 815}`.
+- Consumer map: `QMOItracks/credential_reference_inventory.json`; `credential_values_read_from_secret_stores=false`; `credential_values_persisted_or_emitted=false`.
+- Generic vault storage does not mean an account or provider adapter is verified. Only the Bitget read-only verifier exists in the active credential manager; its last evidence is a rejected request (`40085`) and is not success. Other providers remain unverified here.
+- Banks, wallets, exchanges, payment APIs, and webhooks require provider-specific verification, minimum scopes, expiry/rotation policy, and tested consumers. Unknown owners or verifiers remain `blocked`.
+<!-- END QMOI MANAGED: wallet-bank-provider-credential-consumers -->

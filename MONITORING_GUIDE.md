@@ -424,3 +424,15 @@ The realtime monitor integrates with:
 - ✅ Alert systems (via webhook or API)
 
 This ensures monitoring is **always independent of the local codespace** and provides **real-time evidence** of agent behavior in production GitHub environment.
+
+<!-- BEGIN QMOI MANAGED: remote-continuity-and-failover -->
+## Agent-managed remote continuity and failover contract
+
+A target-owned workflow can run independently of a Codespace, but it is not independent of its workflow-host provider. Do not claim uninterrupted execution without a separately deployed, authorized worker and a verified failover test.
+
+- Persist execution IDs, source refs/SHAs, idempotent requests, checkpoints, leases, and audit events outside the workspace; resume only after re-reading authoritative state.
+- Heartbeat freshness, worker identity, queue age, lock ownership, and provider reachability are separate health signals. Missing/stale telemetry means `STALE` or `OFFLINE`, never `RUNNING`.
+- Provider failover requires pre-authorized credentials, least-privilege access, tested data consistency, and a terminal failover exercise. Never silently switch trading venues or move funds when a provider is unavailable.
+- On stale market/account data, lost authorization, provider outage, queue duplication, or ledger mismatch, stop new trading orders and preserve read-only monitoring where available.
+- External-worker deployment, availability, and disaster recovery remain `not_verified` until exact-host evidence exists.
+<!-- END QMOI MANAGED: remote-continuity-and-failover -->

@@ -378,3 +378,26 @@ The financial manager is only considered active when the following are true:
 ## Status
 
 Production-oriented financial management model: active and under continued enhancement.
+
+<!-- BEGIN QMOI MANAGED: trading-evidence-and-balance-accountability -->
+## Agent-managed trading and balance evidence
+
+Trading and balance displays must distinguish provider-observed, simulated, stale, and unavailable values. Path discovery does not prove account ownership, current balances, settlement, or provider integration.
+
+- Materialized trading candidates: `547`; detailed inventory: `QMOItracks/trading_surface_inventory.json`.
+- Financial claim audit: `195` files, `2613` redacted candidate lines; values are excluded from the report and no balances are verified.
+- Only authorized read-only provider responses can produce current balance evidence; include account scope, currency, observed-at timestamp, and reconciliation status without exposing account secrets.
+- Transfers, deposits, withdrawals, payroll, and live trading remain blocked without explicit authorization, verified provider capability, risk checks, and auditable confirmation.
+- Revenue, P&L, and model-comparison claims must be independently sourced and net of fees; no guaranteed growth/profit claims.
+### Redacted financial amount and account-claim audit
+
+This scan indexes claim locations and metadata only; it does not verify balances, account ownership, provider access, or transaction truth. Raw amounts, account identifiers, and source line text are never copied into the report.
+
+- Tracked materialized Markdown files with financial claims: `195`.
+- Candidate financial lines: `2613`; amount-like candidates: `2821`; untyped numeric candidates: `13`.
+- Account-ID-like lines: `4`; actual balances independently verified by this scan: `0`.
+- Currency mentions by owner label: `{"binance": {}, "cashon": {"KES": 18}, "coinbase": {}, "kraken": {}, "megavault": {}, "paypal": {"KES": 2, "USD": 1}, "unassigned_account_wallet_bank": {"KES": 28, "USD": 2}, "unassigned_financial_claim": {"EUR": 1, "GBP": 1, "KES": 1148, "USD": 25, "USDT": 5}}`.
+- Candidate locations, line numbers, hashes, scopes, and owner groups: `QMOItracks/financial_claim_inventory.json`.
+- Untracked financial Markdown excluded: `0`; oversized Markdown excluded: `5`.
+- Unsupported claims remain `needs_independent_review_not_verified`; do not silently delete or replace historical amounts with invented evidence. Resolve each claim with authorized source proof or retain it clearly marked unverified.
+<!-- END QMOI MANAGED: trading-evidence-and-balance-accountability -->
