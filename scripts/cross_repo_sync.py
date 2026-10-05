@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -162,6 +163,172 @@ def push_fast_forward(target: Path, source: Path, target_branch: str, source_bra
     run_git(target, "push", "origin", f"{source_sha}:refs/heads/{target_branch}")
 
 
+def _remote_branch_shas(repo: Path, branches: list[str]) -> dict[str, str]:
+    refs = [f"refs/heads/{branch}" for branch in branches]
+    result = subprocess.run(
+        ["git", "-C", str(repo), "ls-remote", "--heads", "origin", *refs],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"Unable to inspect origin branch refs for {repo} (exit {result.returncode})")
+    found = {}
+    for line in result.stdout.splitlines():
+        sha, ref = line.split("\t", 1)
+        found[ref.removeprefix("refs/heads/")] = sha
+    return found
+
+
+def preflight_qmoi_branch(
+    repositories: list[Path],
+    workspace_sha: str,
+    *,
+    backup_branch: str = DEFAULT_BACKUP_BRANCH,
+) -> dict[str, Any]:
+    """Verify both clean checkouts and remotes agree before creating `qmoi`."""
+    roots = list(dict.fromkeys(Path(repo).resolve() for repo in repositories))
+    if len(roots) != 2:
+        raise RuntimeError("QMOI branch publication requires exactly two distinct repositories")
+    if not isinstance(workspace_sha, str) or len(workspace_sha) != 40 or any(char not in "0123456789abcdef" for char in workspace_sha):
+        raise RuntimeError("QMOI branch publication requires an exact lowercase commit SHA")
+
+    repository_plans = {}
+    shared_tree = None
+    for root in roots:
+        status = run_git(root, "status", "--porcelain", "--untracked-files=all", check=False)
+        if status:
+            raise RuntimeError(f"Refusing QMOI branch creation from a dirty checkout: {root}")
+        if not commit_exists(root, workspace_sha):
+            raise RuntimeError(f"Workspace SHA is unavailable in repository object database: {root}")
+
+        for required_path in ("oe2.txt", "remotecompletion.md"):
+            result = subprocess.run(
+                ["git", "-C", str(root), "cat-file", "-e", f"{workspace_sha}:{required_path}"],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            if result.returncode != 0:
+                raise RuntimeError(f"Required completion evidence file is missing at workspace SHA: {required_path}")
+
+        tree_sha = run_git(root, "rev-parse", f"{workspace_sha}^{{tree}}")
+        if shared_tree is not None and tree_sha != shared_tree:
+            raise RuntimeError("The two repositories do not contain the same tracked workspace tree")
+        shared_tree = tree_sha
+
+        remote = _remote_branch_shas(root, ["main", backup_branch, "qmoi"])
+        if remote.get("main") != workspace_sha or remote.get(backup_branch) != workspace_sha:
+            raise RuntimeError(f"Remote main and {backup_branch} must both equal the workspace SHA for {root}")
+        existing_qmoi_sha = remote.get("qmoi")
+        if existing_qmoi_sha and existing_qmoi_sha != workspace_sha:
+            fetch = subprocess.run(
+                ["git", "-C", str(root), "fetch", "--no-tags", "origin", "refs/heads/qmoi"],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            is_fast_forward = (
+                fetch.returncode == 0
+                and commit_exists(root, existing_qmoi_sha)
+                and subprocess.run(
+                    ["git", "-C", str(root), "merge-base", "--is-ancestor", existing_qmoi_sha, workspace_sha],
+                    check=False,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                ).returncode == 0
+            )
+            if not is_fast_forward:
+                raise RuntimeError(f"Refusing to replace a non-fast-forward existing qmoi branch in {root}")
+        repository_plans[str(root)] = {
+            "workspace_sha": workspace_sha,
+            "tree_sha": tree_sha,
+            "branch_tree_sha": tree_sha,
+            "main_sha": remote["main"],
+            "backup_sha": remote[backup_branch],
+            "qmoi_sha": existing_qmoi_sha,
+            "action": "already_current" if existing_qmoi_sha == workspace_sha else "fast_forward" if existing_qmoi_sha else "create",
+            "required_docs_present": True,
+        }
+
+    return {
+        "status": "READY",
+        "workspace_sha": workspace_sha,
+        "tree_sha": shared_tree,
+        "repositories": repository_plans,
+    }
+
+
+def publish_qmoi_branch(
+    repositories: list[Path],
+    workspace_sha: str,
+    *,
+    authorized: bool = False,
+    backup_branch: str = DEFAULT_BACKUP_BRANCH,
+) -> dict[str, Any]:
+    """Create (never force-update) `qmoi` after dual-repository synchronization."""
+    try:
+        plan = preflight_qmoi_branch(repositories, workspace_sha, backup_branch=backup_branch)
+    except RuntimeError as exc:
+        return {"status": "BLOCKED", "workspace_sha": workspace_sha, "blocker": str(exc), "repositories": {}}
+    if not authorized:
+        return {
+            **plan,
+            "status": "BLOCKED_REQUIRES_AUTHORIZATION",
+            "blocker": "Set the target-owned QMOI branch publication authorization gate after policy review.",
+            "published_repositories": [],
+        }
+
+    published_repositories = []
+    for root_string, item in plan["repositories"].items():
+        if item["action"] == "already_current":
+            continue
+        result = subprocess.run(
+            ["git", "-C", root_string, "push", "origin", f"{workspace_sha}:refs/heads/qmoi"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            return {
+                **plan,
+                "status": "BLOCKED_PARTIAL" if published_repositories else "BLOCKED",
+                "blocker": "Remote qmoi ref publication failed; no force update was attempted.",
+                "failed_repository": root_string,
+                "push_exit_code": result.returncode,
+                "published_repositories": published_repositories,
+            }
+        published_repositories.append(root_string)
+        try:
+            published_sha = _remote_branch_shas(Path(root_string), ["qmoi"]).get("qmoi")
+        except RuntimeError as exc:
+            return {
+                **plan,
+                "status": "BLOCKED_PARTIAL",
+                "blocker": str(exc),
+                "published_repositories": published_repositories,
+            }
+        if published_sha != workspace_sha:
+            return {
+                **plan,
+                "status": "BLOCKED_PARTIAL",
+                "blocker": f"Remote qmoi ref did not verify at the requested SHA for {root_string}",
+                "published_repositories": published_repositories,
+            }
+            item["qmoi_sha"] = published_sha
+        if item["action"] == "create":
+            item["action"] = "created"
+        elif item["action"] == "fast_forward":
+            item["action"] = "fast_forwarded"
+
+    return {
+        **plan,
+        "status": "SUCCESS",
+        "published_repositories": published_repositories,
+        "verification": "both remote qmoi refs equal the workspace SHA and tree",
+    }
+
+
 def write_report(path: Path | None, report: dict[str, Any]) -> None:
     if path:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -238,6 +405,38 @@ def main() -> int:
             "backup_branch": args.backup_branch,
             "promoted": args.promote,
         }
+
+        if args.promote:
+            try:
+                for repo in (qmoi, alpha):
+                    run_git(repo, "fetch", "origin", "--prune")
+                    push_fast_forward(repo, repo, args.backup_branch, "main")
+                    run_git(repo, "fetch", "origin", "--prune")
+                workspace_sha = branch_sha(source, "main")
+                authorization = os.environ.get("QMOI_BRANCH_PUBLICATION_AUTHORIZED", "").strip().lower() in {"1", "true", "yes"}
+                restore_point = publish_qmoi_branch(
+                    [qmoi, alpha],
+                    workspace_sha or "",
+                    authorized=authorization,
+                    backup_branch=args.backup_branch,
+                )
+            except (RuntimeError, subprocess.CalledProcessError) as exc:
+                restore_point = {
+                    "status": "BLOCKED",
+                    "blocker": str(exc),
+                    "workspace_sha": None,
+                    "repositories": {},
+                }
+            report["qmoi_restore_point"] = restore_point
+            if restore_point.get("status") != "SUCCESS":
+                report["status"] = restore_point.get("status", "BLOCKED")
+                report["next_action"] = "Resolve QMOI branch authorization or synchronization blocker; rerun only through an authorized target-owned workflow."
+                write_report(args.report, report)
+                print(json.dumps(report, indent=2, sort_keys=True))
+                return 2
+            report["qmoi_restore_point"]["workflow_run_id"] = os.getenv("GITHUB_RUN_ID")
+            report["qmoi_restore_point"]["verification_level"] = "remote_refs_verified; workflow_terminal_result_pending"
+            report["status"] = "success"
 
     payload = json.dumps(report, indent=2, sort_keys=True)
     write_report(args.report, report)

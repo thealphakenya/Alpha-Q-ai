@@ -19,10 +19,13 @@ class QVersionManager:
     LIFECYCLE_STAGES = (
         "MERGE_START",
         "PRE_MERGE_INVENTORY",
+        "INSTRUCTION_INVENTORY",
         "INTERNAL_RESEARCH",
         "EXTERNAL_RESEARCH",
         "REPOSITORY_SURFACE_AUDIT",
         "OLLAMA_FULL_COVERAGE_AUDIT",
+        "MARKDOWN_SOURCE_INDEX",
+        "UI_TEST_HOOK_COVERAGE",
         "MERGE_PLAN",
         "MERGE_APPLY",
         "POST_MERGE_AUDIT",
@@ -31,8 +34,12 @@ class QVersionManager:
         "POST_AGENT_MERGE_AUDIT",
         "PRODUCTION_SCAN",
         "PRODUCTION_REPLACEMENTS",
+        "PRODUCTION_READINESS",
         "FULL_VALIDATION",
         "REMOTE_VERIFICATION",
+        "QMOI_RESTORE_POINT",
+        "AUTO_CONTINUE_LOOP",
+        "AUTONOMOUS_COMPLETION",
         "Q_VERSION_FINALIZATION",
     )
     LIFECYCLE_STATUSES = {"PASS", "IN_PROGRESS", "NEEDS_REVIEW", "BLOCKED", "FAIL"}
@@ -276,6 +283,8 @@ class QVersionManager:
                 parsed = urlsplit(str(item.get("url", "")))
                 if parsed.scheme not in {"http", "https"} or not parsed.netloc:
                     raise ValueError("Research source must be an actually visited HTTP(S) URL")
+                if parsed.username is not None or parsed.password is not None:
+                    raise ValueError("Research source URLs must not contain credentials")
                 normalized_sources.append({
                     "url": urlunsplit((parsed.scheme, parsed.netloc, parsed.path, "", "")),
                     "title": str(item.get("title", ""))[:300],
@@ -333,14 +342,37 @@ class QVersionManager:
         except (OSError, json.JSONDecodeError):
             return {"execution_id": execution_id, "valid": False, "status": "invalid_json", "records": 0}
         verification = self._verify_lifecycle_records(records)
-        present = {record.get("stage") for record in records if record.get("stage_status") == "PASS"}
-        required = set(self.LIFECYCLE_STAGES[:-1])
+        if not verification["valid"]:
+            return {
+                "execution_id": execution_id,
+                "ledger_path": str(ledger),
+                "valid": False,
+                "status": "invalid",
+                "reason": verification.get("reason"),
+                "records": len(records),
+                "stage_sequence": [
+                    record.get("stage") if isinstance(record, dict) else None
+                    for record in records
+                ],
+                "passed_stages": [],
+                "missing_or_unpassed_stages": list(self.LIFECYCLE_STAGES[:-1]),
+                "stage_records": [],
+            }
+        latest_status_by_stage = {
+            record["stage"]: record["stage_status"]
+            for record in records
+        }
+        present = {
+            stage
+            for stage, status in latest_status_by_stage.items()
+            if status == "PASS"
+        }
         missing = [stage for stage in self.LIFECYCLE_STAGES[:-1] if stage not in present]
         return {
             "execution_id": execution_id,
             "ledger_path": str(ledger),
-            "valid": verification["valid"],
-            "status": "complete" if verification["valid"] and not missing else "incomplete",
+            "valid": True,
+            "status": "complete" if not missing else "incomplete",
             "records": len(records),
             "stage_sequence": [record.get("stage") for record in records],
             "passed_stages": sorted(present, key=self.LIFECYCLE_STAGES.index),
@@ -376,18 +408,36 @@ class QVersionManager:
     def _verify_lifecycle_records(cls, records: list[dict[str, Any]]) -> dict[str, Any]:
         previous_hash = "0" * 64
         previous_stage_index = -1
+        execution_id = None
         for sequence, record in enumerate(records, start=1):
-            if not isinstance(record, dict) or record.get("sequence") != sequence:
+            if not isinstance(record, dict) or type(record.get("sequence")) is not int or record.get("sequence") != sequence:
                 return {"valid": False, "reason": "sequence"}
+            record_execution_id = record.get("execution_id")
+            if (
+                record.get("schema_version") != cls.SCHEMA_VERSION
+                or not isinstance(record_execution_id, str)
+                or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}", record_execution_id)
+                or execution_id is not None and record_execution_id != execution_id
+                or not isinstance(record.get("correlation_id"), str)
+                or not record.get("correlation_id")
+                or not isinstance(record.get("timestamp"), str)
+                or not isinstance(record.get("details"), dict)
+                or not isinstance(record.get("root_metrics"), dict)
+                or not isinstance(record.get("external_research_sources"), list)
+            ):
+                return {"valid": False, "reason": "record_shape"}
+            execution_id = record_execution_id
             stage = record.get("stage")
             if stage not in cls.LIFECYCLE_STAGES:
                 return {"valid": False, "reason": "stage"}
+            if record.get("stage_status") not in cls.LIFECYCLE_STATUSES:
+                return {"valid": False, "reason": "stage_status"}
             stage_index = cls.LIFECYCLE_STAGES.index(stage)
             if stage_index < previous_stage_index or record.get("previous_record_sha256") != previous_hash:
                 return {"valid": False, "reason": "order_or_parent_hash"}
             unsigned = {key: value for key, value in record.items() if key != "record_sha256"}
             actual_hash = hashlib.sha256(_canonical_json(unsigned)).hexdigest()
-            if record.get("record_sha256") != actual_hash:
+            if not isinstance(record.get("record_sha256"), str) or record.get("record_sha256") != actual_hash:
                 return {"valid": False, "reason": "record_hash"}
             previous_hash = actual_hash
             previous_stage_index = stage_index
@@ -437,17 +487,23 @@ class QVersionManager:
         """Verify instruction inventory coverage and hashes against the current repository tree."""
         target = Path(root).resolve()
         expected_paths = set()
-        for relative in ("AGENTS.md", ".github/copilot-instructions.md"):
+        required_paths = ("AGENTS.md", ".github/copilot-instructions.md")
+        for relative in required_paths:
             candidate = target / relative
-            if candidate.is_file() and not candidate.is_symlink():
-                expected_paths.add(relative)
+            if not candidate.is_file() or candidate.is_symlink():
+                raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
+            expected_paths.add(relative)
+        github_root = target / ".github"
+        if github_root.is_symlink() or not github_root.is_dir():
+            raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
         instruction_root = target / ".github" / "instructions"
-        if instruction_root.is_dir():
-            expected_paths.update(
-                candidate.relative_to(target).as_posix()
-                for candidate in instruction_root.rglob("*")
-                if candidate.is_file() and not candidate.is_symlink()
-            )
+        if instruction_root.is_symlink() or not instruction_root.is_dir():
+            raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
+        for candidate in instruction_root.rglob("*"):
+            if candidate.is_symlink():
+                raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
+            if candidate.is_file():
+                expected_paths.add(candidate.relative_to(target).as_posix())
         if not isinstance(instruction_inventory, dict):
             raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
         files = instruction_inventory.get("files")
@@ -470,6 +526,16 @@ class QVersionManager:
                 relative_path = str(item.get("path", ""))
                 path = Path(relative_path)
                 source = target / path
+                source_bytes = source.read_bytes() if source.is_file() and not source.is_symlink() else b""
+                source_text = source_bytes.decode("utf-8")
+                scope = "repository-wide"
+                stripped = source_text.lstrip()
+                if stripped.startswith("---"):
+                    frontmatter = stripped.split("---", 2)
+                    if len(frontmatter) != 3:
+                        raise ValueError("malformed instruction frontmatter")
+                    match = re.search(r"(?m)^applyTo:\s*(.*?)\s*$", frontmatter[1])
+                    scope = match.group(1).strip("\"'") if match else "repository-wide"
                 if (
                     path.is_absolute()
                     or ".." in path.parts
@@ -477,9 +543,11 @@ class QVersionManager:
                     or relative_path in reported_paths
                     or not source.is_file()
                     or source.is_symlink()
-                    or item.get("bytes") != source.stat().st_size
-                    or item.get("sha256") != hashlib.sha256(source.read_bytes()).hexdigest()
-                    or not isinstance(item.get("apply_to"), str)
+                    or not source_bytes
+                    or isinstance(item.get("bytes"), bool)
+                    or item.get("bytes") != len(source_bytes)
+                    or item.get("sha256") != hashlib.sha256(source_bytes).hexdigest()
+                    or item.get("apply_to") != scope
                     or item.get("nonempty") is not True
                 ):
                     raise ValueError("record mismatch")
@@ -524,6 +592,48 @@ class QVersionManager:
             or surface_stage_details.get("unavailable_sources") != []
         ):
             raise RuntimeError("Q-version metrics require a complete repository-surface audit lifecycle stage")
+        instruction_stage = stage_records.get("INSTRUCTION_INVENTORY", {})
+        instruction_stage_repositories = instruction_stage.get("details", {}).get("repositories", {})
+        if (
+            instruction_stage.get("stage_status") != "PASS"
+            or not isinstance(instruction_stage_repositories, dict)
+            or set(instruction_stage_repositories) != {str(root) for root in source_roots}
+        ):
+            raise RuntimeError("Q-version metrics require complete dual-repository instruction lifecycle evidence")
+        for root in source_roots:
+            recorded_inventory = instruction_stage_repositories.get(str(root), {})
+            supplied_inventory = instruction_inventories.get(str(root), {})
+            recorded_files = recorded_inventory.get("files", [])
+            supplied_files = supplied_inventory.get("files", []) if isinstance(supplied_inventory, dict) else []
+            if (
+                recorded_inventory.get("status") != "PASS"
+                or recorded_inventory.get("source_contents_recorded") is not False
+                or recorded_inventory.get("files_discovered") != supplied_inventory.get("files_discovered")
+                or recorded_inventory.get("files_read") != supplied_inventory.get("files_read")
+                or recorded_inventory.get("unreadable_or_invalid") != []
+                or recorded_files != supplied_files
+            ):
+                raise RuntimeError("Q-version instruction lifecycle evidence does not match final inventories")
+        markdown_stage = stage_records.get("MARKDOWN_SOURCE_INDEX", {})
+        markdown_details = markdown_stage.get("details", {})
+        if markdown_stage.get("stage_status") != "PASS" or markdown_details.get("index_complete") is not True:
+            raise RuntimeError("Q-version metrics require a complete Markdown-source-index lifecycle stage")
+        ui_stage = stage_records.get("UI_TEST_HOOK_COVERAGE", {})
+        ui_stage_details = ui_stage.get("details", {})
+        if (
+            ui_stage.get("stage_status") != "PASS"
+            or ui_stage_details.get("status") != "PASS"
+            or ui_stage_details.get("coverage_verified") is not True
+            or not isinstance(ui_stage_details.get("feature_count"), int)
+            or isinstance(ui_stage_details.get("feature_count"), bool)
+            or ui_stage_details.get("feature_count", 0) < 1
+            or ui_stage_details.get("test_mapped_feature_count") != ui_stage_details.get("feature_count")
+            or ui_stage_details.get("hook_applicability_reviewed_count") != ui_stage_details.get("feature_count")
+            or ui_stage_details.get("unmapped_feature_count") != 0
+            or ui_stage_details.get("unreviewed_hook_applicability_count") != 0
+            or ui_stage_details.get("unmapped_event_hook_count") != 0
+        ):
+            raise RuntimeError("Q-version metrics require complete UI test and hook lifecycle evidence")
         required_decisions = stage_records.get("MERGE_APPLY", {}).get("details", {})
         if (
             required_decisions.get("decision_ledger_complete") is not True
@@ -541,6 +651,17 @@ class QVersionManager:
             or replacements.get("unresolved_findings") != 0
         ):
             raise RuntimeError("Q-version metrics require production scan and verified replacement evidence")
+        production_readiness_stage = stage_records.get("PRODUCTION_READINESS", {})
+        production_readiness_details = production_readiness_stage.get("details", {})
+        if (
+            production_readiness_stage.get("stage_status") != "PASS"
+            or production_readiness_details.get("status") != "CLEAR"
+            or production_readiness_details.get("coverage_complete") is not True
+            or production_readiness_details.get("candidate_count") != 0
+            or production_readiness_details.get("unreadable_files") != []
+            or production_readiness_details.get("oversized_files_not_read") != 0
+        ):
+            raise RuntimeError("Q-version metrics require clear production-readiness lifecycle evidence")
         validation = stage_records.get("FULL_VALIDATION", {}).get("details", {})
         if (
             validation.get("all_required_tests_passed") is not True
@@ -551,12 +672,59 @@ class QVersionManager:
         remote_stage = stage_records.get("REMOTE_VERIFICATION", {}).get("details", {})
         if remote_stage.get("terminal_conclusion") != "success" or remote_stage.get("remote_verified") is not True:
             raise RuntimeError("Lifecycle ledger lacks terminal remote-verification proof")
+        restore_stage = stage_records.get("QMOI_RESTORE_POINT", {})
+        restore_stage_details = restore_stage.get("details", {})
+        if (
+            restore_stage.get("stage_status") != "PASS"
+            or restore_stage_details.get("status") != "SUCCESS"
+            or restore_stage_details.get("branch") != "qmoi"
+            or restore_stage_details.get("remote_verified") is not True
+            or restore_stage_details.get("coverage_complete") is not True
+        ):
+            raise RuntimeError("Q-version lifecycle lacks a verified qmoi restore point")
         correlation_id = str(final_evidence.get("correlation_id", ""))
         if not correlation_id:
             raise RuntimeError("Q-version metrics require a correlation ID")
         repository_evidence = final_evidence.get("repositories")
         if not isinstance(repository_evidence, dict):
             raise RuntimeError("Q-version metrics require exact evidence for every repository")
+        restore_evidence = final_evidence.get("qmoi_restore_point")
+        restore_repositories = restore_evidence.get("repositories") if isinstance(restore_evidence, dict) else None
+        if (
+            not isinstance(restore_evidence, dict)
+            or restore_evidence.get("status") != "SUCCESS"
+            or restore_evidence.get("branch") != "qmoi"
+            or restore_evidence.get("remote_verified") is not True
+            or restore_evidence.get("coverage_complete") is not True
+            or restore_evidence.get("workflow_conclusion") != "success"
+            or not restore_evidence.get("workflow_run_id")
+            or not isinstance(restore_repositories, dict)
+            or set(restore_repositories) != {str(root) for root in source_roots}
+            or restore_stage_details.get("workflow_run_id") != restore_evidence.get("workflow_run_id")
+        ):
+            raise RuntimeError("Q-version metrics require terminal exact-SHA qmoi restore-point evidence")
+        restore_tree_shas = set()
+        for root in source_roots:
+            item = restore_repositories.get(str(root), {})
+            repository_sha = str(repository_evidence.get(str(root), {}).get("final_sha", ""))
+            expected_tree_sha = _git(root, "rev-parse", f"{repository_sha}^{{tree}}") if self.sha_pattern.fullmatch(repository_sha) else None
+            if (
+                not isinstance(item, dict)
+                or item.get("branch") != "qmoi"
+                or item.get("terminal_conclusion") != "success"
+                or item.get("remote_verified") is not True
+                or item.get("checks_passed") is not True
+                or not item.get("workflow_run_id")
+                or item.get("qmoi_sha") != repository_sha
+                or item.get("main_sha") != repository_sha
+                or item.get("backup_sha") != repository_sha
+                or item.get("branch_tree_sha") != expected_tree_sha
+                or item.get("required_docs_present") is not True
+            ):
+                raise RuntimeError(f"qmoi restore-point evidence is incomplete for {root}")
+            restore_tree_shas.add(item["branch_tree_sha"])
+        if len(restore_tree_shas) != 1:
+            raise RuntimeError("Dual-repository qmoi restore points do not contain the same workspace tree")
         repository_surface_audit = final_evidence.get("repository_surface_audit")
         surface_repositories = (
             repository_surface_audit.get("repositories")
@@ -669,9 +837,39 @@ class QVersionManager:
             or autonomous_completion["gates"].get("repository_surface_audit") != "PASS"
             or autonomous_completion["gates"].get("ollama_reference_audit") != "PASS"
             or autonomous_completion["gates"].get("ui_test_hook_coverage") != "PASS"
+            or autonomous_completion["gates"].get("qmoi_restore_point") != "PASS"
             or autonomous_completion.get("next_actions") != []
         ):
             raise RuntimeError("Q-version metrics require terminal autonomous completion with no pending actions")
+        completion_stage = stage_records.get("AUTONOMOUS_COMPLETION", {})
+        completion_details = completion_stage.get("details", {})
+        if (
+            completion_stage.get("stage_status") != "PASS"
+            or completion_details.get("status") != autonomous_completion.get("status")
+            or completion_details.get("execution_id") != autonomous_completion.get("execution_id")
+            or completion_details.get("gates") != autonomous_completion.get("gates")
+            or completion_details.get("pending_action_count") != len(autonomous_completion.get("next_actions", []))
+            or completion_details.get("pending_action_count") != 0
+        ):
+            raise RuntimeError("Q-version lifecycle autonomous-completion record does not match final evidence")
+        continue_stage = stage_records.get("AUTO_CONTINUE_LOOP", {})
+        continue_details = continue_stage.get("details", {})
+        iterations = continue_details.get("iteration_count")
+        retry_limit = continue_details.get("retry_limit")
+        if (
+            continue_stage.get("stage_status") != "PASS"
+            or continue_details.get("loop_completed") is not True
+            or continue_details.get("termination_reason") != "success_contract"
+            or continue_details.get("final_status") != "SUCCESS"
+            or continue_details.get("retry_limit_respected") is not True
+            or isinstance(iterations, bool)
+            or not isinstance(iterations, int)
+            or iterations < 1
+            or isinstance(retry_limit, bool)
+            or not isinstance(retry_limit, int)
+            or iterations > retry_limit
+        ):
+            raise RuntimeError("Q-version lifecycle auto-continue record does not prove bounded success")
         ui_test_hook_coverage = final_evidence.get("ui_test_hook_coverage")
         ui_repositories = (
             ui_test_hook_coverage.get("repositories")
@@ -796,6 +994,7 @@ class QVersionManager:
                 "ollama_reference_audit": ollama_reference_audit,
                 "ui_test_hook_coverage": ui_test_hook_coverage,
                 "production_readiness": production_readiness,
+                "qmoi_restore_point": restore_evidence,
                 "external_research_sources": lifecycle["external_research_sources"],
                 "metrics": inventory,
                 "self_referential_outputs_excluded": [str(metrics_path.relative_to(root)), version_document.name],
@@ -847,6 +1046,8 @@ class QVersionManager:
         """Verify already-published Q artifacts against terminal remote evidence without mutating them."""
         self.parse_version(version)
         source_roots = self._roots(roots, self.root)
+        if len(source_roots) < 2:
+            raise RuntimeError("Published Q artifact verification requires both repository records")
         if final_evidence.get("status") != "SUCCESS" or final_evidence.get("remote_verified") is not True:
             raise RuntimeError("Published Q artifacts require independently verified remote success")
         if final_evidence.get("workflow_conclusion") != "success" or not final_evidence.get("workflow_run_id"):
@@ -857,6 +1058,22 @@ class QVersionManager:
         repositories = final_evidence.get("repositories")
         if not isinstance(repositories, dict):
             raise RuntimeError("Published Q artifact verification requires both repository records")
+        if set(repositories) != {str(root) for root in source_roots}:
+            raise RuntimeError("Published Q artifact evidence must exactly match the requested repositories")
+        restore_evidence = final_evidence.get("qmoi_restore_point")
+        restore_repositories = restore_evidence.get("repositories") if isinstance(restore_evidence, dict) else None
+        if (
+            not isinstance(restore_evidence, dict)
+            or restore_evidence.get("status") != "SUCCESS"
+            or restore_evidence.get("branch") != "qmoi"
+            or restore_evidence.get("remote_verified") is not True
+            or restore_evidence.get("coverage_complete") is not True
+            or restore_evidence.get("workflow_conclusion") != "success"
+            or not restore_evidence.get("workflow_run_id")
+            or not isinstance(restore_repositories, dict)
+            or set(restore_repositories) != {str(root) for root in source_roots}
+        ):
+            raise RuntimeError("Published Q artifacts require terminal dual-repository qmoi restore-point evidence")
 
         verified: dict[str, Any] = {}
         for root in source_roots:
@@ -871,6 +1088,22 @@ class QVersionManager:
                 or not self.sha_pattern.fullmatch(final_sha)
             ):
                 raise RuntimeError(f"Final remote evidence is incomplete for {root}")
+            restore_item = restore_repositories.get(str(root), {})
+            expected_tree_sha = _git(root, "rev-parse", f"{final_sha}^{{tree}}")
+            if (
+                not isinstance(restore_item, dict)
+                or restore_item.get("branch") != "qmoi"
+                or restore_item.get("terminal_conclusion") != "success"
+                or restore_item.get("remote_verified") is not True
+                or restore_item.get("checks_passed") is not True
+                or restore_item.get("qmoi_sha") != final_sha
+                or restore_item.get("main_sha") != final_sha
+                or restore_item.get("backup_sha") != final_sha
+                or restore_item.get("branch_tree_sha") != expected_tree_sha
+                or restore_item.get("required_docs_present") is not True
+                or restore_item.get("workflow_run_id") != restore_evidence.get("workflow_run_id")
+            ):
+                raise RuntimeError(f"Published qmoi restore point does not match final repository SHA for {root}")
             metrics_path = root / version / "REPOSITORY_METRICS.json"
             document_path = root / f"{version}.md"
             if not metrics_path.is_file() or not document_path.is_file():

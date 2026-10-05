@@ -33,6 +33,9 @@ agree; conflicts remain blocked for review.
 Both repositories maintain:
 1. **Main Branch**: Production-ready code with validated features
 2. **Autosync-Backup Branch**: Automated backup and staging branch
+3. **qmoi Branch**: Restore point at the last fully synchronized committed workspace tree
+
+The `qmoi` restore point is created or fast-forwarded in both repositories only after a target-owned autosync run verifies that each repository's `main` and `autosync-backup` point to the same exact commit SHA and tree. It is published after the successful main/backup update and is available before the next agent cycle starts. The publisher uses normal non-force pushes; a divergent existing `qmoi` branch blocks rather than being overwritten. Automatic publication additionally requires the repository variable `QMOI_BRANCH_PUBLICATION_AUTHORIZED=true`. The snapshot includes tracked files such as `oe2.txt` and `remotecompletion.md`; uncommitted and ignored files are excluded, and Git cannot represent empty directories.
 
 ### Autonomous update and publication contract
 The Ollama autonomous agent may update both repositories only after the local validation, merge inventory, and lifecycle gates pass. The authorized sequence is:

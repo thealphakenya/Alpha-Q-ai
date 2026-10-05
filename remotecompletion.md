@@ -1,3 +1,40 @@
+## User-requested pause — QMOI restore-point automation — 2026-10-05T06:49:36Z
+
+- Correlation ID `226c812f-6658-4d55-b430-1a210f91e346`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-animated-robot-97g5qv795w4ghvq7`; local `HEAD=563e571afa338182998eb70bd046dfa6fe9a50c0`.
+- The local implementation adds a guarded `qmoi` snapshot branch across Alpha-Q-ai and qmoi-enhanced. It only publishes after both repositories' main and autosync-backup refs are at the exact same SHA/tree, requires clean checkouts and tracked `oe2.txt`/`remotecompletion.md`, creates or fast-forwards normally, and verifies the resulting refs. It never copies untracked/ignored workspace state or force-updates a divergent restore branch.
+- The scheduled/event-driven cross-repo workflow invokes restore publication after main/backup promotion; the explicit repo variable `QMOI_BRANCH_PUBLICATION_AUTHORIZED=true` is required and defaults false. The hosted Ollama workflow now blocks before agent mutations unless both repos' qmoi/main/backup refs agree at one exact SHA and the required docs are present. Autodev/Q-version lifecycle and Q completion gates include `QMOI_RESTORE_POINT`; live activity tracks the autosync workflow and its exact head SHA.
+- Local checks: control-plane plus cross-repository sync suites `90 passed`; full autonomous-agent suite `114 passed, 1 skipped` (handled headless timeout); focused restore/heartbeat tests `10 passed`; Autodev BranchSyncManager tests `9 passed`. Workflow validation passed for 17 workflows before the latest YAML edits and must be rerun at resume.
+- Latest read-only remote refs: Alpha-Q-ai main `04a0789b2391b06a8badc72c791555d52fec14fb`, backup `6d925c33f0093035755772137d863618b3818ab0`, `qmoi` absent; qmoi-enhanced main `9744c760cf6081ea5f55fefca7d4bb30fa16dd29`, backup `d371de28f77b3ebea0244ccc1c13793a2654c395`, `qmoi` absent. Main/backup differ in each repo, so restore publication is correctly blocked pending authorized reconciliation.
+- No remote workflow was dispatched; no `qmoi` branch was pushed; authorization variable and branch protection are unverified. No persistent remote worker can be guaranteed: the current model uses bounded GitHub Actions runs, event triggers, and schedules. No Q-version finalization, commit, or push was performed.
+- Resume only after verifying authority and reconciling both main/backup pairs safely; then run the target-owned autosync and independently verify terminal workflow evidence and exact SHA/tree for both `qmoi` branches. Keep remote status blocked until those checks pass. Current state: `LOCAL_AUTOMATION_IMPLEMENTED_REMOTE_BRANCH_CREATION_BLOCKED_PENDING_AUTHORIZATION_AND_BASE_REF_SYNC`.
+
+## Latest Q-manager dual-repository and instruction integrity checkpoint — 2026-10-05T05:31:47Z
+
+- Correlation ID `b0f16756-e4ce-4de2-9461-0f1c617c0ee8`; branch `codespace-animated-robot-97g5qv795w4ghvq7`; local HEAD `563e571afa338182998eb70bd046dfa6fe9a50c0`.
+- Final publication now requires at least two distinct roots and evidence keys matching exactly those roots. Instruction verification independently requires regular, non-symlinked `AGENTS.md`, `.github/copilot-instructions.md`, `.github/`, and `.github/instructions/`; it checks UTF-8/nonempty content, frontmatter shape, actual `applyTo` scope, byte length, and hash.
+- Lifecycle integrity validates record schema and field types as well as sequence, ordering, statuses, parent hashes, and record hashes. Q finalization requires the lifecycle completion record to match the supplied completion execution, gate map, and empty action queue, plus a successful continuation within its recorded retry bound.
+- Validation: control-plane `79 passed`; autonomous-agent `114 passed, 1 skipped` in 350.52s; skip is the existing handled headless CLI timeout. No local autonomous-agent process was found when checking the later `running` status marker, so the status was corrected to completed local validation.
+- Exact-SHA remote workflow proof, branch authority, and Q-version publication remain unverified. No remote mutation, commit, push, or Q finalization occurred. The dirty worktree and unrelated user changes were preserved.
+
+## Latest Q-version manager coverage checkpoint — 2026-10-05T05:14:01Z
+
+- Correlation ID `3dd1ba07-aa1f-4f38-984f-882bcf3426c5`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-animated-robot-97g5qv795w4ghvq7`; local `HEAD=563e571afa338182998eb70bd046dfa6fe9a50c0`.
+- Lifecycle audit now uses the latest attempt per stage, rejects unsupported statuses and malformed/tampered records, and returns invalid ledgers as blockers. Tests require the exact 23-stage order, individually omit each required stage, and individually set each stage to `NEEDS_REVIEW` to confirm completion stays blocked.
+- Added Q publication negative tests for nonterminal workflow results and artifact-hash mismatch; lifecycle ordering and research URL sanitization/userinfo rejection are covered.
+- Removed the local numbered-manifest bypass: Ollama success summaries now go to `ollamatracks/completion_reports/<execution-id>/COMPLETION.md`; only `QVersionManager` may allocate numbered Q artifacts. The bounded continuation driver records actual iteration/limit results; success passes that stage, exhaustion or exceptions remain `NEEDS_REVIEW`.
+- Validation: full `tests/test_control_plane.py` `71 passed`; full `tests/test_ollama_autonomous_agent.py` `114 passed, 1 skipped` in 346.51s (existing handled headless CLI timeout); focused combined lifecycle/integration suite `76 passed`. Python compilation, diagnostics, and scoped `git diff --check` passed.
+- Local tests establish deterministic contract behavior only; they cannot ensure real remote workflows, branch authorization, external services, or future execution will succeed. Remote exact-SHA evidence, protected-branch authority, and final Q-version publication remain unverified. No remote mutation was made.
+- Worktree remains dirty and includes pre-existing user changes; those were preserved. No commit or push was created.
+
+## Latest Q-version lifecycle continuation — 2026-10-05T04:49:09Z
+
+- Correlation ID `b104c1ea-a064-45bf-b776-4a0af6562f7a`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-animated-robot-97g5qv795w4ghvq7`; local `HEAD=563e571afa338182998eb70bd046dfa6fe9a50c0`.
+- Expanded the canonical Q lifecycle with explicit instruction inventory, Markdown source index, UI/test-hook coverage, production readiness, bounded auto-continue, and autonomous-completion stages. The merge/validation pipeline now records these stages from available evidence; absent remote proof or a continuation-loop execution remains `NEEDS_REVIEW`, not PASS.
+- `QVERSIONMANAGER.md` now documents the ordered 23-stage contract and required Q.0.0.N evidence. Regression coverage checks the canonical stage set and emitted merge-stage order, including redacted instruction inventory, local Markdown-index status, and UI-hook review state.
+- Validation: control-plane suite plus focused merge/validation pipeline regressions: `44 passed`; full `tests/test_ollama_autonomous_agent.py`: `112 passed, 1 skipped` in 346.76s. The skip is the existing handled headless CLI timeout. Python diagnostics report no errors.
+- Work remains local and uncommitted; no remote mutation was performed. The worktree remains dirty, and prior user changes were preserved. Remote exact-SHA audits, protected-branch authority, external research, complete production readiness, successful remote workflow evidence, and Q-version finalization remain unverified or blocked.
+- The local lifecycle intentionally records review blockers where evidence is absent. No remote completion, semantic instruction fulfillment, all-history coverage, or production-readiness claim is made.
+
 ## User-requested pause — 2026-10-05T03:24:09Z
 
 - Correlation ID `96d42948-5835-4332-8e8b-17ae4f984bb0`; repository `thealphakenya/Alpha-Q-ai`; requested branch `codespace-orange-space-train-x5gp965wppgv39qvj`.
@@ -225,6 +262,16 @@
 - Fresh Alpha and QMOI branch-protection reads and Alpha Dependabot-alert read returned HTTP 403; current security totals and rules remain unknown. The CLI user is `themegakenya`, not verified as the GitHub App.
 - Full `tests/test_ollama_autonomous_agent.py` passed (`107 passed, 1 skipped`; existing headless CLI timeout guard). The focused bank/mask regression passed (`1 passed`) including synthetic credential/account/balance non-disclosure. `bankandbankaccounts.md` scan: 110 numbered lines, SHA-256 `d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321`. `QMOIMASKS.md` source SHA-256: `f5bbb7ddfedf8074330469b2ea3bd9e56ec639af7f88b7998ce58204b34fc7c2`. The bank mask policy is documented only; runtime effect is unverified. Provider-facing identity/fingerprint/route masking is disabled unless explicitly authorized, audit trails must remain visible, and unsafe/unavailable controls fail with `AUTH_BLOCKED`. Q-version audit found no materialized version.
 - Bank implementation, provider verification, financial-write authorization, branch-policy visibility, cross-repository/backup parity, terminal current-SHA checks, and exact final-SHA proof remain blockers. No commit, push, dispatch, merge, financial action, release, or Q-version finalization was performed. Remote completion is **not established**.
+
+## Active branch continuation — 2026-10-05T00:00:00Z
+
+- Branch: `codespace-animated-robot-97g5qv795w4ghvq7`.
+- Working tree: clean and tracking `origin/codespace-animated-robot-97g5qv795w4ghvq7` on the active repository checkout.
+- Verified local checks on this branch:
+  - `pytest tests/test_cross_repo_sync.py -q` → `3 passed in 0.17s`.
+  - `pytest tests/test_ollama_autonomous_agent.py -k credential_readiness_discovers_names_without_values -q` → `1 passed, 111 deselected in 0.14s`.
+- Remote completion, protected-branch authorization, and exact final-SHA proof remain outside local evidence and therefore remain blocked until the target-owned GitHub workflow results are observed for the exact published SHA.
+- Status: `BRANCH_CONTINUED_LOCAL_VALIDATION_GREEN_REMOTE_COMPLETION_PENDING`.
 
 ## Latest published SHA status — 2026-10-01T23:51:28Z
 
@@ -1860,7 +1907,7 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 <!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->
 ## Bank Automation Gate
 
-- Updated: 2026-10-05T02:04:32.239059Z
+- Updated: 2026-10-05T06:42:23.965129Z
 - Runbook SHA-256: `d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321`; numbered requirement lines detected: 110.
 - Gate: BLOCKED pending implementation-to-test/auth mapping, provider-backed read-only verification, and terminal exact-SHA remote evidence for Alpha-Q-ai and qmoi-enhanced.
 - QMOI Masks bank policy: DOCUMENTED_RUNTIME_UNVERIFIED; secure local evidence masking is required, but provider-facing identity/network masking stays disabled unless explicitly permitted. Runtime enforcement is unverified.

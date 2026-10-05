@@ -81,7 +81,7 @@ def get_git_status() -> dict[str, Any]:
     }
 
 
-def get_recent_ollama_runs() -> list[dict[str, Any]]:
+def get_recent_workflow_runs(repository: str, workflow: str, limit: int = 5) -> list[dict[str, Any]]:
     gh_token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
     if not gh_token:
         return []
@@ -95,13 +95,13 @@ def get_recent_ollama_runs() -> list[dict[str, Any]]:
         "run",
         "list",
         "-R",
-        "thealphakenya/qmoi-enhanced",
+        repository,
         "-w",
-        "ollama-autonomous-agent.yml",
+        workflow,
         "-L",
-        "5",
+        str(limit),
         "--json",
-        "status,conclusion,displayTitle,headBranch,createdAt,updatedAt,url",
+        "databaseId,headSha,status,conclusion,displayTitle,headBranch,createdAt,updatedAt,url",
     ]
     output = run_command(command)
     if not output:
@@ -122,6 +122,20 @@ def get_recent_ollama_runs() -> list[dict[str, Any]]:
         return runs if isinstance(runs, list) else []
     except json.JSONDecodeError:
         return []
+
+
+def get_recent_ollama_runs() -> list[dict[str, Any]]:
+    return get_recent_workflow_runs(
+        "thealphakenya/qmoi-enhanced",
+        "ollama-autonomous-agent.yml",
+    )
+
+
+def get_recent_cross_repo_autosync_runs() -> list[dict[str, Any]]:
+    return get_recent_workflow_runs(
+        "thealphakenya/Alpha-Q-ai",
+        "cross-repo-autosync.yml",
+    )
 
 
 def build_entry(source: str, entity: str, event: str, status: str, message: str, details: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -256,6 +270,49 @@ def build_dual_stream() -> list[dict[str, Any]]:
                 "idle",
                 "No recent Ollama run was available from GitHub, so the tracker heartbeat is being monitored locally.",
                 {"source": "local_tracker"},
+            )
+        )
+
+    sync_runs = get_recent_cross_repo_autosync_runs()
+    if sync_runs:
+        for run in sync_runs[:3]:
+            status_raw = str(run.get("status", "unknown")).lower()
+            conclusion = str(run.get("conclusion") or "running").lower()
+            if status_raw in {"in_progress", "queued", "requested", "waiting", "pending"}:
+                display_status = "running"
+            elif conclusion == "success":
+                display_status = "success"
+            elif conclusion == "failure":
+                display_status = "failure"
+            else:
+                display_status = status_raw
+            stream.append(
+                build_entry(
+                    "qmoi",
+                    "cross-repository-autosync",
+                    "qmoi_restore_point_heartbeat",
+                    display_status,
+                    f"Cross-repository autosync status is {status_raw}; this worker maintains the qmoi restore point after main/backup verification.",
+                    {
+                        "workflow": run.get("displayTitle") or "cross-repo-autosync.yml",
+                        "run_id": run.get("databaseId") or run.get("id"),
+                        "head_sha": run.get("headSha"),
+                        "status": status_raw,
+                        "conclusion": run.get("conclusion") or "running",
+                        "branch": run.get("headBranch"),
+                        "url": run.get("url"),
+                    },
+                )
+            )
+    else:
+        stream.append(
+            build_entry(
+                "qmoi",
+                "cross-repository-autosync",
+                "qmoi_restore_point_heartbeat",
+                "unknown",
+                "No cross-repository autosync workflow run is currently available; qmoi restore-point freshness is unverified.",
+                {"source": "github_actions", "branch": "qmoi"},
             )
         )
 

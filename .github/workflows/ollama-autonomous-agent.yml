@@ -264,6 +264,100 @@ jobs:
           echo "agent_run_id=$agent_run_id" >> "$GITHUB_OUTPUT"
           echo "timestamp_utc=$now" >> "$GITHUB_OUTPUT"
 
+      - name: Require verified qmoi restore point before agent work
+        id: qmoi_restore_point
+        shell: bash
+        env:
+          PEER_REPOSITORY: ${{ github.repository == 'thealphakenya/Alpha-Q-ai' && 'thealphakenya/qmoi-enhanced' || 'thealphakenya/Alpha-Q-ai' }}
+        run: |
+          set -Eeuo pipefail
+          mkdir -p "$TRACK_DIR"
+          read_ref() {
+            local remote="$1"
+            local branch="$2"
+            local refs
+            refs="$(git ls-remote "$remote" "refs/heads/${branch}" 2>/dev/null || true)"
+            printf '%s\n' "$refs" | awk 'NR == 1 {print $1}'
+          }
+          current_main="$(read_ref origin main)"
+          current_backup="$(read_ref origin autosync-backup)"
+          current_qmoi="$(read_ref origin qmoi)"
+          peer_url="https://github.com/${PEER_REPOSITORY}.git"
+          peer_main="$(read_ref "$peer_url" main)"
+          peer_backup="$(read_ref "$peer_url" autosync-backup)"
+          peer_qmoi="$(read_ref "$peer_url" qmoi)"
+          checkout_sha="$(git rev-parse HEAD)"
+          tree_sha="$(git rev-parse "${current_main}^{tree}" 2>/dev/null || true)"
+          status="PASS"
+          blocker=""
+          if [ -z "$current_main" ] || [ "$current_main" != "$current_backup" ] || [ "$current_main" != "$current_qmoi" ] || \
+             [ "$current_main" != "$peer_main" ] || [ "$peer_main" != "$peer_backup" ] || [ "$peer_main" != "$peer_qmoi" ]; then
+            status="BLOCKED"
+            blocker="Both repositories must have qmoi, main, and autosync-backup at one identical exact SHA."
+          elif [ "$checkout_sha" != "$current_main" ] || [ -z "$tree_sha" ]; then
+            status="BLOCKED"
+            blocker="The hosted agent checkout must equal the verified shared main SHA and have a readable Git tree."
+          elif ! git cat-file -e "${current_main}:oe2.txt" 2>/dev/null || ! git cat-file -e "${current_main}:remotecompletion.md" 2>/dev/null; then
+            status="BLOCKED"
+            blocker="The synchronized restore-point SHA is missing oe2.txt or remotecompletion.md."
+          fi
+          python - "$TRACK_DIR/qmoi_restore_point_preflight.json" "$status" "$blocker" "$current_main" "$tree_sha" "$current_backup" "$current_qmoi" "$GITHUB_REPOSITORY" "$PEER_REPOSITORY" "$peer_main" "$peer_backup" "$peer_qmoi" "$GITHUB_RUN_ID" <<'PY'
+          import json
+          import sys
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+            (path, status, blocker, current_main, tree_sha, current_backup, current_qmoi,
+             current_repository, peer_repository, peer_main, peer_backup, peer_qmoi, run_id) = sys.argv[1:]
+          payload = {
+              "status": "PASS" if status == "PASS" else "BLOCKED",
+              "branch": "qmoi",
+              "workspace_sha": current_main,
+              "tree_sha": tree_sha,
+              "coverage_complete": status == "PASS",
+              "remote_verified": status == "PASS",
+              "before_agent_mutations": True,
+              "workflow_run_id": run_id,
+              "repositories": {
+                current_repository: {
+                  "branch": "qmoi", "terminal_conclusion": None,
+                  "remote_verified": status == "PASS", "workflow_run_id": run_id,
+                  "qmoi_sha": current_qmoi, "main_sha": current_main,
+                  "backup_sha": current_backup, "branch_tree_sha": tree_sha,
+                  "required_docs_present": status == "PASS",
+                },
+                peer_repository: {
+                  "branch": "qmoi", "terminal_conclusion": None,
+                  "remote_verified": status == "PASS", "workflow_run_id": run_id,
+                  "qmoi_sha": peer_qmoi, "main_sha": peer_main,
+                  "backup_sha": peer_backup, "branch_tree_sha": tree_sha,
+                  "required_docs_present": status == "PASS",
+                },
+              },
+              "current_repository": {
+                  "main_sha": current_main,
+                  "autosync_backup_sha": current_backup,
+                  "qmoi_sha": current_qmoi,
+              },
+              "peer_repository": {
+                  "repository": peer_repository,
+                  "main_sha": peer_main,
+                  "autosync_backup_sha": peer_backup,
+                  "qmoi_sha": peer_qmoi,
+              },
+              "workflow_run_id": run_id,
+              "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+              "blocker": blocker or None,
+              "source_contents_recorded": False,
+          }
+          Path(path).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          PY
+          if [ "$status" != "PASS" ]; then
+            echo "::error::$blocker"
+            exit 1
+          fi
+          echo "Verified qmoi restore point at $current_main before agent mutations."
+
       - name: Repair and validate Git repository
         id: git_recovery_initial
         shell: bash
