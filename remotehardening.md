@@ -765,3 +765,17 @@ Implement three explicit authority classes:
 - The next valid operation is to validate the actual `MY_CUSTOM_TOKEN` in the environment where it is stored, prove the GitHub identity, and then inspect branch protection, required checks, and exact-SHA workflow state before attempting any push, merge, or deployment.
 - No protected operation should proceed while the token remains unverified or while the exact-SHA workflow proof remains incomplete.
 
+
+## Credential command audit — 2026-10-06T02:00:45.530611Z
+Correlation ID: `0446cbff-adb2-42df-80ab-2758efdefb75`
+
+- The prior terminal command exported a GitHub token directly in a shell command. The token value was not repeated here, but direct command-line export can leave the secret in terminal history, process metadata, and copied session logs. The current audit therefore treats that command as a credential-exposure risk rather than as verified authentication.
+- Current variable-state probe: `MY_CUSTOM_TOKEN=ABSENT`; `GH_TOKEN=PRESENT`; `GITHUB_TOKEN=PRESENT`. Variable names alone were emitted; no values were printed.
+- Fresh `gh auth status`: invalid token in `GH_TOKEN`; the active account was reported, but authentication failed.
+- Fresh `gh api user`: returned HTTP `401 Bad credentials`; no authenticated login or identity was proven.
+- Fresh repository access probe: returned HTTP `401 Bad credentials`; no repository permission was proven.
+- The attempted branch-protection probe included mutually exclusive `--silent` and `--jq` flags and therefore did not produce valid protection evidence.
+- No write, workflow dispatch, merge, release, deployment, token rotation, or token revocation command was executed.
+- Safe continuation: keep the token unmodified, avoid copying it into future commands, use a temporary environment variable or a credential helper, perform only GET/read-only API calls, and require a fresh HTTP 200 identity response before any remote mutation.
+- Explicit result: `AUTHENTICATION_BLOCKED`; the existing credential must be replaced or reissued only through an authorized GitHub account flow, then independently validated before use.
+

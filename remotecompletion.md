@@ -2014,7 +2014,7 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 <!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->
 ## Bank Automation Gate
 
-- Updated: 2026-10-06T01:20:50.013868Z
+- Updated: 2026-10-06T22:06:20.673764Z
 - Runbook SHA-256: `d90b538007fd96441312439bf56374b9d4c68834e51b22d3de01af12df094321`; numbered requirement lines detected: 110.
 - Gate: BLOCKED pending implementation-to-test/auth mapping, provider-backed read-only verification, and terminal exact-SHA remote evidence for Alpha-Q-ai and qmoi-enhanced.
 - QMOI Masks bank policy: DOCUMENTED_RUNTIME_UNVERIFIED; secure local evidence masking is required, but provider-facing identity/network masking stays disabled unless explicitly permitted. Runtime enforcement is unverified.
@@ -2141,4 +2141,40 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 ### Safe continuation rule
 - The next valid operation is to validate the actual `MY_CUSTOM_TOKEN` in the environment where it is stored, prove the GitHub identity, and then inspect branch protection, required checks, and exact-SHA workflow state before attempting any push, merge, or deployment.
 - No protected operation should proceed while the token remains unverified or while the exact-SHA workflow proof remains incomplete.
+
+
+## Credential command audit — 2026-10-06T02:00:45.530611Z
+Correlation ID: `0446cbff-adb2-42df-80ab-2758efdefb75`
+
+- The prior terminal command exported a GitHub token directly in a shell command. The token value was not repeated here, but direct command-line export can leave the secret in terminal history, process metadata, and copied session logs. The current audit therefore treats that command as a credential-exposure risk rather than as verified authentication.
+- Current variable-state probe: `MY_CUSTOM_TOKEN=ABSENT`; `GH_TOKEN=PRESENT`; `GITHUB_TOKEN=PRESENT`. Variable names alone were emitted; no values were printed.
+- Fresh `gh auth status`: invalid token in `GH_TOKEN`; the active account was reported, but authentication failed.
+- Fresh `gh api user`: returned HTTP `401 Bad credentials`; no authenticated login or identity was proven.
+- Fresh repository access probe: returned HTTP `401 Bad credentials`; no repository permission was proven.
+- The attempted branch-protection probe included mutually exclusive `--silent` and `--jq` flags and therefore did not produce valid protection evidence.
+- No write, workflow dispatch, merge, release, deployment, token rotation, or token revocation command was executed.
+- Safe continuation: keep the token unmodified, avoid copying it into future commands, use a temporary environment variable or a credential helper, perform only GET/read-only API calls, and require a fresh HTTP 200 identity response before any remote mutation.
+- Explicit result: `AUTHENTICATION_BLOCKED`; the existing credential must be replaced or reissued only through an authorized GitHub account flow, then independently validated before use.
+
+## App permission and variable checkpoint — 2026-10-06T22:00:04Z
+Correlation ID: `2aef3ffc-c8ed-44f1-b187-b5073572dab5`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; base HEAD `20996ab165c9b7e77b3fb2e80523223e9304aedd`.
+
+- Thoroughly recorded the user-provided permission snapshot in `githubapp.md` and `github.md`. It reports read access to Codespaces/repository metadata and read/write access for Dependabot/license alerts, Actions and variables, administration, agent secrets/tasks/variables, artifacts, attestations, checks, code/quality, Codespaces/lifecycle administration, statuses, Copilot agent settings, custom properties, Dependabot secrets, deployments, discussions, environments, issues, merge queues, packages, Pages, pull requests, repository advisories/hooks/projects, secret-scanning alerts/dismissal/push-protection bypass requests, repository secrets, security events, and workflows. This broad inventory is user-provided settings-page evidence, not a live API permission verification.
+- Name-only runtime check: `QMOI_GITHUB_APP_ID`, `QMOI_GITHUB_CLIENT_ID`, and `QMOI_GITHUB_PRIVATE_KEY` are present in the Codespace process; `QMOI_GITHUB_INSTALLATION_ID` is absent. No values were emitted or tested. Codespaces secrets are not automatically available to GitHub Actions.
+- Historical App key rotation remains unconfirmed. Because the old key is classified as compromised, no JWT, installation token, or App API request was created. The GH CLI token remains invalid and both repository secret-list calls previously returned HTTP 401.
+- Added a local optional read-only App token preflight and strengthened QMOI credential inventory to recognize Actions variable references and shell credential names without values. `actions/create-github-app-token@v3` can discover the installation from owner/repository inputs; do not invent an installation ID.
+- Validation: credential-readiness regression `1 passed`; autonomous-agent suite `118 passed, 1 skipped`; read-only workflow YAML/permission assertions passed. Vault tests remain blocked because `cryptography>=50.0.1` is declared in `requirements.txt` but absent from available test Python environments.
+- Local code/evidence only; no remote run, identity proof, secret inventory, push, merge, deployment, or credential rotation is claimed. Result: `LOCAL_VALIDATION_PASS_REMOTE_APP_AUTH_BLOCKED`.
+
+## Credential automation and GitHub App continuation — 2026-10-06T21:53:32Z
+Correlation ID: `8168e428-bb30-44a5-a32b-4ebbc97cfe0f`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; base HEAD `20996ab165c9b7e77b3fb2e80523223e9304aedd`.
+
+- Local QMOI credential readiness now distinguishes GitHub secret references, Actions variable references, and runtime environment references. It records `remote_configuration=unknown`, credential validity as unverified, and never records values.
+- QMOI can automatically inventory references and prepare a provisioning checklist. It cannot fabricate provider-issued keys or create accounts. Real credentials must be issued or rotated by their provider/App owner, stored in the authorized GitHub secret store or approved vault, and independently validated before use.
+- `.github/workflows/cross-repo-auth-preflight.yml` now has an uncommitted optional GitHub App token path for read-only access to `Alpha-Q-ai` and `qmoi-enhanced`; it retains the PAT-name and `github.token` fallbacks. The token permissions are limited to read-only Actions, checks, contents, pull requests, and statuses.
+- Local verification: credential-readiness test `1 passed`; `tests/test_ollama_autonomous_agent.py` `118 passed, 1 skipped`; workflow YAML and read-only permission assertions passed; `git diff --check` passed.
+- Vault-suite limitation: `tests/test_qmoi_credentials.py` could not be collected because `cryptography` is unavailable in the pytest venv. System Python also lacks both `cryptography` and pytest. This is an environment blocker, not a test pass.
+- Fresh live auth gate remains blocked: `gh auth status` reports invalid `GH_TOKEN`; `gh secret list` returned HTTP 401 for both repositories. No identity, configured secret-name inventory, or App authentication is verified. The App credential directory/key are absent locally.
+- No App token was minted, no workflow was dispatched, and no remote write, merge, release, deployment, or credential rotation was performed. Worktree changes are local and unpublished.
+- Result: `LOCAL_VALIDATION_PASS_REMOTE_AUTH_BLOCKED`. Next actions: the owner should revoke/rotate the PAT exposed in terminal command history and rotate the historically exposed App key; then configure the replacement App Client ID/Private Key in both repositories and rerun this read-only preflight from a target-owned workflow.
 

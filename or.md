@@ -357,3 +357,24 @@ All passing tests must provide proof that:
 - The former key appears in `origin/main` history and must be revoked/rotated in GitHub App settings. Do not reuse it; rotation has not been verified.
 - The App returned HTTP 200 for read-only identity and installation checks at `2026-09-25T22:02:13Z`, before the exposed key was removed. This is historical evidence; the App is not currently authenticated from this workspace. The active GitHub CLI user session is not the App.
 - No credential values or private-key material belong in this document, other repository files, chat, or logs.
+
+## Current 2026-10-06 App installation checkpoint — 2026-10-06T02:04:20.680597Z
+
+- Installation record: QMOI Dual Repository Agent is reported as installed on both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`. This is a user-reported installation record and does not by itself prove that the current Codespace can authenticate as the App.
+- Current live state: the App credential directory `$HOME/.config/alpha-q-ai/github-app/`, `credentials.env`, and `private-key.pem` are absent. No App ID, private key, JWT, installation ID, or installation token is available in this environment.
+- Current GitHub CLI state: `gh auth status` reports the active token as invalid. `gh api user` returned HTTP 401 `Bad credentials`, so no valid GitHub identity or repository access was proven from the current token.
+- The two selected repositories therefore remain separate authorization domains. An installation on both repositories does not grant the current Codespace App identity without a verified private key, App ID, installation ID, and short-lived installation token.
+- App authentication proof required before any mutation: a target-owned workflow or authorized external runner must mint a short-lived installation token, then successfully call GitHub identity, installation, repository, Actions, branch-protection, and ruleset endpoints for both repositories.
+- Safe operation rule: never place the private key in the Codespace, terminal history, Markdown, JSON, or environment command strings. Use a GitHub Actions secret or an authorized secret manager, scope token lifetime to the minimum, and never log or persist the token.
+- Current result: `APP_AUTHENTICATION_BLOCKED`; installation documentation is retained, but current effective App identity and permission are not verified. No dispatch, merge, release, or deployment was attempted.
+
+## Current App credential and installation-ID status — 2026-10-06T22:00:04Z
+
+- Name-only checks found `QMOI_GITHUB_APP_ID`, `QMOI_GITHUB_CLIENT_ID`, and `QMOI_GITHUB_PRIVATE_KEY` present in the Codespace process. Secret values were not printed, read into documentation, or cryptographically tested.
+- `QMOI_GITHUB_INSTALLATION_ID` is **not present** and no value is independently verified. Do not invent one. For the target-owned `actions/create-github-app-token@v3` flow, explicit owner and repository names allow installation discovery; an installation ID is not required by that action. If another consumer requires it, discover it with an authorized App identity after key rotation is confirmed and record only the verified numeric ID and evidence source here.
+- Codespaces secrets and GitHub Actions repository secrets are separate stores. The App values visible in the Codespace do not prove `APP_CLIENT_ID`/`APP_PRIVATE_KEY` are configured as Actions variable/secret in either repository.
+- The historical App key is classified as compromised; replacement/rotation is not confirmed. Do not mint a JWT or installation token from the present environment until the owner confirms rotation and replacement. Current `gh` user-token auth is invalid (HTTP 401); neither user nor App identity is proven.
+- Reported permission inventory is in `githubapppermissions.md`; treat it as user-provided settings evidence, not a current API check. It includes broad repository administration, secrets, workflow, security-alert and push-protection capabilities; reduce to least privilege before use.
+- Copilot Chat does not inherit GitHub Actions secrets and must never receive secret values in chat context. Route operations through target-owned workflows or approved tooling that reads the secret in-process, uses a short-lived scoped token, verifies identity and endpoint access, and records only redacted evidence.
+- Result: `APP_AUTH_BLOCKED_ROTATION_UNVERIFIED_INSTALLATION_ID_ABSENT`; no authentication attempt, dispatch, mutation, or credential rotation was performed.
+

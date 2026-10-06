@@ -16,3 +16,9 @@
 - verification result
 - environment or install test result
 - remote retrieval evidence
+
+## GitHub App and credential gate
+
+- Confirm the authenticated actor, credential type, repository scope, and exact source SHA before release preparation or publication. Codespaces secret presence and user-reported App permissions are not authentication or authorization proof.
+- Use only owner-confirmed rotated App keys and short-lived installation tokens. Keep Actions and Codespaces secret stores separate, and use the least permission needed by the target-owned workflow.
+- Never pass a credential value through Copilot Chat, shell command text, release metadata, logs, or artifacts. Keep releases, deployments, and signing operations blocked when auth, rotation, required checks, or provenance is unresolved.

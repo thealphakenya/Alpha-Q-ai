@@ -992,10 +992,16 @@ def collect_credential_requirements(root: Path | str | None = None) -> list[dict
     target = Path(root) if root is not None else REPOSITORY_ROOT
     names: dict[str, dict[str, Any]] = {}
     patterns = (
-        re.compile(r"secrets\.([A-Z][A-Z0-9_]{2,})"),
-        re.compile(r"(?:os\.getenv|os\.environ\.get)\(\s*[\"']([A-Z][A-Z0-9_]{2,})"),
-        re.compile(r"process\.env\.([A-Z][A-Z0-9_]{2,})"),
-        re.compile(r"\$\{([A-Z][A-Z0-9_]{2,})\}"),
+        ("github_secret_reference", re.compile(r"secrets\.([A-Z][A-Z0-9_]{2,})")),
+        ("github_actions_variable_reference", re.compile(r"vars\.([A-Z][A-Z0-9_]{2,})")),
+        ("python_environment_reference", re.compile(r"(?:os\.getenv|os\.environ\.get)\(\s*[\"']([A-Z][A-Z0-9_]{2,})")),
+        ("process_environment_reference", re.compile(r"process\.env\.([A-Z][A-Z0-9_]{2,})")),
+        ("environment_interpolation", re.compile(r"\$\{([A-Z][A-Z0-9_]{2,})\}")),
+        ("shell_environment_reference", re.compile(r"\$([A-Z][A-Z0-9_]{2,})\b")),
+        (
+            "shell_credential_assignment",
+            re.compile(r"(?m)^\s*(?:export\s+)?([A-Z][A-Z0-9_]*(?:TOKEN|SECRET|KEY|PASSWORD|CREDENTIAL|APP_ID|CLIENT_ID|INSTALLATION_ID))\s*="),
+        ),
     )
     allowed_suffixes = {".py", ".js", ".ts", ".tsx", ".jsx", ".yml", ".yaml", ".md", ".sh", ".ps1", ".json", ".toml"}
     for path in sorted(target.rglob("*")):
@@ -1005,20 +1011,22 @@ def collect_credential_requirements(root: Path | str | None = None) -> list[dict
             text = path.read_text(encoding="utf-8", errors="ignore")
         except OSError:
             continue
-        for pattern in patterns:
+        for source_type, pattern in patterns:
             for match in pattern.finditer(text):
                 name = match.group(1)
-                entry = names.setdefault(name, {"name": name, "sources": set()})
+                entry = names.setdefault(name, {"name": name, "sources": set(), "source_types": set()})
                 entry["sources"].add(path.relative_to(target).as_posix())
-    names.setdefault("MY_CUSTOM_TOKEN", {"name": "MY_CUSTOM_TOKEN", "sources": set()})
+                entry["source_types"].add(source_type)
+    names.setdefault("MY_CUSTOM_TOKEN", {"name": "MY_CUSTOM_TOKEN", "sources": set(), "source_types": set()})
     result = []
     for name, entry in sorted(names.items()):
         result.append({
             "name": name,
             "sources": sorted(entry["sources"]),
+            "source_types": sorted(entry["source_types"]),
             "runtime_present": bool(os.environ.get(name)),
             "value_recorded": False,
-            "provisioning": "github_secret_or_external_vault",
+            "provisioning": "external_secret_or_variable_source",
         })
     return result
 
@@ -7522,21 +7530,32 @@ All timestamps use UTC ISO-8601 format.
         lines = [
             "# Credential and environment readiness",
             "",
-            "This manifest contains credential names and source paths only. Secret values are never read, generated, logged, or written here.",
+            "This manifest contains names and source paths only. Secret values are never read, generated, logged, or written here.",
             "",
             "## Autonomous policy",
-            "- Discover environment and GitHub secret names automatically.",
-            "- Validate presence and source metadata without exposing values.",
-            "- Use GitHub-managed secrets or an approved external vault for provisioning.",
-            "- Refuse live account creation, payment, trading, or deployment when required credentials are missing or unverified.",
-            "- Record `AUTH_BLOCKED` rather than inventing credentials or claiming success.",
+            "- Discover GitHub secret references, Actions variable references, and runtime environment references from local source files.",
+            "- Runtime presence does not prove credential validity; this local process cannot inspect remote GitHub secret/variable configuration.",
+            "- Automatically prepare this inventory and provisioning checklist; never fabricate credentials or create provider accounts/keys on a user's behalf.",
+            "- Provision values only through the provider or GitHub-managed secret flow authorized for that credential, then verify using a provider-approved read-only check.",
+            "- Refuse protected operations when required credentials are missing, externally unverified, or invalid; record `AUTH_BLOCKED`.",
+            "",
+            "## Provisioning checklist",
+            "1. Identify the credential owner, consumer workflow, minimum scope, and expiry/rotation requirements.",
+            "2. Obtain or rotate the credential through its issuing provider or GitHub App settings; the agent must not invent the value.",
+            "3. Store it in the target repository's GitHub Actions secret or an approved external vault; store non-secret App identifiers as Actions variables where appropriate.",
+            "4. Run a bounded read-only validation and record only status, timestamp, and provider/HTTP result metadata.",
+            "5. Keep dependent operations blocked until identity, scope, and validity are independently verified.",
             "",
             "## Requirements",
         ]
         for requirement in requirements:
-            status = "present-in-runtime" if requirement["runtime_present"] else "not-present-in-runtime-or-externally-managed"
+            status = "runtime-present-validity-unverified" if requirement["runtime_present"] else "runtime-absent-external-state-unknown"
             sources = ", ".join(requirement["sources"][:8]) or "workflow secret or external vault"
-            lines.append(f"- `{requirement['name']}`: {status}; sources: {sources}; value_recorded=false")
+            source_types = ", ".join(requirement["source_types"]) or "unknown-reference"
+            lines.append(
+                f"- `{requirement['name']}`: {status}; source_types: {source_types}; "
+                f"remote_configuration=unknown; validity=unverified; sources: {sources}; value_recorded=false"
+            )
         manifest.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
         documentation = {

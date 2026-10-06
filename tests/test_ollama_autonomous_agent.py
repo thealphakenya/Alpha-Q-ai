@@ -1326,18 +1326,38 @@ class TestFeatureTester:
         agent = OllamaAutonomousAgent(base_path=tmp_path)
         (tmp_path / ".github" / "workflows").mkdir(parents=True)
         (tmp_path / ".github" / "workflows" / "deploy.yml").write_text(
-            "env:\n  API_KEY: ${{ secrets.MY_CUSTOM_TOKEN }}\n", encoding="utf-8"
+            "env:\n  API_KEY: ${{ secrets.MY_CUSTOM_TOKEN }}\n  APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID }}\n"
+            "run: |\n  export QMOI_GITHUB_PRIVATE_KEY=private-key-sentinel\n"
+            "  QMOI_GITHUB_INSTALLATION_ID=installation-id-sentinel\n"
+            "  printf '%s' \"$QMOI_GITHUB_PRIVATE_KEY\"\n",
+            encoding="utf-8",
         )
         monkeypatch.setenv("MY_CUSTOM_TOKEN", "secret-value-must-not-be-recorded")
+        monkeypatch.setenv("QMOI_GITHUB_PRIVATE_KEY", "private-key-sentinel")
 
         result = agent.refresh_credential_readiness(tmp_path)
 
         requirement = next(item for item in result["requirements"] if item["name"] == "MY_CUSTOM_TOKEN")
         assert requirement["runtime_present"] is True
         assert requirement["value_recorded"] is False
+        assert "github_secret_reference" in requirement["source_types"]
+        app_client_id = next(item for item in result["requirements"] if item["name"] == "APP_CLIENT_ID")
+        assert app_client_id["runtime_present"] is False
+        assert "github_actions_variable_reference" in app_client_id["source_types"]
+        installation_id = next(item for item in result["requirements"] if item["name"] == "QMOI_GITHUB_INSTALLATION_ID")
+        assert "shell_credential_assignment" in installation_id["source_types"]
+        private_key = next(item for item in result["requirements"] if item["name"] == "QMOI_GITHUB_PRIVATE_KEY")
+        assert private_key["runtime_present"] is True
+        assert "shell_environment_reference" in private_key["source_types"]
         manifest = (tmp_path / "CREDENTIAL_READINESS.md").read_text(encoding="utf-8")
         assert "MY_CUSTOM_TOKEN" in manifest
+        assert "QMOI_GITHUB_INSTALLATION_ID" in manifest
+        assert "remote_configuration=unknown" in manifest
+        assert "runtime-present-validity-unverified" in manifest
+        assert "never fabricate credentials" in manifest
         assert "secret-value-must-not-be-recorded" not in manifest
+        assert "private-key-sentinel" not in manifest
+        assert "installation-id-sentinel" not in manifest
 
     def test_bank_automation_evidence_refreshes_managed_docs_without_claiming_completion(self, tmp_path, monkeypatch):
         """Bank documentation is tracked, but never promoted to implementation or remote proof."""

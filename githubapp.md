@@ -570,3 +570,67 @@ Your setup should be
                                                                                                                                                                            Do not share my personal information
 
                                                                                                                                                                           Retired private-key fingerprint omitted because the key is exposed in remote history.
+
+## Current 2026-10-06 App installation checkpoint — 2026-10-06T02:04:20.680597Z
+
+- Installation record: QMOI Dual Repository Agent is reported as installed on both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`. This is a user-reported installation record and does not by itself prove that the current Codespace can authenticate as the App.
+- Current live state: the App credential directory `$HOME/.config/alpha-q-ai/github-app/`, `credentials.env`, and `private-key.pem` are absent. No App ID, private key, JWT, installation ID, or installation token is available in this environment.
+- Current GitHub CLI state: `gh auth status` reports the active token as invalid. `gh api user` returned HTTP 401 `Bad credentials`, so no valid GitHub identity or repository access was proven from the current token.
+- The two selected repositories therefore remain separate authorization domains. An installation on both repositories does not grant the current Codespace App identity without a verified private key, App ID, installation ID, and short-lived installation token.
+- App authentication proof required before any mutation: a target-owned workflow or authorized external runner must mint a short-lived installation token, then successfully call GitHub identity, installation, repository, Actions, branch-protection, and ruleset endpoints for both repositories.
+- Safe operation rule: never place the private key in the Codespace, terminal history, Markdown, JSON, or environment command strings. Use a GitHub Actions secret or an authorized secret manager, scope token lifetime to the minimum, and never log or persist the token.
+- Current result: `APP_AUTHENTICATION_BLOCKED`; installation documentation is retained, but current effective App identity and permission are not verified. No dispatch, merge, release, or deployment was attempted.
+
+## GitHub App setup and credential inventory — 2026-10-06
+
+### Installation and feature scope
+
+- The owner reports that `QMOI Dual Repository Agent` is installed for both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`. This records the installation claim only; this Codespace could not verify the installation through GitHub because its available CLI token returned HTTP 401.
+- The intended App feature set is read-only repository/workflow/check observation and, only when separately authorized by repository policy, target-owned workflow dispatch, pull-request orchestration, and cross-repository coordination. Installation scope does not itself authorize protected-branch changes, bypass review, merge, release, or deployment.
+- Before enabling a feature, verify the App's minimum required repository permissions and event subscriptions in GitHub App settings, verify both repositories are selected in the installation, and independently verify each repository's rulesets and workflow permissions. Do not grant broad permissions merely because a feature is listed here.
+
+### Permission snapshot supplied by the owner
+
+`githubapppermissions.md` contains a user-provided settings-page snapshot. The following is recorded as **reported configuration**, not as live API-verified effective permissions:
+
+- Read access: Codespaces metadata and repository metadata.
+- Read/write access: Dependabot alerts; license-compliance alerts; Actions and Actions variables; administration; agent secrets, tasks, and variables; artifact metadata; attestations API; checks; code; code quality; Codespaces and Codespaces lifecycle administration; commit statuses; Copilot agent settings; repository custom properties; Dependabot secrets; deployments; discussions; environments; issues; merge queues; packages; Pages; pull requests; repository advisories, hooks, and projects; secret-scanning alert dismissal requests and alerts; secret-scanning push-protection bypass requests; repository secrets; security events; and workflows.
+- Reported installation scope: two selected repositories, `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`.
+
+This is a broad, high-impact permission set. Administration, repository secrets, agent/Codespaces secrets, workflow writes, alert dismissal, and push-protection bypass-request permissions must not be used merely because they are available. Review the live App configuration and remove every permission not required by an approved workflow; prefer read-only access for inventory and authentication preflight. A permission grant is not authorization to bypass review or a repository ruleset.
+
+### Recommended Actions setup
+
+1. Rotate the historically exposed App private key in GitHub App settings. Do not use the former key or any local copy until the App owner confirms the old key is revoked and the replacement is installed.
+2. In each repository, configure the App Client ID as the Actions variable `APP_CLIENT_ID` and the replacement PEM as the Actions secret `APP_PRIVATE_KEY`. Use each repository's **Settings -> Secrets and variables -> Actions** page. Never place the PEM in this repository, a Codespace environment file, a command argument, logs, workflow artifacts, or documentation.
+3. In a target-owned workflow, use `actions/create-github-app-token@v3` with `client-id: ${{ vars.APP_CLIENT_ID }}`, `private-key: ${{ secrets.APP_PRIVATE_KEY }}`, the owner, and only the required repository list. Keep the generated installation token in memory for that job, pass only the minimum required permissions, and do not persist or print it.
+4. For interactive Codespaces use, configure separate Codespaces secrets restricted to the two repositories; Actions secrets are not automatically available to Codespaces and Codespaces secrets are not available to Actions. Prefer the target-owned workflow path so the private key does not enter the Codespace.
+5. Validate identity and installation access with read-only API calls for both repositories before enabling any operation. Then verify Actions, checks, branch protection, and rulesets. A valid identity is not mutation authority.
+
+### Other GitHub Actions credentials
+
+The following are **workflow references found in available source**, not a verified list of configured GitHub secrets. Secret values were not requested. Alpha-Q-ai's current local workflow files reference `MY_CUSTOM_TOKEN`, legacy typo `MY_CUSTUOM_TOKEN`, GitHub-provided `GITHUB_TOKEN`, the Actions variable `APP_CLIENT_ID`, and the Actions secret `APP_PRIVATE_KEY` in `.github/workflows/cross-repo-auth-preflight.yml`. That local workflow change adds an optional read-only App-token preflight and retains the existing token fallbacks; it has not been dispatched or remotely verified. The separate repository secret inventory could not be read: `gh secret list` returned HTTP 401 for both repositories.
+
+The available `qmoi-enhanced-history-14` workflow snapshot references additional secret names in these categories:
+
+- GitHub and publishing: `GH_PAT`, `GH_TOKEN`, `MY_CUSTOM_TOKEN`, `GITHUB_TOKEN`, `PYPI_API_TOKEN`.
+- Build and deployment: `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEYSTORE_ALIAS`, `DOCKER_USERNAME`, `DOCKER_PASSWORD`, `STAGING_HOST`, `STAGING_USER`, `PROD_HOST`, `PROD_USER`, `DEPLOY_HOST`, `DEPLOY_PORT`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, `VERCEL_TOKEN`, `QCITY_DEPLOY_WEBHOOK`.
+- QMOI integrations and sync: `QMOI_EMAIL_USER`, `QMOI_EMAIL_PASS`, `QMOI_EMAIL_RECIPIENT`, `QMOI_SLACK_WEBHOOK`, `QMOI_TWILIO_SID`, `QMOI_TWILIO_TOKEN`, `QMOI_TWILIO_WHATSAPP`, `QMOI_TELEGRAM_TOKEN`, `QMOI_TELEGRAM_CHAT`, `QMOI_DISCORD_WEBHOOK`, `QMOI_SYNC_BACKENDS`, `QMOI_GIST_ID`, `QMOI_GH_TOKEN`, `QMOI_HF_REPO`, `QMOI_HF_TOKEN`, `QMOI_MEMORY_URL`, `QMOI_SYNC_API_KEY`, `QVILLAGE_INTERNAL_URL`, `HF_API_TOKEN`, `SLACK_WEBHOOK_URL`.
+- Security and CI: `CODECOV_TOKEN`, `SNYK_TOKEN`, `SONAR_TOKEN`.
+
+The qmoi-enhanced names above come from a historical local snapshot, not a live qmoi-enhanced checkout or current GitHub settings. Their presence in YAML does not prove a secret exists, is current, is valid, or is needed by the active workflow. Reconcile each reference against the current workflow and least-privilege purpose before configuring it; never copy credential values between repositories by hand.
+
+### Current authorization and exposure status
+
+- Secret-name inventory attempts on 2026-10-06 returned HTTP 401 for `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`. Configured repository/org secret names and values are therefore unknown.
+- The token previously pasted into a terminal export command is exposed in terminal/session context. Revoke or rotate it promptly through GitHub settings, then remove any saved shell-history entry using the shell's supported history controls. Do not reuse it for App authentication or remote checks.
+- Current state remains `APP_AUTHENTICATION_BLOCKED` and `SECRET_INVENTORY_UNKNOWN`; the new local preflight has not run, no App token was minted, and no repository mutation was attempted.
+
+## Codespace App variable availability — 2026-10-06T22:00:04Z
+
+- Name-only environment checks found `QMOI_GITHUB_APP_ID`, `QMOI_GITHUB_CLIENT_ID`, and `QMOI_GITHUB_PRIVATE_KEY` present in the current Codespace process. Their values were not printed, copied, or tested cryptographically.
+- `QMOI_GITHUB_INSTALLATION_ID` is absent from the current process and has not been independently discovered. Do not invent or copy an installation ID from a different App or repository. `actions/create-github-app-token@v3` can discover the installation from the owner and explicit repository list, so this ID is not required by the target-owned preflight workflow.
+- Presence of a Codespaces secret does not make it available to GitHub Actions. The local optional workflow path separately requires its Actions variable/secret configuration; that configuration and its run are unverified.
+- The historical private key is still documented as compromised and rotation is not confirmed. The available environment value must not be used to mint a JWT or call App APIs until the owner confirms that the old key was revoked and this is the replacement.
+- GitHub CLI authentication remains invalid (`GH_TOKEN`, HTTP 401). No App JWT, installation token, or authenticated App identity was proven.
+- Result: `APP_CREDENTIALS_PRESENT_ROTATION_UNVERIFIED_INSTALLATION_ID_ABSENT_AUTH_BLOCKED`.
