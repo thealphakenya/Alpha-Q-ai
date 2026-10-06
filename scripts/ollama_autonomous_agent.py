@@ -113,6 +113,7 @@ from scripts.ollama_research import (
     record_research_visit,
 )
 from scripts.q_version_manager import QVersionManager
+from scripts.qaudit_universe import build_qaudit_universe
 
 try:
     from scripts.live_activity_stream import (
@@ -7739,6 +7740,9 @@ All timestamps use UTC ISO-8601 format.
         """Refresh metadata-only Ollama mention coverage and its Q-version gate contract."""
         target = Path(root) if root is not None else self.root_dir
         initial = audit_ollama_reference_files(target)
+        universe = build_qaudit_universe(target)
+        universe_path = target / "ollamatracks" / "qaudit_universe.json"
+        safe_json_write(universe_path, universe)
         audit_lines = [
             "## Ollama reference audit and Q-version gate",
             "",
@@ -7761,6 +7765,8 @@ All timestamps use UTC ISO-8601 format.
 
         report = audit_ollama_reference_files(target)
         report["correlation_id"] = uuid.uuid4().hex
+        report["qaudit_universe_artifact"] = str(universe_path)
+        report["qaudit_universe_file_count"] = universe["discovery"]["files_scanned"]
         report_path = target / "ollamatracks" / "ollama_reference_audit.json"
         safe_json_write(report_path, report)
         report["artifact_path"] = str(report_path)
@@ -10323,6 +10329,7 @@ All timestamps use UTC ISO-8601 format.
 
         for filename, content in {
             "QVILLAGE.md": "# QVILLAGE.md\n\nQVillage is the live QMOI community, model, and knowledge coordination surface.\n\n## Link and runtime references\n- Source repository: [thealphakenya/qvillage](https://github.com/thealphakenya/qvillage)\n- Community surface: [QVillage](https://qvillage.qmoi.com)\n\n## Active automation\n- QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.\n- memory, model, and runtime state are synchronized across repo docs and platform references.\n",
+            "Qvillageevolutions.md": "# Qvillageevolutions.md\n\nQVillage evolution records the durable QMOI discovery, validation, integration, and learning lifecycle.\n\n## Active automation\n- QVillage evolution is maintained through the autonomous evidence and model lifecycle.\n- implementation, validation, and rollback evidence remain correlated to the live repository SHA.\n- no model or runtime improvement is promoted without focused tests and an explicit verification record.\n",
             "QUANTUM.md": "# QUANTUM.md\n\nQMOI Quantum integration keeps the compute and model runtime path aligned with the live repo.\n\n## Link and runtime references\n- Source repository: [thealphakenya/Alpha-Q-ai](https://github.com/thealphakenya/Alpha-Q-ai)\n- Hosted capability target: [Quantum](https://quantum.qmoi.com)\n\n## Active automation\n- quantum compute and model-runtime automation are described and synchronized here.\n",
         }.items():
             path = target / filename

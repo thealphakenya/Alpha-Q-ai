@@ -246,19 +246,23 @@ def render_markdown_section(payload: dict[str, Any]) -> str:
 
 def update_evidence_files(repo_root: Path, payload: dict[str, Any]) -> None:
     section = render_markdown_section(payload)
+    marker = "## Autonomous evidence monitor"
     for name in ("oe2.txt", "remotecompletion.md"):
         file_path = repo_root / name
         existing = file_path.read_text(encoding="utf-8") if file_path.exists() else ""
-        marker = "## Autonomous evidence monitor"
-        if marker in existing:
-            prefix, suffix = existing.split(marker, 1)
-            existing = prefix + marker + suffix.split("## ", 1)[-1] if "## " in suffix else prefix + marker
-        with file_path.open("a", encoding="utf-8") as handle:
-            if existing and not existing.endswith("\n"):
-                handle.write("\n")
-            handle.write("\n")
-            handle.write(section)
-            handle.write("\n")
+        prefix = existing
+        while True:
+            start = existing.find(marker)
+            if start < 0:
+                break
+            next_heading = existing.find("\n## ", start + len(marker))
+            end = len(existing) if next_heading < 0 else next_heading + 1
+            existing = existing[:start].rstrip() + "\n" + existing[end:]
+        if existing != prefix:
+            existing = existing.rstrip() + "\n\n" + section + "\n"
+        else:
+            existing = existing.rstrip() + "\n\n" + section + "\n"
+        file_path.write_text(existing, encoding="utf-8")
 
 
 def monitor_once(repo_root: Path, repo: str, branch: str = "main") -> dict[str, Any]:

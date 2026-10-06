@@ -1246,6 +1246,7 @@ class TestFeatureTester:
             for item in report["matched_files"]
         )
         assert (tmp_path / "ollamatracks" / "ollama_reference_audit.json").is_file()
+        assert (tmp_path / "ollamatracks" / "qaudit_universe.json").is_file()
         for filename in ("QVERSIONMANAGER.md", "OLLAMA_AUTOMATION_GUIDE.md", "ollama.md"):
             text = (tmp_path / filename).read_text(encoding="utf-8")
             assert "reference audit and Q-version gate" in text
