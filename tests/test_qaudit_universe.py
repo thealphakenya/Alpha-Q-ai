@@ -40,3 +40,48 @@ def test_classify_entity_records_legacy_and_platform_override_status() -> None:
         "action": "verify_platform_boundary_and_access_contract",
         "confidence": "medium",
     }
+
+
+def test_qaudit_universe_tracks_product_delivery_and_accountability_domains(tmp_path: Path) -> None:
+    (tmp_path / "apps").mkdir()
+    (tmp_path / "apps" / "qcity.py").write_text("# QCity product source\n", encoding="utf-8")
+    (tmp_path / "platforms" / "web").mkdir(parents=True)
+    (tmp_path / "platforms" / "web" / "install.js").write_text("// web install workflow\n", encoding="utf-8")
+    (tmp_path / "releases").mkdir()
+    (tmp_path / "releases" / "publish_release.yml").write_text("name: build tag publish download deploy\n", encoding="utf-8")
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs" / "ACCOUNTABILITY.md").write_text("# QMOI accountability to master\n", encoding="utf-8")
+    (tmp_path / "docs" / "QTEAM.md").write_text("# QTeam friendship process\n", encoding="utf-8")
+    historical_lion = tmp_path / "qmoi-enhanced-history-14" / "docs" / "lion_variations" / "lion-cloud.md"
+    historical_lion.parent.mkdir(parents=True)
+    historical_lion.write_text("# Lion Cloud variation\nExtension install and release notes.\n", encoding="utf-8")
+
+    universe = build_qaudit_universe(
+        tmp_path,
+        product_registry={
+            "applications": {"qcity": {"name": "QCity", "category": "file-management"}, "qalpha": {"name": "QAlpha"}},
+            "platforms": ["web", "linux"],
+        },
+    )
+    accountability = universe["accountability"]
+
+    assert accountability["status"] == "NEEDS_REVIEW"
+    assert accountability["coverage_complete"] is False
+    assert accountability["remote_verification_complete"] is False
+    assert accountability["registered_application_count"] == 2
+    assert accountability["applications"][0]["implementation_status"] == "not_verified"
+    assert accountability["registered_platform_count"] == 2
+    assert accountability["lion_variation_candidate_count"] == 1
+    assert accountability["lion_variation_candidates"][0]["scope"] == "historical_snapshot"
+    assert accountability["extension_candidate_count"] >= 1
+    assert accountability["extension_file_types"][".py"]["file_count"] >= 1
+    assert accountability["delivery_stages"]["release"]["candidate_file_count"] >= 1
+    assert accountability["delivery_stages"]["tag"]["candidate_file_count"] >= 1
+    assert accountability["delivery_stages"]["download"]["candidate_file_count"] >= 1
+    assert accountability["delivery_stages"]["install"]["candidate_file_count"] >= 1
+    assert accountability["delivery_stages"]["deploy"]["candidate_file_count"] >= 1
+    assert accountability["governance_domains"]["qteam"]["candidate_file_count"] >= 1
+    assert accountability["governance_domains"]["friendship"]["candidate_file_count"] >= 1
+    assert accountability["governance_domains"]["accountability"]["candidate_file_count"] >= 1
+    assert accountability["governance_domains"]["master"]["candidate_file_count"] >= 1
+    assert len(accountability["source_manifest_sha256"]) == 64

@@ -242,6 +242,22 @@ def record_successful_q_lifecycle(
     details_overrides: dict[str, dict[str, object]] | None = None,
 ) -> None:
     stage_details = {
+        "PRODUCT_PLATFORM_CATALOG": {
+            "status": "PASS", "coverage_complete": True, "remote_verified": True,
+            "unmapped_requirement_count": 0, "unavailable_sources": [], "source_manifest_sha256": "f" * 64,
+        },
+        "LION_AND_EXTENSION_VARIANTS": {
+            "status": "PASS", "coverage_complete": True, "remote_verified": True,
+            "unmapped_requirement_count": 0, "unavailable_sources": [], "source_manifest_sha256": "f" * 64,
+        },
+        "RELEASE_DELIVERY_LIFECYCLE": {
+            "status": "PASS", "coverage_complete": True, "remote_verified": True,
+            "unmapped_requirement_count": 0, "unavailable_sources": [], "source_manifest_sha256": "f" * 64,
+        },
+        "QTEAM_ACCOUNTABILITY": {
+            "status": "PASS", "coverage_complete": True, "remote_verified": True,
+            "unmapped_requirement_count": 0, "unavailable_sources": [], "source_manifest_sha256": "f" * 64,
+        },
         "MERGE_APPLY": {
             "decision_ledger_complete": True,
             "conflicts_reviewed": True,
@@ -350,6 +366,10 @@ def test_q_version_manager_tracks_complete_autonomous_system_stages():
         "EXTERNAL_RESEARCH",
         "REPOSITORY_SURFACE_AUDIT",
         "OLLAMA_FULL_COVERAGE_AUDIT",
+        "PRODUCT_PLATFORM_CATALOG",
+        "LION_AND_EXTENSION_VARIANTS",
+        "RELEASE_DELIVERY_LIFECYCLE",
+        "QTEAM_ACCOUNTABILITY",
         "MARKDOWN_SOURCE_INDEX",
         "UI_TEST_HOOK_COVERAGE",
         "MERGE_PLAN",
@@ -368,6 +388,35 @@ def test_q_version_manager_tracks_complete_autonomous_system_stages():
         "AUTONOMOUS_COMPLETION",
         "Q_VERSION_FINALIZATION",
     )
+
+
+@pytest.mark.parametrize(
+    "stage_name",
+    [
+        "PRODUCT_PLATFORM_CATALOG",
+        "LION_AND_EXTENSION_VARIANTS",
+        "RELEASE_DELIVERY_LIFECYCLE",
+        "QTEAM_ACCOUNTABILITY",
+    ],
+)
+def test_q_version_accountability_stages_require_complete_remote_evidence(stage_name):
+    record = {
+        "stage_status": "PASS",
+        "details": {
+            "status": "PASS",
+            "coverage_complete": True,
+            "remote_verified": True,
+            "unmapped_requirement_count": 0,
+            "unavailable_sources": [],
+            "source_manifest_sha256": "f" * 64,
+        },
+    }
+
+    QVersionManager.validate_accountability_stage(stage_name, record)
+
+    incomplete = {**record, "details": {**record["details"], "coverage_complete": False}}
+    with pytest.raises(RuntimeError, match=f"complete {stage_name} evidence"):
+        QVersionManager.validate_accountability_stage(stage_name, incomplete)
 
 
 def test_q_version_lifecycle_latest_stage_attempt_controls_status(tmp_path):

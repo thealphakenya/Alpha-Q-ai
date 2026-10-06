@@ -5904,6 +5904,77 @@ All timestamps use UTC ISO-8601 format.
                 include_inventory=False,
             )
 
+            accountability = ollama_full_coverage_audit.get("system_accountability_audit", {})
+            delivery_stages = accountability.get("delivery_stages", {})
+            governance_domains = accountability.get("governance_domains", {})
+            product_requirements = (
+                accountability.get("registered_application_count", 0)
+                + accountability.get("registered_platform_count", 0)
+            )
+            extension_requirements = accountability.get("registered_extension_count", 0)
+            release_requirements = len(delivery_stages)
+            governance_requirements = len(governance_domains)
+            stage_audits = (
+                (
+                    "PRODUCT_PLATFORM_CATALOG",
+                    {
+                        "applications": accountability.get("applications", []),
+                        "platforms": accountability.get("platforms", []),
+                        "expected_requirement_count": product_requirements,
+                        "mapped_requirement_count": 0,
+                        "unmapped_requirement_count": product_requirements,
+                    },
+                ),
+                (
+                    "LION_AND_EXTENSION_VARIANTS",
+                    {
+                        "lion_variation_candidate_count": accountability.get("lion_variation_candidate_count", 0),
+                        "registered_extensions": accountability.get("registered_extensions", []),
+                        "expected_requirement_count": extension_requirements,
+                        "mapped_requirement_count": 0,
+                        "unmapped_requirement_count": extension_requirements,
+                    },
+                ),
+                (
+                    "RELEASE_DELIVERY_LIFECYCLE",
+                    {
+                        "delivery_stages": delivery_stages,
+                        "expected_requirement_count": release_requirements,
+                        "mapped_requirement_count": 0,
+                        "unmapped_requirement_count": release_requirements,
+                    },
+                ),
+                (
+                    "QTEAM_ACCOUNTABILITY",
+                    {
+                        "governance_domains": governance_domains,
+                        "expected_requirement_count": governance_requirements,
+                        "mapped_requirement_count": 0,
+                        "unmapped_requirement_count": governance_requirements,
+                    },
+                ),
+            )
+            for stage_name, stage_metrics in stage_audits:
+                q_version_manager.record_lifecycle_stage(
+                    q_execution_id,
+                    stage_name,
+                    repo_paths,
+                    status="NEEDS_REVIEW",
+                    details={
+                        **stage_metrics,
+                        "audit_status": accountability.get("status", "BLOCKED"),
+                        "status": "NEEDS_REVIEW",
+                        "coverage_complete": False,
+                        "remote_verified": False,
+                        "source_scope": accountability.get("source_scope", "materialized_local"),
+                        "source_manifest_sha256": accountability.get("source_manifest_sha256"),
+                        "unavailable_sources": accountability.get("unavailable_sources", []),
+                        "blockers": accountability.get("blockers", []),
+                        "artifact_path": "ollamatracks/system_accountability_audit.json",
+                    },
+                    include_inventory=False,
+                )
+
         markdown_index_refresh = self.cross_repo_manager.refresh_all_markdown_indexes(repo_paths)
         markdown_audit_passed = bool(markdown_index_refresh.get("audit", {}).get("index_complete"))
         if lifecycle_phase == "initial":
@@ -7759,9 +7830,40 @@ All timestamps use UTC ISO-8601 format.
         """Refresh metadata-only Ollama mention coverage and its Q-version gate contract."""
         target = Path(root) if root is not None else self.root_dir
         initial = audit_ollama_reference_files(target)
-        universe = build_qaudit_universe(target)
+        product_registry = {
+            "applications": QSTORE_CATALOG_APPS,
+            "platforms": PLATFORMS,
+            "extensions": QUANTUM_EXTENSION_FEATURES,
+            "lion_variations": [],
+        }
+        universe = build_qaudit_universe(target, product_registry=product_registry)
+        accountability = universe.get("accountability", {})
         universe_path = target / "ollamatracks" / "qaudit_universe.json"
         safe_json_write(universe_path, universe)
+        accountability_path = target / "ollamatracks" / "system_accountability_audit.json"
+        safe_json_write(accountability_path, accountability)
+        accountability_lines = [
+            "## System release and accountability audit",
+            "",
+            "This local inventory records candidate paths, file hashes, denominators, and verification state only; it does not claim implementation, release, publication, installation, download, deployment, or ownership proof.",
+            "",
+            f"- Audit status: `{accountability.get('status', 'BLOCKED')}`; source scope: `{accountability.get('source_scope', 'unknown')}`; source manifest SHA-256: `{accountability.get('source_manifest_sha256', 'unavailable')}`.",
+            f"- Registered apps: `{accountability.get('registered_application_count', 0)}`; platforms: `{accountability.get('registered_platform_count', 0)}`; registered extension features: `{accountability.get('registered_extension_count', 0)}`; Lion variation candidates: `{accountability.get('lion_variation_candidate_count', 0)}`; extension candidate files: `{accountability.get('extension_candidate_count', 0)}`.",
+            f"- Expected requirement count: `{accountability.get('expected_requirement_count', 0)}`; mapped: `{accountability.get('mapped_requirement_count', 0)}`; unmapped: `{accountability.get('unmapped_requirement_count', 0)}`; coverage complete: `{accountability.get('coverage_complete', False)}`.",
+            f"- Delivery stage candidates: `{json.dumps({name: item.get('candidate_file_count', 0) for name, item in accountability.get('delivery_stages', {}).items()}, sort_keys=True)}`.",
+            f"- Governance-domain candidates: `{json.dumps({name: item.get('candidate_file_count', 0) for name, item in accountability.get('governance_domains', {}).items()}, sort_keys=True)}`.",
+            "- Every app/platform/variant/extension/release artifact must map to an accountable owner, implementation/source, focused tests, workflow, and independently verified exact-SHA outcome. Unmapped facets remain blockers.",
+            "- Remote refs, tags, releases, artifacts, installer/download endpoints, deployments, QTeam assignment, friendship outcomes, master approvals, and external hosts are not verified by this local scan.",
+        ]
+        for filename in ("QAUDITS.md", "QVERSIONMANAGER.md"):
+            path = target / filename
+            if path.is_file():
+                _upsert_managed_markdown_section(
+                    path,
+                    filename,
+                    "system-release-accountability-audit",
+                    "\n".join(accountability_lines),
+                )
         audit_lines = [
             "## Ollama reference audit and Q-version gate",
             "",
@@ -7786,6 +7888,18 @@ All timestamps use UTC ISO-8601 format.
         report["correlation_id"] = uuid.uuid4().hex
         report["qaudit_universe_artifact"] = str(universe_path)
         report["qaudit_universe_file_count"] = universe["discovery"]["files_scanned"]
+        report["system_accountability_audit"] = {
+            "status": accountability.get("status", "BLOCKED"),
+            "artifact_path": str(accountability_path),
+            "source_manifest_sha256": accountability.get("source_manifest_sha256"),
+            "expected_requirement_count": accountability.get("expected_requirement_count", 0),
+            "mapped_requirement_count": accountability.get("mapped_requirement_count", 0),
+            "unmapped_requirement_count": accountability.get("unmapped_requirement_count", 0),
+            "coverage_complete": accountability.get("coverage_complete", False),
+            "remote_verification_complete": accountability.get("remote_verification_complete", False),
+            "delivery_stages": accountability.get("delivery_stages", {}),
+            "governance_domains": accountability.get("governance_domains", {}),
+        }
         report_path = target / "ollamatracks" / "ollama_reference_audit.json"
         safe_json_write(report_path, report)
         report["artifact_path"] = str(report_path)
@@ -9339,7 +9453,7 @@ All timestamps use UTC ISO-8601 format.
             return "active_checkout"
 
         replacement_inventory: dict[str, Any] = {
-            "schema_version": 1,
+            "schema_version": 2,
             "repository": target.name,
             "scope": "materialized tracked and non-ignored paths only",
             "status": "CANDIDATE_ONLY",
@@ -9348,11 +9462,33 @@ All timestamps use UTC ISO-8601 format.
             "universal_candidate_count": 0,
             "files": [],
             "directories": [],
+            "canonical_policy_paths": [
+                path for path in ("STYLES.md", "UNIVERSAL.md", "UNIVERSALS.md")
+                if (target / path).is_file()
+            ],
+            "canonical_policy_documents": [],
+            "replacement_record_schema": [
+                "replacement_id", "source_paths", "destination_paths", "prior_sha256", "new_sha256",
+                "owner", "reason", "tests", "hook_review", "rollback", "authorization", "repository", "ref", "source_sha",
+            ],
+            "replacement_lineage_policy": "A candidate is not replaced until a reviewer supplies a record matching the schema; no path deletion or automatic replacement is authorized.",
+            "replacement_records": [],
+            "verified_replaced_file_count": 0,
+            "verified_replaced_directory_count": 0,
+            "replacement_lineage_complete": False,
             "skipped_sources": [],
             "source_contents_recorded": False,
             "automatic_replacement_enabled": False,
         }
-        replacement_file_suffixes = {".css", ".scss", ".sass", ".less", ".html", ".htm", ".js", ".jsx", ".ts", ".tsx", ".py"}
+        replacement_inventory["canonical_policy_documents"] = [
+            {
+                "path": path,
+                "bytes": (target / path).stat().st_size,
+                "sha256": hashlib.sha256((target / path).read_bytes()).hexdigest(),
+            }
+            for path in replacement_inventory["canonical_policy_paths"]
+        ]
+        replacement_file_suffixes = {".css", ".scss", ".sass", ".less", ".html", ".htm", ".js", ".jsx", ".ts", ".tsx", ".py", ".md"}
         style_pattern = re.compile(
             r"\b(?:className|stylesheet|tailwind|theme|typography|font|color|spacing|layout|responsive|breakpoint|aria-)\b",
             re.IGNORECASE,
@@ -9363,7 +9499,9 @@ All timestamps use UTC ISO-8601 format.
         )
         ui_directory_names = {"ui", "frontend", "components", "pages", "views", "styles", "themes"}
         replacement_files: list[dict[str, Any]] = []
-        replacement_directories: dict[str, dict[str, int]] = {}
+        replacement_directories: dict[str, dict[str, Any]] = {}
+        replacement_scope_counts: dict[str, dict[str, int]] = defaultdict(lambda: {"styles": 0, "universals": 0})
+        replacement_extension_counts: dict[str, dict[str, int]] = defaultdict(lambda: {"styles": 0, "universals": 0})
         replacement_skips: list[dict[str, str]] = []
         for path in relative_paths:
             candidate = target / path
@@ -9399,25 +9537,31 @@ All timestamps use UTC ISO-8601 format.
                 parent_paths.append(parent.as_posix())
                 parent = parent.parent
             replacement_files.append({
+                "candidate_id": hashlib.sha256(f"{test_source_scope(path)}:{path}:{hashlib.sha256(content).hexdigest()}".encode()).hexdigest()[:20],
                 "path": path,
                 "scope": test_source_scope(path),
                 "bytes": stat.st_size,
                 "sha256": hashlib.sha256(content).hexdigest(),
                 "domains": domains,
+                "extension": candidate.suffix.lower(),
                 "directory_paths": list(reversed(parent_paths)),
                 "status": "review_required",
+                "lineage_status": "candidate_not_verified_as_replaced",
                 "tests_required_before_replacement": True,
                 "hook_applicability_review_required": "universals" in domains,
                 "replacement_authorized": False,
             })
             for directory in parent_paths:
-                counts = replacement_directories.setdefault(directory, {"styles": 0, "universals": 0})
+                counts = replacement_directories.setdefault(directory, {"styles": 0, "universals": 0, "candidate_file_paths": []})
+                counts["candidate_file_paths"].append(path)
                 for domain in domains:
                     counts[domain] += 1
+                    replacement_scope_counts[test_source_scope(path)][domain] += 1
+                    replacement_extension_counts[candidate.suffix.lower() or "[no_extension]"][domain] += 1
 
         replacement_inventory["files"] = replacement_files
         replacement_inventory["directories"] = [
-            {"path": path, **counts, "status": "review_required"}
+            {"path": path, **counts, "candidate_file_paths": sorted(set(counts["candidate_file_paths"])), "status": "review_required", "lineage_status": "candidate_not_verified_as_replaced"}
             for path, counts in sorted(replacement_directories.items())
         ]
         replacement_inventory["style_candidate_count"] = sum(
@@ -9428,6 +9572,21 @@ All timestamps use UTC ISO-8601 format.
         )
         replacement_inventory["skipped_sources"] = replacement_skips
         replacement_inventory["materialized_scan_complete"] = not replacement_skips
+        replacement_inventory["scope_candidate_counts"] = dict(sorted(replacement_scope_counts.items()))
+        replacement_inventory["extension_candidate_counts"] = dict(sorted(replacement_extension_counts.items()))
+        replacement_inventory["candidate_path_index_complete"] = bool(replacement_inventory["materialized_scan_complete"])
+        replacement_inventory["replacement_manifest_sha256"] = hashlib.sha256(
+            json.dumps(
+                {
+                    "canonical_policy_paths": replacement_inventory["canonical_policy_paths"],
+                    "files": replacement_inventory["files"],
+                    "directories": replacement_inventory["directories"],
+                    "replacement_records": replacement_inventory["replacement_records"],
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
         replacement_inventory_path = target / "ollamatracks" / "style_universal_replacement_inventory.json"
         safe_json_write(replacement_inventory_path, replacement_inventory)
 

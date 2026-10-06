@@ -39,6 +39,24 @@ STYLE_NAME_PARTS = {"style", "styles", "theme", "themes", "token", "tokens", "co
 UNIVERSAL_NAME_PARTS = {"universal", "universals", "access", "authentication", "authorization", "identity", "permission", "security", "accessibility"}
 AUDIT_NAME_PARTS = {"audit", "audits", "qaudits", "ofca", "research", "verification", "evidence", "registry"}
 PLATFORM_NAME_PARTS = {"windows", "macos", "linux", "ios", "android", "web", "vercel", "netlify", "github", "gitlab", "gitpod", "huggingface", "quantum", "qvillage", "dagshub"}
+DELIVERY_AUDIT_STAGES = {
+    "release": re.compile(r"\breleases?\b|release[_ -]notes|release[_ -]workflow", re.I),
+    "tag": re.compile(r"\b(?:git\s+)?tags?\b|refs/tags|tag[_ -]trigger", re.I),
+    "publish": re.compile(r"\bpublish(?:es|ed|ing)?\b|publication", re.I),
+    "build": re.compile(r"\bbuild(?:s|ing)?\b|compile|packag(?:e|ing)", re.I),
+    "install": re.compile(r"\binstall(?:s|ed|ing|ation)?\b", re.I),
+    "download": re.compile(r"\bdownloads?\b|artifact[_ -]retrieval", re.I),
+    "deploy": re.compile(r"\bdeploy(?:s|ed|ing|ment)?\b|hosting", re.I),
+    "update_rollback": re.compile(r"\bupdat(?:e|es|ed|ing)|rollback|roll[_ -]back", re.I),
+}
+GOVERNANCE_AUDIT_DOMAINS = {
+    "qteam": re.compile(r"\bqteam\b|team[_ -](?:owner|responsib|workflow)", re.I),
+    "friendship": re.compile(r"\bfriendship\b|relationship[_ -](?:system|feature)", re.I),
+    "accountability": re.compile(r"\baccountability\b|responsibility[_ -]matrix", re.I),
+    "master": re.compile(r"\bmaster\b|repository[_ -]owner|owner[_ -]approval", re.I),
+}
+CODE_SUFFIXES = {".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".rs", ".java", ".kt", ".swift", ".c", ".h", ".cpp", ".cs", ".rb", ".php"}
+PACKAGE_SUFFIXES = {".apk", ".aab", ".ipa", ".exe", ".msi", ".dmg", ".pkg", ".deb", ".rpm", ".whl", ".tar", ".gz", ".zip", ".appx", ".wasm"}
 
 
 def _relative(path: Path, root: Path) -> str:
@@ -183,7 +201,227 @@ def _reference_paths(relative: str, content: str, root: Path) -> list[str]:
     return sorted(found)
 
 
-def build_qaudit_universe(root: Path | str) -> dict[str, Any]:
+def _scope_for_path(relative: str) -> str:
+    parts = Path(relative).parts
+    if parts and parts[0] in {"Alpha-Q-ai-2025", "qmoi-enhanced-history-14"}:
+        return "historical_snapshot"
+    if any(part in {"_archive_qmoi-enhanced", "archive", "archives", "legacy"} for part in parts):
+        return "local_archive_candidate"
+    return "materialized_local"
+
+
+def _file_facets(relative: str) -> set[str]:
+    lowered = relative.lower()
+    parts = {part.lower() for part in Path(relative).parts}
+    facets = set()
+    if Path(relative).suffix.lower() == ".md" or "docs" in parts:
+        facets.add("documentation")
+    if "test" in parts or "tests" in parts or Path(relative).name.lower().startswith(("test_", "*_test.")):
+        facets.add("tests")
+    if ".github/workflows/" in f"/{lowered}/" or "workflow" in parts or "workflows" in parts:
+        facets.add("workflows")
+    if Path(relative).suffix.lower() in CODE_SUFFIXES or "scripts" in parts or "src" in parts:
+        facets.add("implementation_candidates")
+    if Path(relative).suffix.lower() in PACKAGE_SUFFIXES or any(term in lowered for term in ("release", "download", "installer", "artifact")):
+        facets.add("package_or_delivery_candidates")
+    return facets
+
+
+def build_system_accountability_audit(
+    root: Path,
+    file_records: list[dict[str, Any]],
+    product_registry: dict[str, Any] | None = None,
+    unavailable_sources: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
+    """Inventory shipping, product, variant, extension, and governance candidates without claiming completion."""
+    product_registry = product_registry or {}
+    unavailable_sources = sorted(unavailable_sources or [], key=lambda item: item.get("path", ""))
+    stage_records: dict[str, list[dict[str, Any]]] = {stage: [] for stage in DELIVERY_AUDIT_STAGES}
+    governance_records: dict[str, list[dict[str, Any]]] = {domain: [] for domain in GOVERNANCE_AUDIT_DOMAINS}
+    lion_paths: dict[str, dict[str, Any]] = {}
+    extension_paths: dict[str, dict[str, Any]] = {}
+    extension_types: dict[str, dict[str, Any]] = defaultdict(lambda: {"file_count": 0, "candidate_paths": []})
+    app_records: list[dict[str, Any]] = []
+    platform_records: list[dict[str, Any]] = []
+
+    for record in file_records:
+        relative = str(record.get("path", ""))
+        if not relative:
+            continue
+        path = root / relative
+        lowered_path = relative.lower()
+        suffix = path.suffix.lower() or "[no_extension]"
+        type_record = extension_types[suffix]
+        type_record["file_count"] += 1
+        if suffix in CODE_SUFFIXES | PACKAGE_SUFFIXES:
+            type_record["candidate_paths"].append(relative)
+        try:
+            text = path.read_bytes().decode("utf-8", errors="replace") if int(record.get("bytes", 0)) <= 1_000_000 else ""
+        except OSError:
+            text = ""
+        searchable = f"{relative}\n{text}"
+        facets = sorted(_file_facets(relative))
+        evidence = {
+            "path": relative,
+            "sha256": record.get("sha256"),
+            "scope": _scope_for_path(relative),
+            "facets": facets,
+        }
+
+        for stage, pattern in DELIVERY_AUDIT_STAGES.items():
+            if pattern.search(searchable):
+                stage_records[stage].append(evidence)
+        for domain, pattern in GOVERNANCE_AUDIT_DOMAINS.items():
+            if pattern.search(searchable):
+                governance_records[domain].append(evidence)
+
+        lion_matches = re.findall(r"(?i)\blion(?:[._ -][a-z0-9][a-z0-9._-]*)?", Path(relative).name)
+        if "lion" in lowered_path or lion_matches or re.search(r"(?i)\blion\b", text):
+            lion_paths[relative] = {
+                **evidence,
+                "variation_candidates": sorted({item.lower().replace("_", "-").replace(" ", "-") for item in lion_matches}),
+            }
+        if any(term in lowered_path for term in ("extension", "extensions", "plugin", "plugins", "addon", "add-on")) or re.search(r"(?i)\b(?:extension|plugin|add-on)\b", text):
+            extension_paths[relative] = evidence
+
+    def stage_summary(records: list[dict[str, Any]]) -> dict[str, Any]:
+        facet_counts: dict[str, int] = defaultdict(int)
+        scope_counts: dict[str, int] = defaultdict(int)
+        for record in records:
+            scope_counts[record["scope"]] += 1
+            for facet in record["facets"]:
+                facet_counts[facet] += 1
+        paths = sorted({record["path"] for record in records})
+        return {
+            "candidate_file_count": len(paths),
+            "scope_counts": dict(sorted(scope_counts.items())),
+            "facet_candidate_counts": dict(sorted(facet_counts.items())),
+            "candidate_paths": paths,
+            "status": "CANDIDATE_ONLY" if paths else "NO_CANDIDATES_FOUND",
+            "verification": "not_verified",
+            "coverage_complete": False,
+        }
+
+    for entity_id, metadata in sorted((product_registry.get("applications") or {}).items()):
+        terms = [entity_id, str(metadata.get("name", ""))]
+        matching = []
+        for record in file_records:
+            relative = str(record.get("path", ""))
+            if not relative:
+                continue
+            haystack = relative.lower()
+            aliases = [re.sub(r"[^a-z0-9]+", "", term.lower()) for term in terms if term]
+            normalized_path = re.sub(r"[^a-z0-9]+", "", haystack)
+            if any(alias and alias in normalized_path for alias in aliases):
+                matching.append(relative)
+        app_records.append({
+            "id": entity_id,
+            "name": str(metadata.get("name", entity_id)),
+            "category": str(metadata.get("category", "unknown")),
+            "candidate_file_count": len(matching),
+            "candidate_paths": sorted(matching),
+            "implementation_status": "not_verified",
+            "release_status": "not_verified",
+        })
+
+    for platform in sorted(set(str(item) for item in product_registry.get("platforms", []))):
+        matches = sorted({
+            str(record.get("path", ""))
+            for record in file_records
+            if platform.lower() in str(record.get("path", "")).lower().split("/")
+            or re.search(rf"(?i)(?<![a-z0-9]){re.escape(platform)}(?![a-z0-9])", str(record.get("path", "")))
+        })
+        platform_records.append({
+            "id": platform,
+            "candidate_file_count": len(matches),
+            "candidate_paths": matches,
+            "compatibility_status": "not_verified",
+            "release_status": "not_verified",
+        })
+
+    delivery = {stage: stage_summary(records) for stage, records in sorted(stage_records.items())}
+    governance = {domain: stage_summary(records) for domain, records in sorted(governance_records.items())}
+    extension_type_summary = {
+        suffix: {**values, "candidate_paths": sorted(values["candidate_paths"])}
+        for suffix, values in sorted(extension_types.items())
+    }
+    registered_extensions = [
+        {"id": str(item), "coverage_status": "mapping_required", "source_paths": []}
+        for item in sorted(set(str(value) for value in product_registry.get("extensions", [])))
+    ]
+    requirement_counts = {
+        "applications": len(app_records),
+        "platforms": len(platform_records),
+        "registered_extension_features": len(registered_extensions),
+        "release_delivery_stages": len(DELIVERY_AUDIT_STAGES),
+        "governance_domains": len(GOVERNANCE_AUDIT_DOMAINS),
+    }
+    expected_requirement_count = sum(requirement_counts.values())
+    accountability_blockers = [
+        "No canonical Lion-variation registry is configured; discovered paths are candidates only.",
+        "No requirement-to-owner/source/test/workflow mapping is supplied to this local scanner.",
+        "Remote releases, tags, artifacts, download URLs, and deployment state were not queried.",
+    ]
+    if not product_registry.get("applications"):
+        accountability_blockers.append("Application registry is unavailable; registered application denominator is unknown.")
+    if not product_registry.get("platforms"):
+        accountability_blockers.append("Platform registry is unavailable; registered platform denominator is unknown.")
+    if not product_registry.get("extensions"):
+        accountability_blockers.append("Extension registry is unavailable; registered extension denominator is unknown.")
+    if unavailable_sources:
+        accountability_blockers.append("One or more local files/directories were skipped or unavailable during discovery.")
+    canonical_manifest = {
+        "applications": app_records,
+        "platforms": platform_records,
+        "lion_variation_candidates": sorted(lion_paths.values(), key=lambda item: item["path"]),
+        "extension_candidate_paths": sorted(extension_paths.values(), key=lambda item: item["path"]),
+        "extension_file_types": extension_type_summary,
+        "registered_extensions": registered_extensions,
+        "delivery_stages": delivery,
+        "governance_domains": governance,
+        "unavailable_sources": unavailable_sources,
+    }
+    manifest_sha256 = hashlib.sha256(
+        json.dumps(canonical_manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return {
+        "status": "NEEDS_REVIEW",
+        "source_scope": "materialized_local_and_marked_snapshots",
+        "remote_verification_complete": False,
+        "registered_application_count": len(app_records),
+        "registered_platform_count": len(platform_records),
+        "requirement_counts": requirement_counts,
+        "expected_requirement_count": expected_requirement_count,
+        "mapped_requirement_count": 0,
+        "unmapped_requirement_count": expected_requirement_count,
+        "applications": app_records,
+        "platforms": platform_records,
+        "lion_variation_candidate_count": len(lion_paths),
+        "lion_variation_candidates": sorted(lion_paths.values(), key=lambda item: item["path"]),
+        "extension_candidate_count": len(extension_paths),
+        "extension_candidates": sorted(extension_paths.values(), key=lambda item: item["path"]),
+        "extension_file_types": extension_type_summary,
+        "registered_extension_count": len(registered_extensions),
+        "registered_extensions": registered_extensions,
+        "delivery_stages": delivery,
+        "governance_domains": governance,
+        "source_manifest_sha256": manifest_sha256,
+        "unavailable_sources": unavailable_sources,
+        "blockers": accountability_blockers,
+        "coverage_complete": False,
+        "limitations": [
+            "Path or text matches are candidates, not proof of implementation, ownership, release, installability, or deployment.",
+            "No remote refs, releases, tags, artifacts, download endpoints, deployments, or peer repository settings are verified by this local scan.",
+            "Each candidate must map to an owner, source, tests, workflow, and exact-SHA evidence; missing facets remain unmapped.",
+            "Oversized, unreadable, binary, excluded, or unfetched material remains a coverage limitation and cannot be counted as complete.",
+        ],
+    }
+
+
+def build_qaudit_universe(
+    root: Path | str,
+    product_registry: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Create a source-scoped inventory and dependency graph for all audited systems."""
     source_root = Path(root).resolve()
     files: list[dict[str, Any]] = []
@@ -316,6 +554,12 @@ def build_qaudit_universe(root: Path | str) -> dict[str, Any]:
                 if not record["dependencies"] and not record["consumers"]
             ),
         },
+        "accountability": build_system_accountability_audit(
+            source_root,
+            files,
+            product_registry=product_registry,
+            unavailable_sources=skipped,
+        ),
         "evidence": {
             "source_scope": "materialized_local",
             "remote_verification_complete": False,

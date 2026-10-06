@@ -24,6 +24,10 @@ class QVersionManager:
         "EXTERNAL_RESEARCH",
         "REPOSITORY_SURFACE_AUDIT",
         "OLLAMA_FULL_COVERAGE_AUDIT",
+        "PRODUCT_PLATFORM_CATALOG",
+        "LION_AND_EXTENSION_VARIANTS",
+        "RELEASE_DELIVERY_LIFECYCLE",
+        "QTEAM_ACCOUNTABILITY",
         "MARKDOWN_SOURCE_INDEX",
         "UI_TEST_HOOK_COVERAGE",
         "MERGE_PLAN",
@@ -622,6 +626,29 @@ class QVersionManager:
             raise RuntimeError(f"Instruction inventory is incomplete or unsafe for {target}")
         return instruction_inventory
 
+    @classmethod
+    def validate_accountability_stage(cls, stage_name: str, stage_record: dict[str, Any]) -> None:
+        """Require candidates to be mapped and independently verified before Q finalization."""
+        required_stages = {
+            "PRODUCT_PLATFORM_CATALOG",
+            "LION_AND_EXTENSION_VARIANTS",
+            "RELEASE_DELIVERY_LIFECYCLE",
+            "QTEAM_ACCOUNTABILITY",
+        }
+        if stage_name not in required_stages:
+            raise ValueError(f"Not an accountability lifecycle stage: {stage_name}")
+        details = stage_record.get("details", {})
+        if (
+            stage_record.get("stage_status") != "PASS"
+            or details.get("status") != "PASS"
+            or details.get("coverage_complete") is not True
+            or details.get("remote_verified") is not True
+            or details.get("unmapped_requirement_count") != 0
+            or details.get("unavailable_sources") != []
+            or not re.fullmatch(r"[0-9a-f]{64}", str(details.get("source_manifest_sha256", "")))
+        ):
+            raise RuntimeError(f"Q-version metrics require complete {stage_name} evidence")
+
     def write_final_metrics(
         self,
         version: str,
@@ -671,6 +698,14 @@ class QVersionManager:
             or surface_stage_details.get("unavailable_sources") != []
         ):
             raise RuntimeError("Q-version metrics require a complete repository-surface audit lifecycle stage")
+        accountability_stages = (
+            "PRODUCT_PLATFORM_CATALOG",
+            "LION_AND_EXTENSION_VARIANTS",
+            "RELEASE_DELIVERY_LIFECYCLE",
+            "QTEAM_ACCOUNTABILITY",
+        )
+        for stage_name in accountability_stages:
+            self.validate_accountability_stage(stage_name, stage_records.get(stage_name, {}))
         instruction_stage = stage_records.get("INSTRUCTION_INVENTORY", {})
         instruction_stage_repositories = instruction_stage.get("details", {}).get("repositories", {})
         if (

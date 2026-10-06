@@ -149,15 +149,18 @@ Actions/contents/pull-request API checks without printing token values.
 
 The owner reports that `QMOI Dual Repository Agent` is installed on both
 `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`. This is a reported
-installation, not proof of current App authentication. The current Codespace
-has no App credential directory, App ID, private key, JWT, or installation
-token; its configured GitHub CLI token fails with HTTP 401.
+installation, not proof of current App authentication. The latest name-only
+Codespace check found QMOI App ID, Client ID, and private-key variables present,
+but did not read or validate their values; installation ID is absent and the
+configured GitHub CLI token fails with HTTP 401.
 
 For GitHub-hosted automation, configure `APP_CLIENT_ID` as an Actions variable
-and a newly rotated `APP_PRIVATE_KEY` as an Actions secret in **each** target
-repository. In target-owned workflows, mint a short-lived installation token
-with `actions/create-github-app-token@v3`, limited to the required repository
-and permissions. Use separate repository-restricted Codespaces secrets only if
+and `APP_PRIVATE_KEY` as an Actions secret, or use the `QMOI_GITHUB_CLIENT_ID`,
+`QMOI_GITHUB_APP_ID`, and `QMOI_GITHUB_PRIVATE_KEY` aliases supported by the
+local preflight in the Actions secret store. In target-owned workflows, mint a
+short-lived installation token with `actions/create-github-app-token@v3`,
+limited to the required repository and permissions. Use separate
+repository-restricted Codespaces secrets only if
 interactive Codespace execution is necessary; Actions secrets and Codespaces
 secrets are separate stores. Never put a private key or PAT in source, shell
 command text, repository files, logs, or artifacts. Validate App identity,

@@ -25,11 +25,12 @@ jobs:
         id: app-config
         shell: bash
         env:
-          APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID }}
-          APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+          APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID || secrets.QMOI_GITHUB_CLIENT_ID }}
+          APP_ID: ${{ secrets.QMOI_GITHUB_APP_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY || secrets.QMOI_GITHUB_PRIVATE_KEY }}
         run: |
           set -Eeuo pipefail
-          if [[ -n "${APP_CLIENT_ID:-}" && -n "${APP_PRIVATE_KEY:-}" ]]; then
+          if [[ -n "${APP_CLIENT_ID:-}" || -n "${APP_ID:-}" ]] && [[ -n "${APP_PRIVATE_KEY:-}" ]]; then
             echo "use_app=true" >> "${GITHUB_OUTPUT}"
           else
             echo "use_app=false" >> "${GITHUB_OUTPUT}"
@@ -40,8 +41,9 @@ jobs:
         if: ${{ steps.app-config.outputs.use_app == 'true' }}
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ vars.APP_CLIENT_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          client-id: ${{ vars.APP_CLIENT_ID || secrets.QMOI_GITHUB_CLIENT_ID }}
+          app-id: ${{ secrets.QMOI_GITHUB_APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY || secrets.QMOI_GITHUB_PRIVATE_KEY }}
           owner: thealphakenya
           repositories: |
             Alpha-Q-ai
