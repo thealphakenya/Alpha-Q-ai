@@ -1,5 +1,11 @@
 # Q Audits
 
+## Styles/universals audit gate and transition awareness
+
+The QAUDITS layer must perform a full step-level audit before any style, universal, release, or Q-version action advances. The required gate includes app/platform coverage, access-mode classification, UI styling and token coverage, universal capability mapping, test and hook coverage, release/build/install/download/deploy evidence, QAUDITS category membership from [ALLMDFILESREFS.md](ALLMDFILESREFS.md), and exact-SHA validation. A discovered candidate is never treated as implemented or replaced without a verified lineage record.
+
+The transition plan is documented in [TRANSION.md](TRANSION.md). This plan includes the same naming crosswalk, directory/file inventory, source/destination lineage, and metrics model used by QAUDITS and the style/universal layer so that no file, directory, or category is silently omitted.
+
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 

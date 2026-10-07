@@ -2728,6 +2728,14 @@ Correlation ID: `fe03016d-3efd-4e8f-9bc4-c4b20ae77406`; repository `thealphakeny
 - Pre-edit instruction inventory continued: `security.instructions.md` scope security/credentials, 779 bytes, SHA-256 `d97d3d3a2134f003843ce4f61a98747f496553761357d097160fc3c1bbb6373e`; `workflows.instructions.md` scope GitHub Actions, 920 bytes, SHA-256 `62be66b9b50662b6a85749787ff78da8269365b70105666bbe33db7852669e83`; `workspace.instructions.md` scope workspace/evidence, 986 bytes, SHA-256 `aed577a0781cedd1722585123b777cfd9b40ccfeea0135aa8db4d51390d62566`.
 - Local status only: policy guidance now requires future continuations to read the canonical App/credential/evidence documents, preserve newest user edits, and not claim unavailable cross-session memory. No remote authentication, write, merge, release, deployment, or credential rotation occurred. Result: `LOCAL_TESTS_PASS_REMOTE_APP_AUTH_BLOCKED`.
 
+## Styles/universals transition baseline — 2026-10-06T23:56:00Z
+Correlation ID: `d0a32ee1-e084-4e47-a0bb-372f25d1757c`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; base HEAD `9c5b5b0172c379aa145a9f262f4296db91e4f5c4`.
+
+- Added the requested transition planning artifact at [TRANSION.md](TRANSION.md). It contains the canonical style/universal replacement catalog, the naming crosswalk contract, and a 14-item migration and automation plan with metrics placeholders and fail-closed rules.
+- Updated the canonical style/universal family to call out the transition crosswalk and to require verified replacement lineage before any candidate is described as replaced. Included references to [QAUDITS.md](QAUDITS.md), [QVERSIONMANAGER.md](QVERSIONMANAGER.md), [ALLMDFILESREFS.md](ALLMDFILESREFS.md), and [TRANSION.md](TRANSION.md) in [STYLES.md](STYLES.md), [UNIVERSAL.md](UNIVERSAL.md), and [UNIVERSALS.md](UNIVERSALS.md).
+- The code and QAUDITS layer still require a regenerated candidate tree and replacement inventory before exact per-file counts can be claimed. The crosswalk and transition plan intentionally remain local-only, unresolved, and fail-closed until that evidence exists.
+- No remote completion claim is made. The current status remains `LOCAL_AUDIT_TRANSITION_BASELINE_PENDING_REMOTE_AND_REPLACEMENT_EVIDENCE_BLOCKED`.
+
 ## QAUDITS styles/universals pause checkpoint — 2026-10-06T23:13:09Z
 Correlation ID: `940c9b75-a2f4-4e86-9446-aba86b4b1467`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; base HEAD `9c5b5b0172c379aa145a9f262f4296db91e4f5c4`.
 

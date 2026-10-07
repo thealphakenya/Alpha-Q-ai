@@ -4,6 +4,12 @@
 **Status:** Complete Platform Styling Reference
 **Scope:** Styling rules for 4 apps × 6 platforms
 
+## Styles/universals transition lineage and coverage notice
+
+This document is the canonical style surface for the active repository and must remain synchronized with [UNIVERSALS.md](UNIVERSALS.md), [UNIVERSAL.md](UNIVERSAL.md), [QAUDITS.md](QAUDITS.md), [QVERSIONMANAGER.md](QVERSIONMANAGER.md), [ALLMDFILESREFS.md](ALLMDFILESREFS.md), and [TRANSION.md](TRANSION.md). Any file or directory that is identified as a style/universal replacement candidate must be tracked in the candidate lineage inventory and must not be described as replaced unless it has a verified source/destination record, a reviewed test/hook mapping, owner/authorization evidence, and exact SHA proof.
+
+Candidate-style and universal-policy coverage includes the current canonical docs, generated QAUDITS surfaces, policy files, app and platform registries, and the historical archive. The working transition plan records the same names, directories, hashes, and status model used by QAUDITS so that no naming-only match is treated as an implementation or migration result.
+
 ## Autonomous UI Feature Contract
 
 The Ollama autonomous agent must consult this document before creating or

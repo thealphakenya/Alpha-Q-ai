@@ -6,6 +6,12 @@
 
 A final version is written only by `write_final_metrics()` after the caller supplies terminal target-owned workflow success, independently verified exact SHAs for both target repositories, passed checks, clean local trees matching those SHAs, a workflow run ID, and a correlation ID. The manager checks those inputs and records them; it does not authenticate to GitHub or independently verify a caller-supplied claim. The target workflow remains responsible for producing trusted evidence.
 
+## Styles and universals Q-version gate integration
+
+The Q-version lifecycle must know when to run the style and universal evaluation. This includes a pre-scan QAUDITS pass, the repository surface audit and OFCA checkpoint, the app/platform registry and extension catalog, then the style/universal candidate path tree, then the release/build/install/download/deploy review, then final validation. The lifecycle must only advance after each step has a complete inventory, source paths, test/hook mapping, owner/review state, and remote evidence or an explicit blocker.
+
+The styles and universals gate is tied to the same crosswalk used by [QAUDITS.md](QAUDITS.md), [ALLMDFILESREFS.md](ALLMDFILESREFS.md), [TRANSION.md](TRANSION.md), and the active candidate inventory. Candidate counts may be discovered locally, but they are not considered replacements until a verified lineage record exists and the exact repository/ref/SHA is supplied.
+
 ## Canonical autonomous lifecycle
 
 The Q-version lifecycle is the contract for the fully autonomous Ollama agent. These are the required stage names and the order they must be recorded in:

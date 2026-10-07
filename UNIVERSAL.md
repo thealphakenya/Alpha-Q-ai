@@ -1,5 +1,11 @@
 # UNIVERSAL.md
 
+## Styles/universals transition and replacement lineage
+
+The universal layer must remain aligned with [STYLES.md](STYLES.md), [UNIVERSALS.md](UNIVERSALS.md), [QAUDITS.md](QAUDITS.md), [QVERSIONMANAGER.md](QVERSIONMANAGER.md), [ALLMDFILESREFS.md](ALLMDFILESREFS.md), and [TRANSION.md](TRANSION.md). Every style or universal file/directory candidate, including those that match the same basename as a legacy or generated doc, must be tracked as `candidate`, `review_required`, `verified_replacement`, or `remote_verified` instead of silently counted as replaced.
+
+This document intentionally names the canonical policy and registry family that the transition covers: `STYLES.md`, `UNIVERSAL.md`, `UNIVERSALS.md`, `QAUDITS.md`, `QVERSIONMANAGER.md`, `ALLMDFILESREFS.md`, `ALLAUTO.md`, `AUTODEV.md`, `OFCA.md`, `ALLTESTSAUTOTESTS.md`, `ALLHOOKSWEBHOOKS.md`, and the app/platform/link registries. The transition plan documents how these files and directories are reviewed, counted, and advanced without ignoring any category or source path.
+
 <!-- BEGIN QMOI MANAGED: universal-ui-access-contract -->
 ## Universal UI access modes and per-user feature creation
 

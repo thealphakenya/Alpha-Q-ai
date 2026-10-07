@@ -1,5 +1,11 @@
 # Autonomous Universal and Authentication Contract
 
+## Styles/universals transition and candidate inventory note
+
+The universal contract must remain synchronized with [STYLES.md](STYLES.md), [UNIVERSAL.md](UNIVERSAL.md), [QAUDITS.md](QAUDITS.md), [QVERSIONMANAGER.md](QVERSIONMANAGER.md), [ALLMDFILESREFS.md](ALLMDFILESREFS.md), and [TRANSION.md](TRANSION.md). Every file or directory that is identified as a universal or style replacement candidate must be listed with a status of `candidate`, `review_required`, `verified_replacement`, or `remote_verified`; this prevents a basename-only match from being treated as a real replacement.
+
+The transition covers the canonical family of universal and style policy docs, QAUDITS and automation docs, app/platform registries, historical archive references, and the production and Q-version lifecycle records. It records the exact same crosswalk model that `ALLMDFILESREFS.md` and QAUDITS use so that style, universal, test, hook, release, Q-team, and documentation categories are all visible and auditable.
+
 The Ollama autonomous agent must consult this document before creating or
 changing authentication, login, identity, permissions, security, device,
 protected-data, or cross-platform behavior. Such features must reuse the
