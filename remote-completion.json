@@ -48,9 +48,11 @@
     "The requested chattracks.md instructions are unavailable in the checkout, accessible workspace trees, and locally available refs.",
     "The requested historical CREDENTIALS_ROTATION_PLAYBOOK.md is unavailable in the local materialization and queried remote QMOI main tree; new canonical playbook parity is unverified.",
     "Untracked atoz.md contains unverified financial/account/credential-like details and is excluded from publication pending review and redaction.",
+    "actions_side_rotated_app_key_configuration_unverified",
     "branch_protection_and_rulesets_unverified",
     "configured_interpreter_and_cryptography_pytest_availability_not_reverified_in_this_turn",
     "configured_interpreter_missing_pytest_and_cryptography_at_last_check; package_install_attempt_interrupted_or_unconfirmed",
+    "default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app",
     "final_surface_and_sentence_audits_stale_after_current_QSeed_and_priority_queue_edits",
     "finance_inventory_checkpoint_written_after_prior_command_interruption",
     "finance_inventory_is_keyword_candidate_discovery_only",
@@ -61,6 +63,7 @@
     "github_cli_authentication_unavailable",
     "known_model_review_sensitive_filename_regression_requires_fix_and_focused_retest",
     "managed_document_and_sentence_audit_artifacts_may_be_stale_after_local_changes",
+    "no_approved_local_app_token_mint_path_for_push",
     "priority_queue_and_model_review_integration_not_fully_validated",
     "qaudit_model_review_targeted_tests:8_passed_1_failed_due_sensitive_filename_fixture_reaching_unavailable_loopback_service",
     "qseed_and_priority_queue_changes_are_uncommitted_and_not_fully_validated",
@@ -83,24 +86,31 @@
     "unreadable_files:27",
     "worktree_dirty_or_status_unavailable"
   ],
-  "correlation_id": "7f250db7-0e88-4980-9523-fdb277d3cdcd",
+  "correlation_id": "54ee2b0b-fac1-4346-bdbe-483ca51fd80c",
   "current_local_checkpoint": {
-    "artifact_bytes": 471375871,
-    "artifact_path": "ollamatracks/repository_surface_audit.json",
+    "artifact_bytes": null,
+    "artifact_path": null,
     "artifact_refs": {
-      "lfs_object_oid": "7339f8853594796527634e0472b23d977d7d2efb1e05bc50bd7c27ef2cb067bd",
-      "local_commit": "be594365c6f461c5f5d69efca728f51f164db308",
-      "observed_remote_branch_sha": "c5ed64110cb5e7cbd4e55b3d87126e696717cca4"
+      "installation_scope": "user-reported: thealphakenya/Alpha-Q-ai; thealphakenya/qmoi-enhanced",
+      "observed_push_target_sha": "c5ed64110cb5e7cbd4e55b3d87126e696717cca4",
+      "owner_confirmation": "conversation:2026-10-07T05:55Z; old key revoked; current Codespace value is replacement",
+      "preflight_conclusion": "success; not GitHub App authentication evidence",
+      "preflight_credential_role": "MY_CUSTOM_TOKEN_or_github.token",
+      "preflight_job_id": "112432513007",
+      "preflight_source_sha": "bf605dd3b1b0f835d06d4c1800598a56a1142dd4",
+      "preflight_workflow_run_id": "37511208328"
     },
-    "artifact_sha256": "7339f8853594796527634e0472b23d977d7d2efb1e05bc50bd7c27ef2cb067bd",
+    "artifact_sha256": null,
     "blockers": [
+      "actions_side_rotated_app_key_configuration_unverified",
       "branch_protection_and_rulesets_unverified",
+      "default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app",
       "github_cli_authentication_unavailable",
-      "remote_lfs_quota_unverified",
+      "no_approved_local_app_token_mint_path_for_push",
       "target_owned_terminal_remote_sha_proof_unavailable"
     ],
-    "correlation_id": "7f250db7-0e88-4980-9523-fdb277d3cdcd",
-    "generated_at": "2026-10-07T05:49:28.043605Z",
+    "correlation_id": "54ee2b0b-fac1-4346-bdbe-483ca51fd80c",
+    "generated_at": "2026-10-07T05:58:15.861671Z",
     "instruction_inventory": [
       {
         "bytes": 6761,
@@ -160,19 +170,27 @@
       }
     ],
     "instruction_inventory_sha256": "f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766",
-    "local_head_sha": "be594365c6f461c5f5d69efca728f51f164db308",
-    "local_tree_sha": "76777c58a1c2b9c71f9169db5b1a05a650e6e354",
+    "local_head_sha": "28b9206cd94791e274045ad83990df3ede65fa55",
+    "local_tree_sha": "e3ee13f11c6ea85adb6786a77f08fdae038986a4",
     "metrics": {
-      "files_committed": 2037,
-      "lfs_object_fsck": "passed",
-      "local_commits_ahead": 1,
-      "remote_push_attempted": false
+      "app_identity_verified": false,
+      "app_token_minted": false,
+      "app_variable_values_read": false,
+      "app_variables_present": [
+        "QMOI_GITHUB_APP_ID",
+        "QMOI_GITHUB_CLIENT_ID",
+        "QMOI_GITHUB_PRIVATE_KEY"
+      ],
+      "remote_mutation_attempted": false,
+      "remote_preflight_run_terminal_success": true,
+      "remote_preflight_used_app": false,
+      "user_reported_installation_repositories": 2
     },
-    "next_action": "Authenticate to GitHub; verify authenticated identity, target branch protection and LFS availability; then run the installed pre-push hook, push this exact commit, and independently verify the remote ref.",
-    "operation": "push_codespace_branch",
+    "next_action": "Configure the owner-confirmed rotated App key in GitHub Actions secrets for the approved App-enabled preflight, run it on the target ref, and verify terminal App identity/access plus applicable branch rules; then push through an authorized path. Alternatively authenticate gh and verify identity/policy first.",
+    "operation": "github_app_rotation_and_auth_preflight",
     "paired_document_sha256": {
-      "oe2.txt": "f8b3890744859ece455a909eab28bdb75f1f7faa77f74c2a5958885d247a7a7b",
-      "remotecompletion.md": "3da46e313028776aaa138b38886c7b7e3bec1a76637faa4a3e7877a6de0dd9ec"
+      "oe2.txt": "294ee0770a641169f892d8b96f86340d249d939b85b1b339a1f0b28160a32a47",
+      "remotecompletion.md": "1707fda924c17990ff161397974658d0183392751f53eda37c24da1711b78dc8"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -180,7 +198,7 @@
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
     "source_manifest_sha256": null,
-    "status": "PUSH_PREPARED_AUTHORIZATION_BLOCKED",
+    "status": "OWNER_CONFIRMED_ROTATION_REMOTE_APP_AUTH_BLOCKED",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": false
   },
@@ -197,7 +215,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-07T05:49:28.043605Z",
+  "generated_at": "2026-10-07T05:58:15.861671Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -528,22 +546,29 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 471375871,
-      "artifact_path": "ollamatracks/repository_surface_audit.json",
+      "artifact_bytes": null,
+      "artifact_path": null,
       "artifact_refs": {
-        "lfs_object_oid": "7339f8853594796527634e0472b23d977d7d2efb1e05bc50bd7c27ef2cb067bd",
-        "local_commit": "be594365c6f461c5f5d69efca728f51f164db308",
-        "observed_remote_branch_sha": "c5ed64110cb5e7cbd4e55b3d87126e696717cca4"
+        "installation_scope": "user-reported: thealphakenya/Alpha-Q-ai; thealphakenya/qmoi-enhanced",
+        "observed_push_target_sha": "c5ed64110cb5e7cbd4e55b3d87126e696717cca4",
+        "owner_confirmation": "conversation:2026-10-07T05:55Z; old key revoked; current Codespace value is replacement",
+        "preflight_conclusion": "success; not GitHub App authentication evidence",
+        "preflight_credential_role": "MY_CUSTOM_TOKEN_or_github.token",
+        "preflight_job_id": "112432513007",
+        "preflight_source_sha": "bf605dd3b1b0f835d06d4c1800598a56a1142dd4",
+        "preflight_workflow_run_id": "37511208328"
       },
-      "artifact_sha256": "7339f8853594796527634e0472b23d977d7d2efb1e05bc50bd7c27ef2cb067bd",
+      "artifact_sha256": null,
       "blockers": [
+        "actions_side_rotated_app_key_configuration_unverified",
         "branch_protection_and_rulesets_unverified",
+        "default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app",
         "github_cli_authentication_unavailable",
-        "remote_lfs_quota_unverified",
+        "no_approved_local_app_token_mint_path_for_push",
         "target_owned_terminal_remote_sha_proof_unavailable"
       ],
-      "correlation_id": "7f250db7-0e88-4980-9523-fdb277d3cdcd",
-      "generated_at": "2026-10-07T05:49:28.043605Z",
+      "correlation_id": "54ee2b0b-fac1-4346-bdbe-483ca51fd80c",
+      "generated_at": "2026-10-07T05:58:15.861671Z",
       "instruction_inventory": [
         {
           "bytes": 6761,
@@ -603,19 +628,27 @@
         }
       ],
       "instruction_inventory_sha256": "f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766",
-      "local_head_sha": "be594365c6f461c5f5d69efca728f51f164db308",
-      "local_tree_sha": "76777c58a1c2b9c71f9169db5b1a05a650e6e354",
+      "local_head_sha": "28b9206cd94791e274045ad83990df3ede65fa55",
+      "local_tree_sha": "e3ee13f11c6ea85adb6786a77f08fdae038986a4",
       "metrics": {
-        "files_committed": 2037,
-        "lfs_object_fsck": "passed",
-        "local_commits_ahead": 1,
-        "remote_push_attempted": false
+        "app_identity_verified": false,
+        "app_token_minted": false,
+        "app_variable_values_read": false,
+        "app_variables_present": [
+          "QMOI_GITHUB_APP_ID",
+          "QMOI_GITHUB_CLIENT_ID",
+          "QMOI_GITHUB_PRIVATE_KEY"
+        ],
+        "remote_mutation_attempted": false,
+        "remote_preflight_run_terminal_success": true,
+        "remote_preflight_used_app": false,
+        "user_reported_installation_repositories": 2
       },
-      "next_action": "Authenticate to GitHub; verify authenticated identity, target branch protection and LFS availability; then run the installed pre-push hook, push this exact commit, and independently verify the remote ref.",
-      "operation": "push_codespace_branch",
+      "next_action": "Configure the owner-confirmed rotated App key in GitHub Actions secrets for the approved App-enabled preflight, run it on the target ref, and verify terminal App identity/access plus applicable branch rules; then push through an authorized path. Alternatively authenticate gh and verify identity/policy first.",
+      "operation": "github_app_rotation_and_auth_preflight",
       "paired_document_sha256": {
-        "oe2.txt": "f8b3890744859ece455a909eab28bdb75f1f7faa77f74c2a5958885d247a7a7b",
-        "remotecompletion.md": "3da46e313028776aaa138b38886c7b7e3bec1a76637faa4a3e7877a6de0dd9ec"
+        "oe2.txt": "294ee0770a641169f892d8b96f86340d249d939b85b1b339a1f0b28160a32a47",
+        "remotecompletion.md": "1707fda924c17990ff161397974658d0183392751f53eda37c24da1711b78dc8"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -623,7 +656,7 @@
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
       "source_manifest_sha256": null,
-      "status": "PUSH_PREPARED_AUTHORIZATION_BLOCKED",
+      "status": "OWNER_CONFIRMED_ROTATION_REMOTE_APP_AUTH_BLOCKED",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": false
     },
@@ -699,7 +732,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "be594365c6f461c5f5d69efca728f51f164db308",
+    "local_head_sha": "28b9206cd94791e274045ad83990df3ede65fa55",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

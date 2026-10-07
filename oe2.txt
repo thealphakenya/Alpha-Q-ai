@@ -3089,3 +3089,16 @@ Correlation ID: `f9c77c4e-6b72-4c68-bcce-d7af60f6f7b7`; repository `thealphakeny
 - Remote verified: `False`; remote mutation performed: `False`.
 - Blockers: `["branch_protection_and_rulesets_unverified","github_cli_authentication_unavailable","remote_lfs_quota_unverified","target_owned_terminal_remote_sha_proof_unavailable"]`.
 - Next action: Authenticate to GitHub; verify authenticated identity, target branch protection and LFS availability; then run the installed pre-push hook, push this exact commit, and independently verify the remote ref.
+
+## Paired QAUDITS checkpoint — 2026-10-07T05:58:15.861671Z
+
+- Correlation ID: `54ee2b0b-fac1-4346-bdbe-483ca51fd80c`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `28b9206cd94791e274045ad83990df3ede65fa55`; local tree: `e3ee13f11c6ea85adb6786a77f08fdae038986a4`; dirty: `False`.
+- Operation: `github_app_rotation_and_auth_preflight`; status: `OWNER_CONFIRMED_ROTATION_REMOTE_APP_AUTH_BLOCKED`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{"installation_scope":"user-reported: thealphakenya/Alpha-Q-ai; thealphakenya/qmoi-enhanced","observed_push_target_sha":"c5ed64110cb5e7cbd4e55b3d87126e696717cca4","owner_confirmation":"conversation:2026-10-07T05:55Z; old key revoked; current Codespace value is replacement","preflight_conclusion":"success; not GitHub App authentication evidence","preflight_credential_role":"MY_CUSTOM_TOKEN_or_github.token","preflight_job_id":"112432513007","preflight_source_sha":"bf605dd3b1b0f835d06d4c1800598a56a1142dd4","preflight_workflow_run_id":"37511208328"}`.
+- Metrics: `{"app_identity_verified":false,"app_token_minted":false,"app_variable_values_read":false,"app_variables_present":["QMOI_GITHUB_APP_ID","QMOI_GITHUB_CLIENT_ID","QMOI_GITHUB_PRIVATE_KEY"],"remote_mutation_attempted":false,"remote_preflight_run_terminal_success":true,"remote_preflight_used_app":false,"user_reported_installation_repositories":2}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["actions_side_rotated_app_key_configuration_unverified","branch_protection_and_rulesets_unverified","default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app","github_cli_authentication_unavailable","no_approved_local_app_token_mint_path_for_push","target_owned_terminal_remote_sha_proof_unavailable"]`.
+- Next action: Configure the owner-confirmed rotated App key in GitHub Actions secrets for the approved App-enabled preflight, run it on the target ref, and verify terminal App identity/access plus applicable branch rules; then push through an authorized path. Alternatively authenticate gh and verify identity/policy first.
