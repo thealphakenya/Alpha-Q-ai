@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -63,7 +64,12 @@ def parse_workflows(repo: str) -> list[dict[str, Any]]:
     return payload if isinstance(payload, list) else []
 
 
-def parse_workflow_runs(repo: str, remote_sha: str | None = None, limit: int = 50) -> list[dict[str, Any]]:
+def parse_workflow_runs(
+    repo: str,
+    remote_sha: str | None = None,
+    limit: int = 50,
+    branch: str | None = None,
+) -> list[dict[str, Any]]:
     stdout, stderr, code = run_gh([
         "run",
         "list",
@@ -72,7 +78,7 @@ def parse_workflow_runs(repo: str, remote_sha: str | None = None, limit: int = 5
         "--limit",
         str(limit),
         "--json",
-        "name,headSha,conclusion,status,workflowName,createdAt,updatedAt,url,number",
+        "databaseId,name,headSha,headBranch,conclusion,status,workflowName,createdAt,updatedAt,url,number",
     ])
     if code != 0:
         return [{"name": "workflow-runs", "headSha": remote_sha, "conclusion": "unavailable", "status": "unavailable", "error": stderr or "workflow run list failed"}]
@@ -83,6 +89,8 @@ def parse_workflow_runs(repo: str, remote_sha: str | None = None, limit: int = 5
     runs = payload if isinstance(payload, list) else []
     if remote_sha:
         runs = [run for run in runs if str(run.get("headSha") or "") == str(remote_sha)]
+    if branch:
+        runs = [run for run in runs if str(run.get("headBranch") or "") == branch]
     return runs
 
 
@@ -103,6 +111,21 @@ def parse_remote_main_sha(repo: str, branch: str) -> str | None:
     return sha if sha else None
 
 
+def parse_remote_tree_sha(repo: str, commit_sha: str | None) -> str | None:
+    if not commit_sha:
+        return None
+    stdout, stderr, code = run_gh([
+        "api",
+        f"repos/{repo}/git/commits/{commit_sha}",
+        "--jq",
+        ".tree.sha",
+    ])
+    if code != 0:
+        return None
+    tree_sha = (stdout or "").strip()
+    return tree_sha if tree_sha else None
+
+
 def build_completion_status(
     repo: str,
     local_head: str,
@@ -111,15 +134,25 @@ def build_completion_status(
     branch_protection_status: str,
     workflows: list[dict[str, Any]] | None = None,
     workflow_runs: list[dict[str, Any]] | None = None,
+    remote_tree_sha: str | None = None,
+    default_branch: str = "main",
+    repository_identity_verified: bool = False,
 ) -> dict[str, Any]:
     workflows = workflows or []
     workflow_runs = workflow_runs or []
     remote_matches_local = bool(remote_main_sha and remote_main_sha == local_head)
-    exact_sha_successful_workflow = any(
-        str((run or {}).get("headSha") or "") == str(remote_main_sha or "")
-        and str((run or {}).get("conclusion") or "").lower() == "success"
-        for run in workflow_runs
-    )
+    matching_workflow_runs = [
+        run for run in workflow_runs
+        if isinstance(run, dict)
+        and str(run.get("headSha") or "") == str(remote_main_sha or "")
+        and str(run.get("headBranch") or "") == default_branch
+        and str(run.get("status") or "").lower() == "completed"
+        and str(run.get("conclusion") or "").lower() == "success"
+        and isinstance(run.get("databaseId"), int)
+        and not isinstance(run.get("databaseId"), bool)
+        and run["databaseId"] > 0
+    ]
+    exact_sha_successful_workflow = bool(matching_workflow_runs and repository_identity_verified)
     blockers: list[str] = []
     next_actions: list[str] = []
 
@@ -127,12 +160,27 @@ def build_completion_status(
         blockers.append("GitHub authentication is not verified; a live remote completion claim requires an authenticated terminal identity.")
         next_actions.append("Authenticate the target GitHub identity and verify the terminal session before any remote completion claim.")
 
+    if not repository_identity_verified:
+        blockers.append("The authenticated GitHub repository identity does not independently match the requested owner/repository.")
+        next_actions.append("Verify the exact owner/repository identity before accepting refs or workflow evidence.")
+
     if not remote_main_sha:
         blockers.append("The remote main SHA is unavailable; exact remote completion proof is missing.")
         next_actions.append("Query the live GitHub main SHA with the authenticated CLI and confirm the exact remote ref before continuing.")
+    elif not re.fullmatch(r"[0-9a-f]{40}", str(remote_main_sha)):
+        blockers.append("The remote ref response is not a valid full commit SHA.")
+        next_actions.append("Re-read the exact target ref and validate its complete commit SHA.")
     elif not remote_matches_local:
         blockers.append("remote main SHA does not match the local HEAD; local validation does not equal remote completion.")
         next_actions.append("Verify the exact remote SHA from a target-owned workflow and ensure the local checkout is aligned before claiming completion.")
+
+    if not re.fullmatch(r"[0-9a-f]{40}", str(remote_tree_sha or "")):
+        blockers.append("The exact remote commit tree SHA was not independently read back.")
+        next_actions.append("Read the remote commit's tree SHA and bind it to the terminal workflow and final ref evidence.")
+
+    if not re.fullmatch(r"[0-9a-f]{40}", str(local_head)):
+        blockers.append("The local HEAD is not a valid full commit SHA.")
+        next_actions.append("Read the local checkout's full HEAD SHA before comparing it with the remote ref.")
 
     if branch_protection_status != "verified":
         blockers.append("Branch protection and protected-write authority are not verified; mutation safety remains unproven.")
@@ -149,14 +197,30 @@ def build_completion_status(
     completion_status = "READY" if not blockers else "BLOCKED"
     return {
         "repo": repo,
+        "remote_ref": f"refs/heads/{default_branch}",
         "local_head": local_head,
         "remote_main_sha": remote_main_sha,
+        "remote_tree_sha": remote_tree_sha,
         "remote_matches_local": remote_matches_local,
         "auth_verified": auth_verified,
         "branch_protection_status": branch_protection_status,
         "workflows": workflows,
         "workflow_runs": workflow_runs,
         "exact_sha_successful_workflow": exact_sha_successful_workflow,
+        "exact_sha_workflow_runs": [
+            {
+                "workflow_run_id": run["databaseId"],
+                "workflow_name": run.get("workflowName") or run.get("name"),
+                "head_sha": run.get("headSha"),
+                "head_branch": run.get("headBranch"),
+                "tree_sha": remote_tree_sha,
+                "status": run.get("status"),
+                "conclusion": run.get("conclusion"),
+                "url": run.get("url"),
+            }
+            for run in matching_workflow_runs
+        ] if repository_identity_verified else [],
+        "repository_identity_verified": repository_identity_verified,
         "completion_status": completion_status,
         "blockers": blockers,
         "next_actions": next_actions,
@@ -169,7 +233,8 @@ def verify_live_github_state(repo: str, local_head: str, default_branch: str = "
     auth = parse_auth_status()
     workflows = parse_workflows(repo)
     remote_main_sha = parse_remote_main_sha(repo, default_branch)
-    workflow_runs = parse_workflow_runs(repo, remote_main_sha)
+    remote_tree_sha = parse_remote_tree_sha(repo, remote_main_sha)
+    workflow_runs = parse_workflow_runs(repo, remote_main_sha, branch=default_branch)
     branch_protection_status = parse_branch_protection(repo, default_branch)
     result = build_completion_status(
         repo=repo,
@@ -179,6 +244,12 @@ def verify_live_github_state(repo: str, local_head: str, default_branch: str = "
         branch_protection_status=branch_protection_status,
         workflows=workflows,
         workflow_runs=workflow_runs,
+        remote_tree_sha=remote_tree_sha,
+        default_branch=default_branch,
+        repository_identity_verified=(
+            repo_meta.get("status") == "verified"
+            and str(repo_meta.get("repo", "")).casefold() == repo.casefold()
+        ),
     )
     result["repo_metadata"] = repo_meta
     result["auth_status"] = auth
@@ -196,8 +267,9 @@ def main() -> int:
     if not args.local_head:
         try:
             args.local_head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL).strip()
-        except Exception:
-            args.local_head = ""
+        except (OSError, subprocess.CalledProcessError) as exc:
+            print(f"Failed to read local HEAD: {exc}", file=sys.stderr)
+            return 2
 
     result = verify_live_github_state(args.repo, args.local_head, args.branch)
     print(json.dumps(result, indent=2, sort_keys=True))

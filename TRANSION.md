@@ -63,6 +63,7 @@ The exact counts below are local discovery baselines and must be regenerated and
 - Feature IDs requiring test mapping: `pending`.
 - Hook/webhook reviews required: `pending`.
 - Remote-verified release/deploy/install evidence: `pending`.
+- Audit shard count, missing/overlapping shard count, scan duration, bytes hashed, metadata-only large-file count, read/hash failures, and retry count: reported per refresh, never inferred from percentages.
 
 ## Required transition enhancements
 
@@ -80,6 +81,14 @@ The exact counts below are local discovery baselines and must be regenerated and
 12. Add human and automation accountability tracking for QTeam/friendship/master ownership, role boundaries, and protected actions so no universal or style change bypasses authorization.
 13. Add an explicit orphan and duplicate rule: name-only matches must be listed as unresolved until the path and lineage are checked against the item’s canonical owner and target scope.
 14. Add continuity metrics for success/failure record counts, skipped sources, and unresolved features so the agent can safely resume without losing evidence.
+15. Use deterministic sorted path manifests, streamed SHA-256, bounded parallel batches, stable worker versions, and atomic artifact publication for large repositories; cap workers and in-flight batch memory.
+16. Preserve large-file path/size/hash metadata while explicitly marking content parsing unavailable; do not treat an unparsed large file as semantically audited.
+17. Partition remote refs, PRs, and intermediate commit trees into immutable, exactly bounded shards; verify shard completeness, overlap, source SHA, and merged manifest before gate advancement.
+18. Separate traversal, hash, structural Markdown, semantic mapping, test execution, hook review, and remote-verification durations/counts so one fast phase cannot disguise a missing phase.
+19. Add checkpointed bounded retry/timeout budgets, resumable work queues, cancellation-safe incomplete states, and risk-prioritized scheduling for high-impact/security gates.
+20. Apply content-addressed cache entries only when repo/ref/source SHA, schema/tool version, policy version, and expiry match; stale or ambiguous cache data triggers refresh.
+21. Expand finance/Qtrade audit mapping to require fresh source timestamps, units/currency, account/venue scope, costs, risk measures, no-trade decision quality, reconciliation, and explicit blocked states for unavailable values.
+22. Add audit determinism, large-file, symlink, unreadable-path, worker-failure, missing/duplicate-shard, cache-expiry, and resume-after-interruption regression cases.
 
 ## Transition execution plan
 
@@ -93,6 +102,9 @@ The exact counts below are local discovery baselines and must be regenerated and
 8. Run the target suite and record the exact result before marking a step complete.
 9. Re-read the branch- and repo-level evidence and update the local evidence artifacts after each step.
 10. Stop finalization unless the exact remote SHA, workflow evidence, and branch authorization are all recorded and independently verified.
+11. For large trees, shard only immutable inputs, persist shard checkpoints, validate every expected range, and merge sorted records into a root manifest; rescan changed prefixes only for local diagnostics, then regenerate the full final digest before any gate.
+12. Schedule independent read-only work concurrently, but serialize checkpoint cursor updates, lifecycle-ledger appends, protected writes, merge operations, and publication.
+13. Stop boundedly on exhausted retries, resource limits, inaccessible inputs, ambiguous HTTP responses, or human-authorization gates; retain partial outputs and a ranked resumable queue.
 
 ## Required documentation references
 
@@ -114,7 +126,29 @@ This transition plan must remain consistent with:
 - [MERGE.md](MERGE.md)
 - [production.md](production.md)
 - [productionenhanced.md](productionenhanced.md)
+- [undoredo.md](undoredo.md)
 
 ## Final governance note
 
 This plan intentionally keeps replacement discovery fail-closed: the system can count, review, and document candidates, but it must not convert them into replacements without verified metadata, test coverage, policy alignment, and exact-SHA evidence. Local generation and historical scan results remain advisory until a target-owned workflow proves the exact remote state.
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
+- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
+- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
+- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

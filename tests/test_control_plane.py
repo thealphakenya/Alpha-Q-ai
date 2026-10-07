@@ -1,5 +1,6 @@
-import json
+import gzip
 import hashlib
+import json
 import subprocess
 from pathlib import Path
 
@@ -14,17 +15,23 @@ from scripts.autonomous_completion_engine import (
 from scripts.checkpoint_manager import CheckpointManager
 from scripts.execution_lock import ExecutionLock
 from scripts.live_activity_events import LiveActivity
+from scripts.qaudit_checkpoint import record_qaudit_checkpoint
 from scripts.q_version_manager import QVersionManager
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
     INTERNAL_RESEARCH_CONTROLS,
+    _markdown_sentence_evidence,
     audit_repository_surfaces,
     build_internal_research_plan,
     discover_resource_candidates,
     fetch_official_resource,
     record_research_visit,
+    write_markdown_sentence_audit,
 )
-from scripts.ollama_autonomous_agent import sanitize_repo_ollama_mentions
+from scripts.ollama_autonomous_agent import (
+    OllamaAutonomousAgent,
+    sanitize_repo_ollama_mentions,
+)
 from scripts.sync_contract import build_sync_contract
 from scripts.control_plane_supervisor import ControlPlaneSupervisor
 from scripts.repository_contract_audit import audit_repository_contract
@@ -81,7 +88,84 @@ def q_version_production_readiness() -> dict[str, object]:
     }
 
 
-def q_version_ollama_reference_audit(shas: list[str]) -> dict[str, object]:
+def qaudit_precondition(stage: str, manifest: str = "a" * 64) -> dict[str, object]:
+    return {
+        "stage": stage,
+        "status": "PASS",
+        "source_manifest_sha256": manifest,
+        "required_metrics_complete": True,
+        "required_metrics": [{
+            "name": "required-evidence-coverage",
+            "numerator": 1,
+            "denominator": 1,
+            "formula": "validated_required_items / required_items",
+            "status": "PASS",
+            "source_manifest_sha256": manifest,
+        }],
+        "source_scope": "target_remote_exact_sha",
+        "blockers": [],
+    }
+
+
+def terminal_remote_sha_binding(
+    repository: str,
+    sha: str,
+    run_id: str,
+    tree_sha: str = "c" * 40,
+) -> dict[str, object]:
+    return {
+        "repository": repository,
+        "repository_identity_verified": True,
+        "remote_verified": True,
+        "remote_ref": "refs/heads/main",
+        "remote_ref_sha": sha,
+        "workflow_head_sha": sha,
+        "remote_tree_sha": tree_sha,
+        "workflow_tree_sha": tree_sha,
+        "run_status": "completed",
+        "terminal_conclusion": "success",
+        "workflow_run_id": run_id,
+    }
+
+
+def git_tree_sha(root: Path, commit_sha: str) -> str:
+    return subprocess.run(
+        ["git", "-C", str(root), "rev-parse", f"{commit_sha}^{{tree}}"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+
+def q_version_live_github_verifier(sha: str) -> dict[str, object]:
+    tree_sha = "c" * 40
+    return {
+        "completion_status": "READY",
+        "auth_verified": True,
+        "branch_protection_status": "verified",
+        "remote_matches_local": True,
+        "exact_sha_successful_workflow": True,
+        "repository_identity_verified": True,
+        "repo": "thealphakenya/Alpha-Q-ai",
+        "remote_ref": "refs/heads/main",
+        "local_head": sha,
+        "remote_main_sha": sha,
+        "remote_tree_sha": tree_sha,
+        "exact_sha_workflow_runs": [{
+            "workflow_run_id": 12345,
+            "head_sha": sha,
+            "head_branch": "main",
+            "tree_sha": tree_sha,
+            "status": "completed",
+            "conclusion": "success",
+        }],
+    }
+
+
+def q_version_ollama_reference_audit(
+    shas: list[str],
+    tree_shas: list[str] | None = None,
+) -> dict[str, object]:
     return {
         "status": "PASS",
         "coverage_complete": True,
@@ -90,24 +174,30 @@ def q_version_ollama_reference_audit(shas: list[str]) -> dict[str, object]:
         "unavailable_sources": [],
         "repositories": {
             name: {
-                "terminal_conclusion": "success",
-                "remote_verified": True,
+                **terminal_remote_sha_binding(
+                    name,
+                    sha,
+                    "run-ollama-audit",
+                    tree_shas[index] if tree_shas else "c" * 40,
+                ),
                 "final_sha": sha,
-                "workflow_run_id": "run-ollama-audit",
                 "all_refs_enumerated": True,
                 "all_pull_requests_included": True,
                 "all_intermediate_commit_trees_scanned": True,
                 "unavailable_sources": [],
             }
-            for name, sha in zip(
+            for index, (name, sha) in enumerate(zip(
                 ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
                 shas,
-            )
+            ))
         },
     }
 
 
-def q_version_repository_surface_audit(shas: list[str]) -> dict[str, object]:
+def q_version_repository_surface_audit(
+    shas: list[str],
+    tree_shas: list[str] | None = None,
+) -> dict[str, object]:
     surfaces = [
         "markdown", "api", "endpoints", "routes", "ports", "automation", "links",
         "components", "tree", "styles", "universals", "qvillage_qvs", "comparison",
@@ -124,25 +214,31 @@ def q_version_repository_surface_audit(shas: list[str]) -> dict[str, object]:
         "unavailable_sources": [],
         "repositories": {
             name: {
-                "terminal_conclusion": "success",
-                "remote_verified": True,
+                **terminal_remote_sha_binding(
+                    name,
+                    sha,
+                    "run-surface-audit",
+                    tree_shas[index] if tree_shas else "c" * 40,
+                ),
                 "final_sha": sha,
-                "workflow_run_id": "run-surface-audit",
                 "validated_surfaces": surfaces,
                 "all_markdown_structurally_validated": True,
                 "all_percentages_mapped": True,
                 "all_metric_candidates_mapped": True,
                 "unavailable_sources": [],
             }
-            for name, sha in zip(
+            for index, (name, sha) in enumerate(zip(
                 ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
                 shas,
-            )
+            ))
         },
     }
 
 
-def ui_test_hook_coverage_evidence(shas: list[str]) -> dict[str, object]:
+def ui_test_hook_coverage_evidence(
+    shas: list[str],
+    tree_shas: list[str] | None = None,
+) -> dict[str, object]:
     return {
         "status": "PASS",
         "coverage_verified": True,
@@ -150,10 +246,13 @@ def ui_test_hook_coverage_evidence(shas: list[str]) -> dict[str, object]:
         "unavailable_sources": [],
         "repositories": {
             name: {
-                "remote_verified": True,
-                "terminal_conclusion": "success",
+                **terminal_remote_sha_binding(
+                    name,
+                    sha,
+                    "run-ui-coverage",
+                    tree_shas[index] if tree_shas else "c" * 40,
+                ),
                 "final_sha": sha,
-                "workflow_run_id": "run-ui-coverage",
                 "feature_count": 2,
                 "test_mapped_feature_count": 2,
                 "hook_applicability_reviewed_count": 2,
@@ -164,15 +263,20 @@ def ui_test_hook_coverage_evidence(shas: list[str]) -> dict[str, object]:
                 "all_event_hook_tests_passed": True,
                 "unavailable_sources": [],
             }
-            for name, sha in zip(
+            for index, (name, sha) in enumerate(zip(
                 ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
                 shas,
-            )
+            ))
         },
     }
 
 
 def q_version_qmoi_restore_point_evidence(roots: list[Path], shas: list[str], workflow_run_id: str) -> dict[str, object]:
+    repositories = ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced")
+    tree_shas = {
+        str(root.resolve()): git_tree_sha(root, sha)
+        for root, sha in zip(roots, shas)
+    }
     return {
         "status": "SUCCESS",
         "branch": "qmoi",
@@ -183,24 +287,22 @@ def q_version_qmoi_restore_point_evidence(roots: list[Path], shas: list[str], wo
         "workflow_run_id": workflow_run_id,
         "repositories": {
             str(root.resolve()): {
+                **terminal_remote_sha_binding(repository, sha, workflow_run_id),
                 "branch": "qmoi",
-                "terminal_conclusion": "success",
-                "remote_verified": True,
                 "checks_passed": True,
-                "workflow_run_id": workflow_run_id,
                 "qmoi_sha": sha,
                 "main_sha": sha,
                 "backup_sha": sha,
                 "master_sha": sha,
-                "branch_tree_sha": subprocess.run(
-                    ["git", "-C", str(root), "rev-parse", f"{sha}^{{tree}}"],
-                    check=True,
-                    capture_output=True,
-                    text=True,
-                ).stdout.strip(),
+                "branch_tree_sha": tree_shas[str(root.resolve())],
+                "remote_tree_sha": tree_shas[str(root.resolve())],
+                "workflow_tree_sha": tree_shas[str(root.resolve())],
+                "remote_ref": "refs/heads/qmoi",
+                "remote_ref_sha": sha,
+                "workflow_head_sha": sha,
                 "required_docs_present": True,
             }
-            for root, sha in zip(roots, shas)
+            for root, sha, repository in zip(roots, shas, repositories)
         },
     }
 
@@ -217,15 +319,18 @@ def completion_qmoi_restore_point_evidence(sha: str = "a" * 40) -> dict[str, obj
         "workflow_run_id": "run-qmoi-preflight",
         "repositories": {
             name: {
+                **terminal_remote_sha_binding(name, sha, "run-qmoi-preflight"),
                 "branch": "qmoi",
-                "terminal_conclusion": None,
-                "remote_verified": True,
-                "workflow_run_id": "run-qmoi-preflight",
                 "qmoi_sha": sha,
                 "main_sha": sha,
                 "backup_sha": sha,
                 "master_sha": sha,
                 "branch_tree_sha": "b" * 40,
+                "remote_tree_sha": "b" * 40,
+                "workflow_tree_sha": "b" * 40,
+                "remote_ref": "refs/heads/qmoi",
+                "remote_ref_sha": sha,
+                "workflow_head_sha": sha,
                 "required_docs_present": True,
             }
             for name in ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced")
@@ -344,15 +449,23 @@ def record_successful_q_lifecycle(
         },
     }
     for stage in QVersionManager.LIFECYCLE_STAGES[:-1]:
+        stage_status = (status_overrides or {}).get(stage, "PASS")
+        details = dict((details_overrides or {}).get(
+            stage,
+            stage_details.get(stage, {"decision_ledger_complete": True}),
+        ))
+        if stage_status == "PASS":
+            details.setdefault("source_manifest_sha256", "a" * 64)
+            details.setdefault(
+                "qaudit_precondition",
+                qaudit_precondition(stage, str(details["source_manifest_sha256"])),
+            )
         manager.record_lifecycle_stage(
             execution_id,
             stage,
             roots,
-            status=(status_overrides or {}).get(stage, "PASS"),
-            details=(details_overrides or {}).get(
-                stage,
-                stage_details.get(stage, {"decision_ledger_complete": True}),
-            ),
+            status=stage_status,
+            details=details,
             include_inventory=stage == "PRE_MERGE_INVENTORY",
         )
 
@@ -441,6 +554,29 @@ def test_q_version_lifecycle_latest_stage_attempt_controls_status(tmp_path):
     assert "AUTONOMOUS_COMPLETION" in audit["missing_or_unpassed_stages"]
 
 
+def test_q_version_pass_without_qaudit_precondition_is_recorded_as_needs_review(tmp_path):
+    root = tmp_path / "repo"
+    root.mkdir()
+    manager = QVersionManager(root)
+
+    record = manager.record_lifecycle_stage(
+        "qaudit-required",
+        "MERGE_START",
+        [root],
+        status="PASS",
+        details={"remote_mutation": False},
+        include_inventory=False,
+    )
+
+    assert record["stage_status"] == "NEEDS_REVIEW"
+    assert record["details"]["qaudit_gate"]["status"] == "BLOCKED"
+    assert "QAUDITS precondition" in record["details"]["qaudit_gate"]["blocker"]
+    audit = manager.audit_lifecycle("qaudit-required")
+    assert audit["valid"] is True
+    assert "MERGE_START" in audit["missing_or_unpassed_stages"]
+    assert audit["qaudit_blocked_stages"] == ["MERGE_START"]
+
+
 def test_q_version_lifecycle_requires_every_stage_in_canonical_order(tmp_path):
     required_stages = QVersionManager.LIFECYCLE_STAGES[:-1]
     for missing_stage in required_stages:
@@ -456,6 +592,10 @@ def test_q_version_lifecycle_requires_every_stage_in_canonical_order(tmp_path):
                 stage,
                 [root],
                 status="PASS",
+                details={
+                    "source_manifest_sha256": "a" * 64,
+                    "qaudit_precondition": qaudit_precondition(stage),
+                },
                 include_inventory=False,
             )
 
@@ -488,6 +628,23 @@ def test_q_version_lifecycle_requires_live_remote_completion_gate_before_any_fin
     assert result["status"] == "BLOCKED"
     assert any("remote completion" in item.lower() for item in result["blockers"])
     assert result["lifecycle_complete"] is True
+
+
+def test_q_version_remote_gate_does_not_infer_readiness_from_success_flags(tmp_path):
+    root = tmp_path / "repo"
+    root.mkdir()
+    manager = QVersionManager(root)
+    execution_id = "remote-completion-no-inference"
+    record_successful_q_lifecycle(manager, [root], execution_id)
+
+    result = manager.verify_remote_completion_gate(
+        execution_id,
+        [root],
+        {"status": "SUCCESS", "remote_verified": True, "workflow_conclusion": "success"},
+    )
+
+    assert result["status"] == "BLOCKED"
+    assert any("exact ref/commit/tree SHA" in item for item in result["blockers"])
 
 
 @pytest.mark.parametrize("failed_stage", QVersionManager.LIFECYCLE_STAGES[:-1])
@@ -989,6 +1146,12 @@ def test_repository_surface_audit_tracks_markdown_metrics_without_source_text(tm
     (tracker_dir / "repository_surface_audit.json").write_text(
         '{"previous":"generated report"}\n', encoding="utf-8"
     )
+    (tracker_dir / "qaudit_markdown_sentence_audit.json").write_text(
+        '{"previous":"generated sentence manifest"}\n', encoding="utf-8"
+    )
+    (tracker_dir / "qaudit_markdown_sentence_audit.jsonl.gz").write_bytes(b"generated report")
+    for filename in ("oe2.txt", "remotecompletion.md", "remote-completion.json", "remote-evidence-ledger.jsonl"):
+        (tmp_path / filename).write_text("mutable evidence output\n", encoding="utf-8")
 
     report = audit_repository_surfaces([tmp_path])
     serialized = json.dumps(report)
@@ -1027,9 +1190,337 @@ def test_repository_surface_audit_tracks_markdown_metrics_without_source_text(tm
     )
     assert self_record["status"] == "self_referential_excluded"
     assert self_record["sha256"] is None
-    assert report["self_referential_exclusions"] == ["ollamatracks/repository_surface_audit.json"]
+    assert report["self_referential_exclusions"] == [
+        "ollamatracks/qaudit_markdown_sentence_audit.json",
+        "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz",
+        "ollamatracks/repository_surface_audit.json",
+        "oe2.txt",
+        "remote-completion.json",
+        "remote-evidence-ledger.jsonl",
+        "remotecompletion.md",
+    ]
+    assert "remotecompletion.md" not in {item["path"] for item in root_report["markdown_records"]}
+    for filename in ("oe2.txt", "remotecompletion.md", "remote-completion.json", "remote-evidence-ledger.jsonl"):
+        record = next(item for item in report["all_file_records"] if item["path"] == filename)
+        assert record["status"] == "self_referential_excluded"
+        assert record["bytes"] is None
+        (tmp_path / filename).write_text("refreshed evidence with different size\n", encoding="utf-8")
+    refreshed = audit_repository_surfaces([tmp_path])
+    assert refreshed["source_manifest_sha256"] == report["source_manifest_sha256"]
     assert all(item["source_text_recorded"] is False for item in report["instruction_candidates"])
     assert all(len(item["sha256"]) == 64 for item in report["all_file_records"] if item["sha256"])
+    assert report["markdown_sentence_records_indexed"] >= 0
+
+
+def test_markdown_sentence_evidence_writer_is_compressed_and_source_text_free(tmp_path):
+    sentence = {
+        "text": "The sentence text itself.",
+        "sentence_index": 1,
+        "line_start": 1,
+        "line_end": 1,
+        "word_count": 4,
+        "sentence_sha256": "a" * 64,
+        "word_sequence_sha256": "b" * 64,
+        "duplicate_adjacent_word_candidate": False,
+        "metric_claim_candidate": False,
+        "completion_claim_candidate": True,
+        "reference_marker_present": True,
+        "semantic_status": "unverified_requires_source_and_owner_mapping",
+    }
+    report = {
+        "generated_at": "2026-10-07T00:00:00Z",
+        "scope": "materialized repository roots and local refs only",
+        "status": "MATERIALIZED_AUDIT_COMPLETE_REMOTE_HISTORY_INCOMPLETE",
+        "source_manifest_sha256": "c" * 64,
+        "source_text_recorded": False,
+        "roots": [{
+            "root": str(tmp_path.resolve()),
+            "markdown_records": [{
+                "path": "README.md",
+                "scope": "materialized_repository",
+                "bytes": 45,
+                "sha256": "d" * 64,
+                "line_count": 1,
+                "word_count": 4,
+                "sentence_count_heuristic": 1,
+                "sentence_records": [sentence],
+                "sentence_records_omitted_by_bound": 0,
+                "status": "structurally_validated",
+                "review_reasons": [],
+                "local_link_error_count": 0,
+                "semantic_validation": "integrity_is_hash_checked; each sentence still requires source_and_owner_review",
+            }],
+        }],
+        "unreadable_file_count": 0,
+        "skipped_source_count": 0,
+    }
+
+    manifest = write_markdown_sentence_audit(
+        tmp_path,
+        report,
+        correlation_id="sentence-audit-test",
+    )
+    artifact = tmp_path / manifest["artifact_path"]
+    rows = [json.loads(line) for line in gzip.decompress(artifact.read_bytes()).splitlines()]
+
+    assert manifest["correlation_id"] == "sentence-audit-test"
+    assert manifest["schema_version"] == 4
+    assert manifest["totals"]["sentence_records_indexed"] == 1
+    assert manifest["remote_verified"] is False
+    assert manifest["source_text_recorded"] is False
+    assert [row["record_type"] for row in rows] == ["manifest", "document", "sentence"]
+    assert rows[-1]["sentence_sha256"] == "a" * 64
+    serialized = gzip.decompress(artifact.read_bytes()).decode("utf-8")
+    assert "The sentence text itself." not in serialized
+    assert rows[-1]["source_text_recorded"] is False
+    assert hashlib.sha256(artifact.read_bytes()).hexdigest() == manifest["artifact_sha256"]
+    assert len(artifact.read_bytes()) == manifest["artifact_bytes"]
+
+
+def test_markdown_sentence_evidence_tracks_lines_and_counts_candidates_past_bound(monkeypatch):
+    monkeypatch.setattr("scripts.ollama_research.MAX_MARKDOWN_SENTENCE_RECORDS", 2)
+
+    evidence = _markdown_sentence_evidence(
+        "Repeated repeated words.\n\nMetric accuracy 80%.\nSuccessful completion."
+    )
+
+    assert evidence["sentence_count_heuristic"] == 3
+    assert len(evidence["sentence_records"]) == 2
+    assert evidence["sentence_records_omitted_by_bound"] == 1
+    assert evidence["sentence_records"][0]["line_start"] == 1
+    assert evidence["sentence_records"][0]["line_end"] == 1
+    assert evidence["sentence_records"][1]["line_start"] == 3
+    assert evidence["sentence_records"][1]["line_end"] == 3
+    assert evidence["duplicate_adjacent_word_candidate_count"] == 1
+    assert evidence["metric_claim_candidate_count"] == 1
+    assert evidence["completion_claim_candidate_count"] == 1
+    assert evidence["unreferenced_metric_claim_candidate_count"] == 1
+    assert evidence["unreferenced_completion_claim_candidate_count"] == 1
+
+
+def test_qaudit_checkpoint_appends_paired_ledgers_and_keeps_remote_blocked(tmp_path):
+    root = tmp_path / "Alpha-Q-ai"
+    root.mkdir()
+    for filename in ("oe2.txt", "remotecompletion.md", "remote-evidence-ledger.jsonl"):
+        (root / filename).write_text("", encoding="utf-8")
+    (root / "remote-completion.json").write_text(
+        json.dumps({"schema_version": "1.0", "state": {}, "blockers": []}),
+        encoding="utf-8",
+    )
+    subprocess.run(["git", "-C", str(root), "init", "-q"], check=True)
+    subprocess.run(["git", "-C", str(root), "config", "user.email", "audit@example.invalid"], check=True)
+    subprocess.run(["git", "-C", str(root), "config", "user.name", "Audit Test"], check=True)
+    (root / "README.md").write_text("# Test\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(root), "add", "README.md"], check=True)
+    subprocess.run(["git", "-C", str(root), "commit", "-m", "test checkpoint"], check=True, capture_output=True)
+    subprocess.run(
+        ["git", "-C", str(root), "remote", "add", "origin", "git@github.com:thealphakenya/Alpha-Q-ai.git"],
+        check=True,
+    )
+
+    checkpoint = record_qaudit_checkpoint(
+        root,
+        "qaudit-test",
+        {
+            "status": "NEEDS_REVIEW",
+            "source_manifest_sha256": "a" * 64,
+            "artifact_path": "ollamatracks/audit.json",
+            "artifact_sha256": "b" * 64,
+            "artifact_bytes": 123,
+            "metrics": {"files": 1},
+            "blockers": ["incomplete_local_input"],
+        },
+    )
+
+    oe2 = (root / "oe2.txt").read_text(encoding="utf-8")
+    remote = (root / "remotecompletion.md").read_text(encoding="utf-8")
+    completion = json.loads((root / "remote-completion.json").read_text(encoding="utf-8"))
+    ledger = [json.loads(line) for line in (root / "remote-evidence-ledger.jsonl").read_text().splitlines()]
+    assert checkpoint["repository"] == "thealphakenya/Alpha-Q-ai"
+    assert checkpoint["repository_identity_verified"] is True
+    assert checkpoint["remote_verified"] is False
+    assert oe2 == remote
+    assert checkpoint["correlation_id"] in oe2
+    assert completion["correlation_id"] == checkpoint["correlation_id"]
+    assert completion["state"]["remote_completion"] == "BLOCKED"
+    assert completion["state"]["remote_verified"] is False
+    assert len(ledger) == 1
+    assert ledger[0]["correlation_id"] == checkpoint["correlation_id"]
+    assert ledger[0]["verification"]["terminal"] is False
+
+
+def test_qaudit_checkpoint_resolves_only_explicitly_closed_run_blockers(tmp_path):
+    root = tmp_path / "Alpha-Q-ai"
+    root.mkdir()
+    for filename in ("oe2.txt", "remotecompletion.md", "remote-evidence-ledger.jsonl"):
+        (root / filename).write_text("", encoding="utf-8")
+    (root / "remote-completion.json").write_text(
+        json.dumps(
+            {
+                "schema_version": "1.0",
+                "state": {},
+                "blockers": ["audit_inventory_run_not_yet_terminal", "historical_remote_blocker"],
+            }
+        ),
+        encoding="utf-8",
+    )
+    subprocess.run(["git", "-C", str(root), "init", "-q"], check=True)
+    subprocess.run(["git", "-C", str(root), "config", "user.email", "audit@example.invalid"], check=True)
+    subprocess.run(["git", "-C", str(root), "config", "user.name", "Audit Test"], check=True)
+    (root / "README.md").write_text("# Test\n", encoding="utf-8")
+    subprocess.run(["git", "-C", str(root), "add", "README.md"], check=True)
+    subprocess.run(
+        ["git", "-C", str(root), "commit", "-m", "test checkpoint recovery"],
+        check=True,
+        capture_output=True,
+    )
+
+    checkpoint = record_qaudit_checkpoint(
+        root,
+        "audit-inventory",
+        {
+            "status": "NEEDS_REVIEW",
+            "resolved_blockers": ["audit_inventory_run_not_yet_terminal"],
+            "blockers": ["local_audit_needs_review"],
+        },
+        correlation_id="audit-run-correlation",
+    )
+
+    completion = json.loads((root / "remote-completion.json").read_text(encoding="utf-8"))
+    assert checkpoint["correlation_id"] == "audit-run-correlation"
+    assert "audit_inventory_run_not_yet_terminal" not in completion["blockers"]
+    assert "historical_remote_blocker" in completion["blockers"]
+    assert "local_audit_needs_review" in completion["blockers"]
+    assert completion["state"]["remote_verified"] is False
+
+
+def test_markdown_audit_indexes_sentence_and_word_sequence_evidence_without_prose(tmp_path):
+    (tmp_path / "README.md").write_text(
+        "## Release status\nThe build passed 3 tests. Release is complete. A a repeated word.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "ORCHESTRATION.md").write_text(
+        "# Orchestration\n\nA coordinated orchestration pipeline.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "TREE.md").write_text("# Tree inventory\n", encoding="utf-8")
+    archived_release = tmp_path / "Alpha-Q-ai-2025" / "RELEASES.md"
+    archived_release.parent.mkdir()
+    archived_release.write_text("# Historical release snapshot\n", encoding="utf-8")
+
+    report = audit_repository_surfaces([tmp_path])
+    markdown = report["roots"][0]["markdown_records"][0]
+    serialized = json.dumps(report)
+
+    assert markdown["sentence_count_heuristic"] == 4
+    assert len(markdown["sentence_records"]) == 4
+    assert markdown["sentence_records"][1]["line_start"] == 2
+    assert markdown["sentence_records"][1]["line_end"] == 2
+    assert len(markdown["sentence_records"][1]["sentence_sha256"]) == 64
+    assert len(markdown["sentence_records"][1]["word_sequence_sha256"]) == 64
+    assert markdown["sentence_records"][1]["completion_claim_candidate"] is True
+    assert markdown["sentence_records"][1]["reference_marker_present"] is False
+    assert markdown["sentence_records"][3]["duplicate_adjacent_word_candidate"] is True
+    assert report["markdown_sentence_records_indexed"] == 4
+    assert report["markdown_unreferenced_completion_claim_candidate_count"] == 2
+    by_path = {item["path"]: item for item in report["roots"][0]["markdown_records"]}
+    assert "orchestration" in by_path["ORCHESTRATION.md"]["document_families"]
+    assert "tree_inventory" in by_path["TREE.md"]["document_families"]
+    assert by_path["Alpha-Q-ai-2025/RELEASES.md"]["scope"] == "historical_or_archive_candidate"
+    assert report["document_family_counts"]["orchestration"] == 1
+    assert report["document_family_counts"]["release_tag_publish"] == 2
+    assert "The build passed 3 tests." not in serialized
+
+
+def test_repository_audit_refreshes_release_and_all_contract_docs_in_managed_sections(tmp_path):
+    root = tmp_path.resolve()
+    (root / "RELEASES.md").write_text("# Releases\n\nHuman release policy.\n", encoding="utf-8")
+    (root / "ALLBUILD.md").write_text("# Build contract\n\nHuman build notes.\n", encoding="utf-8")
+    (root / "QTEAM.md").write_text("# QTeam\n\nHuman ownership notes.\n", encoding="utf-8")
+    (root / "ORCHESTRATION.md").write_text(
+        "# Orchestration\n\nThe orchestration pipeline runs coordinated project actions.\n",
+        encoding="utf-8",
+    )
+    (root / "TREE_FULL_STRUCTURE.md").write_text(
+        "# Full tree\n\nHuman tree documentation.\n",
+        encoding="utf-8",
+    )
+    (root / "NOTES.md").write_text("# Notes\n\nUnaffected.\n", encoding="utf-8")
+    historical = root / "qmoi-enhanced-history-14" / "RELEASES.md"
+    historical.parent.mkdir()
+    historical.write_text("# Historical releases\n\nPreserved snapshot.\n", encoding="utf-8")
+    markdown_records = [
+        {
+            "root": str(root),
+            "path": name,
+            "suffix": ".md",
+            "scope": source_scope,
+            "document_families": families,
+            "bytes": 10,
+            "status": "indexed",
+        }
+        for name, families, source_scope in (
+            ("RELEASES.md", ["release_tag_publish"], "materialized_repository"),
+            ("ALLBUILD.md", ["build_download_install"], "materialized_repository"),
+            ("QTEAM.md", ["qteam_accountability"], "materialized_repository"),
+            ("ORCHESTRATION.md", ["orchestration"], "materialized_repository"),
+            ("TREE_FULL_STRUCTURE.md", ["tree_inventory"], "materialized_repository"),
+            ("NOTES.md", [], "materialized_repository"),
+            ("qmoi-enhanced-history-14/RELEASES.md", ["release_tag_publish"], "historical_or_archive_candidate"),
+        )
+    ]
+    audit = {
+        "all_file_records": markdown_records,
+        "all_directory_records": [{
+            "root": str(root),
+            "path": "src",
+            "file_count_in_subtree": 2,
+        }],
+        "roots": [{
+            "root": str(root),
+            "markdown_records": [],
+            "skipped": [{"path": "node_modules", "reason": "excluded_generated_or_dependency_directory"}],
+            "unreadable": [],
+            "git_history": {"refs": ["refs/tags/v1.0.0"]},
+        }],
+        "links": [],
+        "document_family_counts": {
+            "build_download_install": 1,
+            "orchestration": 1,
+            "qteam_accountability": 1,
+            "release_tag_publish": 2,
+            "tree_inventory": 1,
+        },
+    }
+
+    OllamaAutonomousAgent.refresh_repository_audit_documents(
+        OllamaAutonomousAgent.__new__(OllamaAutonomousAgent),
+        root,
+        audit,
+    )
+
+    releases = (root / "RELEASES.md").read_text(encoding="utf-8")
+    build = (root / "ALLBUILD.md").read_text(encoding="utf-8")
+    qteam = (root / "QTEAM.md").read_text(encoding="utf-8")
+    orchestration = (root / "ORCHESTRATION.md").read_text(encoding="utf-8")
+    tree_full = (root / "TREE_FULL_STRUCTURE.md").read_text(encoding="utf-8")
+    tree = (root / "TREE.md").read_text(encoding="utf-8")
+    notes = (root / "NOTES.md").read_text(encoding="utf-8")
+    archived_releases = historical.read_text(encoding="utf-8")
+    assert "Human release policy." in releases
+    assert "<!-- BEGIN QMOI MANAGED: release-evidence -->" in releases
+    assert "local tag refs observed: `1`" in releases
+    assert "<!-- BEGIN QMOI MANAGED: repository-surface-audit -->" in build
+    assert "<!-- BEGIN QMOI MANAGED: repository-surface-audit -->" in qteam
+    assert "<!-- BEGIN QMOI MANAGED: repository-surface-audit -->" in orchestration
+    assert "<!-- BEGIN QMOI MANAGED: repository-surface-audit -->" in tree_full
+    assert "Indexed files" in tree
+    assert "ALLBUILD.md" in tree
+    assert "node_modules" in tree
+    assert "Unaffected." in notes
+    assert "Preserved snapshot." in archived_releases
+    assert "<!-- BEGIN QMOI MANAGED:" not in archived_releases
+    assert "<!-- BEGIN QMOI MANAGED:" not in notes
 
 
 def test_external_research_allowlist_rejects_credentials_and_unapproved_domains():
@@ -1147,10 +1638,12 @@ def test_completion_accepts_markdown_gate_only_with_complete_dual_repo_evidence(
     gates = {name: "PASS" for name in REQUIRED_GATES}
     repository_evidence = {
         name: {
-            "terminal_conclusion": "success",
-            "remote_verified": True,
+            **terminal_remote_sha_binding(
+                name,
+                "a" * 40 if name.endswith("Alpha-Q-ai") else "b" * 40,
+                "run-123",
+            ),
             "final_sha": "a" * 40 if name.endswith("Alpha-Q-ai") else "b" * 40,
-            "workflow_run_id": "run-123",
             "markdown_total": 4,
             "markdown_validated": 4,
             "failed_documents": 0,
@@ -1177,13 +1670,16 @@ def test_completion_accepts_markdown_gate_only_with_complete_dual_repo_evidence(
             "secondary": {"changed_files": ["QVERSIONMANAGER.md"]},
             "markdown_inventory": markdown_evidence,
             "repository_surface_audit": q_version_repository_surface_audit(
-                [item["final_sha"] for item in repository_evidence.values()]
+                [item["final_sha"] for item in repository_evidence.values()],
+                [item["remote_tree_sha"] for item in repository_evidence.values()],
             ),
                 "ollama_reference_audit": q_version_ollama_reference_audit(
-                    [item["final_sha"] for item in repository_evidence.values()]
+                    [item["final_sha"] for item in repository_evidence.values()],
+                    [item["remote_tree_sha"] for item in repository_evidence.values()],
                 ),
                 "ui_test_hook_coverage": ui_test_hook_coverage_evidence(
-                    [item["final_sha"] for item in repository_evidence.values()]
+                    [item["final_sha"] for item in repository_evidence.values()],
+                    [item["remote_tree_sha"] for item in repository_evidence.values()],
                 ),
                 "qmoi_restore_point": completion_qmoi_restore_point_evidence(),
         },
@@ -1223,6 +1719,50 @@ def test_q_version_identifiers_are_canonical_and_strict():
     for value in ("Q.0.0.0", "Q.0.0.01", "Q.0.0.1.md", "Q.0.0.1-extra", "Q.1.0.1"):
         with pytest.raises(ValueError):
             QVersionManager.parse_version(value)
+
+
+def test_qaudit_precondition_requires_matching_complete_manifest(tmp_path):
+    precondition = qaudit_precondition("UI_TEST_HOOK_COVERAGE")
+    QVersionManager.validate_qaudit_precondition(
+        "UI_TEST_HOOK_COVERAGE",
+        precondition,
+        expected_manifest_sha256="a" * 64,
+    )
+
+    with pytest.raises(RuntimeError, match="complete current QAUDITS precondition"):
+        QVersionManager.validate_qaudit_precondition(
+            "UI_TEST_HOOK_COVERAGE",
+            {**precondition, "source_manifest_sha256": "b" * 64},
+            expected_manifest_sha256="a" * 64,
+        )
+    incomplete_metric = {
+        **precondition,
+        "required_metrics": [{
+            **precondition["required_metrics"][0],
+            "numerator": 0,
+        }],
+    }
+    with pytest.raises(RuntimeError, match="complete current QAUDITS precondition"):
+        QVersionManager.validate_qaudit_precondition(
+            "UI_TEST_HOOK_COVERAGE",
+            incomplete_metric,
+            expected_manifest_sha256="a" * 64,
+        )
+
+    root = tmp_path / "qaudit-precondition-repo"
+    root.mkdir()
+    manager = QVersionManager(root)
+    with pytest.raises(RuntimeError, match="complete current QAUDITS precondition"):
+        manager.record_lifecycle_stage(
+            "qaudit-precondition",
+            "UI_TEST_HOOK_COVERAGE",
+            [root],
+            details={
+                "source_manifest_sha256": "a" * 64,
+                "qaudit_precondition": {**precondition, "blockers": ["unmapped feature"]},
+            },
+            include_inventory=False,
+        )
 
 
 def test_q_version_discovery_scans_each_explicit_root_and_ignores_near_matches(tmp_path):
@@ -1427,36 +1967,47 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
     execution_id = "qversion-final-success"
     record_successful_q_lifecycle(manager, roots, execution_id)
     repository_evidence = {}
-    for root in roots:
+    for root, repository in zip(
+        roots,
+        ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
+    ):
         sha = subprocess.run(
             ["git", "-C", str(root), "rev-parse", "HEAD"],
             check=True,
             capture_output=True,
             text=True,
         ).stdout.strip()
+        tree_sha = git_tree_sha(root, sha)
         repository_evidence[str(root.resolve())] = {
+            **terminal_remote_sha_binding(repository, sha, "run-final-123"),
+            "remote_tree_sha": tree_sha,
+            "workflow_tree_sha": tree_sha,
             "final_sha": sha,
-            "terminal_conclusion": "success",
             "checks_passed": True,
-            "remote_verified": True,
         }
     evidence = {
         "status": "SUCCESS",
         "remote_verified": True,
         "workflow_conclusion": "success",
         "workflow_run_id": "12345",
+        "live_github_verifier": q_version_live_github_verifier(
+            next(iter(repository_evidence.values()))["final_sha"]
+        ),
         "lifecycle_execution_id": execution_id,
         "correlation_id": "qversion-test-1",
         "instruction_inventories": q_version_instruction_evidence(roots),
         "autonomous_completion": q_version_autonomous_completion(),
         "repository_surface_audit": q_version_repository_surface_audit(
-            [item["final_sha"] for item in repository_evidence.values()]
+            [item["final_sha"] for item in repository_evidence.values()],
+            [item["remote_tree_sha"] for item in repository_evidence.values()],
         ),
         "ollama_reference_audit": q_version_ollama_reference_audit(
-            [item["final_sha"] for item in repository_evidence.values()]
+            [item["final_sha"] for item in repository_evidence.values()],
+            [item["remote_tree_sha"] for item in repository_evidence.values()],
         ),
         "ui_test_hook_coverage": ui_test_hook_coverage_evidence(
-            [item["final_sha"] for item in repository_evidence.values()]
+            [item["final_sha"] for item in repository_evidence.values()],
+            [item["remote_tree_sha"] for item in repository_evidence.values()],
         ),
         "production_readiness": q_version_production_readiness(),
         "qmoi_restore_point": q_version_qmoi_restore_point_evidence(
@@ -1474,12 +2025,20 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         "gates": completion["gates"],
         "pending_action_count": 0,
     }
+    completion_manifest = "a" * 64
+    completion_qaudit = {
+        "source_manifest_sha256": completion_manifest,
+        "qaudit_precondition": qaudit_precondition(
+            "AUTONOMOUS_COMPLETION",
+            completion_manifest,
+        ),
+    }
     manager.record_lifecycle_stage(
         execution_id,
         "AUTONOMOUS_COMPLETION",
         roots,
         status="PASS",
-        details=mismatched_completion,
+        details={**mismatched_completion, **completion_qaudit},
         include_inventory=False,
     )
     with pytest.raises(RuntimeError, match="autonomous-completion record does not match"):
@@ -1489,7 +2048,11 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         "AUTONOMOUS_COMPLETION",
         roots,
         status="PASS",
-        details={**mismatched_completion, "execution_id": completion["execution_id"]},
+        details={
+            **mismatched_completion,
+            "execution_id": completion["execution_id"],
+            **completion_qaudit,
+        },
         include_inventory=False,
     )
 
@@ -1587,7 +2150,10 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
 
     assert result["status"] == "PREPARED_PENDING_REMOTE_VERIFICATION"
     publication_evidence = {}
-    for root in roots:
+    for root, repository in zip(
+        roots,
+        ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
+    ):
         metrics_path = root / "Q.0.0.3" / "REPOSITORY_METRICS.json"
         document_path = root / "Q.0.0.3.md"
         metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
@@ -1617,12 +2183,19 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
             capture_output=True,
             text=True,
         ).stdout.strip()
+        published_tree_sha = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", f"{published_sha}^{{tree}}"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
         publication_evidence[str(root.resolve())] = {
+            **terminal_remote_sha_binding(repository, published_sha, "run-final-456"),
+            "remote_tree_sha": published_tree_sha,
+            "workflow_tree_sha": published_tree_sha,
             "final_sha": published_sha,
             "prepared_source_sha": metrics["source_sha"],
-            "terminal_conclusion": "success",
             "checks_passed": True,
-            "remote_verified": True,
             "metrics_sha256": hashlib.sha256(metrics_path.read_bytes()).hexdigest(),
             "version_document_sha256": hashlib.sha256(document_path.read_bytes()).hexdigest(),
         }
@@ -1756,23 +2329,48 @@ def test_q_version_final_metrics_reject_dirty_or_mismatched_repository(tmp_path)
         "remote_verified": True,
         "workflow_conclusion": "success",
         "workflow_run_id": "12345",
+        "live_github_verifier": q_version_live_github_verifier(repository_shas[0]),
         "lifecycle_execution_id": execution_id,
         "correlation_id": "qversion-test-2",
         "instruction_inventories": q_version_instruction_evidence(roots),
         "autonomous_completion": q_version_autonomous_completion(),
-        "repository_surface_audit": q_version_repository_surface_audit(repository_shas),
-        "ollama_reference_audit": q_version_ollama_reference_audit(repository_shas),
-        "ui_test_hook_coverage": ui_test_hook_coverage_evidence(repository_shas),
+        "repository_surface_audit": q_version_repository_surface_audit(
+            repository_shas,
+            [git_tree_sha(root, sha) for root, sha in zip(roots, repository_shas)],
+        ),
+        "ollama_reference_audit": q_version_ollama_reference_audit(
+            repository_shas,
+            [git_tree_sha(root, sha) for root, sha in zip(roots, repository_shas)],
+        ),
+        "ui_test_hook_coverage": ui_test_hook_coverage_evidence(
+            repository_shas,
+            [git_tree_sha(root, sha) for root, sha in zip(roots, repository_shas)],
+        ),
         "production_readiness": q_version_production_readiness(),
         "qmoi_restore_point": q_version_qmoi_restore_point_evidence(roots, repository_shas, "run-qmoi-restore"),
         "repositories": {
             str(root.resolve()): {
+                **terminal_remote_sha_binding(repository, sha, "run-final-dirty"),
+                "remote_tree_sha": subprocess.run(
+                    ["git", "-C", str(root), "rev-parse", f"{sha}^{{tree}}"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.strip(),
+                "workflow_tree_sha": subprocess.run(
+                    ["git", "-C", str(root), "rev-parse", f"{sha}^{{tree}}"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                ).stdout.strip(),
                 "final_sha": sha,
-                "terminal_conclusion": "success",
                 "checks_passed": True,
-                "remote_verified": True,
             }
-            for root, sha in zip(roots, repository_shas)
+            for root, sha, repository in zip(
+                roots,
+                repository_shas,
+                ("thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"),
+            )
         },
     }
 

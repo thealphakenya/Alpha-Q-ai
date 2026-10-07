@@ -1,11 +1,15 @@
 """Evidence-first internal and external research controls for the QMOI agent."""
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
 import os
 import re
 import subprocess
+import tempfile
+import time
+import uuid
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -141,12 +145,46 @@ SURFACE_DOCUMENTS = {
     "production_metrics": ("production.md", "productionenhanced.md", "FEATURES_AND_PERCENTAGES.md", "compare.md", "Qtrade.md"),
     "projects_autoprojects": ("projectsandautoprojects.md", "projectsandautoprojectsenhanced.md", "projectsndautoprojects.md", "projectandautoprojects.md"),
 }
+MARKDOWN_DOCUMENT_FAMILY_PATTERNS = {
+    "app_platform": re.compile(r"\b(?:apps?|applications?|platforms?|mobile|desktop)\b", re.IGNORECASE),
+    "build_download_install": re.compile(r"\b(?:builds?|compile|install(?:ation)?s?|packages?|downloads?|artifacts?)\b", re.IGNORECASE),
+    "release_tag_publish": re.compile(r"\b(?:releases?|tags?|publish(?:ed|ing)?|versions?|artifacts?)\b", re.IGNORECASE),
+    "qteam_accountability": re.compile(r"\b(?:qteam|accountability|ownership|owners?|approvals?|governance)\b", re.IGNORECASE),
+    "orchestration": re.compile(r"\b(?:orchestras?|orchestration|orchestrators?|coordination|pipelines?)\b", re.IGNORECASE),
+    "tree_inventory": re.compile(r"\b(?:trees?|directory structure|folder structure|file inventory|repository structure|filesystem)\b", re.IGNORECASE),
+}
+HISTORICAL_PATH_COMPONENT_PATTERN = re.compile(
+    r"(?:^|-)(?:19|20)\d{2}(?:-|$)",
+    re.IGNORECASE,
+)
 AUDIT_IGNORED_DIRECTORIES = frozenset({
     ".git", "node_modules", ".venv", "venv", "__pycache__", ".pytest_cache",
     ".mypy_cache", ".ruff_cache", ".next", ".turbo", "dist", "build", "target", "coverage",
 })
 AUDIT_MAX_FILE_BYTES = 100_000_000
 AUDIT_MAX_TEXT_BYTES = 5_000_000
+MAX_MARKDOWN_SENTENCE_RECORDS = 100_000
+MARKDOWN_SENTENCE_AUDIT_JSONL = "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz"
+MARKDOWN_SENTENCE_AUDIT_MANIFEST = "ollamatracks/qaudit_markdown_sentence_audit.json"
+AUDIT_SELF_REFERENTIAL_REPORTS = {
+    "ollamatracks/repository_surface_audit.json",
+    MARKDOWN_SENTENCE_AUDIT_JSONL,
+    MARKDOWN_SENTENCE_AUDIT_MANIFEST,
+    "ollamatracks/qaudit_universe.json",
+    "ollamatracks/ollama_reference_audit.json",
+    "ollamatracks/feature_test_hook_coverage.json",
+    "ollamatracks/system_accountability_audit.json",
+    "ollamatracks/style_universal_replacement_inventory.json",
+    "ollamatracks/legacy_sync_artifact_inventory.json",
+    "ollamatracks/restore_point_memory.json",
+    "ollamatracks/production_gap_inventory.json",
+    "ollamatracks/telemetry.jsonl",
+    "oe2.txt",
+    "remotecompletion.md",
+    "remote-completion.json",
+    "remote-evidence-ledger.jsonl",
+    "QMOItracks/style_universal_candidate_tree.md",
+}
 METRIC_TERM_PATTERN = re.compile(
     r"\b(?:accuracy|precision|recall|f1|latency|throughput|speed|ram|memory|gpu|bandwidth|cost|reliability|benchmark|confidence|percentage|percent|ratio|sharpe|drawdown|win rate|profit|loss|slippage|roi)\b",
     re.IGNORECASE,
@@ -165,6 +203,111 @@ AUDIT_METRIC_SUFFIXES = frozenset({".py", ".js", ".jsx", ".ts", ".tsx", ".vue", 
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _source_scope(relative_path: str) -> str:
+    historical_components = {"archive", "archives", "history", "historical", "backups", "snapshots"}
+    for component in Path(relative_path).parts:
+        lowered = component.lower()
+        if lowered in historical_components or HISTORICAL_PATH_COMPONENT_PATTERN.search(lowered):
+            return "historical_or_archive_candidate"
+    return "materialized_repository"
+
+
+def _markdown_document_families(relative_path: str, text: str) -> list[str]:
+    searchable = f"{relative_path}\n{text}"
+    return sorted(
+        family
+        for family, pattern in MARKDOWN_DOCUMENT_FAMILY_PATTERNS.items()
+        if pattern.search(searchable)
+    )
+
+
+def _markdown_sentence_evidence(text: str) -> dict[str, Any]:
+    """Index bounded sentence and word-sequence evidence without persisting source prose."""
+    boundaries = [
+        match.end()
+        for match in re.finditer(r"[.!?]+(?=\s|$)|\n+", text)
+    ]
+    if not boundaries or boundaries[-1] < len(text):
+        boundaries.append(len(text))
+
+    records: list[dict[str, Any]] = []
+    omitted = 0
+    total_word_count = 0
+    duplicate_adjacent_word_candidate_count = 0
+    metric_claim_candidate_count = 0
+    completion_claim_candidate_count = 0
+    unreferenced_metric_claim_candidate_count = 0
+    unreferenced_completion_claim_candidate_count = 0
+    line_number = 1
+    start = 0
+    for end in boundaries:
+        fragment = text[start:end]
+        normalized = fragment.strip()
+        start = end
+        line_start = line_number + fragment[: len(fragment) - len(fragment.lstrip())].count("\n")
+        line_number += fragment.count("\n")
+        if not normalized:
+            continue
+        words = re.findall(r"\b[\w'-]+\b", normalized, re.UNICODE)
+        total_word_count += len(words)
+        duplicate_adjacent_word = any(
+            left.casefold() == right.casefold()
+            for left, right in zip(words, words[1:])
+        )
+        has_metric_claim = bool(
+            METRIC_TERM_PATTERN.search(normalized) or PERCENT_PATTERN.search(normalized)
+        )
+        has_completion_claim = bool(
+            re.search(
+                r"\b(?:complete(?:d)?|success(?:ful)?|passed|merged|published|released|deployed|production[- ]ready)\b",
+                normalized,
+                re.IGNORECASE,
+            )
+        )
+        has_reference_marker = bool(
+            MARKDOWN_LINK_PATTERN.search(normalized)
+            or re.search(r"https?://|(?:\[[0-9]+\])", normalized, re.IGNORECASE)
+        )
+        duplicate_adjacent_word_candidate_count += duplicate_adjacent_word
+        metric_claim_candidate_count += has_metric_claim
+        completion_claim_candidate_count += has_completion_claim
+        unreferenced_metric_claim_candidate_count += has_metric_claim and not has_reference_marker
+        unreferenced_completion_claim_candidate_count += (
+            has_completion_claim and not has_reference_marker
+        )
+        if len(records) >= MAX_MARKDOWN_SENTENCE_RECORDS:
+            omitted += 1
+            continue
+        word_sequence = "\x1f".join(word.casefold() for word in words)
+        records.append({
+            "sentence_index": len(records) + 1,
+            "line_start": line_start,
+            "line_end": line_number,
+            "word_count": len(words),
+            "sentence_sha256": hashlib.sha256(normalized.encode("utf-8")).hexdigest(),
+            "word_sequence_sha256": hashlib.sha256(word_sequence.encode("utf-8")).hexdigest(),
+            "duplicate_adjacent_word_candidate": duplicate_adjacent_word,
+            "metric_claim_candidate": has_metric_claim,
+            "completion_claim_candidate": has_completion_claim,
+            "reference_marker_present": has_reference_marker,
+            "semantic_status": "unverified_requires_source_and_owner_mapping",
+        })
+
+    return {
+        "sentence_count_heuristic": len(records) + omitted,
+        "sentence_records": records,
+        "sentence_records_omitted_by_bound": omitted,
+        "word_count": total_word_count,
+        "duplicate_adjacent_word_candidate_count": duplicate_adjacent_word_candidate_count,
+        "metric_claim_candidate_count": metric_claim_candidate_count,
+        "completion_claim_candidate_count": completion_claim_candidate_count,
+        "unreferenced_metric_claim_candidate_count": unreferenced_metric_claim_candidate_count,
+        "unreferenced_completion_claim_candidate_count": unreferenced_completion_claim_candidate_count,
+        "semantic_validation": "sentence_and_word_sequence_hashes_are_integrity_metadata_only",
+        "source_text_recorded": False,
+    }
 
 
 def _canonical_url(url: str) -> tuple[str, str]:
@@ -234,6 +377,7 @@ def build_internal_research_plan(roots: Iterable[Path | str]) -> dict[str, Any]:
 
 def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
     """Inventory repository surfaces and document metrics without exporting source text."""
+    audit_started = time.monotonic()
     root_reports: list[dict[str, Any]] = []
     all_file_records: list[dict[str, Any]] = []
     all_directories: list[dict[str, Any]] = []
@@ -242,6 +386,7 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
     audit_topics = {topic for topics in VALIDATION_RESEARCH_MAP.values() for topic in topics}
 
     for value in roots:
+        root_started = time.monotonic()
         root = Path(value).resolve()
         if not root.is_dir():
             unavailable_roots.append(str(root))
@@ -254,6 +399,7 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                 "files": [],
                 "directories": [],
                 "source_contents_recorded": False,
+                "scan_duration_seconds": round(time.monotonic() - root_started, 3),
             })
             continue
 
@@ -335,7 +481,6 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                     roles.append("instruction_policy")
                 if suffix == ".md":
                     roles.append("markdown")
-                    markdown_count += 1
                 if suffix in COMPONENT_SUFFIXES and any(token in lowered for token in ("component", "src/", "app/", "ui/", "frontend/")):
                     roles.append("component_source")
                     component_count += 1
@@ -353,20 +498,23 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
 
                 record: dict[str, Any] = {
                     "path": relative,
-                    "scope": "materialized_repository",
+                    "scope": _source_scope(relative),
                     "suffix": suffix or "[no extension]",
                     "bytes": size,
                     "roles": sorted(set(roles)) or ["general_source"],
                     "sha256": None,
                     "status": "indexed",
                 }
-                if relative == "ollamatracks/repository_surface_audit.json":
+                if relative in AUDIT_SELF_REFERENTIAL_REPORTS:
+                    record["bytes"] = None
                     record["status"] = "self_referential_excluded"
                     record["exclusion_reason"] = "audit_report_is_generated_from_this_inventory"
                     self_referential_exclusions.append(relative)
                     file_records.append(record)
                     all_file_records.append({"root": str(root), **record})
                     continue
+                if suffix == ".md":
+                    markdown_count += 1
                 if size > AUDIT_MAX_FILE_BYTES:
                     record["status"] = "oversized_not_hashed"
                     skipped.append({"path": relative, "reason": "oversized_file_not_hashed", "bytes": size})
@@ -404,7 +552,9 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                         else:
                             lines = text.splitlines()
                             words = re.findall(r"\b[\w'-]+\b", text, re.UNICODE)
-                            sentences = [part for part in re.split(r"(?<=[.!?])\s+", text.strip()) if part]
+                            document_families = _markdown_document_families(relative, text)
+                            record["document_families"] = document_families
+                            sentence_evidence = _markdown_sentence_evidence(text)
                             headings = sum(line.lstrip().startswith("#") for line in lines)
                             fence_count = sum(line.lstrip().startswith(("```", "~~~")) for line in lines)
                             unresolved = sorted(set(re.findall(r"\b(?:TODO|FIXME|TBD|PLACEHOLDER)\b", text, re.IGNORECASE)))
@@ -480,13 +630,21 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                                 review_reasons.append("invalid_or_missing_local_links")
                             markdown_record = {
                                 "path": relative,
-                                "scope": "materialized_repository",
+                                "scope": record["scope"],
+                                "document_families": document_families,
                                 "bytes": size,
                                 "sha256": record["sha256"],
                                 "line_count": len(lines),
                                 "word_count": len(words),
-                                "sentence_count_heuristic": len(sentences),
-                                "semantic_validation": "not_automatable; content requires source-backed review",
+                                "sentence_count_heuristic": sentence_evidence["sentence_count_heuristic"],
+                                "sentence_records": sentence_evidence["sentence_records"],
+                                "sentence_records_omitted_by_bound": sentence_evidence["sentence_records_omitted_by_bound"],
+                                "duplicate_adjacent_word_candidate_count": sentence_evidence["duplicate_adjacent_word_candidate_count"],
+                                "metric_claim_candidate_count": sentence_evidence["metric_claim_candidate_count"],
+                                "completion_claim_candidate_count": sentence_evidence["completion_claim_candidate_count"],
+                                "unreferenced_metric_claim_candidate_count": sentence_evidence["unreferenced_metric_claim_candidate_count"],
+                                "unreferenced_completion_claim_candidate_count": sentence_evidence["unreferenced_completion_claim_candidate_count"],
+                                "semantic_validation": "integrity_is_hash_checked; each sentence still requires source_and_owner_review",
                                 "heading_count": headings,
                                 "code_fence_count": fence_count,
                                 "balanced_code_fences": fence_count % 2 == 0,
@@ -585,10 +743,35 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                 check=True,
                 timeout=30,
             ).stdout.strip())
+            local_head_sha = subprocess.run(
+                ["git", "-C", str(root), "rev-parse", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=20,
+            ).stdout.strip()
+            local_tree_sha = subprocess.run(
+                ["git", "-C", str(root), "rev-parse", "HEAD^{tree}"],
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=20,
+            ).stdout.strip()
+            local_branch_result = subprocess.run(
+                ["git", "-C", str(root), "symbolic-ref", "--quiet", "--short", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=20,
+            )
+            local_branch = local_branch_result.stdout.strip() if local_branch_result.returncode == 0 else None
             git_status = "enumerated_local_refs_and_commits"
         except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired, ValueError):
             refs = []
             commit_count = None
+            local_head_sha = None
+            local_tree_sha = None
+            local_branch = None
             git_status = "unavailable"
 
         root_report = {
@@ -606,6 +789,14 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
             "file_type_counts": dict(sorted(suffix_counts.items())),
             "surface_documents": required_documents,
             "surface_paths": {name: sorted(set(paths)) for name, paths in surface_paths.items() if paths},
+            "document_family_paths": {
+                family: sorted(
+                    item["path"]
+                    for item in markdown_records
+                    if family in item.get("document_families", [])
+                )
+                for family in MARKDOWN_DOCUMENT_FAMILY_PATTERNS
+            },
             "markdown_records": markdown_records,
             "directories": sorted(directories),
             "git_history": {
@@ -613,20 +804,30 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                 "ref_count": len(refs),
                 "refs": sorted(refs),
                 "commit_count": commit_count,
+                "local_ref": f"refs/heads/{local_branch}" if local_branch else "HEAD",
+                "local_branch": local_branch,
+                "local_head_sha": local_head_sha,
+                "local_tree_sha": local_tree_sha,
                 "intermediate_commit_trees_scanned": False,
                 "remote_completeness": "not_verified",
             },
             "unreadable": unreadable,
             "skipped": skipped,
             "self_referential_exclusions": self_referential_exclusions,
+            "self_referential_exclusion_policy": sorted(AUDIT_SELF_REFERENTIAL_REPORTS),
             "content_digest": content_digest.hexdigest(),
             "source_contents_recorded": False,
             "semantic_requirements_understood": False,
+            "scan_duration_seconds": round(time.monotonic() - root_started, 3),
         }
         root_reports.append(root_report)
 
     manifest = json.dumps(
-        {"files": all_file_records, "directories": all_directories},
+        {
+            "files": all_file_records,
+            "directories": all_directories,
+            "self_referential_exclusion_policy": sorted(AUDIT_SELF_REFERENTIAL_REPORTS),
+        },
         sort_keys=True,
         separators=(",", ":"),
     ).encode("utf-8")
@@ -635,6 +836,11 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         for report in root_reports
         for item in report.get("markdown_records", [])
     )
+    markdown_records = [
+        item
+        for report in root_reports
+        for item in report.get("markdown_records", [])
+    ]
     unreadable_count = sum(len(report.get("unreadable", [])) for report in root_reports)
     skipped_count = sum(len(report.get("skipped", [])) for report in root_reports)
     surface_counts: dict[str, int] = {}
@@ -647,6 +853,14 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         len(report.get("surface_paths", {}).get("qvillage_qvs", []))
         for report in root_reports
     )
+    document_family_paths = {
+        family: sorted({
+            path
+            for report in root_reports
+            for path in report.get("document_family_paths", {}).get(family, [])
+        })
+        for family in MARKDOWN_DOCUMENT_FAMILY_PATTERNS
+    }
     percentage_values_by_path: dict[tuple[str, str], list[float]] = {}
     for item in percentage_candidates:
         try:
@@ -667,8 +881,9 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         for (root, path), values in sorted(percentage_values_by_path.items())
     ]
     return {
-        "schema_version": 1,
+        "schema_version": 4,
         "generated_at": utc_now(),
+        "scan_duration_seconds": round(time.monotonic() - audit_started, 3),
         "status": "NEEDS_REVIEW" if unavailable_roots or invalid_markdown or unreadable_count or skipped_count else "MATERIALIZED_AUDIT_COMPLETE_REMOTE_HISTORY_INCOMPLETE",
         "scope": "materialized repository roots and local refs only",
         "roots": root_reports,
@@ -676,12 +891,25 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         "directory_count": len(all_directories),
         "markdown_file_count": sum(report.get("markdown_file_count", 0) for report in root_reports),
         "surface_document_counts": surface_counts,
+        "document_family_counts": {
+            family: len(paths) for family, paths in document_family_paths.items()
+        },
+        "document_family_paths": document_family_paths,
         "component_source_count": sum(report.get("component_source_count", 0) for report in root_reports),
         "api_or_endpoint_source_count": sum(report.get("api_or_endpoint_source_count", 0) for report in root_reports),
         "route_source_count": sum(report.get("route_source_count", 0) for report in root_reports),
         "automation_or_event_source_count": sum(report.get("automation_or_event_source_count", 0) for report in root_reports),
         "markdown_structurally_validated_count": sum(item["status"] == "structurally_validated" for report in root_reports for item in report.get("markdown_records", [])),
         "markdown_needs_review_count": invalid_markdown,
+        "markdown_word_count": sum(item.get("word_count", 0) for item in markdown_records),
+        "markdown_sentence_count_heuristic": sum(item.get("sentence_count_heuristic", 0) for item in markdown_records),
+        "markdown_sentence_records_indexed": sum(len(item.get("sentence_records", [])) for item in markdown_records),
+        "markdown_sentence_records_omitted_by_bound": sum(item.get("sentence_records_omitted_by_bound", 0) for item in markdown_records),
+        "markdown_duplicate_adjacent_word_candidate_count": sum(item.get("duplicate_adjacent_word_candidate_count", 0) for item in markdown_records),
+        "markdown_metric_claim_candidate_count": sum(item.get("metric_claim_candidate_count", 0) for item in markdown_records),
+        "markdown_completion_claim_candidate_count": sum(item.get("completion_claim_candidate_count", 0) for item in markdown_records),
+        "markdown_unreferenced_metric_claim_candidate_count": sum(item.get("unreferenced_metric_claim_candidate_count", 0) for item in markdown_records),
+        "markdown_unreferenced_completion_claim_candidate_count": sum(item.get("unreferenced_completion_claim_candidate_count", 0) for item in markdown_records),
         "metric_candidate_line_count": all_metric_candidate_count,
         "instruction_candidate_line_count": instruction_candidate_line_count,
         "instruction_candidate_file_count": len(instruction_candidates),
@@ -705,6 +933,7 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         "semantic_validation": "structure, UTF-8, local links, metrics, and hashes are machine-checked; semantic correctness of each sentence requires mapped source/tests and is not inferred",
         "production_replacement_policy": "candidate discovery only; implementation, owner, security, focused tests, rollback, and remote evidence are required before replacement",
         "source_text_recorded": False,
+        "self_referential_exclusion_policy": sorted(AUDIT_SELF_REFERENTIAL_REPORTS),
         "research_domains": sorted(audit_domains),
         "research_topics": sorted(audit_topics),
         "next_actions": [
@@ -714,6 +943,215 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
             "review production candidates individually before implementation or replacement",
         ],
     }
+
+
+def write_markdown_sentence_audit(
+    root: Path | str,
+    report: dict[str, Any],
+    *,
+    correlation_id: str | None = None,
+) -> dict[str, Any]:
+    """Persist bounded sentence/word integrity metadata without copying Markdown prose."""
+    target = Path(root).resolve()
+    artifact_path = target / MARKDOWN_SENTENCE_AUDIT_JSONL
+    manifest_path = target / MARKDOWN_SENTENCE_AUDIT_MANIFEST
+    artifact_path.parent.mkdir(parents=True, exist_ok=True)
+    run_id = correlation_id or str(uuid.uuid4())
+    markdown_records = [
+        (str(root_report.get("root", "")), item)
+        for root_report in report.get("roots", [])
+        for item in root_report.get("markdown_records", [])
+    ]
+    local_git_context = [
+        {
+            "root": str(root_report.get("root", "")),
+            "repository": Path(str(root_report.get("root", target))).name,
+            "ref": root_report.get("git_history", {}).get("local_ref", "UNKNOWN"),
+            "head_sha": root_report.get("git_history", {}).get("local_head_sha"),
+            "tree_sha": root_report.get("git_history", {}).get("local_tree_sha"),
+            "verification_level": "local_git_observation_only",
+            "remote_verified": False,
+        }
+        for root_report in report.get("roots", [])
+    ]
+    totals = {
+        "scan_duration_seconds": float(report.get("scan_duration_seconds", 0.0)),
+        "markdown_file_count": len(markdown_records),
+        "sentence_count_heuristic": sum(
+            int(item.get("sentence_count_heuristic", 0)) for _, item in markdown_records
+        ),
+        "sentence_records_indexed": sum(
+            len(item.get("sentence_records", [])) for _, item in markdown_records
+        ),
+        "sentence_records_omitted_by_bound": sum(
+            int(item.get("sentence_records_omitted_by_bound", 0))
+            for _, item in markdown_records
+        ),
+        "word_count": sum(int(item.get("word_count", 0)) for _, item in markdown_records),
+        "metric_claim_candidate_count": sum(
+            int(item.get("metric_claim_candidate_count", 0))
+            for _, item in markdown_records
+        ),
+        "completion_claim_candidate_count": sum(
+            int(item.get("completion_claim_candidate_count", 0))
+            for _, item in markdown_records
+        ),
+        "unreferenced_metric_claim_candidate_count": sum(
+            int(item.get("unreferenced_metric_claim_candidate_count", 0))
+            for _, item in markdown_records
+        ),
+        "unreferenced_completion_claim_candidate_count": sum(
+            int(item.get("unreferenced_completion_claim_candidate_count", 0))
+            for _, item in markdown_records
+        ),
+    }
+
+    def write_jsonl_record(stream: gzip.GzipFile, value: dict[str, Any]) -> None:
+        stream.write(
+            json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            + b"\n"
+        )
+
+    fd, temporary_name = tempfile.mkstemp(
+        prefix=".qaudit-markdown-sentences-",
+        suffix=".jsonl.gz.tmp",
+        dir=artifact_path.parent,
+    )
+    try:
+        with os.fdopen(fd, "wb") as raw_stream:
+            with gzip.GzipFile(fileobj=raw_stream, mode="wb", mtime=0) as compressed:
+                write_jsonl_record(compressed, {
+                    "record_type": "manifest",
+                    "schema_version": 4,
+                    "generated_at": report.get("generated_at"),
+                    "scan_duration_seconds": report.get("scan_duration_seconds"),
+                    "correlation_id": run_id,
+                    "repository": target.name,
+                    "scope": report.get("scope", "materialized_repository"),
+                    "status": report.get("status", "UNKNOWN"),
+                    "source_manifest_sha256": report.get("source_manifest_sha256"),
+                    "self_referential_exclusion_policy": report.get(
+                        "self_referential_exclusion_policy",
+                        sorted(AUDIT_SELF_REFERENTIAL_REPORTS),
+                    ),
+                    "source_text_recorded": False,
+                    "local_git_context": local_git_context,
+                    "remote_verified": False,
+                    **totals,
+                })
+                for source_root, item in sorted(
+                    markdown_records,
+                    key=lambda entry: (entry[0], str(entry[1].get("path", ""))),
+                ):
+                    path = str(item.get("path", ""))
+                    write_jsonl_record(compressed, {
+                        "record_type": "document",
+                        "root": source_root,
+                        "path": path,
+                        "scope": item.get("scope"),
+                        "document_families": item.get("document_families", []),
+                        "bytes": item.get("bytes"),
+                        "sha256": item.get("sha256"),
+                        "line_count": item.get("line_count"),
+                        "word_count": item.get("word_count"),
+                        "sentence_count_heuristic": item.get("sentence_count_heuristic"),
+                        "sentence_records_omitted_by_bound": item.get("sentence_records_omitted_by_bound"),
+                        "status": item.get("status"),
+                        "review_reasons": item.get("review_reasons", []),
+                        "local_link_error_count": item.get("local_link_error_count", 0),
+                        "semantic_validation": item.get("semantic_validation"),
+                        "source_text_recorded": False,
+                    })
+                    for sentence in item.get("sentence_records", []):
+                        write_jsonl_record(compressed, {
+                            "record_type": "sentence",
+                            "root": source_root,
+                            "path": path,
+                            **{
+                                field: sentence[field]
+                                for field in (
+                                    "sentence_index",
+                                    "line_start",
+                                    "line_end",
+                                    "word_count",
+                                    "sentence_sha256",
+                                    "word_sequence_sha256",
+                                    "duplicate_adjacent_word_candidate",
+                                    "metric_claim_candidate",
+                                    "completion_claim_candidate",
+                                    "reference_marker_present",
+                                    "semantic_status",
+                                )
+                                if field in sentence
+                            },
+                            "source_text_recorded": False,
+                        })
+            raw_stream.flush()
+            os.fsync(raw_stream.fileno())
+        digest = hashlib.sha256()
+        compressed_bytes = 0
+        with Path(temporary_name).open("rb") as stream:
+            while chunk := stream.read(1024 * 1024):
+                digest.update(chunk)
+                compressed_bytes += len(chunk)
+        os.replace(temporary_name, artifact_path)
+    finally:
+        if os.path.exists(temporary_name):
+            os.unlink(temporary_name)
+
+    blockers = []
+    if report.get("status") != "MATERIALIZED_AUDIT_COMPLETE_REMOTE_HISTORY_INCOMPLETE":
+        blockers.append(f"surface_audit_status:{report.get('status', 'UNKNOWN')}")
+    if report.get("unreadable_file_count", 0):
+        blockers.append(f"unreadable_files:{report['unreadable_file_count']}")
+    if report.get("skipped_source_count", 0):
+        blockers.append(f"skipped_sources:{report['skipped_source_count']}")
+    if totals["sentence_records_omitted_by_bound"]:
+        blockers.append(
+            f"sentence_records_omitted_by_bound:{totals['sentence_records_omitted_by_bound']}"
+        )
+    blockers.append("remote_refs_prs_intermediate_trees_and_release_state_not_verified")
+    metadata = {
+        "schema_version": 4,
+        "correlation_id": run_id,
+        "generated_at": report.get("generated_at"),
+        "repository": target.name,
+        "source_scope": report.get("scope", "materialized_repository"),
+        "status": report.get("status", "UNKNOWN"),
+        "source_manifest_sha256": report.get("source_manifest_sha256"),
+        "self_referential_exclusions": report.get("self_referential_exclusions", []),
+        "self_referential_exclusion_policy": report.get(
+            "self_referential_exclusion_policy",
+            sorted(AUDIT_SELF_REFERENTIAL_REPORTS),
+        ),
+        "local_git_context": local_git_context,
+        "artifact_path": artifact_path.relative_to(target).as_posix(),
+        "artifact_sha256": digest.hexdigest(),
+        "artifact_bytes": compressed_bytes,
+        "record_format": "gzip-compressed-jsonl; manifest, document, then sentence records",
+        "source_text_recorded": False,
+        "remote_verified": False,
+        "totals": totals,
+        "unreadable_file_count": report.get("unreadable_file_count", 0),
+        "skipped_source_count": report.get("skipped_source_count", 0),
+        "blockers": blockers,
+    }
+    fd, metadata_temporary = tempfile.mkstemp(
+        prefix=".qaudit-markdown-manifest-",
+        suffix=".json.tmp",
+        dir=manifest_path.parent,
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            json.dump(metadata, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(metadata_temporary, manifest_path)
+    finally:
+        if os.path.exists(metadata_temporary):
+            os.unlink(metadata_temporary)
+    return metadata
 
 
 def build_external_research_plan(topics: Iterable[str] | None = None) -> dict[str, Any]:

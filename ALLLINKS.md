@@ -3,7 +3,7 @@
 <!-- BEGIN QMOI MANAGED: materialized-link-inventory -->
 ## Materialized Markdown link inventory
 
-- Link references: `8536`; URL query strings and fragments are omitted from display.
+- Link references: `8609`; URL query strings and fragments are omitted from display.
 - A listed link is not a reachability or permission check; local missing targets remain in `repository_surface_audit.json`.
 
 | Source path | Line | Sanitized target | Target SHA-256 | Kind |
@@ -11,6 +11,9 @@
 | `ACCOUNTABILITY.md` | 296 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
 | `ACCOUNTABILITY.md` | 297 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
 | `ACCOUNTABILITY.md` | 298 | `resumefromhere.txt` | `d95690582ffb01166a026ae3a92a967d773f8116b230586d837fcaf22cafc604` | `local` |
+| `ALLAUTO.md` | 40 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `ALLAUTO.md` | 40 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `ALLAUTO.md` | 43 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
 | `API.md` | 70 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `API.md` | 71 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
 | `API.md` | 72 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
@@ -28,60 +31,64 @@
 | `APP_LINKS.md` | 15 | `QVILLAGE.md` | `248510c789e822028329cdc540c23ce19a7243237ac3da968c32bc831ada06ed` | `local` |
 | `APP_LINKS.md` | 16 | `QUANTUM.md` | `f39d66bf63a5cda11e56c8ab153a9b47673b78f34e9b2469d6097f1ab0e6aba9` | `local` |
 | `APP_LINKS.md` | 18 | `QSTORE.md` | `c032fd5027006602323527dfe8a93eea6f0e266eba33a2997b4f3af90746a0f3` | `local` |
-| `CREDENTIAL_READINESS.md` | 14 | `CREDENTIALS_ROTATION_PLAYBOOK.md` | `520e4a0c5ab49a1f071ca40496a7a324183c8c9e3c6d7abb278213b24d503035` | `local` |
+| `AUTODEV.md` | 34 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `AUTODEV.md` | 34 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `AUTODEV.md` | 34 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
+| `AUTODEV.md` | 36 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `CREDENTIAL_READINESS.md` | 20 | `CREDENTIALS_ROTATION_PLAYBOOK.md` | `520e4a0c5ab49a1f071ca40496a7a324183c8c9e3c6d7abb278213b24d503035` | `local` |
 | `ENDPOINTS.md` | 20 | `qmoi-enhanced-history-14` | `d4989bb27542f1206d6e337e54afd4fa83013fdd18331d963be1c85413f5db64` | `local` |
-| `FINANCIALMANAGER.md` | 110 | `ADVANCEMENT.md` | `6b2ccc590f51f6beffd55fc753b05b923eaeafe3942bff74cc82339d0a47c93e` | `local` |
-| `FINANCIALMANAGER.md` | 111 | `ALLBACKEND.md` | `a4cc1dc722e9551f16a7d12c14be6645b82a847f4ca40edfab063c42fbfb641d` | `local` |
-| `FINANCIALMANAGER.md` | 112 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `FINANCIALMANAGER.md` | 113 | `ALLROUTES.md` | `d8236190f2c2db74bdfa8dea15c699e132e760d4b0ddeec5e2544ac1ff08ad0c` | `local` |
-| `FINANCIALMANAGER.md` | 114 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
-| `FINANCIALMANAGER.md` | 115 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
-| `FINANCIALMANAGER.md` | 116 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
-| `FINANCIALMANAGER.md` | 117 | `FINAL_VALIDATION_EVIDENCE_2026_08_29.md` | `f168707bb9af750a381e9bef3acb9526358bcaceb3e360de288c93bf6c5e60e2` | `local` |
-| `FINANCIALMANAGER.md` | 118 | `GITHUBCLONED.md` | `41e36e8043393bb2478651814ac64c62319b092e3747de0d41353068df8834d1` | `local` |
-| `FINANCIALMANAGER.md` | 119 | `GITHUB_ACTIONS_EXECUTION_GUIDE.md` | `bd1f5d14f6edffc83fe6ba733d26d2386ef775697ea6311ff65f47c50c8410df` | `local` |
-| `FINANCIALMANAGER.md` | 120 | `IMPLEMENTATION_COMPLETE.md` | `01ea5db199d087fdb57fee119d0d2933b414f81126000abdce7ec48583731ce5` | `local` |
-| `FINANCIALMANAGER.md` | 121 | `MEMORY_INDEX.md` | `e5d6b73ccd3602efe93f66f1aa6bfd3bb37607a33703a8e5f35d7843a0628f32` | `local` |
-| `FINANCIALMANAGER.md` | 122 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
-| `FINANCIALMANAGER.md` | 123 | `MODEL_CARD.md` | `61e4a621e7afc93f3dc2d9685004244cdc26c985a0a4458e40378849335ee100` | `local` |
-| `FINANCIALMANAGER.md` | 124 | `MONITORING_GUIDE.md` | `01017f2684e5336fe534cf129636f48a177c5c488c30b17499ea66750281f8cb` | `local` |
-| `FINANCIALMANAGER.md` | 125 | `MONITORING_INDEX.md` | `14c49973beacaa2c394bbfa0a38d8f15d569233e6e2d3883f8b9b2b127881daa` | `local` |
-| `FINANCIALMANAGER.md` | 126 | `MONITORING_SUMMARY.md` | `d090da629e264fcaca6372029a02a5b7ac8623c946223f39002833d57d8dd486` | `local` |
-| `FINANCIALMANAGER.md` | 127 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
-| `FINANCIALMANAGER.md` | 128 | `QMOI_ENHANCEMENT_COMPLETE.md` | `49057844da479dd01af2bbc992e767a36b8c617483da26ec7e3c414872882bf7` | `local` |
-| `FINANCIALMANAGER.md` | 129 | `QMOI_ENHANCEMENT_SUCCESS.md` | `28974361d6df670dd13b601e8c18af7ca26428b6977271d67f66c39feaf3ecaa` | `local` |
-| `FINANCIALMANAGER.md` | 130 | `PHASE_1_4_COMPLETION_SUMMARY.md` | `cf43ee953497b23f395e3e3b51500495de920f1c9640c2e72f858ff7501a75b9` | `local` |
-| `FINANCIALMANAGER.md` | 131 | `QALPHA.md` | `2e8dff7e33312db4c9406136795dad9cc7ec96401af10ca87f38b4cd888d3408` | `local` |
-| `FINANCIALMANAGER.md` | 132 | `QMOIAI.md` | `e04c1c3a4469901e92eeb68ecf46b9e2265ee0c47ad06ab6a64a5cd68a76d952` | `local` |
-| `FINANCIALMANAGER.md` | 133 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
-| `FINANCIALMANAGER.md` | 134 | `QTEAM.md` | `3e824d923db74f35ca1a10533ef011860b28b35dea36477d17d85e2ae30489f5` | `local` |
-| `FINANCIALMANAGER.md` | 135 | `README.md` | `b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5` | `local` |
-| `FINANCIALMANAGER.md` | 136 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
-| `FINANCIALMANAGER.md` | 137 | `REAL_TIME_MONITORING_README.md` | `feb9b5db1eb9075b0d6db3fdb4f151b4c851f9d568da0ebd75bb87769f22523c` | `local` |
-| `FINANCIALMANAGER.md` | 138 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `FINANCIALMANAGER.md` | 139 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
-| `FINANCIALMANAGER.md` | 140 | `TEST_ENHANCEMENTS.md` | `f29ae71766bb46308544c172ee801a8881979a30a6554182a96caafd609ef99b` | `local` |
-| `FINANCIALMANAGER.md` | 141 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
-| `FINANCIALMANAGER.md` | 142 | `WORKFLOWS.md` | `14869d658dcf4b08f09b52f1b32611226b4ff104931421f5449fd011e6f47251` | `local` |
-| `FINANCIALMANAGER.md` | 143 | `WORKFLOWSO.md` | `23284152109c90320f0d67ec5e93f37a07cee06115cedffa5a7bbee015657f0e` | `local` |
-| `FINANCIALMANAGER.md` | 144 | `WORKFLOW_EXECUTION_PLAN.md` | `eef24a0c81a318cf1b63a572ef0315e34f1efde80aa3138ebd0a669972054b7c` | `local` |
-| `FINANCIALMANAGER.md` | 145 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
-| `FINANCIALMANAGER.md` | 146 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
-| `FINANCIALMANAGER.md` | 147 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
-| `FINANCIALMANAGER.md` | 148 | `oe.md` | `b7a3503a080585c81fb3480ad1d34c59d12b21cb01a7e7525e954ba2885c0315` | `local` |
-| `FINANCIALMANAGER.md` | 149 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
-| `FINANCIALMANAGER.md` | 150 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
-| `FINANCIALMANAGER.md` | 151 | `trigger.md` | `9333a2a0afd520643610f68a4c7a78f7dcf5d21db4bef594b1f1ba2d351794da` | `local` |
-| `FINANCIALMANAGER.md` | 367 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `FINANCIALMANAGER.md` | 368 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
-| `FINANCIALMANAGER.md` | 369 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
-| `FINANCIALMANAGER.md` | 370 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
-| `FINANCIALMANAGER.md` | 371 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
-| `FINANCIALMANAGER.md` | 372 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `FINANCIALMANAGER.md` | 373 | `MONITORING_GUIDE.md` | `01017f2684e5336fe534cf129636f48a177c5c488c30b17499ea66750281f8cb` | `local` |
-| `FINANCIALMANAGER.md` | 374 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
-| `FINANCIALMANAGER.md` | 375 | `QMOI_REALTIME_MEMORY_INDEX.md` | `4a68c01465154f98c90419f2ca14554951d7ba4c968120eedd4f72b758c60009` | `local` |
-| `FINANCIALMANAGER.md` | 376 | `WORKFLOWS.md` | `14869d658dcf4b08f09b52f1b32611226b4ff104931421f5449fd011e6f47251` | `local` |
+| `FINANCIALMANAGER.md` | 129 | `ADVANCEMENT.md` | `6b2ccc590f51f6beffd55fc753b05b923eaeafe3942bff74cc82339d0a47c93e` | `local` |
+| `FINANCIALMANAGER.md` | 130 | `ALLBACKEND.md` | `a4cc1dc722e9551f16a7d12c14be6645b82a847f4ca40edfab063c42fbfb641d` | `local` |
+| `FINANCIALMANAGER.md` | 131 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `FINANCIALMANAGER.md` | 132 | `ALLROUTES.md` | `d8236190f2c2db74bdfa8dea15c699e132e760d4b0ddeec5e2544ac1ff08ad0c` | `local` |
+| `FINANCIALMANAGER.md` | 133 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
+| `FINANCIALMANAGER.md` | 134 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
+| `FINANCIALMANAGER.md` | 135 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
+| `FINANCIALMANAGER.md` | 136 | `FINAL_VALIDATION_EVIDENCE_2026_08_29.md` | `f168707bb9af750a381e9bef3acb9526358bcaceb3e360de288c93bf6c5e60e2` | `local` |
+| `FINANCIALMANAGER.md` | 137 | `GITHUBCLONED.md` | `41e36e8043393bb2478651814ac64c62319b092e3747de0d41353068df8834d1` | `local` |
+| `FINANCIALMANAGER.md` | 138 | `GITHUB_ACTIONS_EXECUTION_GUIDE.md` | `bd1f5d14f6edffc83fe6ba733d26d2386ef775697ea6311ff65f47c50c8410df` | `local` |
+| `FINANCIALMANAGER.md` | 139 | `IMPLEMENTATION_COMPLETE.md` | `01ea5db199d087fdb57fee119d0d2933b414f81126000abdce7ec48583731ce5` | `local` |
+| `FINANCIALMANAGER.md` | 140 | `MEMORY_INDEX.md` | `e5d6b73ccd3602efe93f66f1aa6bfd3bb37607a33703a8e5f35d7843a0628f32` | `local` |
+| `FINANCIALMANAGER.md` | 141 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
+| `FINANCIALMANAGER.md` | 142 | `MODEL_CARD.md` | `61e4a621e7afc93f3dc2d9685004244cdc26c985a0a4458e40378849335ee100` | `local` |
+| `FINANCIALMANAGER.md` | 143 | `MONITORING_GUIDE.md` | `01017f2684e5336fe534cf129636f48a177c5c488c30b17499ea66750281f8cb` | `local` |
+| `FINANCIALMANAGER.md` | 144 | `MONITORING_INDEX.md` | `14c49973beacaa2c394bbfa0a38d8f15d569233e6e2d3883f8b9b2b127881daa` | `local` |
+| `FINANCIALMANAGER.md` | 145 | `MONITORING_SUMMARY.md` | `d090da629e264fcaca6372029a02a5b7ac8623c946223f39002833d57d8dd486` | `local` |
+| `FINANCIALMANAGER.md` | 146 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `FINANCIALMANAGER.md` | 147 | `QMOI_ENHANCEMENT_COMPLETE.md` | `49057844da479dd01af2bbc992e767a36b8c617483da26ec7e3c414872882bf7` | `local` |
+| `FINANCIALMANAGER.md` | 148 | `QMOI_ENHANCEMENT_SUCCESS.md` | `28974361d6df670dd13b601e8c18af7ca26428b6977271d67f66c39feaf3ecaa` | `local` |
+| `FINANCIALMANAGER.md` | 149 | `PHASE_1_4_COMPLETION_SUMMARY.md` | `cf43ee953497b23f395e3e3b51500495de920f1c9640c2e72f858ff7501a75b9` | `local` |
+| `FINANCIALMANAGER.md` | 150 | `QALPHA.md` | `2e8dff7e33312db4c9406136795dad9cc7ec96401af10ca87f38b4cd888d3408` | `local` |
+| `FINANCIALMANAGER.md` | 151 | `QMOIAI.md` | `e04c1c3a4469901e92eeb68ecf46b9e2265ee0c47ad06ab6a64a5cd68a76d952` | `local` |
+| `FINANCIALMANAGER.md` | 152 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
+| `FINANCIALMANAGER.md` | 153 | `QTEAM.md` | `3e824d923db74f35ca1a10533ef011860b28b35dea36477d17d85e2ae30489f5` | `local` |
+| `FINANCIALMANAGER.md` | 154 | `README.md` | `b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5` | `local` |
+| `FINANCIALMANAGER.md` | 155 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
+| `FINANCIALMANAGER.md` | 156 | `REAL_TIME_MONITORING_README.md` | `feb9b5db1eb9075b0d6db3fdb4f151b4c851f9d568da0ebd75bb87769f22523c` | `local` |
+| `FINANCIALMANAGER.md` | 157 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
+| `FINANCIALMANAGER.md` | 158 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `FINANCIALMANAGER.md` | 159 | `TEST_ENHANCEMENTS.md` | `f29ae71766bb46308544c172ee801a8881979a30a6554182a96caafd609ef99b` | `local` |
+| `FINANCIALMANAGER.md` | 160 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `FINANCIALMANAGER.md` | 161 | `WORKFLOWS.md` | `14869d658dcf4b08f09b52f1b32611226b4ff104931421f5449fd011e6f47251` | `local` |
+| `FINANCIALMANAGER.md` | 162 | `WORKFLOWSO.md` | `23284152109c90320f0d67ec5e93f37a07cee06115cedffa5a7bbee015657f0e` | `local` |
+| `FINANCIALMANAGER.md` | 163 | `WORKFLOW_EXECUTION_PLAN.md` | `eef24a0c81a318cf1b63a572ef0315e34f1efde80aa3138ebd0a669972054b7c` | `local` |
+| `FINANCIALMANAGER.md` | 164 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
+| `FINANCIALMANAGER.md` | 165 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
+| `FINANCIALMANAGER.md` | 166 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
+| `FINANCIALMANAGER.md` | 167 | `oe.md` | `b7a3503a080585c81fb3480ad1d34c59d12b21cb01a7e7525e954ba2885c0315` | `local` |
+| `FINANCIALMANAGER.md` | 168 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
+| `FINANCIALMANAGER.md` | 169 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
+| `FINANCIALMANAGER.md` | 170 | `trigger.md` | `9333a2a0afd520643610f68a4c7a78f7dcf5d21db4bef594b1f1ba2d351794da` | `local` |
+| `FINANCIALMANAGER.md` | 386 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `FINANCIALMANAGER.md` | 387 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
+| `FINANCIALMANAGER.md` | 388 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
+| `FINANCIALMANAGER.md` | 389 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
+| `FINANCIALMANAGER.md` | 390 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
+| `FINANCIALMANAGER.md` | 391 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
+| `FINANCIALMANAGER.md` | 392 | `MONITORING_GUIDE.md` | `01017f2684e5336fe534cf129636f48a177c5c488c30b17499ea66750281f8cb` | `local` |
+| `FINANCIALMANAGER.md` | 393 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `FINANCIALMANAGER.md` | 394 | `QMOI_REALTIME_MEMORY_INDEX.md` | `4a68c01465154f98c90419f2ca14554951d7ba4c968120eedd4f72b758c60009` | `local` |
+| `FINANCIALMANAGER.md` | 395 | `WORKFLOWS.md` | `14869d658dcf4b08f09b52f1b32611226b4ff104931421f5449fd011e6f47251` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 28 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 39 | `DOWNLOAD.md` | `1cc1acd2a26c5c9f67d5a60606a44a59755e2bd4c3a7c2487cee39d28f60e753` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 47 | `INSTALL.md` | `09b140a43ebfdd8dbec31ce72cafffd15164d2860fd390692a030bcb932b54a0` | `local` |
@@ -166,6 +173,9 @@
 | `QMOI_AUTOMATION_GUIDE.md` | 433 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
 | `QMOI_AUTOMATION_GUIDE.md` | 434 | `.github/workflows/QMOItrigger.yml` | `8448a699741b9cfc8f3de55460e873c1f532d61037c29414cfb610c8c762b7fc` | `local` |
 | `QMOI_AUTOMATION_GUIDE.md` | 435 | `.github/workflows/QMOI-autonomous-agent.yml` | `c728b27bbbc121aaf3e734b32e72736dd0c44bb55588f46ab1580c420c143b20` | `local` |
+| `QAUDITS.md` | 5 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `QAUDITS.md` | 7 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
+| `QAUDITS.md` | 76 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `VERCELPAYED.md` | `4e68358d3081c50efb141b7e0008676671fb33bc11516d036061940c6e73fc41` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUMPAYED.md` | `0ea9235e0afe898dd3589a58d06ebdf47758216c1170b712588d4376fc675be5` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUM.md` | `f39d66bf63a5cda11e56c8ab153a9b47673b78f34e9b2469d6097f1ab0e6aba9` | `local` |
@@ -183,6 +193,14 @@
 | `QSTREAM.md` | 4290 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
 | `QSTREAM.md` | 4291 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
 | `QUANTUM.md` | 8 | `QMOICLONEQUANTUM.md` | `42fe4aafcd6888ca1515a48683a1111d69291a462b421b90702f8d956966f40e` | `local` |
+| `QVERSIONMANAGER.md` | 13 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `QVERSIONMANAGER.md` | 13 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `QVERSIONMANAGER.md` | 13 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
+| `QVERSIONMANAGER.md` | 233 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `QVERSIONMANAGER.md` | 249 | `QMOItracks/qaudit_universe.json` | `a16a3d2024195943acdde328294804b4c993c076bb7ea9e79bb0844010fbf744` | `local` |
+| `QVERSIONMANAGER.md` | 249 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `QVERSIONMANAGER.md` | 259 | `scripts/checkpoint_manager.py` | `0c406fbeec19b6e088e4a95c6dd84fd1922355333efb1dc68353af236ac9f619` | `local` |
+| `QVERSIONMANAGER.md` | 259 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
 | `Qtrade.md` | 40 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
 | `Qtrade.md` | 293 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
 | `Qtrade.md` | 294 | `TRADINGREADME.md` | `4676daa204a64892b41af786d7ebfe24c8b59d46f17e45d48b48624249483f4f` | `local` |
@@ -241,18 +259,26 @@
 | `REAL_TIME_MONITORING_README.md` | 318 | `GITHUB_ACTIONS_EXECUTION_GUIDE.md` | `bd1f5d14f6edffc83fe6ba733d26d2386ef775697ea6311ff65f47c50c8410df` | `local` |
 | `REAL_TIME_MONITORING_README.md` | 319 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
 | `REAL_TIME_MONITORING_README.md` | 378 | `MONITORING_INDEX.md` | `14c49973beacaa2c394bbfa0a38d8f15d569233e6e2d3883f8b9b2b127881daa` | `local` |
-| `STYLES.md` | 106 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
-| `STYLES.md` | 107 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `STYLES.md` | 108 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
-| `STYLES.md` | 109 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
-| `STYLES.md` | 110 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `STYLES.md` | 111 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
-| `STYLES.md` | 112 | `qmoi-enhanced-history-14/STYLES.md` | `d65308a76e8116770d3fe357d978835c0dce2c75a0bb749fe6f105ca79dcd3c4` | `local` |
-| `STYLES.md` | 113 | `qmoi-enhanced-history-14/UNIVERSALS.md` | `c0f47cced70c423e588bd7d40af2c8e65335cd03422b22d6aa37906540a34a72` | `local` |
-| `STYLES.md` | 114 | `qmoi-enhanced-history-14/ALLMDFILESREFS.md` | `6e67cb97d703008b0b3db815cba88e23cf2cb3f21e0b6c5f71acd34ed5ef9275` | `local` |
-| `SYNC.md` | 301 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
-| `SYNC.md` | 302 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
-| `SYNC.md` | 303 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
+| `STYLES.md` | 9 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `STYLES.md` | 9 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `STYLES.md` | 9 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `STYLES.md` | 9 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `STYLES.md` | 9 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `STYLES.md` | 9 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
+| `STYLES.md` | 13 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `STYLES.md` | 13 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `STYLES.md` | 114 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `STYLES.md` | 115 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `STYLES.md` | 116 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
+| `STYLES.md` | 117 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
+| `STYLES.md` | 118 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
+| `STYLES.md` | 119 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
+| `STYLES.md` | 120 | `qmoi-enhanced-history-14/STYLES.md` | `d65308a76e8116770d3fe357d978835c0dce2c75a0bb749fe6f105ca79dcd3c4` | `local` |
+| `STYLES.md` | 121 | `qmoi-enhanced-history-14/UNIVERSALS.md` | `c0f47cced70c423e588bd7d40af2c8e65335cd03422b22d6aa37906540a34a72` | `local` |
+| `STYLES.md` | 122 | `qmoi-enhanced-history-14/ALLMDFILESREFS.md` | `6e67cb97d703008b0b3db815cba88e23cf2cb3f21e0b6c5f71acd34ed5ef9275` | `local` |
+| `SYNC.md` | 319 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
+| `SYNC.md` | 320 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
+| `SYNC.md` | 321 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
 | `TRADINGREADME.md` | 94 | `FINANCIALMANAGER.md` | `28deb4af15ab67ea6e1629f2374beaab5d175bedc3e73d455f16787d559ee80b` | `local` |
 | `TRADINGREADME.md` | 95 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `TRADINGREADME.md` | 96 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
@@ -262,17 +288,71 @@
 | `TRADINGREADME.md` | 100 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
 | `TRADINGREADME.md` | 101 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
 | `TRADINGREADME.md` | 102 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `UNIVERSALS.md` | 12 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
-| `UNIVERSALS.md` | 12 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `UNIVERSALS.md` | 12 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
-| `UNIVERSALS.md` | 12 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
-| `UNIVERSALS.md` | 12 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `UNIVERSALS.md` | 12 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
-| `UNIVERSALS.md` | 12 | `qmoi-enhanced-history-14` | `d4989bb27542f1206d6e337e54afd4fa83013fdd18331d963be1c85413f5db64` | `local` |
-| `UNIVERSALS.md` | 15 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `UNIVERSALS.md` | 16 | `qmoi-enhanced-history-14` | `d4989bb27542f1206d6e337e54afd4fa83013fdd18331d963be1c85413f5db64` | `local` |
-| `UNIVERSALS.md` | 17 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
-| `UNIVERSALS.md` | 335 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `TRANSION.md` | 13 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `TRANSION.md` | 14 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `TRANSION.md` | 15 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `TRANSION.md` | 16 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `TRANSION.md` | 17 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `TRANSION.md` | 18 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
+| `TRANSION.md` | 19 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
+| `TRANSION.md` | 20 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `TRANSION.md` | 21 | `OFCA.md` | `f1dc533a81732ba7c4c6947a11881212b248785ad4f42ed1975190b0eaa2b82a` | `local` |
+| `TRANSION.md` | 22 | `ALLTESTSAUTOTESTS.md` | `94bb772a3400354c94b2d6fb36bc5d92a2adc0ec158a9cb06a74f9890463bf30` | `local` |
+| `TRANSION.md` | 23 | `ALLHOOKSWEBHOOKS.md` | `4355598b1f107b6cf3b0466cb375671226b6e7f82237abfc74cc26cecb0e575c` | `local` |
+| `TRANSION.md` | 24 | `COMPONENTS.md` | `eb975a80998ce43dadc636ae432d176e7dd2a5bf4259db1cf588678a813c173e` | `local` |
+| `TRANSION.md` | 25 | `TREE.md` | `8332eb041983621ebf42cdd8b9ded8935b422c49df6bfe86614690e4470b73bc` | `local` |
+| `TRANSION.md` | 26 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
+| `TRANSION.md` | 27 | `VERCELLINKS.md` | `f1c95b483a2feab989a1abee74b333995c1e3a9b18d93d7b9c28547578572b81` | `local` |
+| `TRANSION.md` | 28 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
+| `TRANSION.md` | 29 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
+| `TRANSION.md` | 30 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
+| `TRANSION.md` | 31 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
+| `TRANSION.md` | 32 | `INTERNALRESEARCH.md` | `d447234db29b500c82a556d6cedeaee7cd05604649490e0907042f5aac6b6283` | `local` |
+| `TRANSION.md` | 33 | `EXTERNALRESEARCH.md` | `7292c71a81cc5adcb4484db85b9cc1040dc1d74e61de5ca623c95adc44f4413c` | `local` |
+| `TRANSION.md` | 113 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `TRANSION.md` | 114 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `TRANSION.md` | 115 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `TRANSION.md` | 116 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `TRANSION.md` | 117 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
+| `TRANSION.md` | 118 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
+| `TRANSION.md` | 119 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `TRANSION.md` | 120 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `TRANSION.md` | 121 | `OFCA.md` | `f1dc533a81732ba7c4c6947a11881212b248785ad4f42ed1975190b0eaa2b82a` | `local` |
+| `TRANSION.md` | 122 | `ALLTESTSAUTOTESTS.md` | `94bb772a3400354c94b2d6fb36bc5d92a2adc0ec158a9cb06a74f9890463bf30` | `local` |
+| `TRANSION.md` | 123 | `ALLHOOKSWEBHOOKS.md` | `4355598b1f107b6cf3b0466cb375671226b6e7f82237abfc74cc26cecb0e575c` | `local` |
+| `TRANSION.md` | 124 | `INTERNALRESEARCH.md` | `d447234db29b500c82a556d6cedeaee7cd05604649490e0907042f5aac6b6283` | `local` |
+| `TRANSION.md` | 125 | `EXTERNALRESEARCH.md` | `7292c71a81cc5adcb4484db85b9cc1040dc1d74e61de5ca623c95adc44f4413c` | `local` |
+| `TRANSION.md` | 126 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
+| `TRANSION.md` | 127 | `production.md` | `2e3bdb96d0724399f7fe714de5836a3b8f248e4f522ebf68bbf2d560fcb021fa` | `local` |
+| `TRANSION.md` | 128 | `productionenhanced.md` | `5b33a2bfe48ada25bd62d9dbcd593fb7cf7d1738fb43b3b1ee978858fc9bdcd8` | `local` |
+| `TRANSION.md` | 129 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `UNIVERSAL.md` | 5 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `UNIVERSAL.md` | 5 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `UNIVERSAL.md` | 5 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `UNIVERSAL.md` | 5 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `UNIVERSAL.md` | 5 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `UNIVERSAL.md` | 5 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
+| `UNIVERSAL.md` | 9 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `UNIVERSAL.md` | 9 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `UNIVERSALS.md` | 5 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `UNIVERSALS.md` | 5 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `UNIVERSALS.md` | 5 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `UNIVERSALS.md` | 5 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `UNIVERSALS.md` | 5 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `UNIVERSALS.md` | 5 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
+| `UNIVERSALS.md` | 18 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `UNIVERSALS.md` | 18 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `UNIVERSALS.md` | 18 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
+| `UNIVERSALS.md` | 18 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
+| `UNIVERSALS.md` | 18 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
+| `UNIVERSALS.md` | 18 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
+| `UNIVERSALS.md` | 18 | `qmoi-enhanced-history-14` | `d4989bb27542f1206d6e337e54afd4fa83013fdd18331d963be1c85413f5db64` | `local` |
+| `UNIVERSALS.md` | 21 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `UNIVERSALS.md` | 22 | `qmoi-enhanced-history-14` | `d4989bb27542f1206d6e337e54afd4fa83013fdd18331d963be1c85413f5db64` | `local` |
+| `UNIVERSALS.md` | 23 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `UNIVERSALS.md` | 325 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `UNIVERSALS.md` | 325 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `UNIVERSALS.md` | 345 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
 | `VERCELLINKS.md` | 14 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
 | `VERCELPAYED.md` | 31 | `QUANTUMPAYED.md` | `0ea9235e0afe898dd3589a58d06ebdf47758216c1170b712588d4376fc675be5` | `local` |
 | `compare.md` | 42 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
@@ -326,19 +406,12 @@
 | `oe2.md` | 92 | `tests/test_enhanced_tracking_and_workflows.py` | `d91192cc02e85b2b92fd5f5a3f6af95b1d0aa5a606eaa32c2643768738ac7e31` | `local` |
 | `oe2.md` | 93 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
 | `oe2.md` | 94 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
-| `remotecompletion.md` | 602 | `CREDENTIALS_ROTATION_PLAYBOOK.md` | `520e4a0c5ab49a1f071ca40496a7a324183c8c9e3c6d7abb278213b24d503035` | `local` |
-| `remotecompletion.md` | 690 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
-| `remotecompletion.md` | 690 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
-| `remotecompletion.md` | 695 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
-| `remotecompletion.md` | 695 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
-| `remotecompletion.md` | 695 | `QVILLAGE.md` | `248510c789e822028329cdc540c23ce19a7243237ac3da968c32bc831ada06ed` | `local` |
-| `remotecompletion.md` | 695 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
-| `remotecompletion.md` | 696 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
-| `remotecompletion.md` | 696 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
 | `trigger.md` | 179 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
 | `trigger.md` | 179 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `trigger.md` | 179 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
 | `trigger.md` | 179 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
+| `undoredo.md` | 66 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `undoredo.md` | 66 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 9 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 10 | `./DOWNLOADQMOIAIAPPALLDEVICES.md` | `3d44031161ffd6826fe255f72f1f9079d1841f51c3976a325a056d7c0e48e0a6` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 17 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
@@ -8549,14 +8622,20 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
+- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
-- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
+- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
+- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
+- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

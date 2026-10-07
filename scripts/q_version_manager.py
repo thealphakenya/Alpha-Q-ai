@@ -73,6 +73,39 @@ class QVersionManager:
             unique.setdefault(str(resolved), resolved)
         return list(unique.values())
 
+    @classmethod
+    def _has_terminal_remote_binding(
+        cls,
+        repository: str,
+        evidence: Any,
+        *,
+        expected_sha: str | None = None,
+        expected_ref: str | None = None,
+    ) -> bool:
+        if not isinstance(evidence, dict):
+            return False
+        sha = str(evidence.get("final_sha", ""))
+        remote_ref = str(evidence.get("remote_ref", ""))
+        run_id = evidence.get("workflow_run_id")
+        remote_tree_sha = str(evidence.get("remote_tree_sha", ""))
+        return (
+            evidence.get("repository") == repository
+            and evidence.get("repository_identity_verified") is True
+            and evidence.get("remote_verified") is True
+            and evidence.get("terminal_conclusion") == "success"
+            and evidence.get("run_status") == "completed"
+            and bool(run_id)
+            and not isinstance(run_id, bool)
+            and cls.sha_pattern.fullmatch(sha) is not None
+            and (expected_sha is None or sha == expected_sha)
+            and evidence.get("remote_ref_sha") == sha
+            and evidence.get("workflow_head_sha") == sha
+            and re.fullmatch(r"refs/heads/[^\s]+", remote_ref) is not None
+            and (expected_ref is None or remote_ref == expected_ref)
+            and cls.sha_pattern.fullmatch(remote_tree_sha) is not None
+            and evidence.get("workflow_tree_sha") == remote_tree_sha
+        )
+
     def _load_reservation(self) -> dict[str, Any]:
         if not self.reservations.exists():
             return {"reserved": 0, "version": "Q.0.0.0"}
@@ -249,6 +282,19 @@ class QVersionManager:
         normalized_status = str(status).upper()
         if normalized_status not in self.LIFECYCLE_STATUSES:
             raise ValueError(f"Unsupported lifecycle status: {status}")
+        normalized_details = dict(details or {})
+        if normalized_status == "PASS" and "qaudit_precondition" not in normalized_details:
+            normalized_status = "NEEDS_REVIEW"
+            normalized_details["qaudit_gate"] = {
+                "status": "BLOCKED",
+                "blocker": "Passing a Q-version stage requires a stage-bound QAUDITS precondition.",
+            }
+        elif "qaudit_precondition" in normalized_details:
+            self.validate_qaudit_precondition(
+                stage_name,
+                normalized_details["qaudit_precondition"],
+                expected_manifest_sha256=normalized_details.get("source_manifest_sha256"),
+            )
 
         execution_dir = self.root / "ollamatracks" / "q_versions" / execution_id
         execution_dir.mkdir(parents=True, exist_ok=True)
@@ -309,7 +355,7 @@ class QVersionManager:
                 "stage": stage_name,
                 "stage_status": normalized_status,
                 "root_metrics": root_metrics,
-                "details": dict(details or {}),
+                "details": normalized_details,
                 "external_research_status": "recorded" if normalized_sources else "not_performed_or_not_supplied",
                 "external_research_sources": normalized_sources,
                 "previous_record_sha256": previous_hash,
@@ -366,12 +412,24 @@ class QVersionManager:
             record["stage"]: record["stage_status"]
             for record in records
         }
+        latest_records_by_stage = {
+            record["stage"]: record
+            for record in records
+        }
         present = {
             stage
             for stage, status in latest_status_by_stage.items()
             if status == "PASS"
         }
         missing = [stage for stage in self.LIFECYCLE_STAGES[:-1] if stage not in present]
+        qaudit_blockers = []
+        for stage, record in latest_records_by_stage.items():
+            gate = record.get("details", {}).get("qaudit_gate")
+            if isinstance(gate, dict) and gate.get("status") == "BLOCKED":
+                qaudit_blockers.append({
+                    "stage": stage,
+                    "blocker": gate.get("blocker"),
+                })
         return {
             "execution_id": execution_id,
             "ledger_path": str(ledger),
@@ -381,6 +439,8 @@ class QVersionManager:
             "stage_sequence": [record.get("stage") for record in records],
             "passed_stages": sorted(present, key=self.LIFECYCLE_STAGES.index),
             "missing_or_unpassed_stages": missing,
+            "qaudit_blocked_stages": [item["stage"] for item in qaudit_blockers],
+            "qaudit_blockers": qaudit_blockers,
             "stage_records": [
                 {
                     "stage": record.get("stage"),
@@ -423,17 +483,11 @@ class QVersionManager:
         normalized = dict(live_verifier_payload or {})
         if not normalized:
             normalized = {"completion_status": "BLOCKED"}
-        if "completion_status" not in normalized:
-            if str(normalized.get("status", "")).upper() == "SUCCESS" and normalized.get("remote_verified") is True:
-                normalized["completion_status"] = "READY"
-            elif normalized.get("workflow_conclusion") == "success" and normalized.get("remote_verified") is True:
-                normalized["completion_status"] = "READY"
-            else:
-                normalized["completion_status"] = "BLOCKED"
-        normalized.setdefault("auth_verified", bool(normalized.get("auth_verified", True)))
-        normalized.setdefault("branch_protection_status", "verified")
-        normalized.setdefault("remote_matches_local", True)
-        normalized.setdefault("exact_sha_successful_workflow", True)
+        normalized.setdefault("completion_status", "BLOCKED")
+        normalized.setdefault("auth_verified", False)
+        normalized.setdefault("branch_protection_status", "unknown")
+        normalized.setdefault("remote_matches_local", False)
+        normalized.setdefault("exact_sha_successful_workflow", False)
 
         if not lifecycle.get("valid") or lifecycle.get("status") != "complete":
             blockers.append("Q-version lifecycle is incomplete; all canonical stages must pass before remote completion can be certified.")
@@ -458,6 +512,35 @@ class QVersionManager:
         if normalized.get("exact_sha_successful_workflow") is not True and normalized.get("workflow_runs"):
             blockers.append("No successful workflow was recorded for the exact remote SHA.")
             next_actions.append("Confirm a successful target-owned workflow on the exact remote SHA before final completion.")
+
+        remote_sha = str(normalized.get("remote_main_sha", ""))
+        remote_ref = str(normalized.get("remote_ref", ""))
+        remote_tree_sha = str(normalized.get("remote_tree_sha", ""))
+        remote_branch = remote_ref.removeprefix("refs/heads/")
+        exact_runs = normalized.get("exact_sha_workflow_runs")
+        exact_binding_valid = (
+            normalized.get("repository_identity_verified") is True
+            and normalized.get("repo") in {"thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"}
+            and re.fullmatch(r"refs/heads/[^\s]+", remote_ref) is not None
+            and self.sha_pattern.fullmatch(remote_sha) is not None
+            and normalized.get("local_head") == remote_sha
+            and self.sha_pattern.fullmatch(remote_tree_sha) is not None
+            and isinstance(exact_runs, list)
+            and any(
+                isinstance(run, dict)
+                and bool(run.get("workflow_run_id"))
+                and not isinstance(run.get("workflow_run_id"), bool)
+                and run.get("head_sha") == remote_sha
+                and run.get("head_branch") == remote_branch
+                and run.get("tree_sha") == remote_tree_sha
+                and run.get("status") == "completed"
+                and run.get("conclusion") == "success"
+                for run in exact_runs
+            )
+        )
+        if not exact_binding_valid:
+            blockers.append("Verifier evidence lacks a repository-bound terminal workflow, exact ref/commit/tree SHA, or independent identity readback.")
+            next_actions.append("Re-read the exact target repository ref and commit tree, then provide a completed successful run ID bound to that same branch and SHA.")
 
         status = "READY" if not blockers else "BLOCKED"
         return {
@@ -649,6 +732,61 @@ class QVersionManager:
         ):
             raise RuntimeError(f"Q-version metrics require complete {stage_name} evidence")
 
+    @staticmethod
+    def validate_qaudit_precondition(
+        stage_name: str,
+        precondition: dict[str, Any],
+        *,
+        expected_manifest_sha256: str | None = None,
+    ) -> None:
+        """Reject lifecycle advancement when its current QAUDITS metric snapshot is incomplete."""
+        if not isinstance(precondition, dict):
+            raise RuntimeError(f"Q-version stage {stage_name} has no QAUDITS precondition")
+        manifest = str(precondition.get("source_manifest_sha256", ""))
+        blockers = precondition.get("blockers")
+        required_metrics = precondition.get("required_metrics")
+        metrics_complete = (
+            isinstance(required_metrics, list)
+            and bool(required_metrics)
+            and all(
+                isinstance(metric, dict)
+                and isinstance(metric.get("name"), str)
+                and bool(metric["name"].strip())
+                and isinstance(metric.get("formula"), str)
+                and bool(metric["formula"].strip())
+                and type(metric.get("numerator")) is int
+                and metric["numerator"] >= 0
+                and type(metric.get("denominator")) is int
+                and metric["denominator"] >= 0
+                and metric.get("source_manifest_sha256") == manifest
+                and (
+                    metric.get("status") == "PASS"
+                    and metric["denominator"] > 0
+                    and metric["numerator"] >= metric["denominator"]
+                    or metric.get("status") == "NOT_APPLICABLE"
+                    and metric["numerator"] == 0
+                    and metric["denominator"] == 0
+                    and isinstance(metric.get("rationale"), str)
+                    and bool(metric["rationale"].strip())
+                )
+                for metric in required_metrics
+            )
+        )
+        if (
+            precondition.get("stage") != stage_name
+            or precondition.get("status") != "PASS"
+            or not re.fullmatch(r"[0-9a-f]{64}", manifest)
+            or not isinstance(expected_manifest_sha256, str)
+            or not re.fullmatch(r"[0-9a-f]{64}", expected_manifest_sha256)
+            or manifest != expected_manifest_sha256
+            or precondition.get("required_metrics_complete") is not True
+            or not metrics_complete
+            or precondition.get("source_scope") not in {"materialized_local", "target_remote_exact_sha"}
+            or not isinstance(blockers, list)
+            or blockers
+        ):
+            raise RuntimeError(f"Q-version stage {stage_name} cannot advance without a complete current QAUDITS precondition")
+
     def write_final_metrics(
         self,
         version: str,
@@ -803,6 +941,24 @@ class QVersionManager:
         repository_evidence = final_evidence.get("repositories")
         if not isinstance(repository_evidence, dict):
             raise RuntimeError("Q-version metrics require exact evidence for every repository")
+        if set(repository_evidence) != {str(root) for root in source_roots}:
+            raise RuntimeError("Q-version repository evidence must exactly match the requested repositories")
+        if {
+            item.get("repository")
+            for item in repository_evidence.values()
+            if isinstance(item, dict)
+        } != {"thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"}:
+            raise RuntimeError("Q-version evidence must bind both canonical remote repositories")
+        expected_tree_by_repository = {
+            str(item.get("repository", "")): str(item.get("remote_tree_sha", ""))
+            for item in repository_evidence.values()
+            if isinstance(item, dict)
+        }
+        expected_ref_by_repository = {
+            str(item.get("repository", "")): str(item.get("remote_ref", ""))
+            for item in repository_evidence.values()
+            if isinstance(item, dict)
+        }
         restore_evidence = final_evidence.get("qmoi_restore_point")
         restore_repositories = restore_evidence.get("repositories") if isinstance(restore_evidence, dict) else None
         if (
@@ -826,6 +982,12 @@ class QVersionManager:
             expected_tree_sha = _git(root, "rev-parse", f"{repository_sha}^{{tree}}") if self.sha_pattern.fullmatch(repository_sha) else None
             if (
                 not isinstance(item, dict)
+                or not self._has_terminal_remote_binding(
+                    str(item.get("repository", "")),
+                    item,
+                    expected_sha=repository_sha,
+                    expected_ref="refs/heads/qmoi",
+                )
                 or item.get("branch") != "qmoi"
                 or item.get("terminal_conclusion") != "success"
                 or item.get("remote_verified") is not True
@@ -850,6 +1012,11 @@ class QVersionManager:
         )
         expected_shas = {
             str(item.get("final_sha", ""))
+            for item in repository_evidence.values()
+            if isinstance(item, dict)
+        }
+        expected_sha_by_repository = {
+            str(item.get("repository", "")): str(item.get("final_sha", ""))
             for item in repository_evidence.values()
             if isinstance(item, dict)
         }
@@ -880,19 +1047,22 @@ class QVersionManager:
             }
             or audited_surface_shas != expected_shas
             or any(
-                item.get("terminal_conclusion") != "success"
-                or item.get("remote_verified") is not True
-                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
-                or not item.get("workflow_run_id")
+                not isinstance(item, dict)
+                or not self._has_terminal_remote_binding(
+                    repository,
+                    item,
+                    expected_sha=expected_sha_by_repository.get(repository),
+                    expected_ref=expected_ref_by_repository.get(repository),
+                )
+                or item.get("final_sha") != expected_sha_by_repository.get(repository)
+                or item.get("remote_tree_sha") != expected_tree_by_repository.get(repository)
                 or not required_surfaces.issubset(set(item.get("validated_surfaces", [])))
                 or item.get("all_markdown_structurally_validated") is not True
                 or item.get("all_percentages_mapped") is not True
                 or item.get("all_metric_candidates_mapped") is not True
                 or item.get("unavailable_sources") != []
-                for item in surface_repositories.values()
-                if isinstance(item, dict)
+                for repository, item in surface_repositories.items()
             )
-            or any(not isinstance(item, dict) for item in surface_repositories.values())
         ):
             raise RuntimeError("Q-version metrics require complete dual-repository surface-audit evidence")
         ollama_reference_audit = final_evidence.get("ollama_reference_audit")
@@ -925,18 +1095,21 @@ class QVersionManager:
             }
             or audited_shas != expected_shas
             or any(
-                item.get("terminal_conclusion") != "success"
-                or item.get("remote_verified") is not True
-                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
-                or not item.get("workflow_run_id")
+                not isinstance(item, dict)
+                or not self._has_terminal_remote_binding(
+                    repository,
+                    item,
+                    expected_sha=expected_sha_by_repository.get(repository),
+                    expected_ref=expected_ref_by_repository.get(repository),
+                )
+                or item.get("final_sha") != expected_sha_by_repository.get(repository)
+                or item.get("remote_tree_sha") != expected_tree_by_repository.get(repository)
                 or item.get("all_refs_enumerated") is not True
                 or item.get("all_pull_requests_included") is not True
                 or item.get("all_intermediate_commit_trees_scanned") is not True
                 or item.get("unavailable_sources") != []
-                for item in audit_repositories.values()
-                if isinstance(item, dict)
+                for repository, item in audit_repositories.items()
             )
-            or any(not isinstance(item, dict) for item in audit_repositories.values())
         ):
             raise RuntimeError("Q-version metrics require complete dual-repository Ollama history evidence")
         for root in source_roots:
@@ -1011,10 +1184,15 @@ class QVersionManager:
             }
             or ui_shas != expected_shas
             or any(
-                item.get("terminal_conclusion") != "success"
-                or item.get("remote_verified") is not True
-                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
-                or not item.get("workflow_run_id")
+                not isinstance(item, dict)
+                or not self._has_terminal_remote_binding(
+                    repository,
+                    item,
+                    expected_sha=expected_sha_by_repository.get(repository),
+                    expected_ref=expected_ref_by_repository.get(repository),
+                )
+                or item.get("final_sha") != expected_sha_by_repository.get(repository)
+                or item.get("remote_tree_sha") != expected_tree_by_repository.get(repository)
                 or isinstance(item.get("feature_count"), bool)
                 or not isinstance(item.get("feature_count"), int)
                 or item.get("feature_count", 0) < 1
@@ -1026,10 +1204,8 @@ class QVersionManager:
                 or item.get("all_feature_tests_passed") is not True
                 or item.get("all_event_hook_tests_passed") is not True
                 or item.get("unavailable_sources") != []
-                for item in ui_repositories.values()
-                if isinstance(item, dict)
+                for repository, item in ui_repositories.items()
             )
-            or any(not isinstance(item, dict) for item in ui_repositories.values())
         ):
             raise RuntimeError("Q-version metrics require complete styles/universals test and hook evidence")
         production_readiness = final_evidence.get("production_readiness")
@@ -1050,10 +1226,15 @@ class QVersionManager:
                 raise RuntimeError(f"Missing final remote evidence for {root}")
             sha = str(evidence.get("final_sha", ""))
             if (
-                evidence.get("terminal_conclusion") != "success"
+                not self._has_terminal_remote_binding(
+                    str(evidence.get("repository", "")),
+                    evidence,
+                    expected_sha=sha,
+                    expected_ref="refs/heads/main",
+                )
                 or evidence.get("checks_passed") is not True
-                or evidence.get("remote_verified") is not True
-                or not self.sha_pattern.fullmatch(sha)
+                or evidence.get("remote_tree_sha")
+                != _git(root, "rev-parse", f"{sha}^{{tree}}")
             ):
                 raise RuntimeError(f"Remote completion evidence is incomplete for {root}")
             git_head = _git(root, "rev-parse", "HEAD")
@@ -1177,6 +1358,12 @@ class QVersionManager:
             raise RuntimeError("Published Q artifact verification requires both repository records")
         if set(repositories) != {str(root) for root in source_roots}:
             raise RuntimeError("Published Q artifact evidence must exactly match the requested repositories")
+        if {
+            item.get("repository")
+            for item in repositories.values()
+            if isinstance(item, dict)
+        } != {"thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"}:
+            raise RuntimeError("Published Q artifact evidence must bind both canonical remote repositories")
         restore_evidence = final_evidence.get("qmoi_restore_point")
         restore_repositories = restore_evidence.get("repositories") if isinstance(restore_evidence, dict) else None
         if (
@@ -1200,16 +1387,25 @@ class QVersionManager:
                 raise RuntimeError(f"Missing published-state evidence for {root}")
             final_sha = str(item.get("final_sha", ""))
             if (
-                item.get("terminal_conclusion") != "success"
-                or item.get("remote_verified") is not True
+                not self._has_terminal_remote_binding(
+                    str(item.get("repository", "")),
+                    item,
+                    expected_sha=final_sha,
+                    expected_ref="refs/heads/main",
+                )
                 or item.get("checks_passed") is not True
-                or not self.sha_pattern.fullmatch(final_sha)
             ):
                 raise RuntimeError(f"Final remote evidence is incomplete for {root}")
             restore_item = restore_repositories.get(str(root), {})
             expected_tree_sha = _git(root, "rev-parse", f"{final_sha}^{{tree}}")
             if (
                 not isinstance(restore_item, dict)
+                or not self._has_terminal_remote_binding(
+                    str(restore_item.get("repository", "")),
+                    restore_item,
+                    expected_sha=final_sha,
+                    expected_ref="refs/heads/qmoi",
+                )
                 or restore_item.get("branch") != "qmoi"
                 or restore_item.get("terminal_conclusion") != "success"
                 or restore_item.get("remote_verified") is not True
@@ -1219,6 +1415,7 @@ class QVersionManager:
                 or restore_item.get("backup_sha") != final_sha
                 or restore_item.get("master_sha") != final_sha
                 or restore_item.get("branch_tree_sha") != expected_tree_sha
+                or restore_item.get("remote_tree_sha") != expected_tree_sha
                 or restore_item.get("required_docs_present") is not True
                 or restore_item.get("workflow_run_id") != restore_evidence.get("workflow_run_id")
             ):

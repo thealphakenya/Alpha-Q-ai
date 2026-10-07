@@ -652,6 +652,35 @@ class AutonomousCompletionEngine:
         self._write_evidence(result)
         return result
 
+    @staticmethod
+    def _has_terminal_exact_sha_binding(
+        repository: str,
+        item: Mapping[str, Any],
+        *,
+        required_ref: str | None = None,
+    ) -> bool:
+        final_sha = str(item.get("final_sha", ""))
+        remote_tree_sha = str(item.get("remote_tree_sha", ""))
+        workflow_tree_sha = str(item.get("workflow_tree_sha", ""))
+        remote_ref = str(item.get("remote_ref", ""))
+        run_id = item.get("workflow_run_id")
+        return (
+            item.get("repository") == repository
+            and item.get("repository_identity_verified") is True
+            and item.get("remote_verified") is True
+            and item.get("terminal_conclusion") == "success"
+            and item.get("run_status") == "completed"
+            and bool(run_id)
+            and not isinstance(run_id, bool)
+            and re.fullmatch(r"[0-9a-f]{40}", final_sha) is not None
+            and item.get("remote_ref_sha") == final_sha
+            and item.get("workflow_head_sha") == final_sha
+            and re.fullmatch(r"refs/heads/[^\s]+", remote_ref) is not None
+            and (required_ref is None or remote_ref == required_ref)
+            and re.fullmatch(r"[0-9a-f]{40}", remote_tree_sha) is not None
+            and workflow_tree_sha == remote_tree_sha
+        )
+
     @classmethod
     def _markdown_inventory_evidence_complete(cls, evidence: Any) -> bool:
         """Require terminal, exact-SHA proof for complete Markdown audits of both targets."""
@@ -681,10 +710,7 @@ class AutonomousCompletionEngine:
             total = item.get("markdown_total")
             validated = item.get("markdown_validated")
             if (
-                item.get("terminal_conclusion") != "success"
-                or item.get("remote_verified") is not True
-                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
-                or not item.get("workflow_run_id")
+                not cls._has_terminal_exact_sha_binding(repository, item)
                 or isinstance(total, bool)
                 or not isinstance(total, int)
                 or total < 1
@@ -722,10 +748,7 @@ class AutonomousCompletionEngine:
             if not isinstance(item, Mapping):
                 return False
             if (
-                item.get("terminal_conclusion") != "success"
-                or item.get("remote_verified") is not True
-                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
-                or not item.get("workflow_run_id")
+                not cls._has_terminal_exact_sha_binding(repository, item)
                 or item.get("all_refs_enumerated") is not True
                 or item.get("all_pull_requests_included") is not True
                 or item.get("all_intermediate_commit_trees_scanned") is not True
@@ -768,10 +791,7 @@ class AutonomousCompletionEngine:
                 return False
             surfaces = item.get("validated_surfaces")
             if (
-                item.get("terminal_conclusion") != "success"
-                or item.get("remote_verified") is not True
-                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
-                or not item.get("workflow_run_id")
+                not cls._has_terminal_exact_sha_binding(repository, item)
                 or not isinstance(surfaces, list)
                 or not required_surfaces.issubset(set(surfaces))
                 or item.get("all_markdown_structurally_validated") is not True
@@ -807,10 +827,7 @@ class AutonomousCompletionEngine:
                 return False
             feature_count = item.get("feature_count")
             if (
-                item.get("remote_verified") is not True
-                or item.get("terminal_conclusion") != "success"
-                or not re.fullmatch(r"[0-9a-f]{40}", str(item.get("final_sha", "")))
-                or not item.get("workflow_run_id")
+                not cls._has_terminal_exact_sha_binding(repository, item)
                 or isinstance(feature_count, bool)
                 or not isinstance(feature_count, int)
                 or feature_count < 1
@@ -856,15 +873,28 @@ class AutonomousCompletionEngine:
             if not isinstance(item, Mapping):
                 return False
             if (
-                item.get("branch") != "qmoi"
-                or item.get("terminal_conclusion") not in {None, "success"}
+                item.get("repository") != repository
+                or item.get("repository_identity_verified") is not True
+                or item.get("branch") != "qmoi"
+                or item.get("terminal_conclusion") != "success"
                 or item.get("remote_verified") is not True
+                or item.get("run_status") != "completed"
                 or item.get("workflow_run_id") != evidence.get("workflow_run_id")
+                or item.get("workflow_head_sha") != workspace_sha
                 or item.get("qmoi_sha") != workspace_sha
                 or item.get("main_sha") != workspace_sha
                 or item.get("backup_sha") != workspace_sha
                 or item.get("master_sha") != workspace_sha
                 or item.get("branch_tree_sha") != tree_sha
+                or item.get("remote_tree_sha") != tree_sha
+                or item.get("workflow_tree_sha") != tree_sha
+                or item.get("remote_ref_sha") != workspace_sha
+                or item.get("remote_ref") not in {
+                    "refs/heads/main",
+                    "refs/heads/autosync-backup",
+                    "refs/heads/master",
+                    "refs/heads/qmoi",
+                }
                 or item.get("required_docs_present") is not True
             ):
                 return False

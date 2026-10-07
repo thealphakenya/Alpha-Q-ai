@@ -102,10 +102,105 @@ class TestAutonomousContinuation:
 
 
 class TestAuditInventoryCommand:
+    def test_qseed_command_is_routed_through_ollama_agent(self, monkeypatch):
+        calls = {}
+
+        def qseed_main(arguments):
+            calls["arguments"] = arguments
+            return 7
+
+        monkeypatch.setattr("scripts.qseed_vault.main", qseed_main)
+
+        assert autonomous_agent_main(["qseed", "audit", "--repository-root", "/tmp/repo"]) == 7
+        assert calls["arguments"] == ["audit", "--repository-root", "/tmp/repo"]
+
+    def test_local_qaudit_model_review_command_is_routed(self, monkeypatch):
+        calls = {}
+
+        def review_main(arguments):
+            calls["arguments"] = arguments
+            return 9
+
+        monkeypatch.setattr("scripts.qaudit_model_review.main", review_main)
+
+        assert autonomous_agent_main([
+            "qaudit-model-review",
+            "--source",
+            "src/example.py",
+            "--model",
+            "review-model:1b",
+        ]) == 9
+        assert calls["arguments"] == [
+            "--source",
+            "src/example.py",
+            "--model",
+            "review-model:1b",
+        ]
+
+    def test_markdown_sentence_command_reuses_audit_correlation_id(
+        self, tmp_path, monkeypatch, capsys
+    ):
+        calls = {}
+        surface_audit = {"status": "NEEDS_REVIEW"}
+        sentence_evidence = {
+            "status": "NEEDS_REVIEW",
+            "correlation_id": "sentence-audit-correlation",
+            "source_manifest_sha256": "manifest-hash",
+            "local_git_context": [],
+            "artifact_path": "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz",
+            "artifact_sha256": "artifact-hash",
+            "artifact_bytes": 123,
+            "totals": {"sentence_records_omitted_by_bound": 1},
+            "unreadable_file_count": 0,
+            "skipped_source_count": 0,
+            "blockers": ["sentence_records_omitted_by_bound:1"],
+        }
+
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.audit_repository_surfaces",
+            lambda roots: surface_audit,
+        )
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.write_markdown_sentence_audit",
+            lambda root, report: sentence_evidence,
+        )
+        monkeypatch.setattr(
+            "ollama_autonomous_agent._local_artifact_integrity",
+            lambda root, path: {"status": "unavailable"},
+        )
+
+        def record_checkpoint(root, operation, evidence, *, correlation_id=None):
+            calls["correlation_id"] = correlation_id
+            calls["operation"] = operation
+            return {"correlation_id": correlation_id}
+
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.record_qaudit_checkpoint",
+            record_checkpoint,
+        )
+
+        assert autonomous_agent_main([
+            "qaudit-markdown-sentences",
+            "--base-path",
+            str(tmp_path),
+        ]) == 1
+
+        result = json.loads(capsys.readouterr().out)
+        assert calls["operation"] == "qaudit-markdown-sentences"
+        assert calls["correlation_id"] == sentence_evidence["correlation_id"]
+        assert result["correlation_id"] == result["checkpoint"]["correlation_id"]
+
     def test_audit_inventory_refreshes_local_evidence_without_remote_success_claims(
         self, tmp_path, monkeypatch, capsys
     ):
         calls = {}
+        (tmp_path / "oe2.txt").write_text("", encoding="utf-8")
+        (tmp_path / "remotecompletion.md").write_text("", encoding="utf-8")
+        (tmp_path / "remote-evidence-ledger.jsonl").write_text("", encoding="utf-8")
+        (tmp_path / "remote-completion.json").write_text(
+            json.dumps({"schema_version": "1.0", "state": {}, "blockers": []}),
+            encoding="utf-8",
+        )
 
         def build_research(self, roots, *, fetch_external=False):
             calls["research"] = {"roots": roots, "fetch_external": fetch_external}
@@ -162,6 +257,15 @@ class TestAuditInventoryCommand:
         assert result["styles_universals"]["status"] == "NEEDS_FEATURE_TEST_HOOK_MAPPING"
         assert result["remote_mutation_performed"] is False
         assert result["external_research"]["fetch_enabled"] is False
+        assert result["checkpoint"]["operation"] == "audit-inventory"
+        ledger = [
+            json.loads(line)
+            for line in (tmp_path / "remote-evidence-ledger.jsonl").read_text().splitlines()
+            if line.strip()
+        ]
+        assert len(ledger) == 2
+        assert ledger[0]["correlation_id"] == ledger[1]["correlation_id"]
+        assert result["checkpoint"]["correlation_id"] == ledger[-1]["correlation_id"]
 
 
 class TestRestorePointMemoryAndLegacyInventory:
@@ -758,6 +862,11 @@ class TestMarkdownCategoryIndex:
         (repo / "FINANCIALMANAGER.md").write_text("# finance\n", encoding="utf-8")
         (repo / "QMOIAUTOPROJECTS.md").write_text("# autoproject\n", encoding="utf-8")
         (repo / "docs" / "CUSTOM_RELEASE_NOTES.md").write_text("# release\n", encoding="utf-8")
+        (repo / "docs" / "financial-note.md").write_text("# finance candidate\n", encoding="utf-8")
+        (repo / "docs" / "overview.md").write_text(
+            "# Service overview\n\nCross-border payment and country tax jurisdiction.\n",
+            encoding="utf-8",
+        )
         (history / "LEGACY_WALLET_NOTE.md").write_text("# legacy wallet\n", encoding="utf-8")
 
         agent = OllamaAutonomousAgent(base_path=repo)
@@ -780,6 +889,8 @@ class TestMarkdownCategoryIndex:
             "FINANCIALMANAGER.md",
             "QMOIAUTOPROJECTS.md",
             "docs/CUSTOM_RELEASE_NOTES.md",
+            "docs/financial-note.md",
+            "docs/overview.md",
             "qmoi-enhanced-history-14/LEGACY_WALLET_NOTE.md",
         }
         assert set(result["all_category"]["refresh_triggers"]) == {
@@ -793,11 +904,19 @@ class TestMarkdownCategoryIndex:
         index = (repo / "ALLMDFILESREFS.md").read_text(encoding="utf-8")
         assert "Category ALL" in index
         assert "docs/CUSTOM_RELEASE_NOTES.md" in index
+        assert "docs/financial-note.md" in index
+        assert "docs/overview.md" in index
         assert "docs/UPPERCASE.MD" in index
         assert "qmoi-enhanced-history-14/LEGACY_WALLET_NOTE.md" in index
         assert result["all_category"]["aggregate_files"]["API.md"] == "all APIs"
         assert result["all_category"]["aggregate_files"]["ENDPOINTS.md"] == "all endpoints"
         assert result["all_category"]["aggregate_files"]["ALLPORTS.md"] == "all ports"
+        finance_category = next(
+            label for label in result["category_map"]
+            if label.startswith("Category I — Q Financial Manager")
+        )
+        assert "docs/financial-note.md" in result["category_map"][finance_category]
+        assert "docs/overview.md" in result["category_map"][finance_category]
         api_metric = next(item for item in result["all_category"]["metrics"] if item["path"] == "API.md")
         assert api_metric["source"] == "repo"
         assert api_metric["bytes"] > 0
@@ -1043,7 +1162,9 @@ class TestFeatureTester:
             encoding="utf-8",
         )
         (docs_dir / "financial-note.md").write_text(
-            "# Financial note\n\nUnassigned revenue claim: 300 dollars.\nUnassigned transfer amount: 700 ksh.\n",
+            "# Financial note\n\nUnassigned revenue claim: 300 dollars.\nUnassigned transfer amount: 700 ksh.\n"
+            "\n\n\nGlobal cross-border employment payroll and country tax jurisdiction; contractor wages JPY 5000.\n"
+            "\n\n\nProject budget, invoice settlement, bank wallet reconciliation, KYC approval, partner deal commission.\n",
             encoding="utf-8",
         )
         (tmp_path / "TRADINGREADME.md").write_text(
@@ -1131,6 +1252,25 @@ class TestFeatureTester:
         assert finance_json["owner_currency_counts"]["bitget"]["USD"] >= 1
         assert finance_json["owner_currency_counts"]["unassigned_financial_claim"]["USD"] >= 1
         assert finance_json["owner_currency_counts"]["unassigned_financial_claim"]["KES"] >= 1
+        assert finance_json["schema_version"] == 2
+        category_counts = finance_json["candidate_line_counts_by_category"]
+        assert category_counts["amount_currency"] >= 1
+        assert category_counts["revenue_income_money_making"] >= 1
+        assert category_counts["payments_and_transfers"] >= 1
+        assert category_counts["wallets_and_banking"] >= 1
+        assert category_counts["deals_and_contracts"] >= 1
+        assert category_counts["employment_and_payroll"] >= 1
+        assert category_counts["country_and_jurisdiction"] >= 1
+        assert category_counts["project_budget_and_expenses"] >= 1
+        assert category_counts["financial_security_and_authorization"] >= 1
+        assert finance_json["candidate_file_counts_by_category"]["country_and_jurisdiction"] >= 1
+        financial_file = next(
+            item for item in finance_json["files"]
+            if item["path"] == "docs/financial-note.md"
+        )
+        assert financial_file["category_candidate_line_counts"]["country_and_jurisdiction"] == 1
+        assert "Global cross-border" not in json.dumps(finance_json)
+        assert "JPY 5000" not in json.dumps(finance_json)
         assert finance_inventory["untyped_numeric_candidate_count"] >= 0
         assert "raw_amounts" not in finance_json
         assert "$125.50" not in json.dumps(finance_json)
@@ -1628,6 +1768,20 @@ class TestModelCardGenerator:
         assert "QVillage UI and Card Synchronization" in content
         assert "Master-plan topics discovered" in content
         assert generator.qmoi_card_path.exists()
+
+    def test_model_card_reports_qseed_surface_presence_without_claiming_validation(self, tmp_path):
+        (tmp_path / "QSEED.md").write_text("# QSeed\n", encoding="utf-8")
+        (tmp_path / "scripts").mkdir()
+        (tmp_path / "scripts" / "qseed_vault.py").write_text("# utility\n", encoding="utf-8")
+        (tmp_path / "tests").mkdir()
+        (tmp_path / "tests" / "test_qseed_vault.py").write_text("# focused tests\n", encoding="utf-8")
+
+        generator = ModelCardGenerator(tmp_path)
+        generator.generate_card()
+        content = generator.card_path.read_text(encoding="utf-8")
+
+        assert "Local QSeed surface: specification=True, utility=True, focused tests=True" in content
+        assert "File presence is not successful test, recovery, or remote-rollout evidence." in content
 
     def test_model_card_includes_all_apps(self, tmp_path):
         """Verify model card documents all apps."""

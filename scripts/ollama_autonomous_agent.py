@@ -83,6 +83,7 @@ import re
 import subprocess
 import sys
 import uuid
+from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
@@ -101,6 +102,7 @@ from scripts.autonomous_completion_engine import (
 )
 from scripts.command_inventory import refresh_commands_category
 from scripts.link_validator import LinkValidator
+from scripts.qaudit_checkpoint import record_qaudit_checkpoint
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
     INTERNAL_RESEARCH_CONTROLS,
@@ -111,9 +113,10 @@ from scripts.ollama_research import (
     audit_repository_surfaces,
     fetch_official_resource,
     record_research_visit,
+    write_markdown_sentence_audit,
 )
 from scripts.q_version_manager import QVersionManager
-from scripts.qaudit_universe import build_qaudit_universe
+from scripts.qaudit_universe import write_qaudit_artifacts
 
 try:
     from scripts.live_activity_stream import (
@@ -770,6 +773,18 @@ def _upsert_managed_markdown_section(
     path.write_bytes(text.encode("utf-8"))
 
 
+def _markdown_table_cell(value: Any) -> str:
+    """Escape a generated Markdown table cell without emitting source prose."""
+    return (
+        str(value)
+        .replace("\\", "\\\\")
+        .replace("|", "\\|")
+        .replace("`", "&#96;")
+        .replace("\r", " ")
+        .replace("\n", " ")
+    )
+
+
 def sanitize_documentation_text(content: str) -> str:
     """Remove implementation-engine attribution from generated Markdown."""
     text = str(content)
@@ -1070,6 +1085,35 @@ def configure_github_git_auth() -> dict[str, Any]:
 def _hash_text(text: str) -> str:
     """Return a stable SHA-256 fingerprint for a text value."""
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _local_artifact_integrity(root: Path, artifact_path: str | None) -> dict[str, Any]:
+    if not artifact_path:
+        return {"path": None, "sha256": None, "bytes": None, "status": "missing_path"}
+    path = Path(artifact_path)
+    if not path.is_absolute():
+        path = root / path
+    if path.is_symlink():
+        raise RuntimeError(f"Refusing to hash QAUDITS artifact through symlink: {path}")
+    if not path.is_file():
+        return {
+            "path": path.relative_to(root).as_posix() if path.is_relative_to(root) else str(path),
+            "sha256": None,
+            "bytes": None,
+            "status": "missing_file",
+        }
+    digest = hashlib.sha256()
+    size = 0
+    with path.open("rb") as stream:
+        while chunk := stream.read(1024 * 1024):
+            digest.update(chunk)
+            size += len(chunk)
+    return {
+        "path": path.relative_to(root).as_posix() if path.is_relative_to(root) else str(path),
+        "sha256": digest.hexdigest(),
+        "bytes": size,
+        "status": "verified_local_hash",
+    }
 
 
 def validate_markdown_content(
@@ -2487,6 +2531,11 @@ class ModelCardGenerator:
             "memory_recovery_sources": self._memory_recovery_sources(),
             "dataset_inventory": self._dataset_inventory(),
             "best_model_proof": self._best_model_proof_status(),
+            "qseed_surface": {
+                "specification_exists": (self.root_dir / "QSEED.md").is_file(),
+                "utility_exists": (self.root_dir / "scripts" / "qseed_vault.py").is_file(),
+                "focused_tests_exist": (self.root_dir / "tests" / "test_qseed_vault.py").is_file(),
+            },
             "branch_sync": branch_sync,
         }
 
@@ -2684,6 +2733,14 @@ QMOI must recover memory as a first-class capability. The autonomous agent treat
 - Historical memory checkpoints referenced: abc.txt, abctesting.txt, MEMORY_INDEX.md, memory_index.json, QMOI_REALTIME_MEMORY_INDEX.md
 - Recovery policy: validate integrity, restore serialized memory artifacts, reconcile timestamps, and rehydrate the latest working state before any autonomous update is considered safe.
 - Missing or stale memory is a visible operational blocker; it must never be silently discarded or overwritten without evidence.
+
+## QSeed lineage and protected payloads
+
+QSeed records preserve explicit parent lineage, source repository/ref/SHA, encrypted-content integrity, test evidence, and separate implementation and remote-verification states. The local QSeed utility uses standard Fernet authenticated encryption only for files the operator explicitly selects. Key files are supplied or generated through an explicit command, stored outside the repository with owner-only permissions, and never included in QSeed payloads, logs, or checkpoints. Encrypted outputs default to a private external data directory; decryption requires an explicit output path outside the repository and refuses overwrite. QSeed is not a proprietary cipher, a quantum-safe claim, or automatic encryption/decryption of every repository file.
+
+- Local QSeed surface: specification={evidence["qseed_surface"]["specification_exists"]}, utility={evidence["qseed_surface"]["utility_exists"]}, focused tests={evidence["qseed_surface"]["focused_tests_exist"]}. File presence is not successful test, recovery, or remote-rollout evidence.
+
+The audit may inventory QSeed metadata and ciphertext hashes without decrypting payloads. Restore-point, autosync, undo/redo, and evolution systems remain distinct: QSeed is an optional encrypted artifact and does not replace their backups, history, authorization, or remote exact-SHA evidence.
 
 {branch_sync_block}
 
@@ -6591,6 +6648,16 @@ All timestamps use UTC ISO-8601 format.
             "inventory_path": str(production_audit_path),
             "automatic_replacement_authorized": False,
         }
+        refreshed_documents = self.refresh_repository_audit_documents(audit_root, surface_audit)
+        surface_audit["documentation_refresh"] = {
+            "status": "UPDATED_MANAGED_SECTIONS",
+            "managed_document_count": len(refreshed_documents),
+            "managed_document_paths": sorted(refreshed_documents),
+            "source_manifest_sha256": surface_audit.get("source_manifest_sha256"),
+            "post_refresh_source_manifest_current": False,
+            "post_refresh_audit_required_before_lifecycle_pass": True,
+            "historical_archive_paths_rewritten": False,
+        }
         safe_json_write(audit_path, surface_audit)
         surface_summary = {
             key: value
@@ -6605,8 +6672,8 @@ All timestamps use UTC ISO-8601 format.
         surface_summary["instruction_candidate_line_count"] = surface_audit.get("instruction_candidate_line_count", 0)
         surface_summary["instruction_candidate_file_count"] = surface_audit.get("instruction_candidate_file_count", 0)
         surface_summary["production_gap_audit"] = surface_audit["production_gap_audit"]
+        surface_summary["documentation_refresh"] = surface_audit["documentation_refresh"]
         internal["repository_surface_audit"] = surface_summary
-        self.refresh_repository_audit_documents(audit_root, surface_audit)
         topics = {
             "github-actions-auth",
             "github-rest-api",
@@ -6689,6 +6756,27 @@ All timestamps use UTC ISO-8601 format.
         target = Path(root).resolve()
         files = audit.get("all_file_records", [])
         directories = audit.get("all_directory_records", [])
+        root_report = next(
+            (
+                item for item in audit.get("roots", [])
+                if item.get("root") == str(target)
+            ),
+            {},
+        )
+        target_files = sorted(
+            (
+                item for item in files
+                if item.get("root") == str(target)
+            ),
+            key=lambda item: str(item.get("path", "")),
+        )
+        target_directories = sorted(
+            (
+                item for item in directories
+                if item.get("root") == str(target)
+            ),
+            key=lambda item: str(item.get("path", "")),
+        )
         markdown_files = [item for item in files if item.get("suffix") == ".md"]
         components = [item for item in files if "component_source" in item.get("roles", [])]
         component_lines = [
@@ -6708,14 +6796,36 @@ All timestamps use UTC ISO-8601 format.
         tree_lines = [
             "## Materialized directory-tree inventory",
             "",
-            f"- Directories: `{len(directories)}`; all paths are local materialized scope only.",
-            "- Source hashes and audit boundaries are stored in `ollamatracks/repository_surface_audit.json`; its own report bytes are excluded from the digest.",
+            f"- Indexed directories: `{len(target_directories)}`; indexed files: `{len(target_files)}`; root: `{target.name}`.",
+            f"- Skipped/unreadable paths: `{len(root_report.get('skipped', [])) + len(root_report.get('unreadable', []))}`; incomplete/skipped inputs prevent a complete-tree claim.",
+            "- This is the full indexed path tree for the materialized scope, not a remote Git tree. Source hashes and exact scan provenance are in `ollamatracks/repository_surface_audit.json`; hashes are omitted here to avoid a generated-document self-reference.",
             "",
             "| Repository root | Directory path | Files in subtree |",
             "| --- | --- | ---: |",
             *[
-                f"| `{item['root']}` | `{item['path']}` | {item['file_count_in_subtree']} |"
-                for item in directories
+                f"| `{_markdown_table_cell(target.name)}` | `{_markdown_table_cell(item['path'])}` | {item['file_count_in_subtree']} |"
+                for item in target_directories
+            ],
+            "",
+            "### Indexed files",
+            "",
+            "| Repository root | File path | Source scope | Status |",
+            "| --- | --- | --- | --- |",
+            *[
+                f"| `{_markdown_table_cell(target.name)}` | `{_markdown_table_cell(item['path'])}` | `{_markdown_table_cell(item.get('scope', 'unknown'))}` | `{_markdown_table_cell(item.get('status', 'unknown'))}` |"
+                for item in target_files
+            ],
+            "",
+            "### Skipped or unavailable paths",
+            "",
+            "| Path | Reason |",
+            "| --- | --- |",
+            *[
+                f"| `{_markdown_table_cell(item.get('path', ''))}` | `{_markdown_table_cell(item.get('reason', item.get('error_type', 'unavailable')) )}` |"
+                for item in (
+                    list(root_report.get("skipped", []))
+                    + list(root_report.get("unreadable", []))
+                )
             ],
         ]
         link_records = audit.get("links", [])
@@ -6750,8 +6860,14 @@ All timestamps use UTC ISO-8601 format.
             "",
             f"- Status: `{audit.get('status')}`; materialized files: `{audit.get('file_count')}`; directories: `{audit.get('directory_count')}`; Markdown: `{audit.get('markdown_file_count')}`.",
             f"- API/endpoint candidates: `{audit.get('api_or_endpoint_source_count')}`; route candidates: `{audit.get('route_source_count')}`; components: `{audit.get('component_source_count')}`; automation/event candidates: `{audit.get('automation_or_event_source_count')}`.",
+            f"- Managed-document family candidates: `{', '.join(f'{name}={count}' for name, count in sorted(audit.get('document_family_counts', {}).items()))}`.",
             f"- Project/autoproject registry documents discovered: `{audit.get('surface_document_counts', {}).get('projects_autoprojects', 0)}`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.",
+            "- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.",
+            "- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.",
             f"- Markdown structural checks passed: `{audit.get('markdown_structurally_validated_count')}`; needs review: `{audit.get('markdown_needs_review_count')}`; metric candidate lines: `{audit.get('metric_candidate_line_count')}`; percentage occurrences: `{audit.get('percentage_occurrence_count')}`.",
+            f"- Markdown word count: `{audit.get('markdown_word_count', 0)}`; heuristic sentence count: `{audit.get('markdown_sentence_count_heuristic', 0)}`; sentence records indexed: `{audit.get('markdown_sentence_records_indexed', 0)}`; sentence records beyond the bound: `{audit.get('markdown_sentence_records_omitted_by_bound', 0)}`.",
+            f"- Sentence review candidates: `{audit.get('markdown_metric_claim_candidate_count', 0)}` metric claims; `{audit.get('markdown_completion_claim_candidate_count', 0)}` completion claims; `{audit.get('markdown_unreferenced_metric_claim_candidate_count', 0)}` metric and `{audit.get('markdown_unreferenced_completion_claim_candidate_count', 0)}` completion claims lack an inline reference marker. Reference markers are candidates, not proof.",
+            f"- Word-integrity candidates: `{audit.get('markdown_duplicate_adjacent_word_candidate_count', 0)}` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.",
             f"- Formula/calculation candidate lines: `{audit.get('calculation_candidate_line_count')}`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.",
             "- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.",
             f"- Instruction candidates: `{audit.get('instruction_candidate_line_count', 0)}` lines in `{audit.get('instruction_candidate_file_count', 0)}` files; each requires semantic requirement-to-code/test/workflow mapping.",
@@ -6759,17 +6875,96 @@ All timestamps use UTC ISO-8601 format.
             "- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.",
             "- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.",
         ]
+        updated_documents = {target / filename for filename in docs}
         _upsert_managed_markdown_section(target / "QAUDITS.md", "QAUDITS.md", "repository-surface-audit", "\n".join(summary_lines))
         _upsert_managed_markdown_section(target / "INTERNALREFSEARCH.md", "INTERNALREFSEARCH.md", "repository-surface-audit", "\n".join(summary_lines))
         _upsert_managed_markdown_section(target / "COMPONENTS.md", "COMPONENTS.md", "component-source-inventory", "\n".join(component_lines))
         _upsert_managed_markdown_section(target / "TREE.md", "TREE.md", "materialized-tree-inventory", "\n".join(tree_lines))
         _upsert_managed_markdown_section(target / "ALLLINKS.md", "ALLLINKS.md", "materialized-link-inventory", "\n".join(link_lines))
 
-        for filename in ("INTERNALRESEARCH.md", "API.md", "ENDPOINTS.md", "ROUTES.md", "ALLPORTS.md", "ALLAUTO.md", "ALLLINKS.md", "COMPONENTS.md", "TREE.md", "compare.md", "Qtrade.md", "STYLES.md", "UNIVERSALS.md", "UNIVERSAL.md", "QVILLAGE.md", "Qvillageevolutions.md", "projectsandautoprojects.md", "projectsandautoprojectsenhanced.md", "projectandautoprojects.md", "projectsndautoprojects.md", "MODEL_CARD.md", "QMOI_MODEL_CARD.md", "FEATURES_AND_PERCENTAGES.md", "QAUDITS.md", "OFCA.md", "QVERSIONMANAGER.md", "MERGE.md", "ALLVALIDATIONS.md", "production.md", "productionenhanced.md", "oe2.txt", "remotecompletion.md", "MEMORY_INDEX.md", "QMOI_REALTIME_MEMORY_INDEX.md", "QMOI_MEMORY_AWARENESS_SYSTEM.md"):
-            path = target / filename
+        core_operational_documents = {
+            "INTERNALRESEARCH.md", "API.md", "ENDPOINTS.md", "ROUTES.md", "ALLPORTS.md",
+            "ALLAUTO.md", "ALLLINKS.md", "COMPONENTS.md", "TREE.md", "compare.md",
+            "Qtrade.md", "STYLES.md", "UNIVERSALS.md", "UNIVERSAL.md", "QVILLAGE.md",
+            "Qvillageevolutions.md", "projectsandautoprojects.md",
+            "projectsandautoprojectsenhanced.md", "projectandautoprojects.md",
+            "projectsndautoprojects.md", "MODEL_CARD.md", "QMOI_MODEL_CARD.md",
+            "FEATURES_AND_PERCENTAGES.md", "QAUDITS.md", "OFCA.md",
+            "QVERSIONMANAGER.md", "MERGE.md", "ALLVALIDATIONS.md", "ALLMDFILESREFS.md",
+            "RELEASES.md", "production.md", "productionenhanced.md", "oe2.txt",
+            "remotecompletion.md", "MEMORY_INDEX.md", "QMOI_REALTIME_MEMORY_INDEX.md",
+            "QMOI_MEMORY_AWARENESS_SYSTEM.md",
+        }
+        operational_filename_terms = (
+            "app", "build", "qteam", "download", "tag", "deploy", "publish",
+            "release", "install", "package", "platform", "hook", "webhook",
+            "orchestra", "tree", "workflow",
+        )
+        operational_targets = set()
+        for item in files:
+            if (
+                item.get("root") != str(target)
+                or item.get("suffix") != ".md"
+                or item.get("scope") != "materialized_repository"
+            ):
+                continue
+            relative_path = Path(item["path"])
+            filename = relative_path.name
+            stem = relative_path.stem.lower()
+            if (
+                filename in core_operational_documents
+                or stem.startswith("all")
+                or item.get("document_families")
+                or any(term in stem for term in operational_filename_terms)
+            ):
+                operational_targets.add(relative_path)
+
+        for relative_path in sorted(operational_targets):
+            filename = relative_path.as_posix()
+            path = target / relative_path
             if path.is_file():
                 _upsert_managed_markdown_section(path, filename, "repository-surface-audit", "\n".join(summary_lines))
-        return {name: target / name for name in docs}
+                updated_documents.add(path)
+
+        release_documents = [
+            item for item in files
+            if item.get("root") == str(target)
+            and item.get("suffix") == ".md"
+            and item.get("scope") == "materialized_repository"
+            and (
+                "release_tag_publish" in item.get("document_families", [])
+                or any(term in Path(item["path"]).name.lower() for term in ("release", "tag", "publish"))
+            )
+        ]
+        tag_refs = sorted({
+            ref
+            for root_report in audit.get("roots", [])
+            if root_report.get("root") == str(target)
+            for ref in root_report.get("git_history", {}).get("refs", [])
+            if ref.startswith("refs/tags/")
+        })
+        release_lines = [
+            "## Agent-managed release evidence",
+            "",
+            f"- Local release-document candidates indexed: `{len(release_documents)}`; local tag refs observed: `{len(tag_refs)}`.",
+            f"- Tag ref names are indexed in `ollamatracks/repository_surface_audit.json`; local refs are not proof of remote tags or published releases.",
+            f"- Remote release, artifact retrieval, install/runtime, and deployment verification: `UNKNOWN` unless a target-owned terminal exact-SHA evidence record independently proves each gate.",
+            f"- The repository surface audit found `{audit.get('automation_or_event_source_count', 0)}` automation/event candidates and `{audit.get('skipped_source_count', 0)}` skipped sources; these are inventory counts, not release success.",
+            "- Update only this managed evidence section from independently observed release IDs/tags, source SHA, artifact hashes, install/runtime results, remote retrieval, and deployment checks. Never fabricate a release row from a workflow filename or local tag.",
+        ]
+        releases_path = target / "RELEASES.md"
+        if releases_path.is_file():
+            _upsert_managed_markdown_section(
+                releases_path,
+                releases_path.name,
+                "release-evidence",
+                "\n".join(release_lines),
+            )
+            updated_documents.add(releases_path)
+        return {
+            path.relative_to(target).as_posix(): path
+            for path in sorted(updated_documents, key=lambda item: item.as_posix())
+        }
 
     def refresh_research_status_documents(
         self,
@@ -7836,10 +8031,9 @@ All timestamps use UTC ISO-8601 format.
             "extensions": QUANTUM_EXTENSION_FEATURES,
             "lion_variations": [],
         }
-        universe = build_qaudit_universe(target, product_registry=product_registry)
+        universe = write_qaudit_artifacts(target, product_registry=product_registry)
         accountability = universe.get("accountability", {})
         universe_path = target / "ollamatracks" / "qaudit_universe.json"
-        safe_json_write(universe_path, universe)
         accountability_path = target / "ollamatracks" / "system_accountability_audit.json"
         safe_json_write(accountability_path, accountability)
         accountability_lines = [
@@ -7852,6 +8046,9 @@ All timestamps use UTC ISO-8601 format.
             f"- Expected requirement count: `{accountability.get('expected_requirement_count', 0)}`; mapped: `{accountability.get('mapped_requirement_count', 0)}`; unmapped: `{accountability.get('unmapped_requirement_count', 0)}`; coverage complete: `{accountability.get('coverage_complete', False)}`.",
             f"- Delivery stage candidates: `{json.dumps({name: item.get('candidate_file_count', 0) for name, item in accountability.get('delivery_stages', {}).items()}, sort_keys=True)}`.",
             f"- Governance-domain candidates: `{json.dumps({name: item.get('candidate_file_count', 0) for name, item in accountability.get('governance_domains', {}).items()}, sort_keys=True)}`.",
+            f"- Style/universal candidate tree: `{universe.get('artifacts', {}).get('candidate_tree_markdown', 'unavailable')}`; SHA-256 `{universe.get('artifacts', {}).get('candidate_tree_sha256', 'unavailable')}`.",
+            f"- Deterministic audit-priority queue: `{universe.get('metrics', {}).get('audit_queue_pending_count', 0)}` pending of `{universe.get('metrics', {}).get('audit_queue_candidate_count', 0)}` indexed paths; queue SHA-256 `{universe.get('metrics', {}).get('audit_queue_sha256', 'unavailable')}`; every indexed path is retained and model assistance is not used for selection/status.",
+            f"- QAUDITS source metrics: `{json.dumps(universe.get('metrics', {}), sort_keys=True)}`.",
             "- Every app/platform/variant/extension/release artifact must map to an accountable owner, implementation/source, focused tests, workflow, and independently verified exact-SHA outcome. Unmapped facets remain blockers.",
             "- Remote refs, tags, releases, artifacts, installer/download endpoints, deployments, QTeam assignment, friendship outcomes, master approvals, and external hosts are not verified by this local scan.",
         ]
@@ -8166,6 +8363,8 @@ All timestamps use UTC ISO-8601 format.
     def refresh_financial_manager_catalog(
         self,
         root: Path | str | None = None,
+        *,
+        candidate_paths: Sequence[str] | None = None,
     ) -> dict[str, Any]:
         """Refresh the live finance and money-making markdown inventory used by the autonomous agent."""
         target = Path(root) if root is not None else self.root_dir
@@ -8236,17 +8435,29 @@ All timestamps use UTC ISO-8601 format.
         }
 
         md_index: dict[str, str] = {}
+        md_paths_by_name: dict[str, list[str]] = {}
         for path in iter_markdown_files(target):
-            md_index.setdefault(path.name.lower(), path.relative_to(target).as_posix())
+            relative = path.relative_to(target).as_posix()
+            md_index.setdefault(path.name.lower(), relative)
+            md_paths_by_name.setdefault(path.name.lower(), []).append(relative)
 
         present = []
+        present_paths: set[str] = set()
         for doc in finance_files:
             doc_name = doc.split("/")[-1]
             normalized_name = doc_name.lower()
+            if (target / doc).is_file():
+                present_paths.add(Path(doc).as_posix())
+            elif normalized_name in md_paths_by_name:
+                present_paths.update(md_paths_by_name[normalized_name])
             if normalized_name in md_index or (target / doc).exists():
                 present.append(doc_name)
 
         present = sorted(set(present))
+        present_financial_paths = sorted(present_paths)
+        present_financial_paths = sorted(
+            set(present_financial_paths) | {Path(path).as_posix() for path in (candidate_paths or [])}
+        )
 
         allmd = target / "ALLMDFILESREFS.md"
         if allmd.exists():
@@ -8255,6 +8466,21 @@ All timestamps use UTC ISO-8601 format.
             category_block = (
                 "### Category I — Q Financial Manager, wallets, accounts, trading, revenue, and money-making operations\n\n"
                 "This category is the live financial operating model for QMOI. It covers wallet health, growth, provider onboarding, trading execution, revenue generation, music/media monetization, employment, Megavault flows, CashOn reconciliation, and autonomous money-making workflows while keeping them aligned with monitoring, memory sync, and deployment safety.\n\n"
+                "The subcategory counts below are refreshed from the current materialized Markdown inventory. These are path/topic candidates, not proof of working features, provider access, balances, transactions, or geographic/legal coverage.\n\n"
+                "Subcategories:\n"
+                + "".join(
+                    f"- {category}: {len(paths)} candidate documents; " +
+                    (", ".join(f"`{path}`" for path in sorted(paths)) or "none discovered") +
+                    "\n"
+                    for category, filenames in coverage.items()
+                    for paths in [[
+                        path for path in present_financial_paths
+                        if Path(path).name.lower() in {name.lower() for name in filenames}
+                    ]]
+                )
+                + "\nMaterialized financial-document candidates:\n"
+                + "".join(f"- `{path}`\n" for path in present_financial_paths)
+                + "\n"
                 "Files:\n"
                 "- FINANCIALMANAGER.md\n"
                 "- TRADINGREADME.md\n"
@@ -8331,6 +8557,7 @@ All timestamps use UTC ISO-8601 format.
         return {
             "status": "ready",
             "files": present,
+            "candidate_paths": present_financial_paths,
             "coverage": coverage,
             "root": str(target),
             "updated_catalog": str(allmd),
@@ -8609,6 +8836,9 @@ All timestamps use UTC ISO-8601 format.
                 "QMOIAUTOPROJECTS.md", "QMOIAUTOPROJECTSAUTODISTRIBUTEMARKET.md", "QMOIAUTOMAKESMONEY.md", "QMOIREVENUEGENERATION.md",
                 "REVENUEGENERATING.md", "PAYMENTS.md", "DEALS.md", "QMOI_WALLET_FINANCIAL_SYSTEMS.md", "PROJECT_COMPLETE.md",
                 "QMOI_PROJECT_MANAGEMENT_SYSTEMS.md",
+                "finance", "financial", "wallet", "bank", "payment", "payroll", "employment",
+                "revenue", "income", "money", "deal", "currency", "invoice", "tax", "budget",
+                "transaction", "treasury", "remittance", "payout", "salary", "accounting",
             ]),
             ("Category F — Security, privacy, masks, memory, and cross-system awareness", [
                 "QMOIMASKS.md", "QVS.md", "ENHANCEDQVS.md", "QMOI_REALTIME_MEMORY_INDEX.md", "QMOI_MODEL_CARD.md",
@@ -8625,6 +8855,17 @@ All timestamps use UTC ISO-8601 format.
 
         assignments: dict[str, list[str]] = {label: [] for label, _ in category_rules}
         generated: list[str] = []
+        financial_category_label = next(
+            label for label, _ in category_rules if label.startswith("Category I — Q Financial Manager")
+        )
+        financial_content_candidate = re.compile(
+            r"\b(financ\w*|currency|currencies|wallet|bank(?:ing)?|payment|payroll|"
+            r"employ\w*|revenue|income|profit|loss|money[- ]making|deal|contract|"
+            r"invoice|tax|budget|transaction|treasury|remittance|payout|salary|"
+            r"accounting|global|worldwide|cross[- ]border|country|countries|nation|"
+            r"jurisdiction|investment|funding|grant|liabilit\w*|reconcil\w*)\b|[$€£¥]",
+            re.IGNORECASE,
+        )
 
         for relative_path in full_relative_files:
             name = Path(relative_path).name
@@ -8687,6 +8928,8 @@ All timestamps use UTC ISO-8601 format.
                     },
                     "errors": ["invalid_utf8"],
                 }
+            if financial_content_candidate.search(text):
+                assignments[financial_category_label].append(relative_path)
             markdown_metrics.append({
                 "path": relative_path,
                 "source": relative_path.split("/", 1)[0] if "/" in relative_path else target.name,
@@ -9915,16 +10158,22 @@ All timestamps use UTC ISO-8601 format.
             for item in tracked_result.stdout.split(b"\0") if item
         } if tracked_result.returncode == 0 else set(relative_paths)
         excluded_untracked_financial_markdown = 0
+        excluded_ignored_financial_markdown = 0
         skipped_large_financial_markdown = 0
+        unreadable_financial_markdown = 0
+        symlink_financial_markdown = 0
+        eligible_financial_markdown = 0
         currency_pattern = re.compile(
-            r"\b(USD|KES|KSHS?|SGD|EUR|GBP|BTC|ETH|USDT|USDC|"
-            r"US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?)\b",
+            r"\b(USD|KES|KSHS?|SGD|EUR|GBP|JPY|CNY|CAD|AUD|NZD|INR|"
+            r"NGN|ZAR|AED|CHF|SEK|NOK|DKK|BRL|MXN|BTC|ETH|USDT|USDC|"
+            r"US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?|"
+            r"YEN|YUAN|RUPEES?|NAIRA|RAND|DIRHAMS?|FRANCS?)\b",
             re.IGNORECASE,
         )
         amount_pattern = re.compile(
-            r"(?:(?:USD|KES|KSHS?|SGD|EUR|GBP|BTC|ETH|USDT|USDC|US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?)\s*[$€£¥]?\s*\d[\d,]*(?:\.\d+)?|"
+            r"(?:(?:USD|KES|KSHS?|SGD|EUR|GBP|JPY|CNY|CAD|AUD|NZD|INR|NGN|ZAR|AED|CHF|SEK|NOK|DKK|BRL|MXN|BTC|ETH|USDT|USDC|US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?|YEN|YUAN|RUPEES?|NAIRA|RAND|DIRHAMS?|FRANCS?)\s*[$€£¥]?\s*\d[\d,]*(?:\.\d+)?|"
             r"(?:US\$|[$€£¥])\s*\d[\d,]*(?:\.\d+)?|"
-            r"\d[\d,]*(?:\.\d+)?\s*(?:USD|KES|KSHS?|SGD|EUR|GBP|BTC|ETH|USDT|USDC|US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?)\b)",
+            r"\d[\d,]*(?:\.\d+)?\s*(?:USD|KES|KSHS?|SGD|EUR|GBP|JPY|CNY|CAD|AUD|NZD|INR|NGN|ZAR|AED|CHF|SEK|NOK|DKK|BRL|MXN|BTC|ETH|USDT|USDC|US\s+DO(?:LLAR)?S?|DOLLARS?|KENYAN\s+SHILLINGS?|SHILLINGS?|YEN|YUAN|RUPEES?|NAIRA|RAND|DIRHAMS?|FRANCS?)\b)",
             re.IGNORECASE,
         )
         financial_number_pattern = re.compile(r"(?<![A-Za-z0-9])\d[\d,]*(?:\.\d+)?(?![A-Za-z0-9])")
@@ -9933,6 +10182,55 @@ All timestamps use UTC ISO-8601 format.
             r"deposit|withdrawal|transfer|salary|payroll|account number|iban|routing)\b",
             re.IGNORECASE,
         )
+        finance_category_patterns = {
+            "amount_currency": re.compile(
+            r"\b(amount|currency|currencies|price|cost|fee|tax|usd|kes|kshs?|sgd|eur|gbp|jpy|cny|cad|aud|nzd|inr|ngn|zar|aed|chf|sek|nok|dkk|brl|mxn|btc|eth|usdt|usdc|dollars?|shillings?|yen|yuan|rupees?|naira|rand|dirhams?|francs?)\b|[$€£¥]",
+                re.IGNORECASE,
+            ),
+            "revenue_income_money_making": re.compile(
+                r"\b(revenue|income|earnings?|profit|loss|money[- ]making|monetiz\w*|"
+                r"fundrais\w*|funding|grant|investment|return on investment|roi)\b",
+                re.IGNORECASE,
+            ),
+            "payments_and_transfers": re.compile(
+                r"\b(payment|payout|pay[- ]?in|pay[- ]?out|invoice|settlement|"
+                r"remittance|deposit|withdrawal|transfer|refund|chargeback)\b",
+                re.IGNORECASE,
+            ),
+            "wallets_and_banking": re.compile(
+                r"\b(wallet|bank(?:ing)?|account|iban|routing|swift|treasury|"
+                r"cash[- ]?flow|ledger|reconcil\w*)\b",
+                re.IGNORECASE,
+            ),
+            "deals_and_contracts": re.compile(
+                r"\b(deal|contract|commission|counterparty|escrow|"
+                r"revenue[- ]share|partnership|vendor|procurement)\b",
+                re.IGNORECASE,
+            ),
+            "employment_and_payroll": re.compile(
+                r"\b(employ\w*|job|hiring|recruit\w*|payroll|salary|salaries|"
+                r"wages?|contractor|benefits?|pension|compensation)\b",
+                re.IGNORECASE,
+            ),
+            "country_and_jurisdiction": re.compile(
+                r"\b(global|worldwide|international|cross[- ]border|country|countries|"
+                r"nation(?:al)?|jurisdiction|region|residen(?:cy|t)|withholding|"
+                r"vat|sales tax|customs|sanctions)\b",
+                re.IGNORECASE,
+            ),
+            "project_budget_and_expenses": re.compile(
+                r"\b(project budget|budget|expense|spend(?:ing)?|capex|opex|"
+                r"accounts payable|accounts receivable|liabilit(?:y|ies)|"
+                r"reimbursement|runway)\b",
+                re.IGNORECASE,
+            ),
+            "financial_security_and_authorization": re.compile(
+                r"\b(kyc|aml|fraud|authorization|approval|limit|"
+                r"dual control|segregation of duties|audit trail|"
+                r"provider verification|account ownership)\b",
+                re.IGNORECASE,
+            ),
+        }
         owner_patterns = {
             "cashon": re.compile(r"\bcash\s*on\b", re.IGNORECASE),
             "bitget": re.compile(r"\bbitget\b", re.IGNORECASE),
@@ -9959,32 +10257,43 @@ All timestamps use UTC ISO-8601 format.
         financial_claims: list[dict[str, Any]] = []
         owner_currency_counts: dict[str, dict[str, int]] = {}
         currency_mention_counts: dict[str, int] = {}
+        finance_category_line_counts: dict[str, int] = {}
+        finance_category_file_counts: dict[str, int] = {}
         claim_line_count = 0
         amount_candidate_count = 0
         untyped_numeric_candidate_count = 0
         account_identifier_candidate_count = 0
         for path in relative_paths:
-            if ignored(path) or Path(path).suffix.lower() != ".md":
+            if Path(path).suffix.lower() != ".md":
+                continue
+            if ignored(path):
+                excluded_ignored_financial_markdown += 1
                 continue
             if tracked_result.returncode == 0 and path not in tracked_markdown:
                 excluded_untracked_financial_markdown += 1
                 continue
             candidate = target / path
             try:
-                if candidate.is_symlink() or not candidate.is_file():
+                if candidate.is_symlink():
+                    symlink_financial_markdown += 1
+                    continue
+                if not candidate.is_file():
                     continue
                 stat = candidate.stat()
                 if stat.st_size > 2_000_000:
                     skipped_large_financial_markdown += 1
                     continue
                 content = candidate.read_bytes()
-                text = content.decode("utf-8", errors="replace")
-            except OSError:
+                text = content.decode("utf-8")
+            except (OSError, UnicodeDecodeError):
+                unreadable_financial_markdown += 1
                 continue
 
+            eligible_financial_markdown += 1
             lines = text.splitlines()
             currency_counts: dict[str, int] = {}
             claim_lines: list[int] = []
+            category_line_numbers: dict[str, list[int]] = {}
             owners: set[str] = set()
             file_amount_count = 0
             file_untyped_number_count = 0
@@ -10003,15 +10312,27 @@ All timestamps use UTC ISO-8601 format.
                     for match in currency_pattern.finditer(line)
                 }
                 amounts = amount_pattern.findall(line)
+                matched_categories = {
+                    category
+                    for category, pattern in finance_category_patterns.items()
+                    if pattern.search(line)
+                }
+                if amounts or currencies:
+                    matched_categories.add("amount_currency")
                 account_identifier_line = bool(
                     re.search(r"\b(account number|account no\.?|iban|routing number)\b", line, re.IGNORECASE)
                     and re.search(r"\d", line)
                 )
                 has_financial_context = bool(financial_context_pattern.search(line))
-                if not (amounts or currencies and has_financial_context or account_identifier_line):
+                if not (matched_categories or amounts or currencies or account_identifier_line):
                     continue
 
                 claim_lines.append(line_index + 1)
+                for category in matched_categories:
+                    category_line_numbers.setdefault(category, []).append(line_index + 1)
+                    finance_category_line_counts[category] = (
+                        finance_category_line_counts.get(category, 0) + 1
+                    )
                 file_amount_count += len(amounts)
                 if has_financial_context and not amounts:
                     file_untyped_number_count += len(financial_number_pattern.findall(line))
@@ -10057,15 +10378,30 @@ All timestamps use UTC ISO-8601 format.
                 "untyped_numeric_candidate_count": file_untyped_number_count,
                 "account_identifier_candidate_line_count": file_account_id_lines,
                 "candidate_line_numbers": claim_lines,
+                "category_candidate_line_counts": {
+                    category: len(line_numbers)
+                    for category, line_numbers in sorted(category_line_numbers.items())
+                },
+                "category_candidate_line_numbers": {
+                    category: line_numbers
+                    for category, line_numbers in sorted(category_line_numbers.items())
+                },
                 "owner_groups": sorted(owners),
                 "evidence_marker_candidate_line_count": evidence_marker_line_count,
                 "evidence_status": "needs_independent_review_not_verified",
             })
+            for category in category_line_numbers:
+                finance_category_file_counts[category] = (
+                    finance_category_file_counts.get(category, 0) + 1
+                )
 
         financial_claim_inventory: dict[str, Any] = {
-            "schema_version": 1,
+            "schema_version": 2,
+            "status": "candidate_discovery_only",
             "captured_at": utc_iso(),
             "scope": "tracked_materialized_markdown_only",
+            "eligible_tracked_markdown_file_count": eligible_financial_markdown,
+            "excluded_ignored_financial_markdown_count": excluded_ignored_financial_markdown,
             "historical_scope": "active_checkout_snapshot_and_materialized_archive_labels; no complete remote refs or intermediate commit trees",
             "remote_completeness": "not_verified",
             "coverage_verified": False,
@@ -10074,6 +10410,10 @@ All timestamps use UTC ISO-8601 format.
             "account_identifiers_stored": False,
             "source_line_text_stored": False,
             "source_values_stored": False,
+            "category_taxonomy_version": 1,
+            "category_taxonomy_scope": "keyword_candidate_discovery; overlapping_categories_not_semantic_completeness",
+            "candidate_line_counts_by_category": dict(sorted(finance_category_line_counts.items())),
+            "candidate_file_counts_by_category": dict(sorted(finance_category_file_counts.items())),
             "currency_mention_counts": dict(sorted(currency_mention_counts.items())),
             "owner_currency_counts": {
                 owner: dict(sorted(counts.items()))
@@ -10086,6 +10426,9 @@ All timestamps use UTC ISO-8601 format.
             "account_identifier_candidate_line_count": account_identifier_candidate_count,
             "excluded_untracked_financial_markdown_count": excluded_untracked_financial_markdown,
             "skipped_large_financial_markdown_count": skipped_large_financial_markdown,
+            "unreadable_financial_markdown_count": unreadable_financial_markdown,
+            "symlink_financial_markdown_count": symlink_financial_markdown,
+            "finance_taxonomy_scope": "candidate_keyword_taxonomy_not_semantic_or_completeness_proof",
             "files": sorted(financial_claims, key=lambda record: record["path"]),
         }
         financial_claim_inventory_path = target / "ollamatracks" / "financial_claim_inventory.json"
@@ -10099,8 +10442,10 @@ All timestamps use UTC ISO-8601 format.
             f"- Candidate financial lines: `{financial_claim_inventory['candidate_line_count']}`; amount-like candidates: `{financial_claim_inventory['amount_candidate_count']}`; untyped numeric candidates: `{financial_claim_inventory['untyped_numeric_candidate_count']}`.",
             f"- Account-ID-like lines: `{financial_claim_inventory['account_identifier_candidate_line_count']}`; actual balances independently verified by this scan: `0`.",
             f"- Currency mentions by owner label: `{json.dumps(financial_claim_inventory['owner_currency_counts'], sort_keys=True)}`.",
+            f"- Candidate lines by financial-management category: `{json.dumps(financial_claim_inventory['candidate_line_counts_by_category'], sort_keys=True)}`.",
             "- Candidate locations, line numbers, hashes, scopes, and owner groups: `ollamatracks/financial_claim_inventory.json`.",
-            f"- Untracked financial Markdown excluded: `{financial_claim_inventory['excluded_untracked_financial_markdown_count']}`; oversized Markdown excluded: `{financial_claim_inventory['skipped_large_financial_markdown_count']}`.",
+            f"- Tracked Markdown denominator: `{financial_claim_inventory['eligible_tracked_markdown_file_count']}`; untracked/ignored/oversized/unreadable/symlink exclusions: `{financial_claim_inventory['excluded_untracked_financial_markdown_count']}/{financial_claim_inventory['excluded_ignored_financial_markdown_count']}/{financial_claim_inventory['skipped_large_financial_markdown_count']}/{financial_claim_inventory['unreadable_financial_markdown_count']}/{financial_claim_inventory['symlink_financial_markdown_count']}`.",
+            "- Taxonomy categories are keyword candidates (amount/currency, revenue/income, payments/transfers, wallets/banking, deals/contracts, employment/payroll, country/jurisdiction, project budgets/expenses, and financial security/authorization); counts overlap and do not establish implementation or coverage.",
             "- Unsupported claims remain `needs_independent_review_not_verified`; do not silently delete or replace historical amounts with invented evidence. Resolve each claim with authorized source proof or retain it clearly marked unverified.",
         ]
 
@@ -11594,6 +11939,16 @@ def main(
         else list(sys.argv[1:])
     )
 
+    if raw_argv and raw_argv[0] == "qseed":
+        from scripts.qseed_vault import main as qseed_main
+
+        return qseed_main(raw_argv[1:])
+
+    if raw_argv and raw_argv[0] == "qaudit-model-review":
+        from scripts.qaudit_model_review import main as qaudit_model_review_main
+
+        return qaudit_model_review_main(raw_argv[1:])
+
     if (
         raw_argv
         and not raw_argv[0].startswith("-")
@@ -11616,6 +11971,10 @@ def main(
         choices=[
             "validate-all",
             "audit-inventory",
+            "qaudit-universe",
+            "qaudit-markdown-sentences",
+            "qaudit-model-review",
+            "qseed",
             "validate-platforms",
             "validate-features",
             "validate-all-features",
@@ -11668,13 +12027,53 @@ def main(
 
     if args.command == "audit-inventory":
         root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        inventory_start_checkpoint = record_qaudit_checkpoint(
+            root,
+            "audit-inventory",
+            {
+                "status": "IN_PROGRESS",
+                "metrics": {
+                    "phase": "inventory_start",
+                    "external_research_enabled": False,
+                    "remote_mutation_performed": False,
+                },
+                "blockers": ["audit_inventory_run_not_yet_terminal"],
+                "next_action": (
+                    "Resume from this correlated inventory-start checkpoint; do not treat "
+                    "partially refreshed documents or artifacts as final coverage."
+                ),
+            },
+        )
         research = agent.build_autoresearch_report([root], fetch_external=False)
         ofca = agent.refresh_ollama_reference_audit(root)
         feature_coverage = agent.refresh_test_hook_coverage_documents(root)
+        markdown_catalog = agent.refresh_markdown_category_index(root)
+        financial_category_label = next(
+            (
+                label for label in markdown_catalog.get("category_map", {})
+                if label.startswith("Category I — Q Financial Manager")
+            ),
+            None,
+        )
+        financial_catalog = agent.refresh_financial_manager_catalog(
+            root,
+            candidate_paths=markdown_catalog.get("category_map", {}).get(
+                financial_category_label, []
+            ) if financial_category_label else [],
+        )
         instructions = audit_instruction_files(root)
         restore_memory = agent.refresh_restore_point_memory_documents(root)
         legacy_sync_inventory = refresh_legacy_sync_artifact_inventory(root)
         surface = research.get("internal", {}).get("repository_surface_audit", {})
+        surface_artifact = _local_artifact_integrity(
+            root,
+            surface.get("artifact_path"),
+        )
+        financial_inventory = feature_coverage.get("financial_claim_inventory", {})
+        financial_artifact = _local_artifact_integrity(
+            root,
+            str(root / "ollamatracks" / "financial_claim_inventory.json"),
+        )
         styles_universals = feature_coverage.get("styles_universals_coverage", {})
         result = {
             "command": "audit-inventory",
@@ -11689,11 +12088,35 @@ def main(
                 "files_discovered": instructions.get("files_discovered", 0),
                 "files_read": instructions.get("files_read", 0),
             },
+            "markdown_category_inventory": {
+                "status": markdown_catalog.get("status", "UNKNOWN"),
+                "markdown_file_count": len(markdown_catalog.get("all_markdown_files", [])),
+                "category_count": len(markdown_catalog.get("category_map", {})),
+                "updated_files": markdown_catalog.get("updated_files", []),
+            },
+            "financial_manager_catalog": {
+                "status": financial_catalog.get("status", "UNKNOWN"),
+                "files": financial_catalog.get("files", []),
+                "coverage": financial_catalog.get("coverage", {}),
+                "updated_catalog": financial_catalog.get("updated_catalog"),
+            },
+            "financial_claim_audit": {
+                "status": financial_inventory.get("status", "candidate_discovery_only"),
+                "scope": financial_inventory.get("scope"),
+                "coverage_verified": financial_inventory.get("coverage_verified", False),
+                "financial_file_count": financial_inventory.get("financial_file_count", 0),
+                "candidate_line_count": financial_inventory.get("candidate_line_count", 0),
+                "candidate_line_counts_by_category": financial_inventory.get(
+                    "candidate_line_counts_by_category", {}
+                ),
+                "artifact_integrity": financial_artifact,
+            },
             "repository_surface_audit": {
                 "status": surface.get("status", "UNKNOWN"),
                 "coverage_complete": surface.get("coverage_complete", False),
                 "remote_verified": surface.get("remote_verified", False),
                 "artifact_path": surface.get("artifact_path"),
+                "artifact_integrity": surface_artifact,
             },
             "ofca": {
                 "status": ofca.get("status", "UNKNOWN"),
@@ -11716,8 +12139,220 @@ def main(
             },
             "remote_mutation_performed": False,
         }
+        checkpoint = record_qaudit_checkpoint(
+            root,
+            "audit-inventory",
+            {
+                "status": surface.get("status", "UNKNOWN"),
+                "source_manifest_sha256": surface.get("source_manifest_sha256"),
+                "artifact_path": surface_artifact["path"],
+                "artifact_sha256": surface_artifact["sha256"],
+                "artifact_bytes": surface_artifact["bytes"],
+                "artifact_refs": {
+                    "repository_surface_audit": surface_artifact,
+                    "financial_claim_inventory": financial_artifact,
+                },
+                "metrics": {
+                    "instruction_files_read": instructions.get("files_read", 0),
+                    "markdown_file_count": surface.get("markdown_file_count", 0),
+                    "local_surface_status": surface.get("status", "UNKNOWN"),
+                    "ofca_status": ofca.get("status", "UNKNOWN"),
+                    "unmapped_feature_count": styles_universals.get("unmapped_feature_count"),
+                    "legacy_sync_status": legacy_sync_inventory.get("status", "UNKNOWN"),
+                    "managed_document_count": (
+                        surface.get("documentation_refresh", {}).get("managed_document_count", 0)
+                    ),
+                    "finance_candidate_file_count": financial_inventory.get(
+                        "financial_file_count", 0
+                    ),
+                    "finance_candidate_line_count": financial_inventory.get(
+                        "candidate_line_count", 0
+                    ),
+                    "finance_candidate_line_counts_by_category": financial_inventory.get(
+                        "candidate_line_counts_by_category", {}
+                    ),
+                    "financial_manager_catalog_status": financial_catalog.get(
+                        "status", "UNKNOWN"
+                    ),
+                    "markdown_category_count": len(markdown_catalog.get("category_map", {})),
+                },
+                "resolved_blockers": ["audit_inventory_run_not_yet_terminal"],
+                "blockers": [
+                    *surface.get("blockers", []),
+                    *ofca.get("blockers", []),
+                    *(
+                        ["financial_claim_inventory_artifact_unavailable"]
+                        if financial_artifact["status"] != "verified_local_hash"
+                        else []
+                    ),
+                    *(
+                        [f"surface_audit_artifact_{surface_artifact['status']}"]
+                        if surface_artifact["status"] != "verified_local_hash"
+                        else []
+                    ),
+                    *(
+                        ["styles_universals_feature_test_hook_mapping_incomplete"]
+                        if styles_universals.get("coverage_verified") is not True
+                        else []
+                    ),
+                ],
+            },
+            correlation_id=inventory_start_checkpoint["correlation_id"],
+        )
+        result["checkpoint"] = checkpoint
         print(json.dumps(result, indent=2, sort_keys=True, default=str))
         return 0
+
+    if args.command == "qaudit-universe":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        universe = write_qaudit_artifacts(
+            root,
+            product_registry={
+                "applications": QSTORE_CATALOG_APPS,
+                "platforms": PLATFORMS,
+                "extensions": QUANTUM_EXTENSION_FEATURES,
+                "lion_variations": [],
+            },
+        )
+        accountability = universe.get("accountability", {})
+        safe_json_write(root / "ollamatracks" / "system_accountability_audit.json", accountability)
+        result = {
+            "command": "qaudit-universe",
+            "root": str(root),
+            "status": universe.get("discovery", {}).get("status", "BLOCKED"),
+            "metrics": universe.get("metrics", {}),
+            "accountability": {
+                "status": accountability.get("status", "BLOCKED"),
+                "expected_requirement_count": accountability.get("expected_requirement_count", 0),
+                "mapped_requirement_count": accountability.get("mapped_requirement_count", 0),
+                "unmapped_requirement_count": accountability.get("unmapped_requirement_count", 0),
+                "coverage_complete": accountability.get("coverage_complete", False),
+            },
+            "artifacts": universe.get("artifacts", {}),
+            "audit_priority_queue": {
+                "candidate_count": universe.get("metrics", {}).get("audit_queue_candidate_count", 0),
+                "pending_count": universe.get("metrics", {}).get("audit_queue_pending_count", 0),
+                "queue_sha256": universe.get("metrics", {}).get("audit_queue_sha256"),
+                "priority_counts": universe.get("metrics", {}).get("audit_queue_priority_counts", {}),
+                "selection_method": universe.get("audit_queue", {}).get("selection_method"),
+                "all_indexed_paths_queued": universe.get("audit_queue", {}).get("all_indexed_paths_queued", False),
+                "model_assistance": universe.get("audit_queue", {}).get("model_assistance"),
+            },
+            "remote_verified": False,
+            "remote_mutation_performed": False,
+        }
+        result["checkpoint"] = record_qaudit_checkpoint(
+            root,
+            "qaudit-universe",
+            {
+                "status": universe.get("discovery", {}).get("status", "BLOCKED"),
+                "source_manifest_sha256": universe.get("metrics", {}).get("source_manifest_sha256"),
+                "artifact_path": "ollamatracks/qaudit_universe.json",
+                "metrics": {
+                    "scanned_file_count": universe.get("metrics", {}).get("scanned_file_count", 0),
+                    "directory_count": universe.get("metrics", {}).get("directory_count", 0),
+                    "accountability_expected": accountability.get("expected_requirement_count", 0),
+                    "accountability_mapped": accountability.get("mapped_requirement_count", 0),
+                    "accountability_unmapped": accountability.get("unmapped_requirement_count", 0),
+                    "audit_queue_candidate_count": universe.get("metrics", {}).get("audit_queue_candidate_count", 0),
+                    "audit_queue_pending_count": universe.get("metrics", {}).get("audit_queue_pending_count", 0),
+                    "audit_queue_sha256": universe.get("metrics", {}).get("audit_queue_sha256"),
+                    "audit_queue_priority_counts": universe.get("metrics", {}).get("audit_queue_priority_counts", {}),
+                },
+                "blockers": [
+                    *universe.get("discovery", {}).get("blockers", []),
+                    *(
+                        [f"unmapped_accountability_requirements:{accountability.get('unmapped_requirement_count', 0)}"]
+                        if accountability.get("unmapped_requirement_count", 0)
+                        else []
+                    ),
+                ],
+            },
+        )
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 1 if universe.get("discovery", {}).get("status") == "BLOCKED" else 0
+
+    if args.command == "qaudit-markdown-sentences":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        surface_audit = audit_repository_surfaces([root])
+        evidence = write_markdown_sentence_audit(root, surface_audit)
+        financial_inventory_path = root / "ollamatracks" / "financial_claim_inventory.json"
+        financial_artifact = _local_artifact_integrity(root, str(financial_inventory_path))
+        financial_summary: dict[str, Any] = {}
+        if financial_artifact["status"] == "verified_local_hash":
+            financial_inventory = json.loads(financial_inventory_path.read_text(encoding="utf-8"))
+            financial_summary = {
+                "financial_inventory_captured_at": financial_inventory.get("captured_at"),
+                "financial_inventory_status": financial_inventory.get("status"),
+                "financial_file_count": financial_inventory.get("financial_file_count"),
+                "financial_candidate_line_count": financial_inventory.get("candidate_line_count"),
+                "financial_candidate_file_counts_by_category": financial_inventory.get(
+                    "candidate_file_counts_by_category", {}
+                ),
+                "financial_candidate_line_counts_by_category": financial_inventory.get(
+                    "candidate_line_counts_by_category", {}
+                ),
+                "financial_inventory_coverage_verified": financial_inventory.get(
+                    "coverage_verified", False
+                ),
+            }
+        result = {
+            "command": "qaudit-markdown-sentences",
+            "root": str(root),
+            "status": evidence["status"],
+            "correlation_id": evidence["correlation_id"],
+            "source_manifest_sha256": evidence["source_manifest_sha256"],
+            "local_git_context": evidence["local_git_context"],
+            "artifact_path": evidence["artifact_path"],
+            "artifact_sha256": evidence["artifact_sha256"],
+            "artifact_bytes": evidence["artifact_bytes"],
+            "financial_claim_inventory": {
+                **financial_summary,
+                "artifact_integrity": financial_artifact,
+            },
+            "totals": evidence["totals"],
+            "unreadable_file_count": evidence["unreadable_file_count"],
+            "skipped_source_count": evidence["skipped_source_count"],
+            "blockers": evidence["blockers"],
+            "remote_verified": False,
+            "remote_mutation_performed": False,
+        }
+        result["checkpoint"] = record_qaudit_checkpoint(
+            root,
+            "qaudit-markdown-sentences",
+            {
+                "status": evidence["status"],
+                "source_manifest_sha256": evidence["source_manifest_sha256"],
+                "artifact_path": evidence["artifact_path"],
+                "artifact_sha256": evidence["artifact_sha256"],
+                "artifact_bytes": evidence["artifact_bytes"],
+                "artifact_refs": {
+                    "markdown_sentence_audit": {
+                        "path": evidence["artifact_path"],
+                        "sha256": evidence["artifact_sha256"],
+                        "bytes": evidence["artifact_bytes"],
+                    },
+                    "financial_claim_inventory": financial_artifact,
+                },
+                "metrics": {**evidence["totals"], **financial_summary},
+                "blockers": [
+                    *evidence["blockers"],
+                    *(
+                        ["financial_claim_inventory_artifact_unavailable"]
+                        if financial_artifact["status"] != "verified_local_hash"
+                        else []
+                    ),
+                ],
+            },
+            correlation_id=evidence["correlation_id"],
+        )
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 1 if (
+            evidence["status"] != "MATERIALIZED_AUDIT_COMPLETE_REMOTE_HISTORY_INCOMPLETE"
+            or evidence["unreadable_file_count"]
+            or evidence["skipped_source_count"]
+            or evidence["totals"]["sentence_records_omitted_by_bound"]
+        ) else 0
 
     if args.command == "validate-all":
         return agent.run_validation_pipeline()

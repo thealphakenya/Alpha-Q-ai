@@ -22,6 +22,25 @@ QMOI remains conscious, aware, and memory-synced in every financial action. The 
 4. Keep real-money trading paths isolated behind audit-ready controls.
 5. Keep all live state synchronized and recoverable.
 
+## Finance feature coverage and evidence contract
+
+QAUDITS refreshes the managed finance section of this document and the finance categories in `ALLMDFILESREFS.md` during `audit-inventory`. Its keyword-based `financial_claim_inventory.json` reports candidate files/lines by amount and currency, revenue/income/money-making, payments/transfers, wallets/banking, deals/contracts, employment/payroll, country/jurisdiction, project budgets/expenses, and financial security/authorization. Counts are overlapping discovery metrics, not proof that any capability is implemented, available globally, compliant, connected, or safe to use.
+
+Each real feature must be independently mapped to a named owner, supported implementation path, least-privilege API/UI boundary, applicable test and negative/failure test, source/provider evidence, reconciliation/audit trail, and exact repository/ref/SHA. Country, nation, currency, provider and employment coverage must come from reviewed, versioned registries and authorized sources; keyword matches must not be interpreted as a complete legal, geographic, or ISO currency list. QAUDITS stores hashes and candidate locations, not source amounts, balances, account identifiers, credentials, or raw claim text.
+
+The financial management backlog should explicitly inventory:
+
+- Multi-currency ledgers with decimal-safe amounts, immutable double-entry journals, idempotency, settlement states, reversals, reconciliation, and distinct pending/available/reserved balances.
+- Wallet, bank, payment-provider and exchange adapters with owner consent, account scoping, read-only verification first, webhook signature/replay defenses, scoped credential references, rate limits, outage handling, and verified provider capabilities.
+- Revenue, subscription, sales, media/royalty, project/autoproject, marketplace, affiliate and grant flows; evidence for gross/net receipts, fees, refunds, taxes, outstanding receivables and forecast-versus-actual with period/source provenance.
+- Deal/contract/invoice/escrow/commission workflows with counterparty, approvals, contract version, obligations, dates, dispute/chargeback status and audit trail.
+- Employment and payroll requirements by country/jurisdiction, worker classification, consent, approvals, payroll/tax/benefit obligations and provider support. Do not infer employment or legal readiness from document mentions.
+- Project budgets, expenses, procurement, accounts payable/receivable, liabilities, reserves, cash flow, runway and owner-approved limits, reconciled to source records.
+- Fraud/AML/KYC/sanctions and privacy controls, segregation of duties, least privilege, step-up authorization, retention and incident/revocation paths. Such evidence is a hard gate, not a weighted score.
+- Management metrics with explicit numerator/denominator, currency, time period, account/project scope, timestamp, fee/tax policy, data source and reconciliation state. Missing/stale inputs produce `unknown`/`blocked`, never a zero or inferred value.
+
+Discovery does not authorize transfers, trades, deposits, withdrawals, payroll, account/credential changes, or external provider registration. Those actions require explicit scoped owner authorization, verified provider capability, applicable human/legal approval and terminal evidence; remote completion additionally requires target-owned exact-SHA proof.
+
 ## Wallet and account model
 
 ### Financial layers
@@ -384,8 +403,8 @@ Production-oriented financial management model: active and under continued enhan
 
 Trading and balance displays must distinguish provider-observed, simulated, stale, and unavailable values. Path discovery does not prove account ownership, current balances, settlement, or provider integration.
 
-- Materialized trading candidates: `551`; detailed inventory: `QMOItracks/trading_surface_inventory.json`.
-- Financial claim audit: `196` files, `2614` redacted candidate lines; values are excluded from the report and no balances are verified.
+- Materialized trading candidates: `552`; detailed inventory: `QMOItracks/trading_surface_inventory.json`.
+- Financial claim audit: `1062` files, `25910` redacted candidate lines; values are excluded from the report and no balances are verified.
 - Only authorized read-only provider responses can produce current balance evidence; include account scope, currency, observed-at timestamp, and reconciliation status without exposing account secrets.
 - Transfers, deposits, withdrawals, payroll, and live trading remain blocked without explicit authorization, verified provider capability, risk checks, and auditable confirmation.
 - Revenue, P&L, and model-comparison claims must be independently sourced and net of fees; no guaranteed growth/profit claims.
@@ -393,11 +412,34 @@ Trading and balance displays must distinguish provider-observed, simulated, stal
 
 This scan indexes claim locations and metadata only; it does not verify balances, account ownership, provider access, or transaction truth. Raw amounts, account identifiers, and source line text are never copied into the report.
 
-- Tracked materialized Markdown files with financial claims: `196`.
-- Candidate financial lines: `2614`; amount-like candidates: `2821`; untyped numeric candidates: `13`.
+- Tracked materialized Markdown files with financial claims: `1062`.
+- Candidate financial lines: `25910`; amount-like candidates: `3302`; untyped numeric candidates: `5420`.
 - Account-ID-like lines: `4`; actual balances independently verified by this scan: `0`.
-- Currency mentions by owner label: `{"binance": {}, "cashon": {"KES": 18}, "coinbase": {}, "kraken": {}, "megavault": {}, "paypal": {"KES": 2, "USD": 1}, "unassigned_account_wallet_bank": {"KES": 28, "USD": 2}, "unassigned_financial_claim": {"EUR": 1, "GBP": 1, "KES": 1149, "USD": 25, "USDT": 5}}`.
+- Currency mentions by owner label: `{"binance": {"AED": 1, "BTC": 8, "CAD": 1, "CNY": 1, "ETH": 8, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 5, "RAND": 1, "USD": 5, "USDC": 1, "USDT": 14}, "bitget": {"AED": 1, "BTC": 4, "CAD": 1, "CNY": 1, "ETH": 4, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 10}, "bybit": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "cashon": {"AED": 1, "BTC": 6, "CAD": 1, "CNY": 1, "ETH": 6, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 29, "RAND": 1, "USD": 5, "USDC": 1, "USDT": 11}, "coinbase": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "kcb": {"AED": 1, "BTC": 2, "CAD": 1, "CNY": 1, "ETH": 2, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 4, "RAND": 1, "USD": 2, "USDC": 1, "USDT": 1}, "kraken": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "ledger_wallet": {"BTC": 1, "ETH": 1}, "megavault": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "okx": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "paypal": {"AED": 1, "BTC": 2, "CAD": 1, "CNY": 1, "ETH": 2, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 9, "RAND": 1, "USD": 2, "USDC": 1, "USDT": 4}, "pesapal": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 3, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 2}, "standard_chartered": {"BTC": 1, "ETH": 1}, "unassigned_account_wallet_bank": {"BTC": 1, "ETH": 1, "EUR": 3, "GBP": 3, "KES": 39, "USD": 16, "USDC": 1, "USDT": 2}, "unassigned_financial_claim": {"AED": 1, "BTC": 111, "CAD": 2, "CNY": 1, "ETH": 11, "EUR": 18, "GBP": 16, "JPY": 1, "KES": 1235, "RAND": 11, "USD": 62, "USDT": 50}}`.
+- Candidate lines by financial-management category: `{"amount_currency": 5273, "country_and_jurisdiction": 917, "deals_and_contracts": 1355, "employment_and_payroll": 2305, "financial_security_and_authorization": 1870, "payments_and_transfers": 2556, "project_budget_and_expenses": 238, "revenue_income_money_making": 10703, "wallets_and_banking": 3790}`.
 - Candidate locations, line numbers, hashes, scopes, and owner groups: `QMOItracks/financial_claim_inventory.json`.
-- Untracked financial Markdown excluded: `0`; oversized Markdown excluded: `5`.
+- Tracked Markdown denominator: `2408`; untracked/ignored/oversized/unreadable/symlink exclusions: `2/0/5/3/0`.
+- Taxonomy categories are keyword candidates (amount/currency, revenue/income, payments/transfers, wallets/banking, deals/contracts, employment/payroll, country/jurisdiction, project budgets/expenses, and financial security/authorization); counts overlap and do not establish implementation or coverage.
 - Unsupported claims remain `needs_independent_review_not_verified`; do not silently delete or replace historical amounts with invented evidence. Resolve each claim with authorized source proof or retain it clearly marked unverified.
 <!-- END QMOI MANAGED: trading-evidence-and-balance-accountability -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
+- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
+- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
+- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

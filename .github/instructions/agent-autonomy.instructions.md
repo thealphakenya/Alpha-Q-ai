@@ -27,3 +27,35 @@ applyTo: "**"
 - Secret-variable presence is not authentication. Distinguish Codespaces secrets, Actions secrets/variables, user tokens, and App installation tokens. Never print, persist, or place secret values in prompts, evidence, commands, or workflow summaries.
 - Do not authenticate with an App key marked compromised until the owner confirms revocation/rotation and replacement. App permission snapshots are reported configuration until independently verified; use least privilege and short-lived tokens.
 - QMOI may inventory names, prepare setup checklists, and validate through authorized read-only endpoints. It must not invent or self-issue provider credentials, alter accounts, or claim readiness when external ownership, authorization, or verification is missing.
+
+## QAUDITS-driven execution
+
+- Use QAUDITS as a resumable evidence coordinator, not an unrestricted autonomous executor. Each work item must retain its owner/scope, prerequisites, correlation ID, repository/ref/SHA, status, measured duration, artifact references, coverage counts, omissions, blockers, and next action.
+- Prioritize bounded shards by risk and dependencies; parallelize only independent work with isolated outputs and deterministic aggregation. Preserve failed shards and checkpoints, cap retries, and report the exact uncovered remainder.
+- Refresh the supported paired `oe2.txt`/`remotecompletion.md` checkpoint and JSON/JSONL evidence after audit operations. Keep local validation distinct from remote validation and do not claim complete coverage for unreadable, skipped, ignored, or out-of-bound inputs.
+- Continue automatically only for safe local or read-only tasks. Remote mutations, releases, deployments, protected changes, and finalization remain authority-gated; remote completion requires a terminal target-owned result and independently verified exact repository/ref/SHA/tree evidence.
+- QAUDITS metrics and sentence checks are candidate/integrity signals. They cannot certify semantic truth, production readiness, or that months/years of work were completed in minutes; preserve human review and explicit blockers.
+- Every `audit-inventory` run refreshes the complete materialized Markdown category index, finance catalog, `FINANCIALMANAGER.md` managed evidence section, and finance candidate inventory. Include currencies/amounts, revenue, payment/transfer, wallets/banking, deals, employment/payroll, country/jurisdiction, project budgets, and financial security; store no raw amounts, account identifiers, credentials, or source prose.
+- Treat all finance category hits as overlapping keyword candidates. Missing currency/country lists, unreadable/oversized/untracked paths, provider evidence, owner mappings, tests, legal review, or exact-SHA results stay explicit blockers. Never initiate or imply authorization for financial actions.
+- Write a paired `IN_PROGRESS` checkpoint before long inventory work and finalize it under the same correlation ID; an interrupted run must remain explicitly in progress, not inherit a prior passing status.
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
+- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
+- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
+- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

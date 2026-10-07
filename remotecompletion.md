@@ -2026,11 +2026,11 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 <!-- BEGIN QMOI MANAGED: ollama-full-coverage-audit-status -->
 ## Agent-managed OFCA status
 
-- Audit name: `OFCA`; local scan status: `PASS`.
-- Materialized files scanned: `10397`; mention-bearing files: `4129`.
-- Local refs: `39`; local commits: `2597`; mention-change commits: `1977`.
-- Source manifest SHA-256: `405ec6deebaacded259ea6d7b5c7286d8378a930e56b91ff87d389c63f5274f5`; full remote-history coverage: `False`.
-- QVillage/QVS materialized references: `363` files, `210` Markdown files; remote/history completeness: `not_verified`.
+- Audit name: `OFCA`; local scan status: `INCOMPLETE`.
+- Materialized files scanned: `10411`; mention-bearing files: `4148`.
+- Local refs: `40`; local commits: `2627`; mention-change commits: `2006`.
+- Source manifest SHA-256: `b780d118e7dff7bebb1fa4d11cf8ec895e9e64c21d9c51a5b828926065a70cb0`; full remote-history coverage: `False`.
+- QVillage/QVS materialized references: `369` files, `212` Markdown files; remote/history completeness: `not_verified`.
 - `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
 - Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
 <!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->
@@ -2038,14 +2038,20 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10413`; directories: `1267`; Markdown: `2413`.
+- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
-- Markdown structural checks passed: `2186`; needs review: `219`; metric candidate lines: `46842`; percentage occurrences: `22236`.
-- Formula/calculation candidate lines: `11373`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
+- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
+- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
+- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `36455` lines in `3093` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `285`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
@@ -2231,3 +2237,300 @@ Correlation ID: `f9c77c4e-6b72-4c68-bcce-d7af60f6f7b7`; repository `thealphakeny
 - Current validation evidence observed in the workspace before this checkpoint: focused QAUDITS tests passed, Q-version stage/coverage/finalization tests passed, and the style/universal replacement inventory test passed under the pytest environment. Those results do not prove full remote coverage, direct implementation correctness, all historical paths, or final remote completion. Re-run the exact affected suites after the remaining artifacts are generated and record the fresh counts and exit codes.
 - Existing blockers that must remain visible and must not be converted to success: missing remote authentication, HTTP 401/403 failures, unavailable historical source or refs, unresolved branch/PR/tree parity, missing provider evidence, unverified QTeam/friendship/accountability/master ownership, incomplete release/build/install/download/deploy evidence, missing feature-to-test/hook mappings, stale numeric/financial claims, generated-document size/risk, and the absent transition/candidate-tree artifacts.
 - No remote write, merge, release, deployment, credential rotation, file replacement, or Q-version finalization was performed. No completion claim is made. The next work must be evidence-first and must resume only from this checkpoint.
+
+## Local QAUDITS compact-artifact and metrics checkpoint — 2026-10-07T01:03:33Z
+
+- Correlation ID `7be9fe80-9709-4bba-a67b-8c7286ff4d4f`; repository `thealphakenya/Alpha-Q-ai`; ref `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; exact local HEAD `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`. The worktree remains dirty with pre-existing/local user changes preserved.
+- Inventoried the root policy, Copilot policy, and all six `.github/instructions` files by path, scope, byte count, SHA-256, and read result; all 8/8 were readable/nonempty. Instruction text was not copied into evidence.
+- Updated the QAUDITS generator to persist schema-v2 normalized records: each scanned path/hash/class record is stored once, inventories use path indexes, and dependency links remain available from canonical per-path records while aggregate edge/orphan counts are explicit. Added source-scope accounting, manifest binding for scanned plus skipped/excluded paths, scan timing, worker/batch settings, content-parse availability, directory depth, Markdown collision, and dependency metrics. Historical snapshot paths retain the `historical_snapshot` scope.
+- Refreshed the complete local QAUDITS universe. Result: `NEEDS_REVIEW`; 10,400 enumerated/scanned files, 1,271 directories, 904,751,332 bytes; 10,247 content-parsed and 153 metadata-only/content-parse-limited (80 oversized, 73 invalid UTF-8); 0 hash/read errors; 4 workers, batch size 32; elapsed scan 180.674 s (0.356 s enumeration, 180.318 s post-enumeration). Manifest SHA-256 `dbdda9d474ea0c68190ea9e74c588ec33abebcad50719e599653b3267b10d363`.
+- QAUDITS candidate metrics: 57 style/universal candidate files; 94 represented parent directories; 2,417 Markdown crosswalk entries; 248 normalized basename collision groups spanning 784 files; 16,587 dependency edges and 4,044 orphans. System accountability remains `NEEDS_REVIEW`: 0/31 mapped requirements, 31 unmapped. Verified replacements remain 0; these are discovery metrics, not semantic or remote proof.
+- Candidate-tree SHA-256 `edd210a8904a7ebf67ab83c606773815e57a10414408f434ee151d54d84fc22a`. Normalized universe JSON is 16,713,134 bytes versus the prior 34,727,330-byte duplicate representation (about 51.9% smaller); no scanned path/hash records were intentionally dropped. Remote verification is false.
+- Static validation: `py_compile` passed for the affected Python modules and tests; `git diff --check` passed. Target JSON artifacts and `remote-completion.json` parsed; before this checkpoint append, the remote evidence ledger had 48/48 valid JSONL records and telemetry had 1,147/1,147. Tests were not run; the prior user direction denying test execution remains respected.
+- Current local evidence was recorded in `remote-completion.json` and appended to `remote-evidence-ledger.jsonl` under this correlation ID. No remote API/ref/workflow operation, commit, push, dispatch, release, deployment, file replacement, or Q-version finalization occurred. Remote completion remains unverified and blocked by missing exact-SHA target-owned evidence, incomplete semantic/test/hook mappings, 153 content-parse limitations, and 31 unmapped accountability requirements.
+- Next safe action: after user authorization, run the focused regression tests; then wire/verify the QAUDITS precondition at every applicable lifecycle transition. Keep all local-only counts separate from independently verified remote state.
+
+## Stable-scope QAUDITS refresh checkpoint — 2026-10-07T01:09:05Z
+
+- Correlation ID `48051596-a1c5-42ee-8df5-5cdc99c45159`; repository `thealphakenya/Alpha-Q-ai`; ref `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; local HEAD `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`. Worktree is dirty; the audit reflects the materialized worktree at scan time, not the committed HEAD tree alone.
+- Scanner v2.1 explicitly excludes 12 generated or mutable evidence-output paths to prevent self-referential manifest staleness. The exact path list is in `ollamatracks/qaudit_universe.json`; exclusions are visible and not silently counted as scanned coverage. Evidence outputs are separately syntax-checked.
+- Final local scan: `NEEDS_REVIEW`; 10,395 files, 1,271 directories, 903,569,678 bytes; 10,242 content-parsed; 153 metadata-only/content-parse-limited (80 oversized, 73 invalid UTF-8); 0 hash errors; 12 explicit evidence/generated-file exclusions; 4 workers, batch size 32; elapsed 181.899 s (0.363 s enumeration, 181.536 s post-enumeration). Source-manifest SHA-256 `33dd85a0c54cc82eb5359371f271a05ebd4a585a1be54136d2030dc913e31743`.
+- Candidate metrics: 57 style/universal files and 94 represented parent directories; 2,416 Markdown crosswalk entries; 248 normalized basename collision groups spanning 784 files; 16,199 dependency edges and 4,046 orphans. Accountability is still `NEEDS_REVIEW`, 0/31 requirements mapped, 31 unmapped. Verified replacements: 0.
+- Candidate-tree SHA-256 `095e05924b02eac0ac8f9bc96930202cb49861b34078cb0d508673030c94f026`. Normalized JSON is 16,676,773 bytes, about 52.0% smaller than the earlier 34,727,330-byte duplicated representation, with scanned canonical path/hash records retained.
+- This stable-scope result supersedes the preceding local QAUDITS scan checkpoint. Python compilation and `git diff --check` passed; the refreshed universe/accountability/completion JSON parsed; final validation found 50 valid ledger records and 1,148 valid telemetry records. Tests remain unrun under the existing user direction. The current completion object and latest ledger event carry this correlation ID.
+- No remote refs, workflows, PRs, permissions, releases, or deployments were checked in this continuation. `remote_verified=false`; no remote mutation, commit, push, dispatch, merge, release, deployment, file replacement, or Q-version finalization occurred. Exact-SHA target-owned proof, content parsing for 153 files, semantic/test/hook mapping, all 31 accountability requirements, and user-authorized test execution remain blockers.
+
+## Paired QAUDITS checkpoint — 2026-10-07T02:24:19.822665Z
+
+- Correlation ID: `983b308c-9355-4110-a775-f6fe9aab5966`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `3408070914b683df662ec62d85c7b212fcf37acdd04bd283c058c5711cf8fe8c`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `c3da12d91402a4fb5844940037fcd4bb2d8214c0c04b50ff4734d3a0ed673884`.
+- Metrics: `{"completion_claim_candidate_count":10880,"markdown_file_count":2410,"metric_claim_candidate_count":30847,"sentence_count_heuristic":679288,"sentence_records_indexed":660291,"sentence_records_omitted_by_bound":18997,"unreferenced_completion_claim_candidate_count":10751,"unreferenced_metric_claim_candidate_count":30749,"word_count":3848352}`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:38","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T02:27:26.560958Z
+
+- Correlation ID: `10aefa51-b5c8-44db-a638-e5ccd0440e7a`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `9e7c844c91fba1b2e91e8d062fef4018146f51653cd0f96f4562953fe679605c`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `13b08193356d48baa81bae4d35e3a19462da917f2ffae72b38613ace81503e1d`.
+- Metrics: `{"completion_claim_candidate_count":10880,"markdown_file_count":2410,"metric_claim_candidate_count":30847,"scan_duration_seconds":101.09,"sentence_count_heuristic":679298,"sentence_records_indexed":660301,"sentence_records_omitted_by_bound":18997,"unreferenced_completion_claim_candidate_count":10751,"unreferenced_metric_claim_candidate_count":30749,"word_count":3848465}`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:38","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T02:31:35.942329Z
+
+- Correlation ID: `a0f6d046-c2e5-48e5-8966-65be082a0915`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `c270cbe4b9d641c0fc5687649123fa5877d918d88c3d048f2f51b4e42d881f9f`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `bdac3a15d20405aed07d6cef28a6cffb209adab5e419c123bef6c3217365757b`.
+- Metrics: `{"completion_claim_candidate_count":10644,"markdown_file_count":2408,"metric_claim_candidate_count":29823,"scan_duration_seconds":95.108,"sentence_count_heuristic":673554,"sentence_records_indexed":654557,"sentence_records_omitted_by_bound":18997,"unreferenced_completion_claim_candidate_count":10515,"unreferenced_metric_claim_candidate_count":29726,"word_count":3547873}`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:36","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T02:44:06.304794Z
+
+- Correlation ID: `1e3ef1fa-c3b2-4515-b634-57ef9a2f259e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `audit-inventory`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `421d33b2e7d59f8171dc42b8baf21ea11330d09d53af195dae5824ee9f37bb96`; artifact: `/workspaces/Alpha-Q-ai/ollamatracks/repository_surface_audit.json`; artifact SHA-256: `unavailable`.
+- Metrics: `{"instruction_files_read":8,"legacy_sync_status":"NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE","local_surface_status":"NEEDS_REVIEW","managed_document_count":1993,"markdown_file_count":2416,"ofca_status":"INCOMPLETE_LOCAL_SCAN","unmapped_feature_count":404}`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["styles_universals_feature_test_hook_mapping_incomplete","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T02:46:09.933922Z
+
+- Correlation ID: `f30fe151-d084-4f0c-bbbc-16b8c216b84a`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `9c94f4a29ea52b8674e50db7582e0336b546f7052752535f555f6318c43f6286`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `ad166db076a7bccb972fdef800d9bfd0b1143b7ff5864e36faeee095ecd9f573`.
+- Metrics: `{"completion_claim_candidate_count":10651,"markdown_file_count":2408,"metric_claim_candidate_count":29830,"scan_duration_seconds":109.139,"sentence_count_heuristic":673606,"sentence_records_indexed":654609,"sentence_records_omitted_by_bound":18997,"unreferenced_completion_claim_candidate_count":10522,"unreferenced_metric_claim_candidate_count":29733,"word_count":3548920}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f72004078ab378b3170b49fb3bf9b8d47f9e05960ff121faf4631192baa35f04`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:36","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T02:57:04.645051Z
+
+- Correlation ID: `f7af90a9-a4f8-4413-bff2-3890575c16a0`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `audit-inventory`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `b7541b5459819be7ced162781d9b6cd91741e82cce420248fccc55915dd474d2`; artifact: `/workspaces/Alpha-Q-ai/ollamatracks/repository_surface_audit.json`; artifact SHA-256: `unavailable`.
+- Metrics: `{"instruction_files_read":8,"legacy_sync_status":"NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE","local_surface_status":"NEEDS_REVIEW","managed_document_count":1993,"markdown_file_count":2416,"ofca_status":"INCOMPLETE_LOCAL_SCAN","unmapped_feature_count":404}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f4c3996995388064cdb8ce17ec8dbba906403da9b2d74e77918c8826a837ac03`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["styles_universals_feature_test_hook_mapping_incomplete","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:08:40.971594Z
+
+- Correlation ID: `77d840b7-e0e4-447e-a3d6-e17ad0f5dfca`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `audit-inventory`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `39c12d57125ef40f82694e474b8a45f03c977562d12b02ccabe60a0dbc495252`; artifact: `ollamatracks/repository_surface_audit.json`; artifact SHA-256: `eb7f0eb8406fd014176def5323277dac534822aed883e10fd1ce1bfa51421ad4`.
+- Metrics: `{"instruction_files_read":8,"legacy_sync_status":"NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE","local_surface_status":"NEEDS_REVIEW","managed_document_count":1993,"markdown_file_count":2416,"ofca_status":"INCOMPLETE_LOCAL_SCAN","unmapped_feature_count":404}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f4c3996995388064cdb8ce17ec8dbba906403da9b2d74e77918c8826a837ac03`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["styles_universals_feature_test_hook_mapping_incomplete","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:38:44.956675Z
+
+- Correlation ID: `fe0ad4d5-d9d3-470f-a5a8-504e78f6fb84`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `audit-inventory-interruption-recovery`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `bf386083102dda2c51d82032abb3df494eabc2eca6e5fe880532ade7e5576114`; artifact: `ollamatracks/repository_surface_audit.json`; artifact SHA-256: `de4c1619ba50a6e5e81059b86d43c2a0019b0912aa6ea4099ef6f3972f3b93e7`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1837868,"captured_at":"2026-10-07T03:33:01.298904Z","path":"ollamatracks/financial_claim_inventory.json","sha256":"16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b","status":"candidate_discovery_only"}}`.
+- Metrics: `{"financial_candidate_file_counts_by_category":{"amount_currency":520,"country_and_jurisdiction":265,"deals_and_contracts":206,"employment_and_payroll":272,"financial_security_and_authorization":442,"payments_and_transfers":343,"project_budget_and_expenses":86,"revenue_income_money_making":479,"wallets_and_banking":467},"financial_candidate_line_count":25899,"financial_candidate_line_counts_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"financial_category_coverage_verified":false,"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T03:33:01.298904Z","financial_markdown_denominator":2408,"financial_skipped_oversized":5,"financial_unreadable":3,"inventory_refresh_interrupted_before_cli_checkpoint":true,"markdown_file_count":2416,"surface_file_count":10428,"surface_scan_generated_at":"2026-10-07T03:23:25.565127Z","surface_skipped_source_count":37,"surface_unreadable_file_count":27}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `6d76aae89a56308520d03089e25d6f71dde9908bbbd0f23914734352deb35d10`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["finance_inventory_checkpoint_written_after_prior_command_interruption","financial_features_are_keyword_candidates_not_verified_coverage","surface_audit_needs_review","surface_documentation_refresh_not_current","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:41:01.276494Z
+
+- Correlation ID: `c564bd60-bac3-4c1a-8681-39a54397b929`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `a1002abf6e152f0c5823278c0b674b456078d62e86b489ff09ec09a423f8c12e`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `157aa369eba7df72762e07d7b78e1a7e287be4f052aa94c08c8327a7e4e1b863`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1837868,"path":"ollamatracks/financial_claim_inventory.json","sha256":"16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":52345021,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"157aa369eba7df72762e07d7b78e1a7e287be4f052aa94c08c8327a7e4e1b863"}}`.
+- Metrics: `{"completion_claim_candidate_count":10655,"financial_candidate_file_counts_by_category":{"amount_currency":520,"country_and_jurisdiction":265,"deals_and_contracts":206,"employment_and_payroll":272,"financial_security_and_authorization":442,"payments_and_transfers":343,"project_budget_and_expenses":86,"revenue_income_money_making":479,"wallets_and_banking":467},"financial_candidate_line_count":25899,"financial_candidate_line_counts_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T03:33:01.298904Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2408,"metric_claim_candidate_count":29831,"scan_duration_seconds":95.001,"sentence_count_heuristic":673657,"sentence_records_indexed":654660,"sentence_records_omitted_by_bound":18997,"unreferenced_completion_claim_candidate_count":10526,"unreferenced_metric_claim_candidate_count":29734,"word_count":3550108}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `6d76aae89a56308520d03089e25d6f71dde9908bbbd0f23914734352deb35d10`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:37","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:45:31.787123Z
+
+- Correlation ID: `45fb979d-ebdc-4cfa-b9a8-bb6c2dcf331d`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `2466cc3185ed93e93f21a499c1713869747c7997c10b73dde6f670d6b995a846`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `f1d8fab17a0097d3bac4d2c22a841eda8c465c34c0dcc9629e6a13e86ef18ea3`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1837868,"path":"ollamatracks/financial_claim_inventory.json","sha256":"16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":52345769,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"f1d8fab17a0097d3bac4d2c22a841eda8c465c34c0dcc9629e6a13e86ef18ea3"}}`.
+- Metrics: `{"completion_claim_candidate_count":10657,"financial_candidate_file_counts_by_category":{"amount_currency":520,"country_and_jurisdiction":265,"deals_and_contracts":206,"employment_and_payroll":272,"financial_security_and_authorization":442,"payments_and_transfers":343,"project_budget_and_expenses":86,"revenue_income_money_making":479,"wallets_and_banking":467},"financial_candidate_line_count":25899,"financial_candidate_line_counts_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T03:33:01.298904Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2408,"metric_claim_candidate_count":29831,"scan_duration_seconds":97.39,"sentence_count_heuristic":673663,"sentence_records_indexed":654666,"sentence_records_omitted_by_bound":18997,"unreferenced_completion_claim_candidate_count":10528,"unreferenced_metric_claim_candidate_count":29734,"word_count":3550250}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:37","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:46:32.544938Z
+
+- Correlation ID: `a9826472-363d-473d-a3b8-5b5b0fafdb42`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `finance-category-refresh`; status: `LOCAL_REFRESHED_NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/financial_claim_inventory.json`; artifact SHA-256: `16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b`.
+- Additional artifact references: `{"allmdfilesrefs_category_i":{"bytes":45285894,"path":"ALLMDFILESREFS.md","sha256":"e2c80111c08b843e4d1dddc38b75833ef7f50e47fa083a7c22f504cbf75f71d1","status":"managed_finance_category_refreshed"},"financial_manager":{"bytes":27364,"path":"FINANCIALMANAGER.md","sha256":"c4ce320d79552beed6a99be965be02605653c434e90e0574db6dc48188c3d99f","status":"managed_finance_evidence_section_observed"}}`.
+- Metrics: `{"finance_candidate_files":1062,"finance_candidate_lines":25899,"finance_candidates_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"finance_inventory_timestamp":"2026-10-07T03:33:01.298904Z","financial_category_document_paths":1072}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["finance_inventory_is_keyword_candidate_discovery_only","full_surface_and_remote_history_refresh_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Refresh the full surface audit when the bounded inventory worker is available; map finance candidates to owner, implementation, tests, provider/jurisdiction evidence, and terminal exact-SHA results.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:51:05.914683Z
+
+- Correlation ID: `9d55dd27-bea5-421f-bb6b-39f17a0e8813`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `targeted-qaudit-finance-validation`; status: `LOCAL_VALIDATION_PASSED_REMOTE_COMPLETION_BLOCKED`; verification: `local_artifact_integrity_only`.
+- Source manifest: `2466cc3185ed93e93f21a499c1713869747c7997c10b73dde6f670d6b995a846`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `f1d8fab17a0097d3bac4d2c22a841eda8c465c34c0dcc9629e6a13e86ef18ea3`.
+- Additional artifact references: `{"finance_inventory":{"bytes":1837868,"path":"ollamatracks/financial_claim_inventory.json","sha256":"16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":52345769,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","schema_version":4,"sha256":"f1d8fab17a0097d3bac4d2c22a841eda8c465c34c0dcc9629e6a13e86ef18ea3","status":"NEEDS_REVIEW"}}`.
+- Metrics: `{"finance_candidate_files":1062,"finance_candidate_line_counts_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"finance_candidate_lines":25899,"finance_inventory_captured_at":"2026-10-07T03:33:01.298904Z","sentence_audit_status":"NEEDS_REVIEW","sentence_records_indexed":654666,"sentence_records_omitted_by_bound":18997,"skipped_sources":37,"targeted_tests_failed":0,"targeted_tests_passed":6,"test_command":"pytest: two checkpoint tests, inventory CLI, finance catalog, Markdown category, finance claim taxonomy","unreadable_files":27}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["financial_keyword_candidates_are_not_feature_or_provider_verification","remote_refs_prs_intermediate_trees_and_release_state_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Use authorized target-owned workflows and independently verify terminal run conclusions, remote refs/tree, peer parity, release artifacts, and financial provider/legal evidence before claiming remote completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:53:09.194384Z
+
+- Correlation ID: `67cb2be4-0397-4524-8a93-2bbca61b8c96`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `ee1ff13782c7ce32e0b0aeb34c3433bc9c28fdf90d8c225deee6021cb105278f`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `7d4391b21cf116be9d2e1a76c6105bbe8c4c7c4caf32b4d64c90aca3955f3883`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1837868,"path":"ollamatracks/financial_claim_inventory.json","sha256":"16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":52345798,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"7d4391b21cf116be9d2e1a76c6105bbe8c4c7c4caf32b4d64c90aca3955f3883"}}`.
+- Metrics: `{"completion_claim_candidate_count":10657,"financial_candidate_file_counts_by_category":{"amount_currency":520,"country_and_jurisdiction":265,"deals_and_contracts":206,"employment_and_payroll":272,"financial_security_and_authorization":442,"payments_and_transfers":343,"project_budget_and_expenses":86,"revenue_income_money_making":479,"wallets_and_banking":467},"financial_candidate_line_count":25899,"financial_candidate_line_counts_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T03:33:01.298904Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2408,"metric_claim_candidate_count":29831,"scan_duration_seconds":95.662,"sentence_count_heuristic":673663,"sentence_records_indexed":654666,"sentence_records_omitted_by_bound":18997,"unreferenced_completion_claim_candidate_count":10528,"unreferenced_metric_claim_candidate_count":29734,"word_count":3550250}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:39","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:53:49.844657Z
+
+- Correlation ID: `c94c119f-275f-4be6-ba18-9bd125cd556b`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `final-local-qaudit-sentence-audit-and-targeted-tests`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `ee1ff13782c7ce32e0b0aeb34c3433bc9c28fdf90d8c225deee6021cb105278f`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `7d4391b21cf116be9d2e1a76c6105bbe8c4c7c4caf32b4d64c90aca3955f3883`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1837868,"path":"ollamatracks/financial_claim_inventory.json","sha256":null,"status":"verified_local_hash"},"targeted_test_run":{"passed":6,"scope":"focused QAUDITS finance/checkpoint regression tests","status":"passed"}}`.
+- Metrics: `{"completion_claim_candidate_count":10657,"markdown_file_count":2408,"metric_claim_candidate_count":29831,"scan_duration_seconds":95.662,"sentence_count_heuristic":673663,"sentence_records_indexed":654666,"sentence_records_omitted_by_bound":18997,"skipped_source_count":39,"targeted_tests_failed":0,"targeted_tests_passed":6,"unreadable_file_count":27,"unreferenced_completion_claim_candidate_count":10528,"unreferenced_metric_claim_candidate_count":29734,"word_count":3550250}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","sentence_records_omitted_by_bound:18997","skipped_sources:39","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve bounded sentence omissions, unreadable/skipped local sources, and surface audit review findings; then obtain authorized target-owned terminal exact-ref/SHA and independent remote-tree evidence. Local audit/test success does not prove remote completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T03:59:12.554312Z
+
+- Correlation ID: `0eaa4406-7ddc-41fd-8f2a-b3f6ab556076`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `d9442a6e6f18fda9f786421ed31e8879840c5f06848f7cc5373c38c713ed0958`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `3d6febdb4f821c96da5a102f74b20c2e8de4a22cbc5892dafc95025719e343af`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1837868,"path":"ollamatracks/financial_claim_inventory.json","sha256":"16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":53539504,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"3d6febdb4f821c96da5a102f74b20c2e8de4a22cbc5892dafc95025719e343af"}}`.
+- Metrics: `{"completion_claim_candidate_count":10658,"financial_candidate_file_counts_by_category":{"amount_currency":520,"country_and_jurisdiction":265,"deals_and_contracts":206,"employment_and_payroll":272,"financial_security_and_authorization":442,"payments_and_transfers":343,"project_budget_and_expenses":86,"revenue_income_money_making":479,"wallets_and_banking":467},"financial_candidate_line_count":25899,"financial_candidate_line_counts_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T03:33:01.298904Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2408,"metric_claim_candidate_count":29834,"scan_duration_seconds":56.607,"sentence_count_heuristic":673664,"sentence_records_indexed":673664,"sentence_records_omitted_by_bound":0,"unreferenced_completion_claim_candidate_count":10529,"unreferenced_metric_claim_candidate_count":29737,"word_count":3550281}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","skipped_sources:39","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T04:01:55.208493Z
+
+- Correlation ID: `adc9a726-d50b-462d-b180-329365072dda`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dec9084dd77f7ecf3cc75ee08d2acca6d2f1cf38e3e97ff6071db7b770c3cd88`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `c29be65b64c620a1c17e36fdd519a9063ebe6d0879016ff1d5c0073d46ee7760`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1837868,"path":"ollamatracks/financial_claim_inventory.json","sha256":"16d1325c52e6d68f5ec53ef9103c5ebae227863186294f9c7ed5bec5b37e725b","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":53539498,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"c29be65b64c620a1c17e36fdd519a9063ebe6d0879016ff1d5c0073d46ee7760"}}`.
+- Metrics: `{"completion_claim_candidate_count":10658,"financial_candidate_file_counts_by_category":{"amount_currency":520,"country_and_jurisdiction":265,"deals_and_contracts":206,"employment_and_payroll":272,"financial_security_and_authorization":442,"payments_and_transfers":343,"project_budget_and_expenses":86,"revenue_income_money_making":479,"wallets_and_banking":467},"financial_candidate_line_count":25899,"financial_candidate_line_counts_by_category":{"amount_currency":5272,"country_and_jurisdiction":913,"deals_and_contracts":1354,"employment_and_payroll":2293,"financial_security_and_authorization":1868,"payments_and_transfers":2554,"project_budget_and_expenses":236,"revenue_income_money_making":10700,"wallets_and_banking":3787},"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T03:33:01.298904Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2408,"metric_claim_candidate_count":29834,"scan_duration_seconds":57.782,"sentence_count_heuristic":673664,"sentence_records_indexed":673664,"sentence_records_omitted_by_bound":0,"unreferenced_completion_claim_candidate_count":10529,"unreferenced_metric_claim_candidate_count":29737,"word_count":3550281}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","skipped_sources:39","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T04:02:35.024315Z
+
+- Correlation ID: `c3e5e6de-5e91-4786-b5d6-7b43b9c17e3f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `audit-inventory`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"external_research_enabled":false,"phase":"inventory_start","remote_mutation_performed":false}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `20575d1cdc6eaab0d4da99d8dce4e21e53027f66e1f240f720669c035461942e`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_run_not_yet_terminal","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume from this correlated inventory-start checkpoint; do not treat partially refreshed documents or artifacts as final coverage.
+
+## Paired QAUDITS checkpoint — 2026-10-07T04:19:25.406809Z
+
+- Correlation ID: `c3e5e6de-5e91-4786-b5d6-7b43b9c17e3f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `audit-inventory`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `8c9eddde378da8a8d8f1351234c98b205c1c437dcc791e5be5505811768dcb64`; artifact: `ollamatracks/repository_surface_audit.json`; artifact SHA-256: `7339f8853594796527634e0472b23d977d7d2efb1e05bc50bd7c27ef2cb067bd`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1841429,"path":"ollamatracks/financial_claim_inventory.json","sha256":"94aa11c4e81b28ef0ce82f9d0756e1c59821da1a53ce821699dec35b1e9b04e9","status":"verified_local_hash"},"repository_surface_audit":{"bytes":471375871,"path":"ollamatracks/repository_surface_audit.json","sha256":"7339f8853594796527634e0472b23d977d7d2efb1e05bc50bd7c27ef2cb067bd","status":"verified_local_hash"}}`.
+- Metrics: `{"finance_candidate_file_count":1062,"finance_candidate_line_count":25910,"finance_candidate_line_counts_by_category":{"amount_currency":5273,"country_and_jurisdiction":917,"deals_and_contracts":1355,"employment_and_payroll":2305,"financial_security_and_authorization":1870,"payments_and_transfers":2556,"project_budget_and_expenses":238,"revenue_income_money_making":10703,"wallets_and_banking":3790},"financial_manager_catalog_status":"ready","instruction_files_read":8,"legacy_sync_status":"NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE","local_surface_status":"NEEDS_REVIEW","managed_document_count":1993,"markdown_category_count":9,"markdown_file_count":2416,"ofca_status":"INCOMPLETE_LOCAL_SCAN","unmapped_feature_count":404}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["styles_universals_feature_test_hook_mapping_incomplete","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T04:21:06.106128Z
+
+- Correlation ID: `2b434999-5432-4a3a-bf2e-f3297293b2d5`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `29bbdd2665092b605bdbf3688ca78da0ae421f6da8d7b61e139a2c25221952f5`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `4d410d1afd779f3d8cdabddce480c4f7ce5dc1cc20763f8b5bd9e88a6da799c3`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1841429,"path":"ollamatracks/financial_claim_inventory.json","sha256":"94aa11c4e81b28ef0ce82f9d0756e1c59821da1a53ce821699dec35b1e9b04e9","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":53538614,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"4d410d1afd779f3d8cdabddce480c4f7ce5dc1cc20763f8b5bd9e88a6da799c3"}}`.
+- Metrics: `{"completion_claim_candidate_count":10658,"financial_candidate_file_counts_by_category":{"amount_currency":521,"country_and_jurisdiction":268,"deals_and_contracts":207,"employment_and_payroll":274,"financial_security_and_authorization":442,"payments_and_transfers":345,"project_budget_and_expenses":88,"revenue_income_money_making":481,"wallets_and_banking":467},"financial_candidate_line_count":25910,"financial_candidate_line_counts_by_category":{"amount_currency":5273,"country_and_jurisdiction":917,"deals_and_contracts":1355,"employment_and_payroll":2305,"financial_security_and_authorization":1870,"payments_and_transfers":2556,"project_budget_and_expenses":238,"revenue_income_money_making":10703,"wallets_and_banking":3790},"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T04:12:59.477179Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2408,"metric_claim_candidate_count":29834,"scan_duration_seconds":58.729,"sentence_count_heuristic":673666,"sentence_records_indexed":673666,"sentence_records_omitted_by_bound":0,"unreferenced_completion_claim_candidate_count":10529,"unreferenced_metric_claim_candidate_count":29737,"word_count":3550481}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","skipped_sources:39","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T04:23:12.706880Z
+
+- Correlation ID: `d68fddce-5b9c-4929-95be-abdf9ba336cf`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `fde273ae64149aba4b717789b4efd79e87882d632a29f265edf2a052390d8ace`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `9aae6f902209f9adc7610dbd5687aac83dcb52a3c477ba4bc52256ba000dba08`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1841429,"path":"ollamatracks/financial_claim_inventory.json","sha256":"94aa11c4e81b28ef0ce82f9d0756e1c59821da1a53ce821699dec35b1e9b04e9","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":53538619,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"9aae6f902209f9adc7610dbd5687aac83dcb52a3c477ba4bc52256ba000dba08"}}`.
+- Metrics: `{"completion_claim_candidate_count":10658,"financial_candidate_file_counts_by_category":{"amount_currency":521,"country_and_jurisdiction":268,"deals_and_contracts":207,"employment_and_payroll":274,"financial_security_and_authorization":442,"payments_and_transfers":345,"project_budget_and_expenses":88,"revenue_income_money_making":481,"wallets_and_banking":467},"financial_candidate_line_count":25910,"financial_candidate_line_counts_by_category":{"amount_currency":5273,"country_and_jurisdiction":917,"deals_and_contracts":1355,"employment_and_payroll":2305,"financial_security_and_authorization":1870,"payments_and_transfers":2556,"project_budget_and_expenses":238,"revenue_income_money_making":10703,"wallets_and_banking":3790},"financial_file_count":1062,"financial_inventory_captured_at":"2026-10-07T04:12:59.477179Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2408,"metric_claim_candidate_count":29834,"scan_duration_seconds":61.711,"sentence_count_heuristic":673666,"sentence_records_indexed":673666,"sentence_records_omitted_by_bound":0,"unreferenced_completion_claim_candidate_count":10529,"unreferenced_metric_claim_candidate_count":29737,"word_count":3550481}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","skipped_sources:39","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-07T05:05:27.900150Z
+
+- Correlation ID: `a5733857-7a11-4425-af16-dfc8be81b650`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `paused-qseed-qaudits-continuation`; status: `PAUSED_LOCAL_VALIDATION`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"deterministic_priority_queue_status":"implemented_locally_validation_incomplete","focused_model_review_tests_failed":1,"focused_model_review_tests_passed":8,"ollama_model_review_priority_selection":"implemented_locally_validation_incomplete","phase":"paused_for_user_continuation","qseed_implementation_status":"local_changes_present_validation_incomplete","remote_verified":false}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["QSEED_second_repository_live_checkout_and_remote_parity_not_verified","QVS_restore_point_autosync_undo_redo_and_evolution_integration_not_complete","configured_interpreter_missing_pytest_and_cryptography_at_last_check; package_install_attempt_interrupted_or_unconfirmed","final_surface_and_sentence_audits_stale_after_current_QSeed_and_priority_queue_edits","full_QSeed_tests_not_run_in_dependency_ready_workspace","qaudit_model_review_targeted_tests:8_passed_1_failed_due_sensitive_filename_fixture_reaching_unavailable_loopback_service","qseed_and_priority_queue_changes_are_uncommitted_and_not_fully_validated","target_owned_terminal_remote_exact_SHA_and_independent_remote_tree_evidence_unavailable","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this paused QSeed/QAUDITS task. First inspect the latest checkpoint and preserve all dirty user work. Then fix the sensitive-path candidate test gap in scripts/qaudit_model_review.py (credentials.py was not blocked by the exact-name path test), and pass the tests/test_qaudit_model_review.py suite using mocked loopback Ollama only. Install/run focused tests in the Alpha-Q-ai selected environment after confirming declared dependencies; do not interpret tool interruption as success. Run focused QSeed round-trip, wrong-key, no-overwrite, symlink, key-mode, external-output, and evidence-redaction tests. Run qaudit-universe and verify audit_queue includes every indexed file with deterministic priority/hash, then exercise --next-priority-candidate with fake Ollama; never invoke actual source-content inference without explicit per-run consent and a verified loopback endpoint. Refresh generated QAUDITS metrics/model-card sections only from current measured local results, then rerun surface and sentence artifacts because these docs and scripts changed. Update QSEED.md plus QVS/restore-point/autosync/undo-redo/evolution docs from observed implementation only. Do not modify the historical qmoi-enhanced-history-14 snapshot as though it were a live peer; record that QSEED.md and implementation are not verified in a second live repository and require its owner/workflow for parity. Update oe2.txt, remotecompletion.md, remote-completion.json, and remote-evidence-ledger.jsonl via the supported checkpoint writer after each bounded phase. Keep remote_verified=false until authorized target-owned terminal exact-repository/ref/SHA workflow and independent remote-tree evidence exist; no push, dispatch, release, deployment, or financial action is authorized by this request.
+
+## Paired QAUDITS checkpoint — 2026-10-07T05:08:46.353039Z
+
+- Correlation ID: `dd7fab00-8977-4e83-bd0a-789a6435265d`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `c5ed64110cb5e7cbd4e55b3d87126e696717cca4`; local tree: `25a31fd380e3c72d03d61fca7442d3d8b3406e12`; dirty: `True`.
+- Operation: `ollama-qaudits-continuation-contract`; status: `CONTINUATION_CONTRACT_RECORDED_VALIDATION_PENDING`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{"continuation_documents":["oe2.txt","remotecompletion.md"],"known_implementation":["scripts/ollama_autonomous_agent.py","scripts/qaudit_universe.py","scripts/qaudit_model_review.py","scripts/qseed_vault.py","scripts/qaudit_checkpoint.py"],"known_tests":["tests/test_qaudit_universe.py","tests/test_qaudit_model_review.py","tests/test_qseed_vault.py","tests/test_ollama_autonomous_agent.py"],"machine_evidence":["remote-completion.json","remote-evidence-ledger.jsonl"]}`.
+- Metrics: `{"Ollama_execution_this_turn":false,"QSeed_status":"local changes reported by prior checkpoint; complete security/test validation pending","continuation_scope":["Ollama agent execution evidence and safe-local/read-only boundaries","all-path QAUDITS enumeration and deterministic priority queue","bounded independent parallel shards with resumable checkpoints","Markdown sentence/word/metrics/percentage integrity and managed-document coverage","finance candidate categories with value-free metadata only","explicit opt-in QSeed authenticated encryption and recovery integration","QVS restore points autosync backups undo-redo and evolution review","paired docs JSON completion state append-only evidence and exact-SHA remote gate"],"prior_known_model_review_test_result":"8 passed; 1 failed; sensitive filename fixture reached unavailable loopback service; not rerun this turn","remote_verified":false,"this_turn":"paired continuation/evidence refresh only; no code tests Ollama inference or remote actions performed"}`.
+- Instruction files: `8` inventoried; metadata SHA-256: `f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["QSeed_security_and_round_trip_tests_not_fully_validated","QVS_restore_point_autosync_undo_redo_evolution_integration_not_complete_or_verified","configured_interpreter_and_cryptography_pytest_availability_not_reverified_in_this_turn","known_model_review_sensitive_filename_regression_requires_fix_and_focused_retest","managed_document_and_sentence_audit_artifacts_may_be_stale_after_local_changes","priority_queue_and_model_review_integration_not_fully_validated","second_live_repository_and_remote_QSeed_parity_not_verified","target_owned_terminal_exact_SHA_and_independent_remote_tree_evidence_unavailable","target_owned_terminal_remote_sha_proof_unavailable","this_checkpoint_updates_continuation_records_only_no_ollama_execution_claimed","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume as a bounded Ollama-autonomous-agent/QAUDITS continuation, not as a claim that Ollama has already completed the work. Start from the latest verified checkpoint; inspect current worktree and preserve all existing edits. Use the Ollama autonomous-agent CLI for safe local/read-only tasks only after confirming the local service, selected model identity/digest, tool availability, and per-run content consent when source text is involved. Do not say an Ollama task ran unless its actual command/result and evidence are captured. Use QAUDITS inventory and the deterministic priority queue to enumerate all in-scope materialized paths, rank risk/dependency candidates without dropping any path, and record ignored, skipped, unreadable, oversized, historical, and out-of-scope items explicitly. Parallelize only independent bounded shards with isolated outputs, deterministic aggregation, capped retries, resumable checkpoints, measured duration, exact source/artifact hashes, and one correlation ID per evidence operation. Never optimize for speed by skipping coverage or presenting heuristic output as semantic proof. When the candidate queue is verified, fix the known scripts/qaudit_model_review.py sensitive-filename gap (credentials.py failed to be blocked and reached an unavailable loopback service) and run its focused tests with mocked Ollama. Then run QSeed tests in the repository-selected environment after confirming dependency availability; validate authenticated-encryption round trip, wrong-key rejection, explicit opt-in, external owner-only key, symlink/no-overwrite protections, ciphertext-only inventory, and value-free evidence. Do not treat previous test output as a fresh pass. Review QAUDITS sentence/word/Markdown integrity, metric/percentage/stat claims, finance candidate categories, and all-managed-document coverage including QAUDITS.md, QVERSIONMANAGER.md, FINANCIALMANAGER.md, ALLMDFILESREFS.md, TREE.md, release/build/download/app/tag/publish/QTeam/orchestration docs, and production docs. Generate or update documentation only from measured current artifacts; keep every path/category and unmatched claim visible. Counts and references remain candidate signals, not proof. Do not bulk-rewrite production-marker candidates. Integrate QSeed only as explicit standard authenticated encryption for selected files, with external user-managed keys; never invent a QMOI-only cipher, claim quantum safety, place secrets in repo/evidence/model prompts, or autonomously encrypt unrelated files. Review QVS, restore points, autosync backup, undo/redo, evolution, and lineage interfaces before claiming integration; QSEED.md plus model-card and Q-version references require focused tests and accurate docs. Update oe2.txt, remotecompletion.md, remote-completion.json, and remote-evidence-ledger.jsonl through scripts/qaudit_checkpoint.py after each bounded phase. Keep the same correlation ID and verified document hashes; add exact paths, scope, status, SHA, results, omissions, blockers, and next action. Refresh stale generated QAUDITS/sentence artifacts after documentation changes. Treat qmoi-enhanced-history-14 as a historical snapshot, not a second live repository. Do not claim second-repository QSeed parity without its live owner-approved checkout and independently verified evidence. Keep remote completion BLOCKED and remote_verified=false until explicit authority, authenticated identity, protected-branch policy, target-owned terminal workflow result on the exact repository/ref/full SHA, and independently verified remote tree/artifact/check evidence are all present. No push, dispatch, merge, credential action, financial action, release, publish, tag, or deployment is authorized by this continuation request; stop at authorization or evidence blockers.
