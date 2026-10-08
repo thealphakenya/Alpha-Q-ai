@@ -267,6 +267,36 @@ class TestAuditInventoryCommand:
         assert ledger[0]["correlation_id"] == ledger[1]["correlation_id"]
         assert result["checkpoint"]["correlation_id"] == ledger[-1]["correlation_id"]
 
+    def test_qaudit_first_runs_inventory_before_autonomous_loop(self, monkeypatch):
+        calls = []
+        module = sys.modules["ollama_autonomous_agent"]
+        original_main = module.main
+
+        def run_audit_inventory(arguments):
+            calls.append(("audit", arguments))
+            return 0
+
+        def run_autonomous_loop(self):
+            calls.append(("autonomous", None))
+            return {"final_status": "SUCCESS"}
+
+        monkeypatch.setattr(module, "main", run_audit_inventory)
+        monkeypatch.setattr(
+            OllamaAutonomousAgent,
+            "run_autonomous_loop",
+            run_autonomous_loop,
+        )
+
+        assert original_main([
+            "audit-first",
+            "--base-path",
+            "/tmp/repository",
+        ]) == 0
+        assert calls == [
+            ("audit", ["audit-inventory", "--base-path", "/tmp/repository"]),
+            ("autonomous", None),
+        ]
+
 
 class TestRestorePointMemoryAndLegacyInventory:
     def test_restore_memory_requires_matching_four_branch_evidence(self, tmp_path):
@@ -574,6 +604,32 @@ class TestCrossRepositoryAutonomyManager:
         audit = QVersionManager(repo).audit_lifecycle(records[0]["execution_id"])
         assert audit["valid"] is True
         assert audit["stage_sequence"][0] == "MERGE_START"
+
+    def test_refresh_merge_evidence_syncs_metrics_and_checkpoints(self, tmp_path):
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        (repo / "README.md").write_text("# Preserved authored content\n", encoding="utf-8")
+        (repo / "QAUDITS.md").write_text("# Q Audits\n\nExisting authored section.\n", encoding="utf-8")
+        (repo / "MERGE.md").write_text("# MERGE.md\n\nExisting merge guidance.\n", encoding="utf-8")
+        (repo / "remote-completion.json").write_text(
+            json.dumps({"state": {}, "blockers": []}), encoding="utf-8"
+        )
+
+        result = CrossRepositoryAutonomyManager().refresh_merge_evidence(
+            repo,
+            roots=[repo],
+            correlation_id="merge-evidence-regression",
+        )
+
+        assert result["status"] == "MERGE_EVIDENCE_REFRESHED"
+        assert result["metrics"]["total_files_in_scope"] >= 1
+        assert "Existing authored section." in (repo / "QAUDITS.md").read_text(encoding="utf-8")
+        assert "Existing merge guidance." in (repo / "MERGE.md").read_text(encoding="utf-8")
+        assert "merge-activity-evidence" in (repo / "QAUDITS.md").read_text(encoding="utf-8")
+        assert "merge-activity-evidence" in (repo / "MERGE.md").read_text(encoding="utf-8")
+        for path in (repo / "oe2.txt", repo / "remotecompletion.md"):
+            assert "merge-evidence-regression" in path.read_text(encoding="utf-8")
+        assert result["checkpoint"]["correlation_id"] == "merge-evidence-regression"
 
     def test_cross_repository_plan_covers_alpha_history_and_merge_docs(self):
         manager = CrossRepositoryAutonomyManager()

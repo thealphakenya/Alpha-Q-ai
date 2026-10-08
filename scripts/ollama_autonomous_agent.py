@@ -116,7 +116,9 @@ from scripts.ollama_research import (
     write_markdown_sentence_audit,
 )
 from scripts.q_version_manager import QVersionManager
+from scripts.qaudit_all_features import run_parallel_feature_audit
 from scripts.qaudit_universe import write_qaudit_artifacts
+from scripts.qaudits_parallel_auditor import run_parallel_merge_audit
 
 try:
     from scripts.live_activity_stream import (
@@ -1836,6 +1838,31 @@ def get_total_feature_count() -> int:
         for platform in FEATURE_REGISTRY.values()
         for features in platform.values()
     )
+
+
+def build_all_features_registry() -> dict[str, Any]:
+    """Build the canonical app-to-feature registry used by QAUDITS."""
+    registry: dict[str, Any] = {}
+    for app_id, metadata in QMOI_APPS.items():
+        feature_names: list[str] = []
+        for platform in PLATFORMS:
+            feature_names.extend(
+                FEATURE_REGISTRY.get(platform, {}).get(app_id, [])
+            )
+        feature_names = list(dict.fromkeys(feature_names))
+        features: dict[str, Any] = {}
+        for feature in feature_names:
+            feature_id = f"{app_id}-{re.sub(r'[^a-z0-9]+', '-', feature.lower()).strip('-')}"
+            features[feature_id] = {
+                "name": feature,
+                "description": feature,
+                "aliases": [feature],
+            }
+        registry[app_id] = {
+            "name": metadata.get("name", app_id),
+            "features": features,
+        }
+    return registry
 
 
 # ============================================================================
@@ -4247,6 +4274,171 @@ class CrossRepositoryAutonomyManager:
             "trading_related_files": sorted(trading_related_files),
             "trading_related_path_count": len(trading_related_files),
             "captured_at": utc_iso(),
+        }
+
+    def refresh_merge_evidence(
+        self,
+        root: Path | str,
+        *,
+        roots: Sequence[Path | str] | None = None,
+        correlation_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Refresh merge metrics and paired QAUDITS evidence without remote mutation."""
+        target = Path(root).resolve()
+        metric_roots = [Path(item).resolve() for item in (roots or [target])]
+        metrics = self.collect_full_merge_metrics(metric_roots)
+        compact_metrics = {
+            "captured_at": metrics.get("captured_at"),
+            "roots": metrics.get("roots", []),
+            "total_files": metrics.get("total_files", 0),
+            "total_directories": metrics.get("total_directories", 0),
+            "total_branches": metrics.get("total_branches", 0),
+            "total_refs": metrics.get("total_refs", 0),
+            "pull_request_ref_count": metrics.get("pull_request_ref_count", 0),
+            "tag_ref_count": metrics.get("tag_ref_count", 0),
+            "duplicate_file_count": metrics.get("duplicate_file_count", 0),
+            "duplicate_directory_count": metrics.get("duplicate_directory_count", 0),
+            "api_route_count": metrics.get("api_route_count", 0),
+            "feature_count": metrics.get("feature_count", 0),
+            "style_universal_count": metrics.get("style_universal_count", 0),
+            "trading_related_path_count": metrics.get("trading_related_path_count", 0),
+            "coverage": metrics.get("coverage", {}),
+        }
+        metric_payload = json.dumps(compact_metrics, indent=2, sort_keys=True, default=str)
+        metric_sha256 = hashlib.sha256(metric_payload.encode("utf-8")).hexdigest()
+
+        qaudits_path = target / "QAUDITS.md"
+        merge_path = target / "MERGE.md"
+        qaudits_section = [
+            "## Agent-managed merge activity evidence",
+            "",
+            f"- Status: `MERGE_EVIDENCE_REFRESHED`; correlation ID: `{correlation_id or 'unavailable'}`.",
+            f"- Local scope: `{', '.join(metrics['roots'])}`.",
+            f"- Captured at: `{metrics['captured_at']}`; source metric SHA-256: `{metric_sha256}`.",
+            f"- Total files in scope: `{metrics['total_files']}`; total directories: `{metrics['total_directories']}`.",
+            f"- Branches: `{metrics['total_branches']}`; local refs: `{metrics['total_refs']}`; pull-request refs: `{metrics['pull_request_ref_count']}`; tags: `{metrics['tag_ref_count']}`.",
+            f"- Duplicate file basenames: `{metrics['duplicate_file_count']}`; duplicate directory names: `{metrics['duplicate_directory_count']}`.",
+            f"- API/route-related files: `{metrics['api_route_count']}`; feature-related files: `{metrics['feature_count']}`; style/universal-related files: `{metrics['style_universal_count']}`; trading-related paths: `{metrics['trading_related_path_count']}`.",
+            "- This is a local Git-tree and history inventory. Remote refs, PRs, intermediate commit trees, releases, and authorization are not verified by this operation.",
+            "- Next action: independently verify target-owned exact-ref/SHA/tree evidence before any remote completion or protected mutation claim.",
+            "",
+            "```json",
+            metric_payload,
+            "```",
+            "",
+        ]
+        merge_section = [
+            "## Agent-managed merge activity evidence",
+            "",
+            f"- Status: `MERGE_EVIDENCE_REFRESHED`; correlation ID: `{correlation_id or 'unavailable'}`.",
+            f"- Local metric source SHA-256: `{metric_sha256}`.",
+            f"- Total branches in scope: `{metrics['total_branches']}`; local refs: `{metrics['total_refs']}`; pull-request refs: `{metrics['pull_request_ref_count']}`; tags: `{metrics['tag_ref_count']}`.",
+            f"- Total files in scope: `{metrics['total_files']}`; total directories: `{metrics['total_directories']}`.",
+            f"- Duplicate file count: `{metrics['duplicate_file_count']}`; duplicate directory count: `{metrics['duplicate_directory_count']}`.",
+            f"- API/route count: `{metrics['api_route_count']}`; feature count: `{metrics['feature_count']}`; style/universal count: `{metrics['style_universal_count']}`; trading-related path count: `{metrics['trading_related_path_count']}`.",
+            "- Merge decisions: not executed; this refresh records local evidence only and preserves existing merge guidance.",
+            "- Remote completion remains blocked until an independently verified target-owned terminal exact-SHA result exists.",
+            "",
+            "```json",
+            metric_payload,
+            "```",
+            "",
+        ]
+        _upsert_managed_markdown_section(
+            qaudits_path,
+            "QAUDITS.md",
+            "merge-activity-evidence",
+            "\n".join(qaudits_section),
+        )
+        _upsert_managed_markdown_section(
+            merge_path,
+            "MERGE.md",
+            "merge-activity-evidence",
+            "\n".join(merge_section),
+        )
+
+        artifact_refs = {
+            "merge_metrics": {
+                "path": "ollamatracks/merge_activity_metrics.json",
+                "sha256": None,
+                "bytes": None,
+                "status": "not_written",
+            },
+            "qaudits_document": _local_artifact_integrity(target, str(qaudits_path.relative_to(target))),
+            "merge_document": _local_artifact_integrity(target, str(merge_path.relative_to(target))),
+        }
+        source_manifest = target / "ollamatracks" / "merge_activity_metrics.json"
+        safe_json_write(
+            source_manifest,
+            {
+                "schema_version": 1,
+                "captured_at": metrics["captured_at"],
+                "correlation_id": correlation_id,
+                "roots": metrics["roots"],
+                "metrics": metrics,
+            },
+        )
+        artifact_refs["merge_metrics"] = _local_artifact_integrity(
+            target, str(source_manifest.relative_to(target))
+        )
+
+        checkpoint = record_qaudit_checkpoint(
+            target,
+            "merge-activity-evidence",
+            {
+                "status": "MERGE_EVIDENCE_REFRESHED",
+                "source_manifest_sha256": artifact_refs["merge_metrics"]["sha256"],
+                "artifact_path": artifact_refs["merge_metrics"]["path"],
+                "artifact_sha256": artifact_refs["merge_metrics"]["sha256"],
+                "artifact_bytes": artifact_refs["merge_metrics"]["bytes"],
+                "artifact_refs": artifact_refs,
+                "metrics": {
+                    "total_files_in_scope": metrics["total_files"],
+                    "total_directories_in_scope": metrics["total_directories"],
+                    "total_branches_in_scope": metrics["total_branches"],
+                    "total_local_refs_in_scope": metrics["total_refs"],
+                    "locally_available_pull_request_refs": metrics["pull_request_ref_count"],
+                    "tag_refs_in_scope": metrics["tag_ref_count"],
+                    "duplicate_file_count": metrics["duplicate_file_count"],
+                    "duplicate_directory_count": metrics["duplicate_directory_count"],
+                    "api_route_count": metrics["api_route_count"],
+                    "feature_count": metrics["feature_count"],
+                    "style_universal_count": metrics["style_universal_count"],
+                    "trading_related_path_count": metrics["trading_related_path_count"],
+                },
+                "blockers": [
+                    "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
+                    "remote_completion_not_verified",
+                ],
+                "next_action": (
+                    "Obtain independently verified target-owned terminal exact-ref/SHA/tree evidence "
+                    "before any remote completion or protected mutation claim."
+                ),
+            },
+            correlation_id=correlation_id,
+        )
+        return {
+            "status": "MERGE_EVIDENCE_REFRESHED",
+            "correlation_id": checkpoint["correlation_id"],
+            "metrics": {
+                "total_files_in_scope": metrics["total_files"],
+                "total_directories_in_scope": metrics["total_directories"],
+                "total_branches_in_scope": metrics["total_branches"],
+                "total_local_refs_in_scope": metrics["total_refs"],
+                "locally_available_pull_request_refs": metrics["pull_request_ref_count"],
+                "tag_refs_in_scope": metrics["tag_ref_count"],
+                "duplicate_file_count": metrics["duplicate_file_count"],
+                "duplicate_directory_count": metrics["duplicate_directory_count"],
+                "api_route_count": metrics["api_route_count"],
+                "feature_count": metrics["feature_count"],
+                "style_universal_count": metrics["style_universal_count"],
+                "trading_related_path_count": metrics["trading_related_path_count"],
+            },
+            "source_manifest_sha256": artifact_refs["merge_metrics"]["sha256"],
+            "artifact_refs": artifact_refs,
+            "checkpoint": checkpoint,
+            "remote_verified": False,
+            "remote_mutation_performed": False,
         }
 
     def _candidate_merge_roots(
@@ -11984,9 +12176,12 @@ def main(
             "proof",
             "checkpoint",
             "health",
+            "audit-first",
             "autonomous",
             "continue",
             "merge-sync",
+            "qaudit-merge-parallel",
+            "qaudit-all-features",
             "github-auth",
             "credential-manager",
             "commands",
@@ -12047,6 +12242,12 @@ def main(
         research = agent.build_autoresearch_report([root], fetch_external=False)
         ofca = agent.refresh_ollama_reference_audit(root)
         feature_coverage = agent.refresh_test_hook_coverage_documents(root)
+        feature_audit = run_parallel_feature_audit(
+            root,
+            shard_size=250,
+            worker_count=min(16, max(1, os.cpu_count() or 1)),
+            registry=build_all_features_registry(),
+        )
         markdown_catalog = agent.refresh_markdown_category_index(root)
         financial_category_label = next(
             (
@@ -12125,6 +12326,43 @@ def main(
                 "next_action": ofca.get("next_action"),
             },
             "styles_universals": styles_universals,
+            "feature_audit": {
+                "status": feature_audit.get("status"),
+                "registered_feature_count": feature_audit.get("metrics", {}).get(
+                    "registered_feature_count", 0
+                ),
+                "capability_count": feature_audit.get("metrics", {}).get(
+                    "capability_count", 0
+                ),
+                "mentioned_feature_count": feature_audit.get("metrics", {}).get(
+                    "mentioned_feature_count", 0
+                ),
+                "mapped_local_feature_count": feature_audit.get("metrics", {}).get(
+                    "mapped_local_feature_count", 0
+                ),
+                "candidate_feature_count": feature_audit.get("metrics", {}).get(
+                    "candidate_feature_count", 0
+                ),
+                "unmapped_feature_count": feature_audit.get("metrics", {}).get(
+                    "unmapped_feature_count", 0
+                ),
+                "all_features_path": str(
+                    feature_audit.get("artifacts", {}).get("all_features", "")
+                ),
+                "all_features_sha256": _local_artifact_integrity(
+                    root,
+                    str(feature_audit.get("artifacts", {}).get("all_features", "")),
+                ).get("sha256"),
+                "feature_manifest_sha256": feature_audit.get("metrics", {}).get(
+                    "feature_manifest_sha256"
+                ),
+                "feature_evidence_sha256": feature_audit.get("metrics", {}).get(
+                    "feature_evidence_sha256"
+                ),
+                "remote_verification_complete": feature_audit.get(
+                    "remote_verification_complete", False
+                ),
+            },
             "restore_point_memory": restore_memory,
             "legacy_sync_artifact_inventory": {
                 "status": legacy_sync_inventory.get("status"),
@@ -12157,6 +12395,12 @@ def main(
                     "markdown_file_count": surface.get("markdown_file_count", 0),
                     "local_surface_status": surface.get("status", "UNKNOWN"),
                     "ofca_status": ofca.get("status", "UNKNOWN"),
+                    "registered_feature_count": feature_audit.get("metrics", {}).get(
+                        "registered_feature_count", 0
+                    ),
+                    "capability_count": feature_audit.get("metrics", {}).get(
+                        "capability_count", 0
+                    ),
                     "unmapped_feature_count": styles_universals.get("unmapped_feature_count"),
                     "legacy_sync_status": legacy_sync_inventory.get("status", "UNKNOWN"),
                     "managed_document_count": (
@@ -12357,6 +12601,19 @@ def main(
     if args.command == "validate-all":
         return agent.run_validation_pipeline()
 
+    if args.command == "audit-first":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        audit_exit_code = main(["audit-inventory", "--base-path", str(root)])
+        if audit_exit_code != 0:
+            return audit_exit_code
+        try:
+            contract = agent.run_autonomous_loop()
+            print(json.dumps(contract, indent=2))
+            return 0 if contract.get("final_status") == "SUCCESS" else 1
+        except (OllamaRuntimeError, OSError, ValueError) as exc:
+            print(f"QAUDITS-first autonomous execution failed: {exc}", file=sys.stderr)
+            return 1
+
     if args.command == "health":
         try:
             print(json.dumps(agent.verify_ollama(), indent=2))
@@ -12404,12 +12661,71 @@ def main(
         ]
         if not roots[1].exists():
             roots = roots[:1]
+        primary_root = roots[0]
+        merge_evidence = agent.cross_repo_manager.refresh_merge_evidence(
+            primary_root,
+            roots=roots,
+            correlation_id=str(uuid.uuid4()),
+        )
         result = agent.execute_merge_and_sync(roots, auto_push=False)
+        result["merge_evidence"] = merge_evidence
         printable = dict(result)
         if "audit_path" in printable and isinstance(printable["audit_path"], Path):
             printable["audit_path"] = str(printable["audit_path"])
         print(json.dumps(printable, indent=2, sort_keys=True, default=str))
         return 0 if result.get("status") == "ready" else 1
+
+    if args.command == "qaudit-merge-parallel":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        result = run_parallel_merge_audit(root)
+        production_refresh = agent.refresh_production_manifests(root)
+        result["production_refresh"] = {
+            "status": production_refresh["status"],
+            "production": str(production_refresh["production"]),
+            "productionenhanced": str(production_refresh["productionenhanced"]),
+            "inventory": str(production_refresh["inventory"]),
+            "candidate_count": production_refresh["candidate_count"],
+            "remote_verified": False,
+            "remote_mutation_performed": False,
+        }
+        merge_evidence = agent.cross_repo_manager.refresh_merge_evidence(
+            root,
+            roots=[root],
+            correlation_id=str(uuid.uuid4()),
+        )
+        result["merge_evidence"] = {
+            "status": merge_evidence["status"],
+            "correlation_id": merge_evidence["correlation_id"],
+            "source_manifest_sha256": merge_evidence["source_manifest_sha256"],
+            "artifact_refs": merge_evidence["artifact_refs"],
+            "remote_verified": False,
+            "remote_mutation_performed": False,
+        }
+        result["checkpoint"] = merge_evidence["checkpoint"]
+        result["metrics"].update({
+            "production_inventory_sha256": hashlib.sha256(
+                production_refresh["inventory"].read_bytes()
+            ).hexdigest(),
+            "production_document_sha256": hashlib.sha256(
+                production_refresh["production"].read_bytes()
+            ).hexdigest(),
+            "production_enhanced_document_sha256": hashlib.sha256(
+                production_refresh["productionenhanced"].read_bytes()
+            ).hexdigest(),
+        })
+        print(json.dumps(result, indent=2, sort_keys=True, default=str))
+        return 0 if result["status"] == "NEEDS_REVIEW" else 1
+
+    if args.command == "qaudit-all-features":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        result = run_parallel_feature_audit(
+            root,
+            shard_size=250,
+            worker_count=min(16, max(1, os.cpu_count() or 1)),
+            registry=build_all_features_registry(),
+        )
+        print(json.dumps(result, indent=2, sort_keys=True, default=str))
+        return 0 if result["status"] == "NEEDS_REVIEW" else 1
 
     if args.command == "validate-platforms":
         print(

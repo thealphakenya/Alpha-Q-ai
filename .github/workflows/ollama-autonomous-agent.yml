@@ -509,24 +509,24 @@ jobs:
             workflow_run)
               if [ "$WORKFLOW_RUN_HEAD_BRANCH" = "$DEFAULT_BRANCH" ] && [ "$VALIDATION_CONCLUSION" != "cancelled" ]; then
                 run_agent="true"
-                command="autonomous"
-                reason="Trusted default-branch validation completed; run the bounded autonomous repair and validation loop even when upstream checks fail."
+                command="audit-first"
+                reason="Trusted default-branch validation completed; refresh QAUDITS evidence first, then run the bounded autonomous repair and validation loop."
               fi
               ;;
             workflow_dispatch)
               if [ "$FORCE_AGENT" = "true" ]; then
                 run_agent="true"
                 case "$REQUESTED_MODE" in
-                  full|validate|heal) command="autonomous" ;;
+                  full|validate|heal) command="audit-first" ;;
                   *) command="monitor" ;;
                 esac
-                reason="Manual autonomous execution."
+                reason="Manual QAUDITS-first autonomous execution."
               fi
               ;;
             schedule)
               run_agent="true"
-              command="autonomous"
-              reason="Scheduled bounded autonomous health and repair cycle."
+              command="audit-first"
+              reason="Scheduled bounded QAUDITS refresh and autonomous health/repair cycle."
               ;;
           esac
 

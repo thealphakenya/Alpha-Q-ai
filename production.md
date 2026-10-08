@@ -7590,10 +7590,10 @@ This file tracks non-production or shallow implementations that must be upgraded
 ## Agent-managed production inventory
 
 Production implementation candidate status: needs_review; production readiness is not established by scanning.
-Last scan: 2026-10-07T04:03:38.280261Z.
+Last scan: 2026-10-08T01:46:15.310483Z.
 Production gap inventory: `QMOItracks/production_gap_inventory.json`.
-Files scanned: 3237; candidate files: 286; unreadable: 13; oversized not read: 10.
-Historical/cache/dependency roots explicitly excluded: 10; this is the active materialized workspace only, not remote branches or unfetched history.
+Files scanned: 3249; candidate files: 290; unreadable: 13; oversized not read: 11.
+Historical/cache/dependency roots explicitly excluded: 9; this is the active materialized workspace only, not remote branches or unfetched history.
 
 ## Required replacement policy
 - Marker matches are candidate locations, not verified defects; review owning code and intended behavior before editing.
@@ -7802,7 +7802,7 @@ Historical/cache/dependency roots explicitly excluded: 10; this is the active ma
 - `Alpha-Q-ai-2025/src/components/q-city/SchedulePanel.tsx`: PLACEHOLDER; lines 95, 101, 107, 113, 119; status=`discovered_unmapped`.
 - `Alpha-Q-ai-2025/src/components/q-city/SelfHealPanel.tsx`: PLACEHOLDER; lines 95; status=`discovered_unmapped`.
 - `Alpha-Q-ai-2025/src/components/q-city/SocialAutomationPanel.tsx`: PLACEHOLDER, TODO; lines 67, 73, 99, 122; status=`discovered_unmapped`.
-- 86 additional candidates are indexed in `QMOItracks/production_gap_inventory.json`.
+- 90 additional candidates are indexed in `QMOItracks/production_gap_inventory.json`.
 
 ## Reported replacement claims (not independently verified)
 - None supplied; detected candidates remain unresolved.
@@ -7811,20 +7811,20 @@ Historical/cache/dependency roots explicitly excluded: 10; this is the active ma
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
+- Status: `NEEDS_REVIEW`; materialized files: `10435`; directories: `1269`; Markdown: `2418`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2110, orchestration=2061, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2000`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
-- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52722`; percentage occurrences: `22237`.
+- Markdown word count: `3552546`; heuristic sentence count: `673863`; sentence records indexed: `673863`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29844` metric claims; `10662` completion claims; `29747` metric and `10533` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13340`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40017` lines in `3670` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `287`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

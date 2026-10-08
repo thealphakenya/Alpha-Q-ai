@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import tempfile
 import time
 import uuid
@@ -497,6 +498,247 @@ def render_style_universal_candidate_tree(universe: dict[str, Any]) -> str:
             )
     lines.append("")
     return "\n".join(lines)
+
+
+def _git_ref_inventory(root: Path) -> tuple[list[str], list[str], list[str]]:
+    """Return local refs, branch refs, and commit hashes without remote access."""
+    try:
+        refs = subprocess.run(
+            ["git", "-C", str(root), "for-each-ref", "--format=%(refname)"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        commit_hashes = subprocess.run(
+            ["git", "-C", str(root), "rev-list", "--all"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        branches = subprocess.run(
+            ["git", "-C", str(root), "branch", "--format=%(refname:short)"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        return sorted(set(refs + ["HEAD"])), branches, sorted(set(commit_hashes))
+    except (OSError, subprocess.CalledProcessError):
+        return [], [], []
+
+
+def build_lion_universe(root: Path | str) -> dict[str, Any]:
+    """Build a deterministic, evidence-only Lion/variation/extension universe.
+
+    Discovery is intentionally conservative. Every candidate has a source path,
+    hash, scope, feature facet, and verification state. No candidate is upgraded
+    to a production implementation, release, or remote-completion proof.
+    """
+    source_root = Path(root).resolve()
+    started = time.monotonic()
+    variations: list[dict[str, Any]] = []
+    extension_candidates: list[dict[str, Any]] = []
+    logo_candidates: list[dict[str, Any]] = []
+    settings_candidates: list[dict[str, Any]] = []
+    automation_candidates: list[dict[str, Any]] = []
+    release_candidates: list[dict[str, Any]] = []
+    documentation_candidates: list[dict[str, Any]] = []
+    delivery_candidates: list[dict[str, Any]] = []
+    skipped: list[dict[str, str]] = []
+    source_records: list[dict[str, Any]] = []
+    source_lines: dict[str, str] = {}
+
+    if not source_root.is_dir():
+        return {
+            "status": "BLOCKED",
+            "source_root": str(source_root),
+            "remote_verification_complete": False,
+            "metrics": {
+                "source_manifest_sha256": "",
+                "ref_count": 0,
+                "ref_coverage_complete": False,
+                "local_tree_verified": False,
+                "variation_count": 0,
+                "extension_candidate_count": 0,
+                "logo_candidate_count": 0,
+                "settings_candidate_count": 0,
+                "automation_candidate_count": 0,
+                "release_candidate_count": 0,
+                "documentation_candidate_count": 0,
+            },
+            "blockers": ["source root is unavailable"],
+            "artifacts": {},
+        }
+
+    refs, branches, commit_hashes = _git_ref_inventory(source_root)
+    excluded = {".git", "node_modules", ".venv", "venv", "__pycache__", ".pytest_cache", "dist", "build", "coverage", ".cache"}
+    for current, directory_names, filenames in os.walk(source_root, topdown=True, followlinks=False):
+        current_path = Path(current)
+        retained_dirs: list[str] = []
+        for directory_name in sorted(directory_names):
+            directory = current_path / directory_name
+            relative = directory.relative_to(source_root).as_posix()
+            if directory_name in excluded or directory.is_symlink():
+                skipped.append({"path": relative, "reason": "excluded_or_symlinked"})
+                continue
+            retained_dirs.append(directory_name)
+        directory_names[:] = retained_dirs
+        for filename in sorted(filenames):
+            path = current_path / filename
+            relative = path.relative_to(source_root).as_posix()
+            if any(part in excluded for part in Path(relative).parts) or path.is_symlink():
+                skipped.append({"path": relative, "reason": "excluded_or_symlinked"})
+                continue
+            try:
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                size = path.stat().st_size
+                text = path.read_text(encoding="utf-8", errors="replace")
+                source_records.append({
+                    "path": relative,
+                    "size": size,
+                    "sha256": digest,
+                    "scope": "historical_snapshot" if any(part in {"Alpha-Q-ai-2025", "qmoi-enhanced-history-14", "archive", "archives", "legacy"} for part in Path(relative).parts) else "materialized_local",
+                    "content": text,
+                })
+                source_lines[relative] = text
+            except OSError as exc:
+                skipped.append({"path": relative, "reason": type(exc).__name__})
+
+    def candidate_record(record: dict[str, Any], category: str, matches: list[str]) -> dict[str, Any]:
+        return {
+            "path": record["path"],
+            "scope": record["scope"],
+            "sha256": record["sha256"],
+            "bytes": record["size"],
+            "category": category,
+            "matching_terms": sorted(set(matches)),
+            "verification": "candidate_only",
+            "implementation_verified": False,
+            "release_verified": False,
+            "remote_verified": False,
+        }
+
+    for record in source_records:
+        relative = record["path"].lower()
+        text = record["content"]
+        path = Path(record["path"])
+        variation_document = "lion_variations" in relative or (
+            path.suffix.lower() == ".md"
+            and re.match(r"^lion[-._ ]", path.name, flags=re.IGNORECASE) is not None
+        )
+        if variation_document and re.search(r"(?i)\blion\b", text):
+            lion_variation = re.findall(
+                r"(?i)\blion(?:[._ -]([a-z0-9][a-z0-9._-]*))?",
+                path.name,
+            )
+            variations.append({
+                "path": record["path"],
+                "scope": record["scope"],
+                "sha256": record["sha256"],
+                "bytes": record["size"],
+                "classification": "lion_variation_document_candidate",
+                "variation_candidates": sorted({
+                    item.lower().replace("_", "-") for item in lion_variation
+                }),
+                "verification": "candidate_only",
+                "implementation_verified": False,
+                "release_verified": False,
+                "remote_verified": False,
+            })
+
+    for record in source_records:
+        relative = record["path"].lower()
+        text = record["content"]
+        if any(term in relative for term in ("extension", "extensions", "plugin", "plugins", "addon", "add-on")) or re.search(r"(?i)\b(extension|plugin|add[- ]on)\b", text):
+            extension_candidates.append(candidate_record(record, "extension_or_plugin", ["extension", "plugin", "add-on"]))
+        if any(term in relative for term in ("logo", "icon", "symbol", "brand")) or re.search(r"(?i)\b(logo|icon|symbol|brand)\b", text):
+            logo_candidates.append(candidate_record(record, "logo_or_brand", ["logo", "icon", "symbol", "brand"]))
+        if any(term in relative for term in ("setting", "config", "configuration")) or re.search(r"(?i)\b(setting|config(?:uration)?|variant)\b", text):
+            settings_candidates.append(candidate_record(record, "settings_or_configuration", ["setting", "config", "configuration", "variant"]))
+        if any(term in relative for term in ("workflow", "automation", "autonomous", "monitor", "trigger", "hook", "webhook")) or re.search(r"(?i)\b(workflow|automation|autonomous|monitor|trigger|hook|webhook)\b", text):
+            automation_candidates.append(candidate_record(record, "automation_or_operations", ["workflow", "automation", "autonomous", "monitor", "trigger", "hook", "webhook"]))
+        if any(term in relative for term in ("release", "tag", "publish", "build", "install", "download", "deploy")) or re.search(r"(?i)\b(release|tag|publish|build|install|download|deploy)\b", text):
+            release_candidates.append(candidate_record(record, "release_or_delivery", ["release", "tag", "publish", "build", "install", "download", "deploy"]))
+            delivery_candidates.append(candidate_record(record, "delivery_lifecycle", ["release", "tag", "publish", "build", "install", "download", "deploy"]))
+        if relative.endswith(".md") or any(term in relative for term in ("download", "research", "production", "variation")):
+            documentation_candidates.append(candidate_record(record, "documentation_or_research", ["markdown", "download", "research", "production", "variation"]))
+
+    source_records.sort(key=lambda item: item["path"])
+    unique_variations = sorted({item["path"] for item in variations})
+    manifest_payload = {
+        "root": str(source_root),
+        "source_scope": "materialized_repository_and_local_git_refs",
+        "refs": refs,
+        "branches": branches,
+        "commit_hashes": commit_hashes,
+        "files": [
+            {"path": item["path"], "size": item["size"], "sha256": item["sha256"], "scope": item["scope"]}
+            for item in source_records
+        ],
+        "skipped": sorted(skipped, key=lambda item: item["path"]),
+        "variations": sorted(unique_variations),
+        "variation_count": len(unique_variations),
+        "extension_candidate_count": len(extension_candidates),
+        "logo_candidate_count": len(logo_candidates),
+        "settings_candidate_count": len(settings_candidates),
+        "automation_candidate_count": len(automation_candidates),
+        "release_candidate_count": len(release_candidates),
+        "documentation_candidate_count": len(documentation_candidates),
+    }
+    source_manifest_sha256 = hashlib.sha256(
+        json.dumps(manifest_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    blockers = [
+        "No remote repository, ref, release, tag, artifact, deployment, or owner authorization was queried.",
+        "Lion and extension path/content matches are candidates and do not prove implementation or production readiness.",
+        "Local Git refs establish local object coverage only; remote freshness and every intermediate-tree SHA remain unverified.",
+    ]
+    if not source_records:
+        blockers.append("No readable source files were discovered.")
+    if skipped:
+        blockers.append(f"{len(skipped)} paths were excluded, unreadable, or symlinked.")
+
+    return {
+        "status": "NEEDS_REVIEW",
+        "source_root": str(source_root),
+        "source_scope": "materialized_repository_and_local_git_refs",
+        "remote_verification_complete": False,
+        "metrics": {
+            "source_manifest_sha256": source_manifest_sha256,
+            "ref_count": len(refs),
+            "ref_coverage_complete": False,
+            "local_tree_verified": False,
+            "remote_verification_complete": False,
+            "variation_count": len(unique_variations),
+            "extension_candidate_count": len(extension_candidates),
+            "logo_candidate_count": len(logo_candidates),
+            "settings_candidate_count": len(settings_candidates),
+            "automation_candidate_count": len(automation_candidates),
+            "release_candidate_count": len(release_candidates),
+            "documentation_candidate_count": len(documentation_candidates),
+            "delivery_candidate_count": len(delivery_candidates),
+            "files_scanned": len(source_records),
+            "directories_scanned": 0,
+            "skipped_count": len(skipped),
+            "duration_seconds": round(time.monotonic() - started, 6),
+        },
+        "variations": sorted(variations, key=lambda item: item["path"]),
+        "extension_candidates": sorted(extension_candidates, key=lambda item: item["path"]),
+        "logo_candidates": sorted(logo_candidates, key=lambda item: item["path"]),
+        "settings_candidates": sorted(settings_candidates, key=lambda item: item["path"]),
+        "automation_candidates": sorted(automation_candidates, key=lambda item: item["path"]),
+        "release_candidates": sorted(release_candidates, key=lambda item: item["path"]),
+        "delivery_candidates": sorted(delivery_candidates, key=lambda item: item["path"]),
+        "documentation_candidates": sorted(documentation_candidates, key=lambda item: item["path"]),
+        "refs": refs,
+        "branches": branches,
+        "commit_hashes": commit_hashes,
+        "blockers": blockers,
+        "artifacts": {
+            "manifest_path": "ollamatracks/lion_universe.json",
+            "source_manifest_sha256": source_manifest_sha256,
+            "candidate_tree_path": "QMOItracks/lion_variation_candidate_tree.md",
+        },
+    }
 
 
 def write_qaudit_artifacts(

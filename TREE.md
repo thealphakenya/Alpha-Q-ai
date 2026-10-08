@@ -3,8 +3,8 @@
 <!-- BEGIN QMOI MANAGED: materialized-tree-inventory -->
 ## Materialized directory-tree inventory
 
-- Indexed directories: `1268`; indexed files: `10428`; root: `Alpha-Q-ai`.
-- Skipped/unreadable paths: `66`; incomplete/skipped inputs prevent a complete-tree claim.
+- Indexed directories: `1269`; indexed files: `10435`; root: `Alpha-Q-ai`.
+- Skipped/unreadable paths: `62`; incomplete/skipped inputs prevent a complete-tree claim.
 - This is the full indexed path tree for the materialized scope, not a remote Git tree. Source hashes and exact scan provenance are in `QMOItracks/repository_surface_audit.json`; hashes are omitted here to avoid a generated-document self-reference.
 
 | Repository root | Directory path | Files in subtree |
@@ -1274,15 +1274,17 @@
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/handlers` | 18 |
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/services` | 1 |
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/utils` | 2 |
-| `Alpha-Q-ai` | `scripts` | 45 |
+| `Alpha-Q-ai` | `qseeds` | 2 |
+| `Alpha-Q-ai` | `scripts` | 47 |
 | `Alpha-Q-ai` | `scripts/trading` | 1 |
-| `Alpha-Q-ai` | `tests` | 17 |
+| `Alpha-Q-ai` | `tests` | 19 |
 
 ### Indexed files
 
 | Repository root | File path | Source scope | Status |
 | --- | --- | --- | --- |
 | `Alpha-Q-ai` | `.env.example` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `.gitattributes` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/copilot-instructions.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/dependabot.yml` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/instructions/agent-autonomy.instructions.md` | `materialized_repository` | `indexed` |
@@ -2778,6 +2780,7 @@
 | `Alpha-Q-ai` | `QMOI_QMOI_Autonomous_Production_Completion_Master_Plan.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QMOI_REALTIME_MEMORY_INDEX.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QMOItracks/style_universal_candidate_tree.md` | `materialized_repository` | `self_referential_excluded` |
+| `Alpha-Q-ai` | `QSEED.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QSTORE.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QSTREAM.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QTEAM.md` | `materialized_repository` | `indexed` |
@@ -11631,6 +11634,8 @@
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/services/qmoi.js` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/utils/broadcast.js` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/utils/delay.js` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `qseeds/.gitignore` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `qseeds/README.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `remote-completion.json` | `materialized_repository` | `self_referential_excluded` |
 | `Alpha-Q-ai` | `remote-evidence-ledger.jsonl` | `materialized_repository` | `self_referential_excluded` |
 | `Alpha-Q-ai` | `remote-multi-platform-build-farm.md` | `materialized_repository` | `indexed` |
@@ -11670,12 +11675,14 @@
 | `Alpha-Q-ai` | `scripts/q` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/q_version_manager.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qaudit_checkpoint.py` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `scripts/qaudit_model_review.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qaudit_universe.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qmoi_credentials.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qmoi_orchestrator_service.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qmoi_release_autofix.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qmoi_security_autofix.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qmoictl.py` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `scripts/qseed_vault.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/realtime_workflow_monitor.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/remote_lifecycle.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/remote_state.py` | `materialized_repository` | `indexed` |
@@ -11688,7 +11695,6 @@
 | `Alpha-Q-ai` | `scripts/workflow_status_dashboard.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/workspace_sync.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `test-results.txt` | `materialized_repository` | `indexed` |
-| `Alpha-Q-ai` | `tests.log` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_alpha_q_ai_2025_security.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_autonomous_evidence_monitor.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_checkpoint_manager.py` | `materialized_repository` | `indexed` |
@@ -11702,9 +11708,11 @@
 | `Alpha-Q-ai` | `tests/test_QMOI_enhanced_features.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_QMOI_runtime.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_production_trading_autopilot.py` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `tests/test_qaudit_model_review.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qaudit_universe.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qmoi_credentials.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qmoi_release_autofix.py` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `tests/test_qseed_vault.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_runbook_audit.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `trigger.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `undoredo.md` | `materialized_repository` | `indexed` |
@@ -11716,9 +11724,6 @@
 | Path | Reason |
 | --- | --- |
 | `.git` | `excluded_generated_or_dependency_directory` |
-| `.pytest_cache` | `excluded_generated_or_dependency_directory` |
-| `.venv` | `excluded_generated_or_dependency_directory` |
-| `__pycache__` | `excluded_generated_or_dependency_directory` |
 | `ALLMDFILESREFS.md` | `oversized_markdown_not_parsed` |
 | `github_proof_contract.json` | `oversized_metric_source_not_parsed` |
 | `validation_report.json` | `oversized_metric_source_not_parsed` |
@@ -11753,7 +11758,6 @@
 | `qmoi-enhanced-history-14/tools/placeholder_fix_report.json` | `oversized_metric_source_not_parsed` |
 | `qmoi-enhanced-history-14/tools/placeholder_scan.json` | `oversized_metric_source_not_parsed` |
 | `scripts/__pycache__` | `excluded_generated_or_dependency_directory` |
-| `tests/__pycache__` | `excluded_generated_or_dependency_directory` |
 | `Alpha-Q-ai-2025/QCITYQMOIAUTOSTART.md` | `UnicodeDecodeError` |
 | `Alpha-Q-ai-2025/QMOI-ENHANCEMENT-SUMMARY.md` | `UnicodeDecodeError` |
 | `Alpha-Q-ai-2025/QMOIHUGGINGFACESPACES.md` | `UnicodeDecodeError` |
@@ -11786,20 +11790,20 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
+- Status: `NEEDS_REVIEW`; materialized files: `10435`; directories: `1269`; Markdown: `2418`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2110, orchestration=2061, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2000`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
-- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52722`; percentage occurrences: `22237`.
+- Markdown word count: `3552546`; heuristic sentence count: `673863`; sentence records indexed: `673863`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29844` metric claims; `10662` completion claims; `29747` metric and `10533` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13340`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40017` lines in `3670` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `287`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

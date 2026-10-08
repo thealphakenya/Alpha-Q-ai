@@ -2898,20 +2898,56 @@ git commit -m "Merge branch..."
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10428`; directories: `1268`; Markdown: `2416`.
+- Status: `NEEDS_REVIEW`; materialized files: `10435`; directories: `1269`; Markdown: `2418`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2155, build_download_install=2109, orchestration=2061, qteam_accountability=2049, release_tag_publish=2088, tree_inventory=2000`.
+- Managed-document family candidates: `app_platform=2155, build_download_install=2110, orchestration=2061, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2000`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2221`; needs review: `187`; metric candidate lines: `52705`; percentage occurrences: `22237`.
-- Markdown word count: `3550281`; heuristic sentence count: `673664`; sentence records indexed: `673664`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29834` metric claims; `10658` completion claims; `29737` metric and `10529` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52722`; percentage occurrences: `22237`.
+- Markdown word count: `3552546`; heuristic sentence count: `673863`; sentence records indexed: `673863`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29844` metric claims; `10662` completion claims; `29747` metric and `10533` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13328`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13340`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `39967` lines in `3666` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `286`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40017` lines in `3670` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `287`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+
+<!-- BEGIN QMOI MANAGED: merge-activity-evidence -->
+## Agent-managed merge activity evidence
+
+- Status: `MERGE_EVIDENCE_REFRESHED`; correlation ID: `92ecc947-496b-4018-bcab-0a37c9a010e6`.
+- Local metric source SHA-256: `e9cd7cfdf1e10cb8dc6be82cd1fefb453231452488ac000b1bacd0eabc1d7b78`.
+- Total branches in scope: `35`; local refs: `39`; pull-request refs: `0`; tags: `4`.
+- Total files in scope: `393313`; total directories: `61958`.
+- Duplicate file count: `13752`; duplicate directory count: `1735`.
+- API/route count: `5176`; feature count: `73`; style/universal count: `0`; trading-related path count: `494`.
+- Merge decisions: not executed; this refresh records local evidence only and preserves existing merge guidance.
+- Remote completion remains blocked until an independently verified target-owned terminal exact-SHA result exists.
+
+```json
+{
+  "api_route_count": 5176,
+  "captured_at": "2026-10-08T01:46:24.118938Z",
+  "coverage": {},
+  "duplicate_directory_count": 1735,
+  "duplicate_file_count": 13752,
+  "feature_count": 73,
+  "pull_request_ref_count": 0,
+  "roots": [
+    "/workspaces/Alpha-Q-ai"
+  ],
+  "style_universal_count": 0,
+  "tag_ref_count": 4,
+  "total_branches": 35,
+  "total_directories": 61958,
+  "total_files": 393313,
+  "total_refs": 39,
+  "trading_related_path_count": 494
+}
+```
+<!-- END QMOI MANAGED: merge-activity-evidence -->

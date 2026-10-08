@@ -67,6 +67,7 @@
     "priority_queue_and_model_review_integration_not_fully_validated",
     "qaudit_model_review_targeted_tests:8_passed_1_failed_due_sensitive_filename_fixture_reaching_unavailable_loopback_service",
     "qseed_and_priority_queue_changes_are_uncommitted_and_not_fully_validated",
+    "remote_completion_not_verified",
     "remote_lfs_quota_unverified",
     "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
     "second_live_repository_and_remote_QSeed_parity_not_verified",
@@ -86,121 +87,129 @@
     "unreadable_files:27",
     "worktree_dirty_or_status_unavailable"
   ],
-  "correlation_id": "54ee2b0b-fac1-4346-bdbe-483ca51fd80c",
+  "correlation_id": "92ecc947-496b-4018-bcab-0a37c9a010e6",
   "current_local_checkpoint": {
-    "artifact_bytes": null,
-    "artifact_path": null,
+    "artifact_bytes": 38596469,
+    "artifact_path": "ollamatracks/merge_activity_metrics.json",
     "artifact_refs": {
-      "installation_scope": "user-reported: thealphakenya/Alpha-Q-ai; thealphakenya/qmoi-enhanced",
-      "observed_push_target_sha": "c5ed64110cb5e7cbd4e55b3d87126e696717cca4",
-      "owner_confirmation": "conversation:2026-10-07T05:55Z; old key revoked; current Codespace value is replacement",
-      "preflight_conclusion": "success; not GitHub App authentication evidence",
-      "preflight_credential_role": "MY_CUSTOM_TOKEN_or_github.token",
-      "preflight_job_id": "112432513007",
-      "preflight_source_sha": "bf605dd3b1b0f835d06d4c1800598a56a1142dd4",
-      "preflight_workflow_run_id": "37511208328"
+      "merge_document": {
+        "bytes": 119342,
+        "path": "MERGE.md",
+        "sha256": "714d6eb9be4febf01017f2fc0031089bbd104ce3f4dcbe9a5fca70926b4b5068",
+        "status": "verified_local_hash"
+      },
+      "merge_metrics": {
+        "bytes": 38596469,
+        "path": "ollamatracks/merge_activity_metrics.json",
+        "sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
+        "status": "verified_local_hash"
+      },
+      "qaudits_document": {
+        "bytes": 122033,
+        "path": "QAUDITS.md",
+        "sha256": "62be02f9333643019d383caff3121418badb49e23d29c193d31194ac1cf84b9a",
+        "status": "verified_local_hash"
+      }
     },
-    "artifact_sha256": null,
+    "artifact_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
     "blockers": [
-      "actions_side_rotated_app_key_configuration_unverified",
-      "branch_protection_and_rulesets_unverified",
-      "default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app",
-      "github_cli_authentication_unavailable",
-      "no_approved_local_app_token_mint_path_for_push",
-      "target_owned_terminal_remote_sha_proof_unavailable"
+      "remote_completion_not_verified",
+      "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
+      "target_owned_terminal_remote_sha_proof_unavailable",
+      "worktree_dirty_or_status_unavailable"
     ],
-    "correlation_id": "54ee2b0b-fac1-4346-bdbe-483ca51fd80c",
-    "generated_at": "2026-10-07T05:58:15.861671Z",
+    "correlation_id": "92ecc947-496b-4018-bcab-0a37c9a010e6",
+    "generated_at": "2026-10-08T01:46:24.389010Z",
     "instruction_inventory": [
       {
         "bytes": 6761,
         "path": "AGENTS.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": "repository-root",
-        "sha256": "449ed616bce17607f573af7d02b1d9f4db790b20c315d9ebaedc90aaceb55a53"
+        "sha256": "9b1c21acb83478dc64623acd5455877e1ff94ea27784fdd300e9084a39cac911"
       },
       {
         "bytes": 7477,
         "path": ".github/copilot-instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": "repository-root",
-        "sha256": "f950262dcc26f468177a1dbea8f6926a7ced066a401803f682755dc836f47033"
+        "sha256": "0dd6b616904d22c807c38aef5ab5a10dfd90d73eef4655dc9fc9e2394dfe2fc8"
       },
       {
         "bytes": 8732,
         "path": ".github/instructions/agent-autonomy.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "38d0b6af88b10f1b5a3033aa5b82d36e5bee91772b1ce27b1953773dad0ecac5"
+        "sha256": "17017836d474e28f03d2730dc4e7673a3df352204315e53cf1574f21b3ec54cc"
       },
       {
         "bytes": 5689,
         "path": ".github/instructions/github-api.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "cdb40e205bf209a4cae1793b49b51843164c3a3c254e17d70d85b0d846eccc69"
+        "sha256": "f8601311e83a67f78521048b6b0b49039a9778b70edf0bacdcb50b5272f948b3"
       },
       {
         "bytes": 5078,
         "path": ".github/instructions/release.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "9f395c5fd42e60eddea3ab7e44af4ce8a4ca2cfa0b1cf1fe3ef20d3ffd9b160c"
+        "sha256": "089e5e3ed6e919523b5c98299b6126afc2d49eda3d6fb0cda99444b8ee1dd484"
       },
       {
         "bytes": 5950,
         "path": ".github/instructions/security.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "51fc70678971650fb5cb87be76c4af303f0826c49ac50dc7bd66dc888131dccf"
+        "sha256": "0518d0c078d437a601da76a42117169b0ae9e22d7da54d7f6ad90eee96d7de27"
       },
       {
         "bytes": 5912,
         "path": ".github/instructions/workflows.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "c9ad4024e602f444f220a2e437ec1384bd09f1231cd916260e0e22dafa6253f2"
+        "sha256": "d9405a7bc38c11aaadffd99870019dfd3f9bbac302b002ef06dc9939c58ce069"
       },
       {
         "bytes": 6532,
         "path": ".github/instructions/workspace.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "70ec76e7368f6ef283967b79b522035700752fd48b5a1a70080b60d5d3135eda"
+        "sha256": "be8bc58ae7ce2e79be2ac0393a689a882a90f9f616f2b424c1c0e30b44e5cdc4"
       }
     ],
-    "instruction_inventory_sha256": "f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766",
-    "local_head_sha": "28b9206cd94791e274045ad83990df3ede65fa55",
-    "local_tree_sha": "e3ee13f11c6ea85adb6786a77f08fdae038986a4",
+    "instruction_inventory_sha256": "5dbc8daa5eaf299f3584cae8feda58127e2646785cc44eaa64f40b0e15d02772",
+    "local_head_sha": "937d94cd4a8c2e6eaaeb496281434f8eea96aee4",
+    "local_tree_sha": "c8d82e4f412cdc70350223ee6bb46976d0d936dc",
     "metrics": {
-      "app_identity_verified": false,
-      "app_token_minted": false,
-      "app_variable_values_read": false,
-      "app_variables_present": [
-        "QMOI_GITHUB_APP_ID",
-        "QMOI_GITHUB_CLIENT_ID",
-        "QMOI_GITHUB_PRIVATE_KEY"
-      ],
-      "remote_mutation_attempted": false,
-      "remote_preflight_run_terminal_success": true,
-      "remote_preflight_used_app": false,
-      "user_reported_installation_repositories": 2
+      "api_route_count": 5176,
+      "duplicate_directory_count": 1735,
+      "duplicate_file_count": 13752,
+      "feature_count": 73,
+      "locally_available_pull_request_refs": 0,
+      "style_universal_count": 0,
+      "tag_refs_in_scope": 4,
+      "total_branches_in_scope": 35,
+      "total_directories_in_scope": 61958,
+      "total_files_in_scope": 393313,
+      "total_local_refs_in_scope": 39,
+      "trading_related_path_count": 494
     },
-    "next_action": "Configure the owner-confirmed rotated App key in GitHub Actions secrets for the approved App-enabled preflight, run it on the target ref, and verify terminal App identity/access plus applicable branch rules; then push through an authorized path. Alternatively authenticate gh and verify identity/policy first.",
-    "operation": "github_app_rotation_and_auth_preflight",
+    "next_action": "Obtain independently verified target-owned terminal exact-ref/SHA/tree evidence before any remote completion or protected mutation claim.",
+    "operation": "merge-activity-evidence",
     "paired_document_sha256": {
-      "oe2.txt": "294ee0770a641169f892d8b96f86340d249d939b85b1b339a1f0b28160a32a47",
-      "remotecompletion.md": "1707fda924c17990ff161397974658d0183392751f53eda37c24da1711b78dc8"
+      "oe2.txt": "5b0e78c9b7a87f5caaa2cd520e1eb3323a65d40f3426c2c6d7e3f4f5244b3fa8",
+      "remotecompletion.md": "ce822f00b523eb8fa21f560a7d37ef26a85489976f8a0dcace8be8f9e3bc810b"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
     "remote_verified": false,
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
-    "source_manifest_sha256": null,
-    "status": "OWNER_CONFIRMED_ROTATION_REMOTE_APP_AUTH_BLOCKED",
+    "source_manifest_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
+    "status": "MERGE_EVIDENCE_REFRESHED",
     "verification_level": "local_artifact_integrity_only",
-    "worktree_dirty": false
+    "worktree_dirty": true
   },
   "evidence_refs": [
     "remotecompletion.md",
@@ -215,7 +224,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-07T05:58:15.861671Z",
+  "generated_at": "2026-10-08T01:46:24.389010Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -546,119 +555,127 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": null,
-      "artifact_path": null,
+      "artifact_bytes": 38596469,
+      "artifact_path": "ollamatracks/merge_activity_metrics.json",
       "artifact_refs": {
-        "installation_scope": "user-reported: thealphakenya/Alpha-Q-ai; thealphakenya/qmoi-enhanced",
-        "observed_push_target_sha": "c5ed64110cb5e7cbd4e55b3d87126e696717cca4",
-        "owner_confirmation": "conversation:2026-10-07T05:55Z; old key revoked; current Codespace value is replacement",
-        "preflight_conclusion": "success; not GitHub App authentication evidence",
-        "preflight_credential_role": "MY_CUSTOM_TOKEN_or_github.token",
-        "preflight_job_id": "112432513007",
-        "preflight_source_sha": "bf605dd3b1b0f835d06d4c1800598a56a1142dd4",
-        "preflight_workflow_run_id": "37511208328"
+        "merge_document": {
+          "bytes": 119342,
+          "path": "MERGE.md",
+          "sha256": "714d6eb9be4febf01017f2fc0031089bbd104ce3f4dcbe9a5fca70926b4b5068",
+          "status": "verified_local_hash"
+        },
+        "merge_metrics": {
+          "bytes": 38596469,
+          "path": "ollamatracks/merge_activity_metrics.json",
+          "sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
+          "status": "verified_local_hash"
+        },
+        "qaudits_document": {
+          "bytes": 122033,
+          "path": "QAUDITS.md",
+          "sha256": "62be02f9333643019d383caff3121418badb49e23d29c193d31194ac1cf84b9a",
+          "status": "verified_local_hash"
+        }
       },
-      "artifact_sha256": null,
+      "artifact_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
       "blockers": [
-        "actions_side_rotated_app_key_configuration_unverified",
-        "branch_protection_and_rulesets_unverified",
-        "default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app",
-        "github_cli_authentication_unavailable",
-        "no_approved_local_app_token_mint_path_for_push",
-        "target_owned_terminal_remote_sha_proof_unavailable"
+        "remote_completion_not_verified",
+        "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
+        "target_owned_terminal_remote_sha_proof_unavailable",
+        "worktree_dirty_or_status_unavailable"
       ],
-      "correlation_id": "54ee2b0b-fac1-4346-bdbe-483ca51fd80c",
-      "generated_at": "2026-10-07T05:58:15.861671Z",
+      "correlation_id": "92ecc947-496b-4018-bcab-0a37c9a010e6",
+      "generated_at": "2026-10-08T01:46:24.389010Z",
       "instruction_inventory": [
         {
           "bytes": 6761,
           "path": "AGENTS.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": "repository-root",
-          "sha256": "449ed616bce17607f573af7d02b1d9f4db790b20c315d9ebaedc90aaceb55a53"
+          "sha256": "9b1c21acb83478dc64623acd5455877e1ff94ea27784fdd300e9084a39cac911"
         },
         {
           "bytes": 7477,
           "path": ".github/copilot-instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": "repository-root",
-          "sha256": "f950262dcc26f468177a1dbea8f6926a7ced066a401803f682755dc836f47033"
+          "sha256": "0dd6b616904d22c807c38aef5ab5a10dfd90d73eef4655dc9fc9e2394dfe2fc8"
         },
         {
           "bytes": 8732,
           "path": ".github/instructions/agent-autonomy.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "38d0b6af88b10f1b5a3033aa5b82d36e5bee91772b1ce27b1953773dad0ecac5"
+          "sha256": "17017836d474e28f03d2730dc4e7673a3df352204315e53cf1574f21b3ec54cc"
         },
         {
           "bytes": 5689,
           "path": ".github/instructions/github-api.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "cdb40e205bf209a4cae1793b49b51843164c3a3c254e17d70d85b0d846eccc69"
+          "sha256": "f8601311e83a67f78521048b6b0b49039a9778b70edf0bacdcb50b5272f948b3"
         },
         {
           "bytes": 5078,
           "path": ".github/instructions/release.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "9f395c5fd42e60eddea3ab7e44af4ce8a4ca2cfa0b1cf1fe3ef20d3ffd9b160c"
+          "sha256": "089e5e3ed6e919523b5c98299b6126afc2d49eda3d6fb0cda99444b8ee1dd484"
         },
         {
           "bytes": 5950,
           "path": ".github/instructions/security.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "51fc70678971650fb5cb87be76c4af303f0826c49ac50dc7bd66dc888131dccf"
+          "sha256": "0518d0c078d437a601da76a42117169b0ae9e22d7da54d7f6ad90eee96d7de27"
         },
         {
           "bytes": 5912,
           "path": ".github/instructions/workflows.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "c9ad4024e602f444f220a2e437ec1384bd09f1231cd916260e0e22dafa6253f2"
+          "sha256": "d9405a7bc38c11aaadffd99870019dfd3f9bbac302b002ef06dc9939c58ce069"
         },
         {
           "bytes": 6532,
           "path": ".github/instructions/workspace.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "70ec76e7368f6ef283967b79b522035700752fd48b5a1a70080b60d5d3135eda"
+          "sha256": "be8bc58ae7ce2e79be2ac0393a689a882a90f9f616f2b424c1c0e30b44e5cdc4"
         }
       ],
-      "instruction_inventory_sha256": "f0d9fa2954cd7d4194d2f8cae7a13d49e24660251df283ddeb17a44a5c700766",
-      "local_head_sha": "28b9206cd94791e274045ad83990df3ede65fa55",
-      "local_tree_sha": "e3ee13f11c6ea85adb6786a77f08fdae038986a4",
+      "instruction_inventory_sha256": "5dbc8daa5eaf299f3584cae8feda58127e2646785cc44eaa64f40b0e15d02772",
+      "local_head_sha": "937d94cd4a8c2e6eaaeb496281434f8eea96aee4",
+      "local_tree_sha": "c8d82e4f412cdc70350223ee6bb46976d0d936dc",
       "metrics": {
-        "app_identity_verified": false,
-        "app_token_minted": false,
-        "app_variable_values_read": false,
-        "app_variables_present": [
-          "QMOI_GITHUB_APP_ID",
-          "QMOI_GITHUB_CLIENT_ID",
-          "QMOI_GITHUB_PRIVATE_KEY"
-        ],
-        "remote_mutation_attempted": false,
-        "remote_preflight_run_terminal_success": true,
-        "remote_preflight_used_app": false,
-        "user_reported_installation_repositories": 2
+        "api_route_count": 5176,
+        "duplicate_directory_count": 1735,
+        "duplicate_file_count": 13752,
+        "feature_count": 73,
+        "locally_available_pull_request_refs": 0,
+        "style_universal_count": 0,
+        "tag_refs_in_scope": 4,
+        "total_branches_in_scope": 35,
+        "total_directories_in_scope": 61958,
+        "total_files_in_scope": 393313,
+        "total_local_refs_in_scope": 39,
+        "trading_related_path_count": 494
       },
-      "next_action": "Configure the owner-confirmed rotated App key in GitHub Actions secrets for the approved App-enabled preflight, run it on the target ref, and verify terminal App identity/access plus applicable branch rules; then push through an authorized path. Alternatively authenticate gh and verify identity/policy first.",
-      "operation": "github_app_rotation_and_auth_preflight",
+      "next_action": "Obtain independently verified target-owned terminal exact-ref/SHA/tree evidence before any remote completion or protected mutation claim.",
+      "operation": "merge-activity-evidence",
       "paired_document_sha256": {
-        "oe2.txt": "294ee0770a641169f892d8b96f86340d249d939b85b1b339a1f0b28160a32a47",
-        "remotecompletion.md": "1707fda924c17990ff161397974658d0183392751f53eda37c24da1711b78dc8"
+        "oe2.txt": "5b0e78c9b7a87f5caaa2cd520e1eb3323a65d40f3426c2c6d7e3f4f5244b3fa8",
+        "remotecompletion.md": "ce822f00b523eb8fa21f560a7d37ef26a85489976f8a0dcace8be8f9e3bc810b"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
       "remote_verified": false,
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
-      "source_manifest_sha256": null,
-      "status": "OWNER_CONFIRMED_ROTATION_REMOTE_APP_AUTH_BLOCKED",
+      "source_manifest_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
+      "status": "MERGE_EVIDENCE_REFRESHED",
       "verification_level": "local_artifact_integrity_only",
-      "worktree_dirty": false
+      "worktree_dirty": true
     },
     "latest_remote_workflow_evidence": {
       "alpha_auth_preflight": {
@@ -732,7 +749,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "28b9206cd94791e274045ad83990df3ede65fa55",
+    "local_head_sha": "937d94cd4a8c2e6eaaeb496281434f8eea96aee4",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",
@@ -1080,7 +1097,7 @@
       "read_only_preflight": ".github/workflows/cross-repo-auth-preflight.yml; scheduled and manually dispatchable; consumes MY_CUSTOM_TOKEN or github.token; not dispatched this session",
       "yaml_validation": "cross-repo-autosync.yml, cross-repo-auth-preflight.yml, branch-sync.yml, ollama-master-orchestrator.yml parsed successfully"
     },
-    "worktree_dirty": false
+    "worktree_dirty": true
   },
   "status": "LOCAL_AUDIT_RECORDED_REMOTE_COMPLETION_BLOCKED",
   "target_repositories": [

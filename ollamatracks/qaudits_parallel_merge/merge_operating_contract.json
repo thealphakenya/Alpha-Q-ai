@@ -1,0 +1,30 @@
+{
+  "blockers": [
+    "remote completion and protected mutation authority were not verified"
+  ],
+  "merge_mode": "canonical_evidence_and_preserve",
+  "metrics": {
+    "all_candidates_ledgered": true,
+    "merge_candidate_count": 363,
+    "production_candidate_count": 1586,
+    "remote_verified": false
+  },
+  "remote_verification_complete": false,
+  "required_evidence": {
+    "artifact_sha": "hash of the generated artifact",
+    "source_sha": "exact local source SHA-256",
+    "target_sha": "exact target repository or branch SHA-256",
+    "test_sha": "hash of the focused validation result"
+  },
+  "safe_merge_sequence": [
+    "enumerate and hash every candidate path",
+    "assign ownership and canonical source precedence",
+    "map implementation, tests, workflows, documentation, and release evidence",
+    "reconcile conflicts without deleting historical or authored content",
+    "run focused validation and full validation",
+    "refresh production.md and productionenhanced.md from verified evidence",
+    "record merge decisions, blockers, and exact SHAs",
+    "stop before remote mutation unless exact authority and terminal evidence are present"
+  ],
+  "schema_version": 1
+}
