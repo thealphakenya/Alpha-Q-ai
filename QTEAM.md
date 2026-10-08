@@ -10,6 +10,15 @@
 
 The QMOI development team operates with an automated-first approach where the Ollama autonomous agent handles most validation, building, and testing. Human team members focus on code review, architectural decisions, and user feedback incorporation.
 
+## Bounded local feature/test mapping status
+
+The current repo remains in a fail-closed feature/test mapping state. The active inventory records discovered features, but every feature entry still needs an implementation path, positive and negative test coverage, authorization boundaries, accessibility expectations, and a terminal exact-SHA remote proof before it can be considered verified.
+
+- Local registry discovery is allowed and useful, but it is not implementation proof.
+- A feature remains `unmapped` until its implementation, tests, owner, and behavior contract are recorded.
+- The latest local validation pass is evidence only: 16 focused PASS checks were recorded in the current bounded audit run, while remote verification remains `false` and final completion is still blocked.
+- No feature or doc update may be promoted to remote completion without target-owned workflow evidence and a matching exact repository/ref/SHA.
+
 ---
 
 ## Team Roles & Responsibilities
