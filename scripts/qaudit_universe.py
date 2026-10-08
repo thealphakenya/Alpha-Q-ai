@@ -46,6 +46,7 @@ EXCLUDED_FILES = {
     "ollamatracks/style_universal_replacement_inventory.json",
     "ollamatracks/feature_test_hook_coverage.json",
     "ollamatracks/system_accountability_audit.json",
+    "ollamatracks/qaudits_evolution_plan.json",
     "ollamatracks/qaudit_markdown_sentence_audit.json",
     "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz",
     "QMOItracks/style_universal_candidate_tree.md",

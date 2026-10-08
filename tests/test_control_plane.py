@@ -1632,6 +1632,7 @@ def test_qaudit_refreshes_style_universal_and_transition_docs_from_one_manifest(
             "hook_reviewed_candidate_count": 0,
         },
         "inventory": {"styles": [{"path": "styles/tokens.css"}], "universals": []},
+        "accountability": {"lion_variation_candidate_count": 3, "registered_extension_count": 2},
         "classes": {
             "docs/accessibility.md": {
                 "path": "docs/accessibility.md",
@@ -1648,6 +1649,14 @@ def test_qaudit_refreshes_style_universal_and_transition_docs_from_one_manifest(
     assert result["status"] == "UPDATED"
     assert result["updated_documents"] == list(documents)
     assert result["accessibility_markdown_candidate_count"] == 1
+    assert result["evolution_plan_artifact"] == "ollamatracks/qaudits_evolution_plan.json"
+    plan = json.loads((tmp_path / result["evolution_plan_artifact"]).read_text(encoding="utf-8"))
+    assert plan["qstats"]["source_manifest_sha256"] == "a" * 64
+    assert result["qlion"] == {
+        "variation_candidate_count": 3,
+        "registered_extension_count": 2,
+        "remote_verified": False,
+    }
     assert repeated["status"] == "UPDATED"
     for filename in documents:
         content = (tmp_path / filename).read_text(encoding="utf-8")
@@ -1655,6 +1664,8 @@ def test_qaudit_refreshes_style_universal_and_transition_docs_from_one_manifest(
         assert content.count("BEGIN QMOI MANAGED: qaudit-style-universal-accessibility-coverage") == 1
         assert "audit-correlation-123" in content
         assert "disability is inferred" in content
+        assert "QStats:" in content
+        assert "QLion:" in content
 
 
 def test_external_research_allowlist_rejects_credentials_and_unapproved_domains():

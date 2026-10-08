@@ -49,6 +49,8 @@ This sequence covers the complete unattended control loop: branch-safe inventory
 
 The four accountability stages are intentionally explicit between OFCA and Markdown/UI mapping so product/platform requirements, variants/extensions, delivery lifecycle, and QTeam ownership are not subsumed by filename or generic audit counts.
 
+`ollamatracks/qaudits_evolution_plan.json` is a deterministic QStats planning artifact bound to the active QAUDITS source manifest. It reports observed/missing contract paths and a plan hash; all entries remain `PLANNED` until their owning stage writes measured execution evidence. QLion variation/extension totals are candidate counts from the local system-accountability audit and do not pass `LION_AND_EXTENSION_VARIANTS`; that stage still requires complete source mapping, tests, owner/review evidence, and the same exact-SHA gates as the other accountability stages.
+
 Every stage is a fail-closed gate. If a required stage is missing, blocked, or unsupported by exact remote evidence, the agent must record the blocker and continue only in read-only or resumable mode; it must never claim final completion without terminal target-owned workflow proof.
 
 `audit_lifecycle()` reports the earliest missing or non-passing required stage as `next_stage`, with a `next_action` to run that stage's QAUDITS check and persist its stage-bound precondition. A missing ledger points to `MERGE_START`; an unreadable or invalid hash chain has no resumable stage and instructs the agent to preserve and verify the existing ledger before recovery. These fields are local recovery guidance, not authorization or evidence that a stage has passed.

@@ -118,6 +118,8 @@ from scripts.ollama_research import (
 from scripts.q_version_manager import QVersionManager
 from scripts.qaudit_all_features import run_parallel_feature_audit
 from scripts.qaudit_universe import write_qaudit_artifacts
+from scripts.qaudits_evolution_planner import build_evolution_plan
+from scripts.qaudit_shard_runner import run_bounded_audit_shards
 from scripts.qaudits_parallel_auditor import run_parallel_merge_audit
 
 try:
@@ -8235,6 +8237,14 @@ All timestamps use UTC ISO-8601 format.
         records = list(universe.get("classes", {}).values())
         metrics = universe.get("metrics", {})
         inventory = universe.get("inventory", {})
+        accountability = universe.get("accountability", {})
+        evolution_plan = build_evolution_plan(
+            target,
+            source_manifest_sha256=metrics.get("source_manifest_sha256"),
+        )
+        evolution_path = target / "ollamatracks" / "qaudits_evolution_plan.json"
+        safe_json_write(evolution_path, evolution_plan)
+        qstats = evolution_plan.get("qstats", {})
         accessibility_markdown = sorted(
             str(record.get("path"))
             for record in records
@@ -8262,6 +8272,8 @@ All timestamps use UTC ISO-8601 format.
             f"- Generated at: `{universe.get('generated_at', 'unavailable')}`; correlation ID: `{universe.get('correlation_id', 'unavailable')}`.",
             f"- Source manifest SHA-256: `{metrics.get('source_manifest_sha256', 'unavailable')}`; scope: `{metrics.get('source_scope', 'materialized_local_only')}`.",
             f"- Style candidates: `{len(inventory.get('styles', []))}`; universal candidates: `{len(inventory.get('universals', []))}`; all remain candidate-only.",
+            f"- QStats: `{qstats.get('stage_count', 0)}` planned domains; `{qstats.get('available_contract_file_count', 0)}` observed contract files; `{qstats.get('missing_or_unavailable_contract_file_count', 0)}` missing/unavailable; remote verified: `False`.",
+            f"- QLion: `{accountability.get('lion_variation_candidate_count', 0)}` variation candidates; `{accountability.get('registered_extension_count', 0)}` registered extensions; implementation and remote validation remain unverified.",
             f"- Chat/voice/hands-free candidates: `{chat_candidates}`; checkpoint/undo/redo/restore candidates: `{recovery_candidates}`; heartbeat/health/oxygen candidates: `{health_candidates}`.",
             f"- Disability/accessibility Markdown candidates: `{len(accessibility_markdown)}`; complete path/category/hash records are in `ollamatracks/qaudit_universe.json` and `ALLMDFILESREFS.md` under Category D1.",
             f"- Disability/accessibility category path count: `{category_paths.get('disability_accessibility', 0)}`; mapped tests: `{metrics.get('test_mapped_candidate_count', 0)}`; reviewed hook applicability: `{metrics.get('hook_reviewed_candidate_count', 0)}`.",
@@ -8300,6 +8312,13 @@ All timestamps use UTC ISO-8601 format.
             "source_manifest_sha256": metrics.get("source_manifest_sha256"),
             "correlation_id": universe.get("correlation_id"),
             "accessibility_markdown_candidate_count": len(accessibility_markdown),
+            "evolution_plan_artifact": evolution_path.relative_to(target).as_posix(),
+            "qstats": qstats,
+            "qlion": {
+                "variation_candidate_count": accountability.get("lion_variation_candidate_count", 0),
+                "registered_extension_count": accountability.get("registered_extension_count", 0),
+                "remote_verified": False,
+            },
         }
 
     def refresh_ollama_reference_audit(
@@ -9229,12 +9248,21 @@ All timestamps use UTC ISO-8601 format.
             if accessibility_content_candidate.search(text):
                 accessibility_label = "Category D1 — Disability accessibility and assistive technology"
                 assignments[accessibility_label].append(relative_path)
+            markdown_lines = text.splitlines()
+            qstats = {
+                "word_count": len(re.findall(r"\b[\w'-]+\b", text, re.UNICODE)),
+                "heading_count": sum(line.lstrip().startswith("#") for line in markdown_lines),
+                "link_count": len(re.findall(r"!?\[[^\]]*\]\([^)]+\)", text)),
+                "accessibility_candidate": bool(accessibility_content_candidate.search(text)),
+                "source_text_recorded": False,
+            }
             markdown_metrics.append({
                 "path": relative_path,
                 "source": relative_path.split("/", 1)[0] if "/" in relative_path else target.name,
                 "bytes": len(data),
-                "lines": len(text.splitlines()),
+                "lines": len(markdown_lines),
                 "sha256": hashlib.sha256(data).hexdigest(),
+                "qstats": qstats,
                 "validation_status": validation["status"],
                 "validation_errors": validation["errors"],
                 "validation_checks": {
@@ -9243,6 +9271,30 @@ All timestamps use UTC ISO-8601 format.
                 },
             })
         markdown_metrics.extend(git_inventory.get("records", []))
+        markdown_qstats = {
+            "source_scope": "materialized_markdown_only",
+            "source_manifest_sha256": hashlib.sha256(
+                json.dumps(
+                    [
+                        (item.get("path"), item.get("sha256"), item.get("qstats"))
+                        for item in markdown_metrics
+                        if item.get("qstats") is not None
+                    ],
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest(),
+            "file_count": len(full_relative_files),
+            "word_count": sum(item.get("qstats", {}).get("word_count", 0) for item in markdown_metrics),
+            "heading_count": sum(item.get("qstats", {}).get("heading_count", 0) for item in markdown_metrics),
+            "link_count": sum(item.get("qstats", {}).get("link_count", 0) for item in markdown_metrics),
+            "accessibility_candidate_document_count": sum(
+                item.get("qstats", {}).get("accessibility_candidate", False)
+                for item in markdown_metrics
+            ),
+            "source_text_recorded": False,
+            "remote_verified": False,
+        }
         materialized_validated = sum(
             item.get("validation_status") == "validated"
             for item in markdown_metrics
@@ -9320,6 +9372,13 @@ All timestamps use UTC ISO-8601 format.
             "Category membership: a markdown file may appear in unlimited categories whenever its filename, content, or feature responsibilities match; no category assignment is exclusive.",
             "Completeness rule: every discovered markdown path is listed below; missing history or remote access remains explicitly unproven rather than silently omitted.",
             (
+                "QStats (materialized Markdown only): "
+                f"{markdown_qstats['file_count']} files; {markdown_qstats['word_count']} words; "
+                f"{markdown_qstats['heading_count']} headings; {markdown_qstats['link_count']} links; "
+                f"{markdown_qstats['accessibility_candidate_document_count']} accessibility candidate documents; "
+                f"manifest `{markdown_qstats['source_manifest_sha256']}`; remote verified=False."
+            ),
+            (
                 "Validation summary: "
                 f"{materialized_validated}/{len(full_relative_files)} materialized documents pass; "
                 f"{local_history_validated}/{local_history_total} documents in locally available refs pass; "
@@ -9332,13 +9391,17 @@ All timestamps use UTC ISO-8601 format.
         all_block.extend(f"- {item}" for item in all_category_files)
         all_block.extend([
             "",
-            "Metrics (path | source/ref | bytes | lines | content hash/object id | validation):",
+            "Metrics (path | source/ref | bytes | lines | QStats words/headings/links/accessibility candidate | content hash/object id | validation):",
         ])
         for metric in markdown_metrics:
             digest = metric.get("sha256") or metric.get("object_id") or "unavailable"
             all_block.append(
                 f"- `{metric['path']}` | `{metric.get('source', 'unknown')}` | "
                 f"{metric.get('bytes', 'unknown')} | {metric.get('lines', 'unknown')} | "
+                f"{metric.get('qstats', {}).get('word_count', 'not_materialized')} / "
+                f"{metric.get('qstats', {}).get('heading_count', 'not_materialized')} / "
+                f"{metric.get('qstats', {}).get('link_count', 'not_materialized')} / "
+                f"{metric.get('qstats', {}).get('accessibility_candidate', 'not_materialized')} | "
                 f"`{digest}` | `{metric.get('validation_status', 'unknown')}`"
             )
         all_block.extend([
@@ -9380,6 +9443,7 @@ All timestamps use UTC ISO-8601 format.
                 "aggregate_files": aggregate_files,
                 "git_history": git_inventory,
                 "validation_summary": markdown_validation_summary,
+                "qstats": markdown_qstats,
                 "sync_plan": sync_plan,
                 "refresh_triggers": [
                     "push",
@@ -12270,6 +12334,7 @@ def main(
         choices=[
             "validate-all",
             "audit-inventory",
+            "audit-inventory-shard",
             "qaudit-universe",
             "qaudit-markdown-sentences",
             "qaudit-model-review",
@@ -12300,6 +12365,18 @@ def main(
         default=None,
         help="Repository root to operate against.",
     )
+    parser.add_argument(
+        "--shard-size",
+        type=int,
+        default=100,
+        help="Files per bounded audit-inventory-shard (1-500).",
+    )
+    parser.add_argument(
+        "--max-shards",
+        type=int,
+        default=1,
+        help="Maximum shards per audit-inventory-shard invocation (1-10).",
+    )
 
     parser.add_argument(
         "--credential-action",
@@ -12325,6 +12402,19 @@ def main(
     if args.command == "commands":
         root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
         print(json.dumps(refresh_commands_category(root), indent=2, sort_keys=True, default=str))
+        return 0
+
+    if args.command == "audit-inventory-shard":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        result = run_bounded_audit_shards(
+            root,
+            shard_size=args.shard_size,
+            max_shards=args.max_shards,
+        )
+        output = {key: value for key, value in result.items() if key != "remaining_shard_numbers"}
+        output["remaining_shard_number_preview"] = result.get("remaining_shard_numbers", [])[:10]
+        output["remaining_shard_numbers_omitted"] = max(0, len(result.get("remaining_shard_numbers", [])) - 10)
+        print(json.dumps(output, indent=2, sort_keys=True, default=str))
         return 0
 
     if args.command == "audit-inventory":

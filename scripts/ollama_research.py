@@ -175,6 +175,7 @@ AUDIT_SELF_REFERENTIAL_REPORTS = {
     "ollamatracks/ollama_reference_audit.json",
     "ollamatracks/feature_test_hook_coverage.json",
     "ollamatracks/system_accountability_audit.json",
+    "ollamatracks/qaudits_evolution_plan.json",
     "ollamatracks/style_universal_replacement_inventory.json",
     "ollamatracks/legacy_sync_artifact_inventory.json",
     "ollamatracks/restore_point_memory.json",

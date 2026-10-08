@@ -102,6 +102,33 @@ class TestAutonomousContinuation:
 
 
 class TestAuditInventoryCommand:
+    def test_bounded_audit_inventory_shard_command_routes_limits(self, tmp_path, monkeypatch, capsys):
+        calls = {}
+
+        def run_shards(root, *, shard_size, max_shards):
+            calls.update({"root": root, "shard_size": shard_size, "max_shards": max_shards})
+            return {
+                "status": "IN_PROGRESS",
+                "source_manifest_sha256": "manifest-hash",
+                "completed_shard_numbers": [1],
+                "remaining_shard_numbers": [2],
+                "remote_verified": False,
+            }
+
+        monkeypatch.setattr("ollama_autonomous_agent.run_bounded_audit_shards", run_shards)
+
+        assert autonomous_agent_main([
+            "audit-inventory-shard",
+            "--base-path", str(tmp_path),
+            "--shard-size", "20",
+            "--max-shards", "2",
+        ]) == 0
+
+        result = json.loads(capsys.readouterr().out)
+        assert calls == {"root": tmp_path.resolve(), "shard_size": 20, "max_shards": 2}
+        assert result["status"] == "IN_PROGRESS"
+        assert result["remote_verified"] is False
+
     def test_qseed_command_is_routed_through_ollama_agent(self, monkeypatch):
         calls = {}
 
@@ -984,6 +1011,15 @@ class TestMarkdownCategoryIndex:
         assert "docs/financial-note.md" in result["category_map"][finance_category]
         assert "docs/overview.md" in result["category_map"][finance_category]
         assert "docs/user-controls.md" in result["category_map"][accessibility_category]
+        user_controls = next(
+            item for item in result["all_category"]["metrics"]
+            if item["path"] == "docs/user-controls.md"
+        )
+        assert user_controls["qstats"]["accessibility_candidate"] is True
+        assert user_controls["qstats"]["heading_count"] == 1
+        assert user_controls["qstats"]["word_count"] > 0
+        assert result["all_category"]["qstats"]["file_count"] == len(result["all_category"]["files"])
+        assert result["all_category"]["qstats"]["remote_verified"] is False
         api_metric = next(item for item in result["all_category"]["metrics"] if item["path"] == "API.md")
         assert api_metric["source"] == "repo"
         assert api_metric["bytes"] > 0
