@@ -191,6 +191,52 @@ def test_audit_priority_queue_ranks_risk_and_keeps_every_path() -> None:
     assert queue["queue_sha256"] == build_audit_priority_queue(records, "manifest")["queue_sha256"]
 
 
+def test_qaudit_prioritizes_chat_recovery_and_health_candidates_without_passing_them(tmp_path: Path) -> None:
+    sources = {
+        "src/chat_panel.tsx": "chatbot assistant hands-free voice interface",
+        "scripts/checkpoint_manager.py": "checkpoint undo redo restore recovery",
+        "scripts/health_monitor.py": "health heartbeat oxygen telemetry freshness",
+    }
+    for relative, content in sources.items():
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+
+    universe = build_qaudit_universe(tmp_path)
+    queue_items = {
+        item["path"]: item for item in universe["audit_queue"]["items"]
+    }
+
+    assert "chat_interfaces" in universe["classes"]["src/chat_panel.tsx"]["categories"]
+    assert "handsfree_voice" in universe["classes"]["src/chat_panel.tsx"]["categories"]
+    assert "recovery_undo_redo" in universe["classes"]["scripts/checkpoint_manager.py"]["categories"]
+    assert "health_heartbeat_oxygen" in universe["classes"]["scripts/health_monitor.py"]["categories"]
+    assert queue_items["src/chat_panel.tsx"]["priority"] == 80
+    assert queue_items["scripts/checkpoint_manager.py"]["priority"] == 90
+    assert queue_items["scripts/health_monitor.py"]["priority"] == 90
+    assert all(item["status"] == "pending_review" for item in queue_items.values())
+    assert all(item["remote_verified"] is False for item in queue_items.values())
+
+
+def test_qaudit_prioritizes_disability_accessibility_review_candidates(tmp_path: Path) -> None:
+    source = tmp_path / "docs" / "product-interaction.md"
+    source.parent.mkdir(parents=True)
+    source.write_text(
+        "# Product interaction\n\nBlind and low-vision support, captions for deaf users, "
+        "keyboard and switch control, dyslexia-friendly text, and reduced motion.\n",
+        encoding="utf-8",
+    )
+
+    universe = build_qaudit_universe(tmp_path)
+
+    record = universe["classes"]["docs/product-interaction.md"]
+    queued = next(item for item in universe["audit_queue"]["items"] if item["path"] == source.relative_to(tmp_path).as_posix())
+    assert "disability_accessibility" in record["categories"]
+    assert queued["priority"] == 90
+    assert "disability_accessibility_and_assistive_technology_review" in queued["reasons"]
+    assert queued["status"] == "pending_review"
+
+
 def test_qaudit_hashes_large_files_but_marks_content_as_unparsed(tmp_path: Path) -> None:
     large = tmp_path / "docs" / "large-audit.md"
     large.parent.mkdir()

@@ -113,11 +113,11 @@ class CheckpointManager:
         history = self._validate_history(previous.get(self.HISTORY_KEY) if previous else None)
         old_public = self._public_state(previous) if previous else None
         if not history["snapshots"]:
-            history["snapshots"] = [payload]
+            history["snapshots"] = [self._public_state(payload)]
             history["cursor"] = 0
         elif old_public is None or self._state_fingerprint(old_public) != self._state_fingerprint(payload):
             history["snapshots"] = history["snapshots"][: history["cursor"] + 1]
-            history["snapshots"].append(payload)
+            history["snapshots"].append(self._public_state(payload))
             if len(history["snapshots"]) > self.MAX_HISTORY_SNAPSHOTS:
                 history["snapshots"] = history["snapshots"][-self.MAX_HISTORY_SNAPSHOTS :]
             history["cursor"] = len(history["snapshots"]) - 1

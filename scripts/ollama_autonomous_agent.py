@@ -7102,6 +7102,21 @@ All timestamps use UTC ISO-8601 format.
                 continue
             relative_path = Path(item["path"])
             filename = relative_path.name
+            path_parts = relative_path.parts
+            version_parts = {
+                part[:-3] if part.lower().endswith(".md") else part
+                for part in path_parts
+            }
+            if (
+                ".github" in {part.lower() for part in path_parts}
+                or filename.lower() in {"agents.md", "copilot-instructions.md"}
+                or filename.lower().endswith(".instructions.md")
+                or any(
+                    re.fullmatch(r"Q\.0\.0\.(?:[1-9][0-9]*|N)", part, re.IGNORECASE)
+                    for part in version_parts
+                )
+            ):
+                continue
             stem = relative_path.stem.lower()
             if (
                 filename in core_operational_documents
@@ -8210,6 +8225,83 @@ All timestamps use UTC ISO-8601 format.
         safe_json_write(target / "ollamatracks" / "bank_automation_status.json", report)
         return report
 
+    def refresh_qaudit_governance_documents(
+        self,
+        root: Path | str,
+        universe: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Refresh the requested style/universal contracts from one QAUDITS snapshot."""
+        target = Path(root).resolve()
+        records = list(universe.get("classes", {}).values())
+        metrics = universe.get("metrics", {})
+        inventory = universe.get("inventory", {})
+        accessibility_markdown = sorted(
+            str(record.get("path"))
+            for record in records
+            if str(record.get("path", "")).lower().endswith(".md")
+            and "disability_accessibility" in record.get("categories", [])
+        )
+        chat_candidates = sum(
+            "chat_interfaces" in record.get("categories", [])
+            or "handsfree_voice" in record.get("categories", [])
+            for record in records
+        )
+        health_candidates = sum(
+            "health_heartbeat_oxygen" in record.get("categories", [])
+            for record in records
+        )
+        recovery_candidates = sum(
+            "recovery_undo_redo" in record.get("categories", [])
+            for record in records
+        )
+        category_paths = metrics.get("category_candidate_path_counts", {})
+        lines = [
+            "## Agent-managed QAUDITS style, universal, accessibility, and recovery coverage",
+            "",
+            "This section is refreshed from the same local QAUDITS universe on every invocation of `refresh_ollama_reference_audit()` (pre-merge and full `audit-inventory` paths). It is not a timer or remote verification.",
+            f"- Generated at: `{universe.get('generated_at', 'unavailable')}`; correlation ID: `{universe.get('correlation_id', 'unavailable')}`.",
+            f"- Source manifest SHA-256: `{metrics.get('source_manifest_sha256', 'unavailable')}`; scope: `{metrics.get('source_scope', 'materialized_local_only')}`.",
+            f"- Style candidates: `{len(inventory.get('styles', []))}`; universal candidates: `{len(inventory.get('universals', []))}`; all remain candidate-only.",
+            f"- Chat/voice/hands-free candidates: `{chat_candidates}`; checkpoint/undo/redo/restore candidates: `{recovery_candidates}`; heartbeat/health/oxygen candidates: `{health_candidates}`.",
+            f"- Disability/accessibility Markdown candidates: `{len(accessibility_markdown)}`; complete path/category/hash records are in `ollamatracks/qaudit_universe.json` and `ALLMDFILESREFS.md` under Category D1.",
+            f"- Disability/accessibility category path count: `{category_paths.get('disability_accessibility', 0)}`; mapped tests: `{metrics.get('test_mapped_candidate_count', 0)}`; reviewed hook applicability: `{metrics.get('hook_reviewed_candidate_count', 0)}`.",
+            "- Audit status: `NEEDS_REVIEW` until owners, implementations, user-selected access preferences, privacy boundaries, applicable tests, and exact-SHA evidence are mapped. No disability is inferred or stored as a user profile.",
+            "- Missing, stale, or provider-unverified health/oxygen values remain `UNKNOWN`; dashboard balances and account values require authorized provider evidence and are not inferred from prose.",
+            "- Updating this managed section never rewrites historical/archive documents, policy instructions, or Q-version artifacts.",
+        ]
+        updated: list[str] = []
+        blocked: list[str] = []
+        for filename in (
+            "STYLES.md",
+            "QAUDITS.md",
+            "UNIVERSALS.md",
+            "UNIVERSAL.md",
+            "TRANSION.md",
+            "TRANSITION.md",
+        ):
+            path = target / filename
+            if path.is_symlink():
+                blocked.append(f"{filename}:symlink")
+                continue
+            if not path.is_file():
+                blocked.append(f"{filename}:missing")
+                continue
+            _upsert_managed_markdown_section(
+                path,
+                filename,
+                "qaudit-style-universal-accessibility-coverage",
+                "\n".join(lines),
+            )
+            updated.append(filename)
+        return {
+            "status": "UPDATED" if not blocked else "NEEDS_REVIEW",
+            "updated_documents": updated,
+            "blocked_documents": blocked,
+            "source_manifest_sha256": metrics.get("source_manifest_sha256"),
+            "correlation_id": universe.get("correlation_id"),
+            "accessibility_markdown_candidate_count": len(accessibility_markdown),
+        }
+
     def refresh_ollama_reference_audit(
         self,
         root: Path | str | None = None,
@@ -8224,6 +8316,7 @@ All timestamps use UTC ISO-8601 format.
             "lion_variations": [],
         }
         universe = write_qaudit_artifacts(target, product_registry=product_registry)
+        self.refresh_qaudit_governance_documents(target, universe)
         accountability = universe.get("accountability", {})
         universe_path = target / "ollamatracks" / "qaudit_universe.json"
         accountability_path = target / "ollamatracks" / "system_accountability_audit.json"
@@ -9023,6 +9116,11 @@ All timestamps use UTC ISO-8601 format.
                 "QSTREAM.md", "QSTORE.md", "APP_LINKS.md", "MASTEROWNS.md", "UNIVERSAL.md",
                 "CLONE_PLATFORM_UI.md", "QMOICLONEQUANTUM.md", "QMOICLONEVERCEL.md", "QUANTUMPAYED.md",
             ]),
+            ("Category D1 — Disability accessibility and assistive technology", [
+                "accessibility", "a11y", "disability", "blind", "vision", "deaf", "hearing", "caption",
+                "screenreader", "screen reader", "assistive", "dyslexia", "neurodivergent", "motor",
+                "cognitive", "epilepsy", "reduced motion", "voice control", "switch control",
+            ]),
             ("Category I — Q Financial Manager, wallets, accounts, trading, revenue, and money-making operations", [
                 "FINANCIALMANAGER.md", "TRADINGREADME.md", "CASHON.md", "MEGAVAULT.md", "LEAHWALLET.md", "QMOITRADER.md",
                 "QMOIAUTOPROJECTS.md", "QMOIAUTOPROJECTSAUTODISTRIBUTEMARKET.md", "QMOIAUTOMAKESMONEY.md", "QMOIREVENUEGENERATION.md",
@@ -9056,6 +9154,12 @@ All timestamps use UTC ISO-8601 format.
             r"invoice|tax|budget|transaction|treasury|remittance|payout|salary|"
             r"accounting|global|worldwide|cross[- ]border|country|countries|nation|"
             r"jurisdiction|investment|funding|grant|liabilit\w*|reconcil\w*)\b|[$€£¥]",
+            re.IGNORECASE,
+        )
+        accessibility_content_candidate = re.compile(
+            r"\b(?:disabilit\w*|accessibility|a11y|blind|low vision|deaf|hard of hearing|captions?|"
+            r"screen readers?|assistive technology|dyslex\w*|neurodiverg\w*|motor impairment|"
+            r"cognitive access|epilepsy|reduced motion|switch control)\b",
             re.IGNORECASE,
         )
 
@@ -9122,6 +9226,9 @@ All timestamps use UTC ISO-8601 format.
                 }
             if financial_content_candidate.search(text):
                 assignments[financial_category_label].append(relative_path)
+            if accessibility_content_candidate.search(text):
+                accessibility_label = "Category D1 — Disability accessibility and assistive technology"
+                assignments[accessibility_label].append(relative_path)
             markdown_metrics.append({
                 "path": relative_path,
                 "source": relative_path.split("/", 1)[0] if "/" in relative_path else target.name,

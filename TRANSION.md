@@ -4,6 +4,8 @@
 
 This document defines the transition plan for the active QMOI styles and universals migration. It is a governance and planning artifact, not proof of completion. Every entry below distinguishes discovered candidates, planned replacements, verified replacements, and remote-verified results. The agent must continue only when each step has a matching QAUDITS pass, exact-path record, test/hook mapping, and remote evidence or a written blocker.
 
+The correctly spelled entry point is [TRANSITION.md](TRANSITION.md). This established file remains the detailed plan to avoid maintaining two competing migration bodies.
+
 ## Canonical style/universal replacement catalog
 
 The style and universal layer is the shared contract for the active repository, historical sources, cloned platforms, and cross-repo product surfaces. Planned and candidate coverage includes the primary documents and directories below.
@@ -105,6 +107,9 @@ The exact counts below are local discovery baselines and must be regenerated and
 11. For large trees, shard only immutable inputs, persist shard checkpoints, validate every expected range, and merge sorted records into a root manifest; rescan changed prefixes only for local diagnostics, then regenerate the full final digest before any gate.
 12. Schedule independent read-only work concurrently, but serialize checkpoint cursor updates, lifecycle-ledger appends, protected writes, merge operations, and publication.
 13. Stop boundedly on exhausted retries, resource limits, inaccessible inputs, ambiguous HTTP responses, or human-authorization gates; retain partial outputs and a ranked resumable queue.
+14. Inventory chat, conversational, voice, and hands-free interfaces by actual source path; map access, consent, privacy, style, platform permissions, disability access modes, and tests. Keep absent implementations unmapped.
+15. Map checkpoint undo/redo and restore decisions to freshness signals and validation gates; heartbeat loss alone never authorizes restore, and checkpoint navigation is not file rollback.
+16. Audit health, heartbeat, dashboard, and oxygen-style metrics by source, unit, freshness, and missing-data behavior; unknown values remain unknown rather than becoming zero or healthy.
 
 ## Required documentation references
 
@@ -135,20 +140,20 @@ This plan intentionally keeps replacement discovery fail-closed: the system can 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10435`; directories: `1269`; Markdown: `2418`.
+- Status: `NEEDS_REVIEW`; materialized files: `10446`; directories: `1270`; Markdown: `2418`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2155, build_download_install=2110, orchestration=2061, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2000`.
+- Managed-document family candidates: `app_platform=2156, build_download_install=2110, orchestration=2062, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2001`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52722`; percentage occurrences: `22237`.
-- Markdown word count: `3552546`; heuristic sentence count: `673863`; sentence records indexed: `673863`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29844` metric claims; `10662` completion claims; `29747` metric and `10533` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13340`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52718`; percentage occurrences: `22237`.
+- Markdown word count: `3554796`; heuristic sentence count: `674081`; sentence records indexed: `674081`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29838` metric claims; `10664` completion claims; `29741` metric and `10535` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9047` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13342`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40017` lines in `3670` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `287`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40052` lines in `3673` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `290`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

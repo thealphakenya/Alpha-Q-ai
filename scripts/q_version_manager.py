@@ -386,11 +386,26 @@ class QVersionManager:
             raise ValueError("Invalid Q-version execution identifier")
         ledger = self.root / "ollamatracks" / "q_versions" / execution_id / "lifecycle.jsonl"
         if not ledger.is_file():
-            return {"execution_id": execution_id, "valid": False, "status": "missing", "records": 0, "missing_stages": list(self.LIFECYCLE_STAGES)}
+            return {
+                "execution_id": execution_id,
+                "valid": False,
+                "status": "missing",
+                "records": 0,
+                "missing_stages": list(self.LIFECYCLE_STAGES),
+                "next_stage": self.LIFECYCLE_STAGES[0],
+                "next_action": "Begin the lifecycle with QAUDITS for MERGE_START and persist its stage-bound precondition.",
+            }
         try:
             records = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines() if line.strip()]
         except (OSError, json.JSONDecodeError):
-            return {"execution_id": execution_id, "valid": False, "status": "invalid_json", "records": 0}
+            return {
+                "execution_id": execution_id,
+                "valid": False,
+                "status": "invalid_json",
+                "records": 0,
+                "next_stage": None,
+                "next_action": "Preserve the unreadable lifecycle ledger and recover from a verified checkpoint before resuming; do not overwrite it.",
+            }
         verification = self._verify_lifecycle_records(records)
         if not verification["valid"]:
             return {
@@ -406,6 +421,8 @@ class QVersionManager:
                 ],
                 "passed_stages": [],
                 "missing_or_unpassed_stages": list(self.LIFECYCLE_STAGES[:-1]),
+                "next_stage": None,
+                "next_action": "Preserve the invalid lifecycle ledger and verify its hash chain before resuming; do not mark any stage complete.",
                 "stage_records": [],
             }
         latest_status_by_stage = {
@@ -422,6 +439,7 @@ class QVersionManager:
             if status == "PASS"
         }
         missing = [stage for stage in self.LIFECYCLE_STAGES[:-1] if stage not in present]
+        next_stage = next((stage for stage in self.LIFECYCLE_STAGES[:-1] if stage in missing), None)
         qaudit_blockers = []
         for stage, record in latest_records_by_stage.items():
             gate = record.get("details", {}).get("qaudit_gate")
@@ -439,6 +457,13 @@ class QVersionManager:
             "stage_sequence": [record.get("stage") for record in records],
             "passed_stages": sorted(present, key=self.LIFECYCLE_STAGES.index),
             "missing_or_unpassed_stages": missing,
+            "next_stage": next_stage,
+            "next_action": (
+                f"Run QAUDITS for {next_stage}, record its complete stage-bound precondition, "
+                "and retry only after that stage passes."
+                if next_stage
+                else "All required local lifecycle stages passed; continue only through the remote and authorization gates."
+            ),
             "qaudit_blocked_stages": [item["stage"] for item in qaudit_blockers],
             "qaudit_blockers": qaudit_blockers,
             "stage_records": [

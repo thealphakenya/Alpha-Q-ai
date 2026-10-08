@@ -152,9 +152,10 @@ MARKDOWN_DOCUMENT_FAMILY_PATTERNS = {
     "qteam_accountability": re.compile(r"\b(?:qteam|accountability|ownership|owners?|approvals?|governance)\b", re.IGNORECASE),
     "orchestration": re.compile(r"\b(?:orchestras?|orchestration|orchestrators?|coordination|pipelines?)\b", re.IGNORECASE),
     "tree_inventory": re.compile(r"\b(?:trees?|directory structure|folder structure|file inventory|repository structure|filesystem)\b", re.IGNORECASE),
+    "disability_accessibility": re.compile(r"\b(?:disabilit\w*|accessibility|a11y|blind|low vision|deaf|hard of hearing|captions?|screen readers?|assistive technology|dyslex\w*|neurodiverg\w*|motor impairment|cognitive access|epilepsy|reduced motion|switch control)\b", re.IGNORECASE),
 }
 HISTORICAL_PATH_COMPONENT_PATTERN = re.compile(
-    r"(?:^|-)(?:19|20)\d{2}(?:-|$)",
+    r"(?:^|[-_.])(?:19|20)\d{2}(?:[-_.]|$)",
     re.IGNORECASE,
 )
 AUDIT_IGNORED_DIRECTORIES = frozenset({
@@ -209,7 +210,11 @@ def _source_scope(relative_path: str) -> str:
     historical_components = {"archive", "archives", "history", "historical", "backups", "snapshots"}
     for component in Path(relative_path).parts:
         lowered = component.lower()
-        if lowered in historical_components or HISTORICAL_PATH_COMPONENT_PATTERN.search(lowered):
+        component_tokens = set(re.split(r"[-_.]+", lowered))
+        if (
+            component_tokens & historical_components
+            or HISTORICAL_PATH_COMPONENT_PATTERN.search(lowered)
+        ):
             return "historical_or_archive_candidate"
     return "materialized_repository"
 

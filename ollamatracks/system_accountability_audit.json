@@ -924,7 +924,7 @@
   "coverage_complete": false,
   "delivery_stages": {
     "build": {
-      "candidate_file_count": 3134,
+      "candidate_file_count": 3138,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/dependabot.yml",
@@ -1354,6 +1354,8 @@
         "ollamatracks/legacy_sync_artifact_inventory.json",
         "ollamatracks/link_validation_report.json",
         "ollamatracks/production_gap_inventory.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/runbook_audit.json",
         "ollamatracks/trading_surface_inventory.json",
         "or.md",
@@ -4040,8 +4042,10 @@
         "scripts/ollama_research.py",
         "scripts/ollama_runtime.py",
         "scripts/q_version_manager.py",
+        "scripts/qaudit_all_features.py",
         "scripts/qaudit_model_review.py",
         "scripts/qaudit_universe.py",
+        "scripts/qaudits_parallel_auditor.py",
         "scripts/qmoi_credentials.py",
         "scripts/qmoi_orchestrator_service.py",
         "scripts/qmoi_release_autofix.py",
@@ -4064,20 +4068,20 @@
       "coverage_complete": false,
       "facet_candidate_counts": {
         "documentation": 2072,
-        "implementation_candidates": 731,
+        "implementation_candidates": 733,
         "package_or_delivery_candidates": 127,
         "tests": 20,
         "workflows": 68
       },
       "scope_counts": {
         "historical_snapshot": 2934,
-        "materialized_local": 200
+        "materialized_local": 204
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "deploy": {
-      "candidate_file_count": 1385,
+      "candidate_file_count": 1387,
       "candidate_paths": [
         ".github/instructions/release.instructions.md",
         ".github/instructions/security.instructions.md",
@@ -4398,6 +4402,8 @@
         "ollamatracks/github-state.json",
         "ollamatracks/legacy_sync_artifact_inventory.json",
         "ollamatracks/link_validation_report.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/runbook_audit.json",
         "ollamatracks/trading_surface_inventory.json",
         "or.md",
@@ -5475,13 +5481,13 @@
       },
       "scope_counts": {
         "historical_snapshot": 1270,
-        "materialized_local": 115
+        "materialized_local": 117
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "download": {
-      "candidate_file_count": 2566,
+      "candidate_file_count": 2569,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/instructions/agent-autonomy.instructions.md",
@@ -5783,6 +5789,8 @@
         "ollamatracks/legacy_sync_artifact_inventory.json",
         "ollamatracks/link_validation_report.json",
         "ollamatracks/production_gap_inventory.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/trading_surface_inventory.json",
         "or.md",
         "production.md",
@@ -8044,6 +8052,7 @@
         "scripts/qaudit_universe.py",
         "scripts/qmoi_release_autofix.py",
         "scripts/workflow_status_dashboard.py",
+        "tests/test_lion_universe.py",
         "tests/test_qaudit_universe.py",
         "tests/test_qmoi_release_autofix.py",
         "trigger.md",
@@ -8053,20 +8062,20 @@
       "coverage_complete": false,
       "facet_candidate_counts": {
         "documentation": 2049,
-        "implementation_candidates": 399,
+        "implementation_candidates": 400,
         "package_or_delivery_candidates": 192,
-        "tests": 10,
+        "tests": 11,
         "workflows": 11
       },
       "scope_counts": {
         "historical_snapshot": 2394,
-        "materialized_local": 172
+        "materialized_local": 175
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "install": {
-      "candidate_file_count": 2790,
+      "candidate_file_count": 2792,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/instructions/agent-autonomy.instructions.md",
@@ -8425,6 +8434,8 @@
         "ollama.md",
         "ollamatracks/github-state.json",
         "ollamatracks/link_validation_report.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/runbook_audit.json",
         "or.md",
         "production.md",
@@ -10869,13 +10880,13 @@
       },
       "scope_counts": {
         "historical_snapshot": 2610,
-        "materialized_local": 180
+        "materialized_local": 182
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "publish": {
-      "candidate_file_count": 2137,
+      "candidate_file_count": 2139,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/instructions/agent-autonomy.instructions.md",
@@ -11068,6 +11079,8 @@
         "ollamatracks/executions/exec-04905f69ea3442d094007625627e1366/execution.json",
         "ollamatracks/executions/exec-e15d83639fbc42e28c2e18fb1e3a868a/execution.json",
         "ollamatracks/github-state.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "or.md",
         "production.md",
         "productionenhanced.md",
@@ -13025,13 +13038,13 @@
       },
       "scope_counts": {
         "historical_snapshot": 1957,
-        "materialized_local": 180
+        "materialized_local": 182
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "release": {
-      "candidate_file_count": 2370,
+      "candidate_file_count": 2375,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/instructions/agent-autonomy.instructions.md",
@@ -13260,6 +13273,9 @@
         "ollamatracks/legacy_sync_artifact_inventory.json",
         "ollamatracks/link_validation_report.json",
         "ollamatracks/production_gap_inventory.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/merge_operating_contract.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/runbook_audit.json",
         "ollamatracks/trading_surface_inventory.json",
         "or.md",
@@ -15391,12 +15407,14 @@
         "scripts/ollama_autonomous_agent.py",
         "scripts/ollama_research.py",
         "scripts/qaudit_universe.py",
+        "scripts/qaudits_parallel_auditor.py",
         "scripts/qmoi_orchestrator_service.py",
         "scripts/qmoi_release_autofix.py",
         "scripts/qmoictl.py",
         "scripts/remote_lifecycle.py",
         "scripts/runbook_audit.py",
         "tests/test_control_plane.py",
+        "tests/test_lion_universe.py",
         "tests/test_ollama_autonomous_agent.py",
         "tests/test_ollama_runtime.py",
         "tests/test_qaudit_universe.py",
@@ -15407,14 +15425,14 @@
       "coverage_complete": false,
       "facet_candidate_counts": {
         "documentation": 2012,
-        "implementation_candidates": 241,
+        "implementation_candidates": 243,
         "package_or_delivery_candidates": 199,
-        "tests": 7,
+        "tests": 8,
         "workflows": 31
       },
       "scope_counts": {
         "historical_snapshot": 2189,
-        "materialized_local": 181
+        "materialized_local": 186
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
@@ -17673,7 +17691,7 @@
       "verification": "not_verified"
     },
     "update_rollback": {
-      "candidate_file_count": 2787,
+      "candidate_file_count": 2791,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/dependabot.yml",
@@ -18298,6 +18316,8 @@
         "ollamatracks/legacy_sync_artifact_inventory.json",
         "ollamatracks/link_validation_report.json",
         "ollamatracks/production_gap_inventory.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/runbook_audit.json",
         "ollamatracks/trading_surface_inventory.json",
         "or.md",
@@ -20442,8 +20462,10 @@
         "scripts/monitor_workflows.py",
         "scripts/ollama_autonomous_agent.py",
         "scripts/ollama_research.py",
+        "scripts/qaudit_all_features.py",
         "scripts/qaudit_checkpoint.py",
         "scripts/qaudit_universe.py",
+        "scripts/qaudits_parallel_auditor.py",
         "scripts/qmoi_credentials.py",
         "scripts/qmoi_release_autofix.py",
         "scripts/qmoi_security_autofix.py",
@@ -20466,14 +20488,14 @@
       "coverage_complete": false,
       "facet_candidate_counts": {
         "documentation": 1009,
-        "implementation_candidates": 1488,
+        "implementation_candidates": 1490,
         "package_or_delivery_candidates": 89,
         "tests": 31,
         "workflows": 29
       },
       "scope_counts": {
         "historical_snapshot": 2619,
-        "materialized_local": 168
+        "materialized_local": 172
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
@@ -20488,7 +20510,7 @@
       ],
       "path": "ALLPLATFORMSDEVICE.md",
       "scope": "materialized_local",
-      "sha256": "3939770a9d629bbef6d049efe1b88f77fde7ab7fd7c4f28c0b5034ed9c8e311e"
+      "sha256": "e81c94552b2f549d8505b4b52c7668e689a31ff2e233958bf3932c789f554bcc"
     },
     {
       "facets": [],
@@ -20906,7 +20928,7 @@
       ],
       "path": "BUILD.md",
       "scope": "materialized_local",
-      "sha256": "fd2839b068fb15f9b73b6e08fb81382b7e8db561d02bde9538de5aeba7ceebda"
+      "sha256": "e607b7eaf7ac2ba59543be0e82cba27999c146ff31ea0b238fba3aa844ad735a"
     },
     {
       "facets": [
@@ -20914,7 +20936,7 @@
       ],
       "path": "MERGE.md",
       "scope": "materialized_local",
-      "sha256": "90118c82e94d95387ce511987848977a741d81ee510e7d8db8696b8988fa5b6a"
+      "sha256": "f17af4bc9eaff0d742035a446b907e65db050e01a2eebb236e612dd0452b1d2a"
     },
     {
       "facets": [
@@ -20922,7 +20944,7 @@
       ],
       "path": "MODEL_CARD.md",
       "scope": "materialized_local",
-      "sha256": "e85460241910ff9784cfeb069d0f3e8f2c65962050ff2ad8e10a94e04261efa1"
+      "sha256": "fdec7b8bb37b71d292db0c4b8c0d956c5d661c9c433fae6daaa9abdc4b7c41aa"
     },
     {
       "facets": [
@@ -20930,7 +20952,7 @@
       ],
       "path": "PLATFORM_REQUIREMENTS.md",
       "scope": "materialized_local",
-      "sha256": "d5ab5bc25aa374523b05d2600d45510e2d3490389b6ec12e78edce12c1a051bf"
+      "sha256": "20b4b73ed4d0290644cebed986252483e8d6440c5534648e87ac531e8f738e5d"
     },
     {
       "facets": [
@@ -20938,7 +20960,7 @@
       ],
       "path": "QALPHA.md",
       "scope": "materialized_local",
-      "sha256": "a8ba5035078a77a554a3e608e7dc0a75194cbc902bf4d29d306d01bb45024efd"
+      "sha256": "40e2b52ff77de400ccfe3e03dadbe21ac93644a9ee8f51b71b81229f5d35682b"
     },
     {
       "facets": [
@@ -20946,7 +20968,7 @@
       ],
       "path": "QAUDITS.md",
       "scope": "materialized_local",
-      "sha256": "5b6b2fee88066d9872bd823cd84f49266415922a3fdf8ca8f1346d3b1f0c0a51"
+      "sha256": "00c73c6ab229bbfd62d37c958771f2961803582b94bfcae9a35afde3752814fa"
     },
     {
       "facets": [
@@ -20954,7 +20976,7 @@
       ],
       "path": "QMOICLONEVERCEL.md",
       "scope": "materialized_local",
-      "sha256": "8f25149a0b67f434fb06013618b8bc4b5ad2178e05e0c794c8912854e2bfcbfb"
+      "sha256": "e15183d46d715195904bf67e4eaf4b161a70c4504e50a89f22fcec0074e4e5a2"
     },
     {
       "facets": [
@@ -20962,7 +20984,7 @@
       ],
       "path": "QMOI_MODEL_CARD.md",
       "scope": "materialized_local",
-      "sha256": "07ba9848cf84d5290e7555ea4ff0140052e9c69df9eb427e798415c3a6a3e707"
+      "sha256": "f86ce820b8360e0f5ac4112a0e8b5fdd4c2cedc7a48bfdf859d5a70de2c11555"
     },
     {
       "facets": [
@@ -20970,7 +20992,7 @@
       ],
       "path": "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md",
       "scope": "materialized_local",
-      "sha256": "b71a51ee0b9ef23435a3ab86f92a8f02c845731e79b61420760c09315c6d5881"
+      "sha256": "22e9c17a3b5439697afc3b3903219fad17b0e417056df47dc1408fa727caa648"
     },
     {
       "facets": [
@@ -20978,7 +21000,7 @@
       ],
       "path": "QVERSIONMANAGER.md",
       "scope": "materialized_local",
-      "sha256": "b7a87dd1861f6a6035e00a8470f12baaeb57d42b773231eb8e3b6bd308116b39"
+      "sha256": "d1da26b0a4c609a47e251a09934640f0ff5a17d9da6615b58283210193090d3a"
     },
     {
       "facets": [
@@ -20986,7 +21008,7 @@
       ],
       "path": "TRANSION.md",
       "scope": "materialized_local",
-      "sha256": "9cabdbe5e900fc035ba4738a384c7743d5393cc5e07850313d0b4467cb6b1e3e"
+      "sha256": "00f47af47f4df830631958374ed1e202156eee2eb7628fb1861cdca96e962d44"
     },
     {
       "facets": [],
@@ -21000,7 +21022,7 @@
       ],
       "path": "production.md",
       "scope": "materialized_local",
-      "sha256": "69a5ec498e2e5062a26a72ea3b8561bcb06a51d309d1cfc98c82317ea32a9b3c"
+      "sha256": "3b4ed478f5f416ccd37b71771d4eff90402d0d1e6b74679d44b51bac95d8618e"
     },
     {
       "facets": [
@@ -21008,7 +21030,7 @@
       ],
       "path": "productionenhanced.md",
       "scope": "materialized_local",
-      "sha256": "ab58d6c4894f42faded3ef9d1dae83b0a1c6668006688c79e99e395853a984cd"
+      "sha256": "e9c6a6ddbbc27baa8fd9083641b78816e16d17ac9ea3a87b5d50f3103946ce29"
     },
     {
       "facets": [
@@ -21016,7 +21038,7 @@
       ],
       "path": "projectsandautoprojects.md",
       "scope": "materialized_local",
-      "sha256": "1d3316fa700b3dee9bee8871e0019aa080ac507fc6c3da04f529ac4a0d30df5a"
+      "sha256": "11800bec0952325d140783c3ef3461061d21d9837c136aeb0ede3612ad65550a"
     },
     {
       "facets": [
@@ -21024,7 +21046,7 @@
       ],
       "path": "projectsandautoprojectsenhanced.md",
       "scope": "materialized_local",
-      "sha256": "1d3316fa700b3dee9bee8871e0019aa080ac507fc6c3da04f529ac4a0d30df5a"
+      "sha256": "11800bec0952325d140783c3ef3461061d21d9837c136aeb0ede3612ad65550a"
     },
     {
       "facets": [],
@@ -23741,7 +23763,7 @@
       ],
       "path": "remote-multi-platform-build-farm.md",
       "scope": "materialized_local",
-      "sha256": "1d98202600a53944fb440a4e5cd464b62c7a91f72f83b6f1ae13e692ed5e67d2"
+      "sha256": "2628c15e51993d901824150e0440877dbed86944558f9e341c0bcded24af5b15"
     },
     {
       "facets": [
@@ -23749,7 +23771,7 @@
       ],
       "path": "scripts/ollama_autonomous_agent.py",
       "scope": "materialized_local",
-      "sha256": "f32c9be84945ec4c95e9ac73c92f6784543d68fb84200760d63b49528c79a01d"
+      "sha256": "fe062fd3060851f1e67712edb51a1b5c6ce9ddd6476ecbb3766d1d6c07013735"
     },
     {
       "facets": [
@@ -23757,7 +23779,7 @@
       ],
       "path": "scripts/ollama_research.py",
       "scope": "materialized_local",
-      "sha256": "a71a8db663b3c92d31cd925ef1b499ab0f59f49c2e175ff9b11836e5fb9f1275"
+      "sha256": "ebea0feb9fa769f102c9c81664a344d857450a36bc91ae8e95b13a3a68fdbd4e"
     },
     {
       "facets": [
@@ -23765,7 +23787,7 @@
       ],
       "path": "scripts/qaudit_universe.py",
       "scope": "materialized_local",
-      "sha256": "72e710b448e7afde68ba29c9beed766c9a009de1de98a1a9c647fd42734de255"
+      "sha256": "6db69a157f7b6899547163a1e8aa5fb378cd290169e31ea47736040c6a68c4fd"
     },
     {
       "facets": [
@@ -23774,7 +23796,7 @@
       ],
       "path": "tests/test_ollama_autonomous_agent.py",
       "scope": "materialized_local",
-      "sha256": "4c716bbf17b9fe4f6cfe844297e608e9d052f5fee5fe1b3e82f327fdc99a0ccd"
+      "sha256": "ce7f905313aec2f47b10994fabdcc47fe9476513cd26887dfbcf167ec1c2fb56"
     }
   ],
   "extension_file_types": {
@@ -24782,7 +24804,7 @@
     },
     ".json": {
       "candidate_paths": [],
-      "file_count": 381
+      "file_count": 385
     },
     ".jsonl": {
       "candidate_paths": [],
@@ -24809,7 +24831,7 @@
     },
     ".log": {
       "candidate_paths": [],
-      "file_count": 3
+      "file_count": 4
     },
     ".md": {
       "candidate_paths": [],
@@ -26448,9 +26470,11 @@
         "scripts/ollama_research.py",
         "scripts/ollama_runtime.py",
         "scripts/q_version_manager.py",
+        "scripts/qaudit_all_features.py",
         "scripts/qaudit_checkpoint.py",
         "scripts/qaudit_model_review.py",
         "scripts/qaudit_universe.py",
+        "scripts/qaudits_parallel_auditor.py",
         "scripts/qmoi_credentials.py",
         "scripts/qmoi_orchestrator_service.py",
         "scripts/qmoi_release_autofix.py",
@@ -26475,20 +26499,24 @@
         "tests/test_control_plane.py",
         "tests/test_cross_repo_sync.py",
         "tests/test_enhanced_tracking_and_workflows.py",
+        "tests/test_lion_universe.py",
         "tests/test_live_github_verifier.py",
         "tests/test_merge_inventory.py",
         "tests/test_ollama_autonomous_agent.py",
         "tests/test_ollama_enhanced_features.py",
         "tests/test_ollama_runtime.py",
         "tests/test_production_trading_autopilot.py",
+        "tests/test_qaudit_all_features.py",
         "tests/test_qaudit_model_review.py",
         "tests/test_qaudit_universe.py",
+        "tests/test_qaudits_evolution_planner.py",
+        "tests/test_qaudits_parallel_auditor.py",
         "tests/test_qmoi_credentials.py",
         "tests/test_qmoi_release_autofix.py",
         "tests/test_qseed_vault.py",
         "tests/test_runbook_audit.py"
       ],
-      "file_count": 1638
+      "file_count": 1644
     },
     ".qmoi_control": {
       "candidate_paths": [],
@@ -28840,7 +28868,7 @@
   },
   "governance_domains": {
     "accountability": {
-      "candidate_file_count": 2014,
+      "candidate_file_count": 2015,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/instructions/agent-autonomy.instructions.md",
@@ -28987,6 +29015,7 @@
         "oe.md",
         "oe2.md",
         "ollama.md",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
         "or.md",
         "production.md",
         "productionenhanced.md",
@@ -30866,13 +30895,13 @@
       },
       "scope_counts": {
         "historical_snapshot": 1861,
-        "materialized_local": 153
+        "materialized_local": 154
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "friendship": {
-      "candidate_file_count": 95,
+      "candidate_file_count": 97,
       "candidate_paths": [
         "Alpha-Q-ai-2025/ALLMDFILESREFS.md",
         "Alpha-Q-ai-2025/Alpha-Q-a-2025.md",
@@ -30896,6 +30925,8 @@
         "QVERSIONMANAGER.md",
         "TRANSION.md",
         "ollamatracks/credential_reference_inventory.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/trading_surface_inventory.json",
         "production.md",
         "productionenhanced.md",
@@ -30978,13 +31009,13 @@
       },
       "scope_counts": {
         "historical_snapshot": 82,
-        "materialized_local": 13
+        "materialized_local": 15
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "master": {
-      "candidate_file_count": 2017,
+      "candidate_file_count": 2019,
       "candidate_paths": [
         ".github/workflows/cross-repo-autosync.yml",
         ".github/workflows/ollama-autonomous-agent.yml",
@@ -31408,6 +31439,8 @@
         "ollamatracks/legacy_sync_artifact_inventory.json",
         "ollamatracks/link_validation_report.json",
         "ollamatracks/production_gap_inventory.json",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+        "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
         "ollamatracks/trading_surface_inventory.json",
         "or.md",
         "production.md",
@@ -33014,13 +33047,13 @@
       },
       "scope_counts": {
         "historical_snapshot": 1915,
-        "materialized_local": 102
+        "materialized_local": 104
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
     },
     "qteam": {
-      "candidate_file_count": 2016,
+      "candidate_file_count": 2017,
       "candidate_paths": [
         ".github/copilot-instructions.md",
         ".github/instructions/agent-autonomy.instructions.md",
@@ -33171,6 +33204,7 @@
         "oe.md",
         "oe2.md",
         "ollama.md",
+        "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
         "or.md",
         "production.md",
         "productionenhanced.md",
@@ -35049,7 +35083,7 @@
       },
       "scope_counts": {
         "historical_snapshot": 1861,
-        "materialized_local": 155
+        "materialized_local": 156
       },
       "status": "CANDIDATE_ONLY",
       "verification": "not_verified"
@@ -35061,7 +35095,7 @@
     "Each candidate must map to an owner, source, tests, workflow, and exact-SHA evidence; missing facets remain unmapped.",
     "Oversized, unreadable, binary, excluded, or unfetched material remains a coverage limitation and cannot be counted as complete."
   ],
-  "lion_variation_candidate_count": 814,
+  "lion_variation_candidate_count": 817,
   "lion_variation_candidates": [
     {
       "facets": [
@@ -35123,7 +35157,7 @@
       ],
       "path": "MERGE.md",
       "scope": "materialized_local",
-      "sha256": "90118c82e94d95387ce511987848977a741d81ee510e7d8db8696b8988fa5b6a",
+      "sha256": "f17af4bc9eaff0d742035a446b907e65db050e01a2eebb236e612dd0452b1d2a",
       "variation_candidates": []
     },
     {
@@ -35132,7 +35166,7 @@
       ],
       "path": "QAUDITS.md",
       "scope": "materialized_local",
-      "sha256": "5b6b2fee88066d9872bd823cd84f49266415922a3fdf8ca8f1346d3b1f0c0a51",
+      "sha256": "00c73c6ab229bbfd62d37c958771f2961803582b94bfcae9a35afde3752814fa",
       "variation_candidates": []
     },
     {
@@ -35141,7 +35175,21 @@
       ],
       "path": "QVERSIONMANAGER.md",
       "scope": "materialized_local",
-      "sha256": "b7a87dd1861f6a6035e00a8470f12baaeb57d42b773231eb8e3b6bd308116b39",
+      "sha256": "d1da26b0a4c609a47e251a09934640f0ff5a17d9da6615b58283210193090d3a",
+      "variation_candidates": []
+    },
+    {
+      "facets": [],
+      "path": "ollamatracks/qaudits_parallel_merge/merge_manifest.json",
+      "scope": "materialized_local",
+      "sha256": "9c1e5e5011f054d3493b99f35af708c81560a00a34763c03d4340dbdbaaf139c",
+      "variation_candidates": []
+    },
+    {
+      "facets": [],
+      "path": "ollamatracks/qaudits_parallel_merge/production_gap_inventory.json",
+      "scope": "materialized_local",
+      "sha256": "8e632421693ad7e45e05d6cdd7130aeb8d4f8f49652cb3bb0de2e16fdeb37e45",
       "variation_candidates": []
     },
     {
@@ -35150,7 +35198,7 @@
       ],
       "path": "production.md",
       "scope": "materialized_local",
-      "sha256": "69a5ec498e2e5062a26a72ea3b8561bcb06a51d309d1cfc98c82317ea32a9b3c",
+      "sha256": "3b4ed478f5f416ccd37b71771d4eff90402d0d1e6b74679d44b51bac95d8618e",
       "variation_candidates": []
     },
     {
@@ -35159,7 +35207,7 @@
       ],
       "path": "productionenhanced.md",
       "scope": "materialized_local",
-      "sha256": "ab58d6c4894f42faded3ef9d1dae83b0a1c6668006688c79e99e395853a984cd",
+      "sha256": "e9c6a6ddbbc27baa8fd9083641b78816e16d17ac9ea3a87b5d50f3103946ce29",
       "variation_candidates": []
     },
     {
@@ -42446,7 +42494,7 @@
       ],
       "path": "scripts/ollama_autonomous_agent.py",
       "scope": "materialized_local",
-      "sha256": "f32c9be84945ec4c95e9ac73c92f6784543d68fb84200760d63b49528c79a01d",
+      "sha256": "fe062fd3060851f1e67712edb51a1b5c6ce9ddd6476ecbb3766d1d6c07013735",
       "variation_candidates": []
     },
     {
@@ -42455,7 +42503,17 @@
       ],
       "path": "scripts/qaudit_universe.py",
       "scope": "materialized_local",
-      "sha256": "72e710b448e7afde68ba29c9beed766c9a009de1de98a1a9c647fd42734de255",
+      "sha256": "6db69a157f7b6899547163a1e8aa5fb378cd290169e31ea47736040c6a68c4fd",
+      "variation_candidates": []
+    },
+    {
+      "facets": [
+        "implementation_candidates",
+        "tests"
+      ],
+      "path": "tests/test_lion_universe.py",
+      "scope": "materialized_local",
+      "sha256": "826e82f513f2c449724b2942110be584e5f462211e51a2f27fc6ee39be4c762d",
       "variation_candidates": []
     },
     {
@@ -42613,12 +42671,16 @@
     "registered_extension_features": 8,
     "release_delivery_stages": 8
   },
-  "source_manifest_sha256": "f7d6187cc81afdf72be8ebec73f4f5cda5cf36aa0ac4c90a37bb49adb0b9d3f8",
+  "source_manifest_sha256": "4d16b120672e4f5038adda07c3298491a72a3abf5bc332038df8513d49ebb623",
   "source_scope": "materialized_local_and_marked_snapshots",
   "status": "NEEDS_REVIEW",
   "unavailable_sources": [
     {
       "path": ".git",
+      "reason": "excluded_or_symlinked"
+    },
+    {
+      "path": ".pytest_cache",
       "reason": "excluded_or_symlinked"
     },
     {
@@ -42778,6 +42840,10 @@
       "reason": "oversized_content_not_parsed"
     },
     {
+      "path": "__pycache__",
+      "reason": "excluded_or_symlinked"
+    },
+    {
       "path": "github_proof_contract.json",
       "reason": "oversized_content_not_parsed"
     },
@@ -42787,6 +42853,10 @@
     },
     {
       "path": "ollamatracks/financial_claim_inventory.json",
+      "reason": "oversized_content_not_parsed"
+    },
+    {
+      "path": "ollamatracks/merge_activity_metrics.json",
       "reason": "oversized_content_not_parsed"
     },
     {
@@ -43259,6 +43329,10 @@
     },
     {
       "path": "scripts/__pycache__",
+      "reason": "excluded_or_symlinked"
+    },
+    {
+      "path": "tests/__pycache__",
       "reason": "excluded_or_symlinked"
     },
     {

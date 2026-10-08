@@ -175,8 +175,8 @@
 | `QMOI_AUTOMATION_GUIDE.md` | 435 | `.github/workflows/QMOI-autonomous-agent.yml` | `c728b27bbbc121aaf3e734b32e72736dd0c44bb55588f46ab1580c420c143b20` | `local` |
 | `QAUDITS.md` | 5 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `QAUDITS.md` | 7 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
-| `QAUDITS.md` | 78 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
-| `QAUDITS.md` | 107 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
+| `QAUDITS.md` | 80 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `QAUDITS.md` | 109 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `VERCELPAYED.md` | `4e68358d3081c50efb141b7e0008676671fb33bc11516d036061940c6e73fc41` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUMPAYED.md` | `0ea9235e0afe898dd3589a58d06ebdf47758216c1170b712588d4376fc675be5` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUM.md` | `f39d66bf63a5cda11e56c8ab153a9b47673b78f34e9b2469d6097f1ab0e6aba9` | `local` |
@@ -201,12 +201,12 @@
 | `QVERSIONMANAGER.md` | 13 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
 | `QVERSIONMANAGER.md` | 13 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `QVERSIONMANAGER.md` | 13 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
-| `QVERSIONMANAGER.md` | 218 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
-| `QVERSIONMANAGER.md` | 251 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
-| `QVERSIONMANAGER.md` | 267 | `QMOItracks/qaudit_universe.json` | `a16a3d2024195943acdde328294804b4c993c076bb7ea9e79bb0844010fbf744` | `local` |
-| `QVERSIONMANAGER.md` | 267 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
-| `QVERSIONMANAGER.md` | 277 | `scripts/checkpoint_manager.py` | `0c406fbeec19b6e088e4a95c6dd84fd1922355333efb1dc68353af236ac9f619` | `local` |
-| `QVERSIONMANAGER.md` | 277 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `QVERSIONMANAGER.md` | 220 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
+| `QVERSIONMANAGER.md` | 253 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `QVERSIONMANAGER.md` | 269 | `QMOItracks/qaudit_universe.json` | `a16a3d2024195943acdde328294804b4c993c076bb7ea9e79bb0844010fbf744` | `local` |
+| `QVERSIONMANAGER.md` | 269 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `QVERSIONMANAGER.md` | 279 | `scripts/checkpoint_manager.py` | `0c406fbeec19b6e088e4a95c6dd84fd1922355333efb1dc68353af236ac9f619` | `local` |
+| `QVERSIONMANAGER.md` | 279 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
 | `Qtrade.md` | 40 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
 | `Qtrade.md` | 293 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
 | `Qtrade.md` | 294 | `TRADINGREADME.md` | `4676daa204a64892b41af786d7ebfe24c8b59d46f17e45d48b48624249483f4f` | `local` |
@@ -8629,20 +8629,20 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10435`; directories: `1269`; Markdown: `2418`.
+- Status: `NEEDS_REVIEW`; materialized files: `10446`; directories: `1270`; Markdown: `2418`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2155, build_download_install=2110, orchestration=2061, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2000`.
+- Managed-document family candidates: `app_platform=2156, build_download_install=2110, orchestration=2062, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2001`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52722`; percentage occurrences: `22237`.
-- Markdown word count: `3552546`; heuristic sentence count: `673863`; sentence records indexed: `673863`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29844` metric claims; `10662` completion claims; `29747` metric and `10533` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13340`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52718`; percentage occurrences: `22237`.
+- Markdown word count: `3554796`; heuristic sentence count: `674081`; sentence records indexed: `674081`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29838` metric claims; `10664` completion claims; `29741` metric and `10535` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9047` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13342`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40017` lines in `3670` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `287`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40052` lines in `3673` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `290`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

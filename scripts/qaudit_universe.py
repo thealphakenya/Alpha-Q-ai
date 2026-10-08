@@ -83,6 +83,11 @@ AUDIT_CATEGORY_PATTERNS = {
     "finance_qtrade": re.compile(r"\b(?:finance|financial|qtrade|trading|wallet|payment|profit|drawdown|capital|risk limit)\b", re.I),
     "monitoring": re.compile(r"\b(?:monitor|monitoring|telemetry|health|heartbeat|alert|observability)\b", re.I),
     "memory": re.compile(r"\b(?:memory|checkpoint|restore point|restore-point|retention)\b", re.I),
+    "chat_interfaces": re.compile(r"\b(?:chat(?:bot)?|conversation(?:al)?|messaging|chat interface|assistant interface)\b", re.I),
+    "handsfree_voice": re.compile(r"\b(?:hands[ -]?free|voice|speech|wake[ -]?word|dictation|speech recognition)\b", re.I),
+    "disability_accessibility": re.compile(r"\b(?:disabilit\w*|accessibility|a11y|blind|low vision|deaf|hard of hearing|captions?|screen readers?|assistive technology|dyslex\w*|neurodiverg\w*|motor impairment|cognitive access|epilepsy|reduced motion|switch control)\b", re.I),
+    "recovery_undo_redo": re.compile(r"\b(?:undo|redo|checkpoint|restore point|restore-point|recovery|rollback)\b", re.I),
+    "health_heartbeat_oxygen": re.compile(r"\b(?:health|heartbeat|oxygen|telemetry|liveness|observability|freshness)\b", re.I),
     "qaudits": re.compile(r"\b(?:qaudits|audit|ofca|evidence|verification)\b", re.I),
     "q_version": re.compile(r"\b(?:q\.0\.0|q.version|qversion|lifecycle finalization)\b", re.I),
     "api_routes_ports": re.compile(r"\b(?:api|endpoint|route|port|http|rpc)\b", re.I),
@@ -296,6 +301,18 @@ def build_audit_priority_queue(
         ):
             priority = max(priority, 85)
             reasons.append("delivery_or_workflow_surface")
+        if "health_heartbeat_oxygen" in categories:
+            priority = max(priority, 90)
+            reasons.append("health_heartbeat_and_telemetry_review")
+        if "disability_accessibility" in categories:
+            priority = max(priority, 90)
+            reasons.append("disability_accessibility_and_assistive_technology_review")
+        if "recovery_undo_redo" in categories:
+            priority = max(priority, 90)
+            reasons.append("checkpoint_undo_redo_and_restore_review")
+        if "chat_interfaces" in categories or "handsfree_voice" in categories:
+            priority = max(priority, 80)
+            reasons.append("chat_voice_accessibility_and_privacy_review")
         if "tests" in categories or any(
             part in {"test", "tests"} for part in Path(relative).parts
         ):

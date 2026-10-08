@@ -1,6 +1,7 @@
 import gzip
 import hashlib
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -15,7 +16,7 @@ from scripts.autonomous_completion_engine import (
 from scripts.checkpoint_manager import CheckpointManager
 from scripts.execution_lock import ExecutionLock
 from scripts.live_activity_events import LiveActivity
-from scripts.qaudit_checkpoint import record_qaudit_checkpoint
+from scripts.qaudit_checkpoint import _append_pair_locked, record_qaudit_checkpoint
 from scripts.q_version_manager import QVersionManager
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
@@ -575,6 +576,8 @@ def test_q_version_pass_without_qaudit_precondition_is_recorded_as_needs_review(
     assert audit["valid"] is True
     assert "MERGE_START" in audit["missing_or_unpassed_stages"]
     assert audit["qaudit_blocked_stages"] == ["MERGE_START"]
+    assert audit["next_stage"] == "MERGE_START"
+    assert "Run QAUDITS" in audit["next_action"]
 
 
 def test_q_version_lifecycle_requires_every_stage_in_canonical_order(tmp_path):
@@ -602,7 +605,7 @@ def test_q_version_lifecycle_requires_every_stage_in_canonical_order(tmp_path):
         audit = manager.audit_lifecycle(execution_id)
         assert audit["valid"] is True
         assert audit["status"] == "incomplete"
-        assert audit["missing_or_unpassed_stages"] == [missing_stage]
+        assert audit["next_stage"] == missing_stage
 
 
 def test_q_version_lifecycle_requires_live_remote_completion_gate_before_any_final_readiness(tmp_path):
@@ -653,17 +656,27 @@ def test_q_version_lifecycle_latest_non_pass_blocks_each_stage(tmp_path, failed_
     root.mkdir()
     manager = QVersionManager(root)
     execution_id = f"failed-{failed_stage.lower()}"
-    record_successful_q_lifecycle(
-        manager,
-        [root],
-        execution_id,
-        status_overrides={failed_stage: "NEEDS_REVIEW"},
-    )
+    for stage in QVersionManager.LIFECYCLE_STAGES[:-1]:
+        details = {"source_manifest_sha256": "a" * 64}
+        stage_status = "NEEDS_REVIEW" if stage == failed_stage else "PASS"
+        if stage_status == "PASS":
+            details["qaudit_precondition"] = qaudit_precondition(stage)
+        manager.record_lifecycle_stage(
+            execution_id,
+            stage,
+            [root],
+            status=stage_status,
+            details=details,
+            include_inventory=False,
+        )
+        if stage == failed_stage:
+            break
 
     audit = manager.audit_lifecycle(execution_id)
     assert audit["valid"] is True
     assert audit["status"] == "incomplete"
     assert failed_stage in audit["missing_or_unpassed_stages"]
+    assert audit["next_stage"] == failed_stage
 
 
 def test_q_version_lifecycle_rejects_unknown_status_and_tampering(tmp_path):
@@ -1349,6 +1362,44 @@ def test_qaudit_checkpoint_appends_paired_ledgers_and_keeps_remote_blocked(tmp_p
     assert ledger[0]["verification"]["terminal"] is False
 
 
+def test_qaudit_paired_append_rolls_back_when_one_target_is_a_symlink(tmp_path):
+    oe2 = tmp_path / "oe2.txt"
+    remote = tmp_path / "remotecompletion.md"
+    remote_target = tmp_path / "remote-target.md"
+    oe2.write_text("prior continuation\n", encoding="utf-8")
+    remote_target.write_text("prior remote evidence\n", encoding="utf-8")
+    remote.symlink_to(remote_target)
+
+    with pytest.raises(RuntimeError, match="through symlink"):
+        _append_pair_locked((oe2, remote), b"new checkpoint\n")
+
+    assert oe2.read_text(encoding="utf-8") == "prior continuation\n"
+    assert remote_target.read_text(encoding="utf-8") == "prior remote evidence\n"
+
+
+def test_qaudit_paired_append_rolls_back_after_partial_write(tmp_path, monkeypatch):
+    oe2 = tmp_path / "oe2.txt"
+    remote = tmp_path / "remotecompletion.md"
+    oe2.write_text("prior continuation\n", encoding="utf-8")
+    remote.write_text("prior remote evidence\n", encoding="utf-8")
+    original_write = os.write
+    write_count = 0
+
+    def fail_second_write(descriptor, content):
+        nonlocal write_count
+        write_count += 1
+        if write_count == 2:
+            raise OSError("simulated paired-write failure")
+        return original_write(descriptor, content)
+
+    monkeypatch.setattr("scripts.qaudit_checkpoint.os.write", fail_second_write)
+    with pytest.raises(OSError, match="simulated paired-write failure"):
+        _append_pair_locked((oe2, remote), b"new checkpoint\n")
+
+    assert oe2.read_text(encoding="utf-8") == "prior continuation\n"
+    assert remote.read_text(encoding="utf-8") == "prior remote evidence\n"
+
+
 def test_qaudit_checkpoint_resolves_only_explicitly_closed_run_blockers(tmp_path):
     root = tmp_path / "Alpha-Q-ai"
     root.mkdir()
@@ -1521,6 +1572,89 @@ def test_repository_audit_refreshes_release_and_all_contract_docs_in_managed_sec
     assert "Preserved snapshot." in archived_releases
     assert "<!-- BEGIN QMOI MANAGED:" not in archived_releases
     assert "<!-- BEGIN QMOI MANAGED:" not in notes
+
+
+def test_repository_audit_refresh_preserves_history_policy_and_q_version_files(tmp_path):
+    root = tmp_path.resolve()
+    protected_files = {
+        "AGENTS.md": "# Agent policy\n\nRelease requirements must be preserved.\n",
+        ".github/copilot-instructions.md": "# Copilot policy\n\nRelease requirements must be preserved.\n",
+        ".github/instructions/security.instructions.md": "---\napplyTo: '**'\n---\nRelease requirements must be preserved.\n",
+        "Q.0.0.N/COMPLETION.md": "# Q completion\n\nRelease requirements must be preserved.\n",
+        "qmoi-enhanced-history-14/RELEASES.md": "# Archived releases\n\nRelease requirements must be preserved.\n",
+        "SESSION_COMPLETION_REPORT_2025_10_05.md": "# Historical report\n\nRelease requirements must be preserved.\n",
+    }
+    for relative, content in protected_files.items():
+        path = root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+    releases_path = root / "RELEASES.md"
+    releases_path.write_text("# Releases\n\nHuman release policy.\n", encoding="utf-8")
+
+    audit = audit_repository_surfaces([root])
+    scope_by_path = {
+        item["path"]: item["scope"]
+        for item in audit["roots"][0]["markdown_records"]
+    }
+    assert scope_by_path["qmoi-enhanced-history-14/RELEASES.md"] == "historical_or_archive_candidate"
+    assert scope_by_path["SESSION_COMPLETION_REPORT_2025_10_05.md"] == "historical_or_archive_candidate"
+
+    OllamaAutonomousAgent.refresh_repository_audit_documents(
+        OllamaAutonomousAgent.__new__(OllamaAutonomousAgent),
+        root,
+        audit,
+    )
+
+    assert "<!-- BEGIN QMOI MANAGED: release-evidence -->" in releases_path.read_text(encoding="utf-8")
+    for relative, original in protected_files.items():
+        assert (root / relative).read_text(encoding="utf-8") == original
+
+
+def test_qaudit_refreshes_style_universal_and_transition_docs_from_one_manifest(tmp_path):
+    documents = (
+        "STYLES.md",
+        "QAUDITS.md",
+        "UNIVERSALS.md",
+        "UNIVERSAL.md",
+        "TRANSION.md",
+        "TRANSITION.md",
+    )
+    for filename in documents:
+        (tmp_path / filename).write_text(f"# {filename}\n\nAuthored content.\n", encoding="utf-8")
+    universe = {
+        "correlation_id": "audit-correlation-123",
+        "generated_at": "2026-10-08T00:00:00Z",
+        "metrics": {
+            "source_scope": "materialized_local_only",
+            "source_manifest_sha256": "a" * 64,
+            "category_candidate_path_counts": {"disability_accessibility": 2},
+            "test_mapped_candidate_count": 0,
+            "hook_reviewed_candidate_count": 0,
+        },
+        "inventory": {"styles": [{"path": "styles/tokens.css"}], "universals": []},
+        "classes": {
+            "docs/accessibility.md": {
+                "path": "docs/accessibility.md",
+                "categories": ["disability_accessibility"],
+            },
+            "src/chat.tsx": {"path": "src/chat.tsx", "categories": ["chat_interfaces"]},
+        },
+    }
+    agent = OllamaAutonomousAgent.__new__(OllamaAutonomousAgent)
+
+    result = agent.refresh_qaudit_governance_documents(tmp_path, universe)
+    repeated = agent.refresh_qaudit_governance_documents(tmp_path, universe)
+
+    assert result["status"] == "UPDATED"
+    assert result["updated_documents"] == list(documents)
+    assert result["accessibility_markdown_candidate_count"] == 1
+    assert repeated["status"] == "UPDATED"
+    for filename in documents:
+        content = (tmp_path / filename).read_text(encoding="utf-8")
+        assert "Authored content." in content
+        assert content.count("BEGIN QMOI MANAGED: qaudit-style-universal-accessibility-coverage") == 1
+        assert "audit-correlation-123" in content
+        assert "disability is inferred" in content
 
 
 def test_external_research_allowlist_rejects_credentials_and_unapproved_domains():

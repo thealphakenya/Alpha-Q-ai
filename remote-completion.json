@@ -49,6 +49,7 @@
     "The requested historical CREDENTIALS_ROTATION_PLAYBOOK.md is unavailable in the local materialization and queried remote QMOI main tree; new canonical playbook parity is unverified.",
     "Untracked atoz.md contains unverified financial/account/credential-like details and is excluded from publication pending review and redaction.",
     "actions_side_rotated_app_key_configuration_unverified",
+    "audit_inventory_run_not_yet_terminal",
     "branch_protection_and_rulesets_unverified",
     "configured_interpreter_and_cryptography_pytest_availability_not_reverified_in_this_turn",
     "configured_interpreter_missing_pytest_and_cryptography_at_last_check; package_install_attempt_interrupted_or_unconfirmed",
@@ -87,39 +88,19 @@
     "unreadable_files:27",
     "worktree_dirty_or_status_unavailable"
   ],
-  "correlation_id": "92ecc947-496b-4018-bcab-0a37c9a010e6",
+  "correlation_id": "d43ccb01-c076-4dff-b56c-59189ab4c55b",
   "current_local_checkpoint": {
-    "artifact_bytes": 38596469,
-    "artifact_path": "ollamatracks/merge_activity_metrics.json",
-    "artifact_refs": {
-      "merge_document": {
-        "bytes": 119342,
-        "path": "MERGE.md",
-        "sha256": "714d6eb9be4febf01017f2fc0031089bbd104ce3f4dcbe9a5fca70926b4b5068",
-        "status": "verified_local_hash"
-      },
-      "merge_metrics": {
-        "bytes": 38596469,
-        "path": "ollamatracks/merge_activity_metrics.json",
-        "sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
-        "status": "verified_local_hash"
-      },
-      "qaudits_document": {
-        "bytes": 122033,
-        "path": "QAUDITS.md",
-        "sha256": "62be02f9333643019d383caff3121418badb49e23d29c193d31194ac1cf84b9a",
-        "status": "verified_local_hash"
-      }
-    },
-    "artifact_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
+    "artifact_bytes": null,
+    "artifact_path": null,
+    "artifact_refs": {},
+    "artifact_sha256": null,
     "blockers": [
-      "remote_completion_not_verified",
-      "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
+      "audit_inventory_run_not_yet_terminal",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
-    "correlation_id": "92ecc947-496b-4018-bcab-0a37c9a010e6",
-    "generated_at": "2026-10-08T01:46:24.389010Z",
+    "correlation_id": "d43ccb01-c076-4dff-b56c-59189ab4c55b",
+    "generated_at": "2026-10-08T04:30:28.711436Z",
     "instruction_inventory": [
       {
         "bytes": 6761,
@@ -179,35 +160,26 @@
       }
     ],
     "instruction_inventory_sha256": "5dbc8daa5eaf299f3584cae8feda58127e2646785cc44eaa64f40b0e15d02772",
-    "local_head_sha": "937d94cd4a8c2e6eaaeb496281434f8eea96aee4",
-    "local_tree_sha": "c8d82e4f412cdc70350223ee6bb46976d0d936dc",
+    "local_head_sha": "5814fe537a09b4578b2761466c1df8456361f52a",
+    "local_tree_sha": "f6d47d550238b1c56a983f2e6d829bba3baa7aef",
     "metrics": {
-      "api_route_count": 5176,
-      "duplicate_directory_count": 1735,
-      "duplicate_file_count": 13752,
-      "feature_count": 73,
-      "locally_available_pull_request_refs": 0,
-      "style_universal_count": 0,
-      "tag_refs_in_scope": 4,
-      "total_branches_in_scope": 35,
-      "total_directories_in_scope": 61958,
-      "total_files_in_scope": 393313,
-      "total_local_refs_in_scope": 39,
-      "trading_related_path_count": 494
+      "external_research_enabled": false,
+      "phase": "inventory_start",
+      "remote_mutation_performed": false
     },
-    "next_action": "Obtain independently verified target-owned terminal exact-ref/SHA/tree evidence before any remote completion or protected mutation claim.",
-    "operation": "merge-activity-evidence",
+    "next_action": "Resume from this correlated inventory-start checkpoint; do not treat partially refreshed documents or artifacts as final coverage.",
+    "operation": "audit-inventory",
     "paired_document_sha256": {
-      "oe2.txt": "5b0e78c9b7a87f5caaa2cd520e1eb3323a65d40f3426c2c6d7e3f4f5244b3fa8",
-      "remotecompletion.md": "ce822f00b523eb8fa21f560a7d37ef26a85489976f8a0dcace8be8f9e3bc810b"
+      "oe2.txt": "4781df85d8c957d7baf8aafde99a2948b7367ca0607e159c2d7a93cfe0e98eb0",
+      "remotecompletion.md": "3f327d49864498019a6dbc32b5e7bd80c43a8178a6db2e2e1ce689aab18ee8cd"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
     "remote_verified": false,
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
-    "source_manifest_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
-    "status": "MERGE_EVIDENCE_REFRESHED",
+    "source_manifest_sha256": null,
+    "status": "IN_PROGRESS",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": true
   },
@@ -224,7 +196,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-08T01:46:24.389010Z",
+  "generated_at": "2026-10-08T04:30:28.711436Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -555,37 +527,17 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 38596469,
-      "artifact_path": "ollamatracks/merge_activity_metrics.json",
-      "artifact_refs": {
-        "merge_document": {
-          "bytes": 119342,
-          "path": "MERGE.md",
-          "sha256": "714d6eb9be4febf01017f2fc0031089bbd104ce3f4dcbe9a5fca70926b4b5068",
-          "status": "verified_local_hash"
-        },
-        "merge_metrics": {
-          "bytes": 38596469,
-          "path": "ollamatracks/merge_activity_metrics.json",
-          "sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
-          "status": "verified_local_hash"
-        },
-        "qaudits_document": {
-          "bytes": 122033,
-          "path": "QAUDITS.md",
-          "sha256": "62be02f9333643019d383caff3121418badb49e23d29c193d31194ac1cf84b9a",
-          "status": "verified_local_hash"
-        }
-      },
-      "artifact_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
+      "artifact_bytes": null,
+      "artifact_path": null,
+      "artifact_refs": {},
+      "artifact_sha256": null,
       "blockers": [
-        "remote_completion_not_verified",
-        "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
+        "audit_inventory_run_not_yet_terminal",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
-      "correlation_id": "92ecc947-496b-4018-bcab-0a37c9a010e6",
-      "generated_at": "2026-10-08T01:46:24.389010Z",
+      "correlation_id": "d43ccb01-c076-4dff-b56c-59189ab4c55b",
+      "generated_at": "2026-10-08T04:30:28.711436Z",
       "instruction_inventory": [
         {
           "bytes": 6761,
@@ -645,35 +597,26 @@
         }
       ],
       "instruction_inventory_sha256": "5dbc8daa5eaf299f3584cae8feda58127e2646785cc44eaa64f40b0e15d02772",
-      "local_head_sha": "937d94cd4a8c2e6eaaeb496281434f8eea96aee4",
-      "local_tree_sha": "c8d82e4f412cdc70350223ee6bb46976d0d936dc",
+      "local_head_sha": "5814fe537a09b4578b2761466c1df8456361f52a",
+      "local_tree_sha": "f6d47d550238b1c56a983f2e6d829bba3baa7aef",
       "metrics": {
-        "api_route_count": 5176,
-        "duplicate_directory_count": 1735,
-        "duplicate_file_count": 13752,
-        "feature_count": 73,
-        "locally_available_pull_request_refs": 0,
-        "style_universal_count": 0,
-        "tag_refs_in_scope": 4,
-        "total_branches_in_scope": 35,
-        "total_directories_in_scope": 61958,
-        "total_files_in_scope": 393313,
-        "total_local_refs_in_scope": 39,
-        "trading_related_path_count": 494
+        "external_research_enabled": false,
+        "phase": "inventory_start",
+        "remote_mutation_performed": false
       },
-      "next_action": "Obtain independently verified target-owned terminal exact-ref/SHA/tree evidence before any remote completion or protected mutation claim.",
-      "operation": "merge-activity-evidence",
+      "next_action": "Resume from this correlated inventory-start checkpoint; do not treat partially refreshed documents or artifacts as final coverage.",
+      "operation": "audit-inventory",
       "paired_document_sha256": {
-        "oe2.txt": "5b0e78c9b7a87f5caaa2cd520e1eb3323a65d40f3426c2c6d7e3f4f5244b3fa8",
-        "remotecompletion.md": "ce822f00b523eb8fa21f560a7d37ef26a85489976f8a0dcace8be8f9e3bc810b"
+        "oe2.txt": "4781df85d8c957d7baf8aafde99a2948b7367ca0607e159c2d7a93cfe0e98eb0",
+        "remotecompletion.md": "3f327d49864498019a6dbc32b5e7bd80c43a8178a6db2e2e1ce689aab18ee8cd"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
       "remote_verified": false,
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
-      "source_manifest_sha256": "17f847a7b8e07b34ff0384b95337ebbdb7771462f7f811840bdc3f745cd11e92",
-      "status": "MERGE_EVIDENCE_REFRESHED",
+      "source_manifest_sha256": null,
+      "status": "IN_PROGRESS",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": true
     },
@@ -749,7 +692,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "937d94cd4a8c2e6eaaeb496281434f8eea96aee4",
+    "local_head_sha": "5814fe537a09b4578b2761466c1df8456361f52a",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

@@ -923,6 +923,11 @@ class TestMarkdownCategoryIndex:
             "# Service overview\n\nCross-border payment and country tax jurisdiction.\n",
             encoding="utf-8",
         )
+        (repo / "docs" / "user-controls.md").write_text(
+            "# User controls\n\nBlind and low-vision support, captions for deaf users, "
+            "keyboard operation, switch control, and reduced motion.\n",
+            encoding="utf-8",
+        )
         (history / "LEGACY_WALLET_NOTE.md").write_text("# legacy wallet\n", encoding="utf-8")
 
         agent = OllamaAutonomousAgent(base_path=repo)
@@ -947,6 +952,7 @@ class TestMarkdownCategoryIndex:
             "docs/CUSTOM_RELEASE_NOTES.md",
             "docs/financial-note.md",
             "docs/overview.md",
+            "docs/user-controls.md",
             "qmoi-enhanced-history-14/LEGACY_WALLET_NOTE.md",
         }
         assert set(result["all_category"]["refresh_triggers"]) == {
@@ -971,8 +977,13 @@ class TestMarkdownCategoryIndex:
             label for label in result["category_map"]
             if label.startswith("Category I — Q Financial Manager")
         )
+        accessibility_category = next(
+            label for label in result["category_map"]
+            if label.startswith("Category D1 — Disability accessibility")
+        )
         assert "docs/financial-note.md" in result["category_map"][finance_category]
         assert "docs/overview.md" in result["category_map"][finance_category]
+        assert "docs/user-controls.md" in result["category_map"][accessibility_category]
         api_metric = next(item for item in result["all_category"]["metrics"] if item["path"] == "API.md")
         assert api_metric["source"] == "repo"
         assert api_metric["bytes"] > 0

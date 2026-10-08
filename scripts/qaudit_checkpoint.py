@@ -77,6 +77,58 @@ def _append_locked(path: Path, content: bytes) -> None:
         os.close(descriptor)
 
 
+def _append_pair_locked(paths: tuple[Path, Path], content: bytes) -> None:
+    if not content.endswith(b"\n") or paths[0].resolve() == paths[1].resolve():
+        raise RuntimeError("QAUDITS paired evidence requires two distinct newline-terminated targets")
+    descriptors: dict[Path, int] = {}
+    original_sizes: dict[Path, int] = {}
+    try:
+        for path in sorted(paths, key=lambda item: str(item)):
+            if path.is_symlink():
+                raise RuntimeError(f"Refusing to append QAUDITS evidence through symlink: {path}")
+            descriptor = os.open(
+                path,
+                os.O_WRONLY | os.O_APPEND | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0),
+                0o600,
+            )
+            descriptors[path] = descriptor
+            if fcntl is not None:
+                fcntl.flock(descriptor, fcntl.LOCK_EX)
+            metadata = os.fstat(descriptor)
+            if not stat.S_ISREG(metadata.st_mode):
+                raise RuntimeError(f"QAUDITS evidence target is not a regular file: {path}")
+            original_sizes[path] = metadata.st_size
+
+        for path in sorted(paths, key=lambda item: str(item)):
+            descriptor = descriptors[path]
+            view = memoryview(content)
+            while view:
+                written = os.write(descriptor, view)
+                if written <= 0:
+                    raise OSError(f"Short append while writing QAUDITS evidence: {path}")
+                view = view[written:]
+            os.fsync(descriptor)
+    except BaseException as write_error:
+        rollback_errors = []
+        for path, descriptor in descriptors.items():
+            if path in original_sizes:
+                try:
+                    os.ftruncate(descriptor, original_sizes[path])
+                    os.fsync(descriptor)
+                except OSError as rollback_error:
+                    rollback_errors.append(f"{path}: {type(rollback_error).__name__}")
+        if rollback_errors:
+            raise RuntimeError(
+                "QAUDITS paired evidence rollback failed for " + ", ".join(rollback_errors)
+            ) from write_error
+        raise
+    finally:
+        for descriptor in descriptors.values():
+            if fcntl is not None:
+                fcntl.flock(descriptor, fcntl.LOCK_UN)
+            os.close(descriptor)
+
+
 def _atomic_json(path: Path, payload: Mapping[str, Any]) -> None:
     if path.is_symlink():
         raise RuntimeError(f"Refusing to replace QAUDITS JSON through symlink: {path}")
@@ -272,8 +324,10 @@ def record_qaudit_checkpoint(
         f"- Blockers: `{json.dumps(checkpoint['blockers'], sort_keys=True, separators=(',', ':'))}`.\n"
         f"- Next action: {checkpoint['next_action']}\n"
     ).encode("utf-8")
-    _append_locked(target / "oe2.txt", pair_text)
-    _append_locked(target / "remotecompletion.md", pair_text)
+    _append_pair_locked(
+        (target / "oe2.txt", target / "remotecompletion.md"),
+        pair_text,
+    )
     checkpoint["paired_document_sha256"] = {
         "oe2.txt": _sha256(target / "oe2.txt"),
         "remotecompletion.md": _sha256(target / "remotecompletion.md"),

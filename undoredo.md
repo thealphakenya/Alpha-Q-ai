@@ -53,6 +53,21 @@ Before an agent resumes a project or advances a Q-version stage, it should:
 
 For projects, QMOI should checkpoint discovery and plan state before implementation, record test and audit results after each bounded change, and use an independently verified restore point for repository-level recovery. Undo a bad plan/state and reassess; do not mechanically undo user-authored changes. For financial or trading projects, checkpoints may retain only value-free IDs, source timestamps, and hashes; reconciliation and provider-authorized compensating actions are required for real account-side effects.
 
+## Automatic recovery decisions and interface requirements
+
+The agent may automatically move the checkpoint cursor only for local lifecycle-state navigation, with the cause recorded:
+
+- **Undo:** return to a prior checkpoint after failed local validation or invalid resumable state only when history is readable and current source/policy fingerprints are recorded. Re-run affected validation before continuing. This does not revert files or erase failure evidence.
+- **Redo:** replay a recorded state only when repository/ref, source manifest, instruction hashes, and prerequisite gates still match. If an identity is stale or unavailable, do not replay; create a new checkpoint state and re-plan.
+- **Restore point:** a stale heartbeat alone never triggers restore. Consider restore only after repository loss or corruption is confirmed, then require the authorized target-owned workflow, clean exact-SHA/tree evidence for both repositories, fast-forward safety, and required approvals. Divergence remains blocked.
+- **External effects:** never automatically undo/redo payments, trades, credentials, account settings, deployments, releases, or user data. Provider-owned compensating actions require explicit authority.
+
+Every recovery decision records its reason, execution/correlation IDs, before/after checkpoint fingerprints, source SHA/manifest, validation result, and next action. Missing, stale, malformed, or conflicting signals yield `UNKNOWN` or `BLOCKED`, not a guessed recovery. Evidence ledgers remain append-only.
+
+Any future chat UI must bind undo/redo controls only to `CheckpointManager.history_status()` and the selected execution ID. Controls need accessible names, tooltips, disabled states, and a clear notice that checkpoint navigation changes lifecycle state only. No active chat UI exists in this checkout, so those controls remain `unmapped`, not shipped.
+
+Hands-free/voice input may navigate, read status, or prepare a draft within granted permissions. It must not bypass identity, consent, explicit confirmation, or protected-action gates. Ambiguous speech, low confidence, missing permissions, or stale health stops the action for clarification or human review.
+
 ## Retention, integrity, and recovery checks
 
 - At most 50 distinct checkpoint snapshots are retained per execution ID; when the cap is reached, the oldest snapshots age out. This is not an archive or disaster-recovery guarantee.
@@ -68,20 +83,20 @@ For projects, QMOI should checkpoint discovery and plan state before implementat
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10435`; directories: `1269`; Markdown: `2418`.
+- Status: `NEEDS_REVIEW`; materialized files: `10446`; directories: `1270`; Markdown: `2418`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2155, build_download_install=2110, orchestration=2061, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2000`.
+- Managed-document family candidates: `app_platform=2156, build_download_install=2110, orchestration=2062, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2001`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52722`; percentage occurrences: `22237`.
-- Markdown word count: `3552546`; heuristic sentence count: `673863`; sentence records indexed: `673863`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29844` metric claims; `10662` completion claims; `29747` metric and `10533` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9046` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13340`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52718`; percentage occurrences: `22237`.
+- Markdown word count: `3554796`; heuristic sentence count: `674081`; sentence records indexed: `674081`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29838` metric claims; `10664` completion claims; `29741` metric and `10535` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9047` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13342`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40017` lines in `3670` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `287`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40052` lines in `3673` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `290`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
