@@ -1,5 +1,5 @@
 # ALLAUTO.md - QMOI Automation Overview
-
+abc
 ## Purpose
 This file lists the automation capabilities that keep the QMOI repositories self-maintaining, self-validating, and resilient.
 
