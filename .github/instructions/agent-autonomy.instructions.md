@@ -38,6 +38,8 @@ applyTo: "**"
 - Every `audit-inventory` run refreshes the complete materialized Markdown category index, finance catalog, `FINANCIALMANAGER.md` managed evidence section, and finance candidate inventory. Include currencies/amounts, revenue, payment/transfer, wallets/banking, deals, employment/payroll, country/jurisdiction, project budgets, and financial security; store no raw amounts, account identifiers, credentials, or source prose.
 - Treat all finance category hits as overlapping keyword candidates. Missing currency/country lists, unreadable/oversized/untracked paths, provider evidence, owner mappings, tests, legal review, or exact-SHA results stay explicit blockers. Never initiate or imply authorization for financial actions.
 - Write a paired `IN_PROGRESS` checkpoint before long inventory work and finalize it under the same correlation ID; an interrupted run must remain explicitly in progress, not inherit a prior passing status.
+- Measure each long audit phase and avoid duplicate full-tree passes when a deterministic per-run result can be reused. If a local scan makes no measurable progress, stop it gracefully, preserve its checkpoint as incomplete, and resume in a fresh bounded run; never report the interrupted run as complete.
+- Reuse CodeQL metadata from an already-fetched exact-SHA workflow response only. Do not dispatch duplicate analysis, and do not treat CodeQL success or unavailable alert data as overall completion or a clean security result.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
@@ -59,3 +61,7 @@ applyTo: "**"
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Mission roadmap
+
+- Follow the canonical [root mission](../../MISSION.md) and its instruction-directory mirror. The mission defines task mapping, bounded resumable execution, measured evidence, and completion gates; it does not override this policy or authorize remote/protected operations.

@@ -27,6 +27,7 @@ The autonomous agent may collect read-only diagnostics and propose bounded remed
 - Treat scanner matches as candidates until owner, impact, reproduction, remediation, focused tests, rollback, and required remote evidence are mapped. Never bulk-rewrite candidate production/security gaps.
 - Block merge, release, and deployment claims while actionable security findings or missing terminal exact-SHA evidence remain. Record explicit blockers in `oe2.txt`, `remotecompletion.md`, and machine-readable evidence without exposing secret values.
 - Finance audits must include currency/amount, revenue, payments, wallets/banks, deals, employment/payroll, jurisdiction, project-finance, and financial-security candidates. Persist only path/hash/scope/line/category metadata; never persist amount strings, account IDs, source lines, credentials, or provider secrets. Candidate counts do not prove legal coverage or authorize a transaction.
+- Use CodeQL as an existing source of security-analysis evidence, not as a substitute for triage. Reuse already-collected exact-SHA workflow metadata when available; do not add a duplicate analysis run to the fast QAUDITS path. A stale, skipped, failed, in-progress, or absent CodeQL run is not a clean scan. HTTP 403/404 alert access is `UNKNOWN`, not zero findings; preserve the state and let required-check/security policy determine whether work is blocked.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
@@ -48,3 +49,7 @@ The autonomous agent may collect read-only diagnostics and propose bounded remed
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Mission roadmap
+
+- Follow the canonical [root mission](../../MISSION.md) and its instruction-directory mirror for security finding ownership, remediation evidence, and bounded continuation. This file's fail-closed security and sensitive-domain rules remain controlling.

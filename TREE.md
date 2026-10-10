@@ -3,15 +3,17 @@
 <!-- BEGIN QMOI MANAGED: materialized-tree-inventory -->
 ## Materialized directory-tree inventory
 
-- Indexed directories: `1270`; indexed files: `10446`; root: `Alpha-Q-ai`.
+- Indexed directories: `1280`; indexed files: `10603`; root: `Alpha-Q-ai`.
 - Skipped/unreadable paths: `66`; incomplete/skipped inputs prevent a complete-tree claim.
 - This is the full indexed path tree for the materialized scope, not a remote Git tree. Source hashes and exact scan provenance are in `QMOItracks/repository_surface_audit.json`; hashes are omitted here to avoid a generated-document self-reference.
 
 | Repository root | Directory path | Files in subtree |
 | --- | --- | ---: |
-| `Alpha-Q-ai` | `.github` | 25 |
-| `Alpha-Q-ai` | `.github/instructions` | 6 |
+| `Alpha-Q-ai` | `.github` | 26 |
+| `Alpha-Q-ai` | `.github/instructions` | 7 |
 | `Alpha-Q-ai` | `.github/workflows` | 17 |
+| `Alpha-Q-ai` | `.vscode` | 1 |
+| `Alpha-Q-ai` | `.vscode/.reporig` | 0 |
 | `Alpha-Q-ai` | `Alpha-Q-ai-2025` | 1373 |
 | `Alpha-Q-ai` | `Alpha-Q-ai-2025/.github` | 6 |
 | `Alpha-Q-ai` | `Alpha-Q-ai-2025/.github/workflows` | 6 |
@@ -248,7 +250,7 @@
 | `Alpha-Q-ai` | `Alpha-Q-ai-2025/whatsapp-qmoi-bot/utils` | 2 |
 | `Alpha-Q-ai` | `Q.0.0.N` | 2 |
 | `Alpha-Q-ai` | `QMOItracks` | 1 |
-| `Alpha-Q-ai` | `QMOItracks` | 1751 |
+| `Alpha-Q-ai` | `QMOItracks` | 1901 |
 | `Alpha-Q-ai` | `QMOItracks/checkpoints` | 5 |
 | `Alpha-Q-ai` | `QMOItracks/executions` | 12 |
 | `Alpha-Q-ai` | `QMOItracks/executions/exec-04905f69ea3442d094007625627e1366` | 2 |
@@ -276,6 +278,14 @@
 | `Alpha-Q-ai` | `QMOItracks/q_versions/merge-c095f743253c47f4b9cef8fa1977b44f` | 1 |
 | `Alpha-Q-ai` | `QMOItracks/q_versions/merge-e7b139d215064f7e955e240461a82205` | 1 |
 | `Alpha-Q-ai` | `QMOItracks/q_versions/merge-ee9229c8eed9469d88af573d7c92e18d` | 1 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards` | 149 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647` | 11 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277` | 11 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25` | 106 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83` | 11 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/bf8798882d65fb13f28a` | 2 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/efc2ca802fb2e17ce28a` | 3 |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/f15aa2c253251758f3cf` | 5 |
 | `Alpha-Q-ai` | `QMOItracks/qaudits_parallel_merge` | 3 |
 | `Alpha-Q-ai` | `QMOItracks/remote_requests` | 1 |
 | `Alpha-Q-ai` | `QMOItracks/requests` | 1 |
@@ -1276,9 +1286,9 @@
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/services` | 1 |
 | `Alpha-Q-ai` | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/utils` | 2 |
 | `Alpha-Q-ai` | `qseeds` | 2 |
-| `Alpha-Q-ai` | `scripts` | 49 |
+| `Alpha-Q-ai` | `scripts` | 51 |
 | `Alpha-Q-ai` | `scripts/trading` | 1 |
-| `Alpha-Q-ai` | `tests` | 23 |
+| `Alpha-Q-ai` | `tests` | 24 |
 
 ### Indexed files
 
@@ -1288,6 +1298,7 @@
 | `Alpha-Q-ai` | `.gitattributes` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/copilot-instructions.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/dependabot.yml` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `.github/instructions/MISSION.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/instructions/agent-autonomy.instructions.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/instructions/github-api.instructions.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.github/instructions/release.instructions.md` | `materialized_repository` | `indexed` |
@@ -1314,6 +1325,7 @@
 | `Alpha-Q-ai` | `.gitignore` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.QMOI_agent_state.json` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `.qmoi_memory_index.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `.vscode/settings.json` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `ACCOUNTABILITY.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `ADVANCEMENT.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `AGENTS.md` | `materialized_repository` | `indexed` |
@@ -2736,6 +2748,7 @@
 | `Alpha-Q-ai` | `MASTEROWNS.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `MEMORY_INDEX.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `MERGE.md` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `MISSION.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `MODELEVOLUTIONO.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `MODEL_CARD.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `MONITORING_GUIDE.md` | `materialized_repository` | `indexed` |
@@ -2805,6 +2818,7 @@
 | `Alpha-Q-ai` | `TEST_ENHANCEMENTS.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `TRADINGREADME.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `TRANSION.md` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `TRANSITION.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `TREE.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `TREE_FULL_STRUCTURE.md` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `UNIVERSAL.md` | `materialized_repository` | `indexed` |
@@ -4569,7 +4583,157 @@
 | `Alpha-Q-ai` | `QMOItracks/q_versions/merge-ee9229c8eed9469d88af573d7c92e18d/lifecycle.jsonl` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QMOItracks/qaudit_markdown_sentence_audit.json` | `materialized_repository` | `self_referential_excluded` |
 | `Alpha-Q-ai` | `QMOItracks/qaudit_markdown_sentence_audit.jsonl.gz` | `materialized_repository` | `self_referential_excluded` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000001.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000002.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000003.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000004.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000005.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000006.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000007.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000008.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000009.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard-000010.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/218451fbeb8c5eeca647/shard_run.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000001.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000002.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000003.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000004.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000005.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000006.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000007.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000008.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000009.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard-000010.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/21e17dc1a58420e97277/shard_run.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000001.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000002.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000003.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000004.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000005.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000006.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000007.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000008.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000009.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000010.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000011.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000012.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000013.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000014.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000015.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000016.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000017.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000018.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000019.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000020.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000021.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000022.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000023.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000024.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000025.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000026.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000027.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000028.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000029.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000030.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000031.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000032.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000033.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000034.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000035.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000036.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000037.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000038.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000039.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000040.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000041.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000042.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000043.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000044.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000045.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000046.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000047.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000048.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000049.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000050.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000051.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000052.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000053.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000054.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000055.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000056.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000057.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000058.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000059.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000060.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000061.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000062.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000063.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000064.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000065.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000066.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000067.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000068.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000069.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000070.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000071.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000072.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000073.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000074.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000075.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000076.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000077.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000078.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000079.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000080.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000081.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000082.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000083.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000084.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000085.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000086.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000087.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000088.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000089.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000090.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000091.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000092.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000093.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000094.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000095.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000096.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000097.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000098.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000099.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000100.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000101.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000102.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000103.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000104.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard-000105.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/5d201cd91ab9de959f25/shard_run.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000001.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000002.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000003.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000004.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000005.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000006.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000007.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000008.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000009.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard-000010.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/8c1038b500ad161f8f83/shard_run.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/bf8798882d65fb13f28a/shard-000001.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/bf8798882d65fb13f28a/shard_run.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/efc2ca802fb2e17ce28a/shard-000001.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/efc2ca802fb2e17ce28a/shard-000002.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/efc2ca802fb2e17ce28a/shard_run.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/f15aa2c253251758f3cf/shard-000001.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/f15aa2c253251758f3cf/shard-000002.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/f15aa2c253251758f3cf/shard-000003.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/f15aa2c253251758f3cf/shard-000004.json` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `QMOItracks/qaudit_shards/f15aa2c253251758f3cf/shard_run.json` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QMOItracks/qaudit_universe.json` | `materialized_repository` | `self_referential_excluded` |
+| `Alpha-Q-ai` | `QMOItracks/qaudits_evolution_plan.json` | `materialized_repository` | `self_referential_excluded` |
 | `Alpha-Q-ai` | `QMOItracks/qaudits_parallel_merge/merge_manifest.json` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QMOItracks/qaudits_parallel_merge/merge_operating_contract.json` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `QMOItracks/qaudits_parallel_merge/production_gap_inventory.json` | `materialized_repository` | `indexed` |
@@ -11682,7 +11846,9 @@
 | `Alpha-Q-ai` | `scripts/qaudit_all_features.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qaudit_checkpoint.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qaudit_model_review.py` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `scripts/qaudit_shard_runner.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qaudit_universe.py` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `scripts/qaudits_evolution_planner.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qaudits_parallel_auditor.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qmoi_credentials.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `scripts/qmoi_orchestrator_service.py` | `materialized_repository` | `indexed` |
@@ -11719,6 +11885,7 @@
 | `Alpha-Q-ai` | `tests/test_production_trading_autopilot.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qaudit_all_features.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qaudit_model_review.py` | `materialized_repository` | `indexed` |
+| `Alpha-Q-ai` | `tests/test_qaudit_shard_runner.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qaudit_universe.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qaudits_evolution_planner.py` | `materialized_repository` | `indexed` |
 | `Alpha-Q-ai` | `tests/test_qaudits_parallel_auditor.py` | `materialized_repository` | `indexed` |
@@ -11806,20 +11973,20 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10446`; directories: `1270`; Markdown: `2418`.
+- Status: `NEEDS_REVIEW`; materialized files: `10603`; directories: `1280`; Markdown: `2421`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2156, build_download_install=2110, orchestration=2062, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2001`.
+- Managed-document family candidates: `app_platform=2157, build_download_install=2113, disability_accessibility=268, orchestration=2065, qteam_accountability=2053, release_tag_publish=2092, tree_inventory=2004`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52718`; percentage occurrences: `22237`.
-- Markdown word count: `3554796`; heuristic sentence count: `674081`; sentence records indexed: `674081`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29838` metric claims; `10664` completion claims; `29741` metric and `10535` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9047` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13342`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Markdown structural checks passed: `2226`; needs review: `187`; metric candidate lines: `52756`; percentage occurrences: `22237`.
+- Markdown word count: `3562982`; heuristic sentence count: `674722`; sentence records indexed: `674722`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29846` metric claims; `10693` completion claims; `29749` metric and `10564` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9053` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40052` lines in `3673` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `290`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40146` lines in `3689` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

@@ -74,8 +74,12 @@ def _discover_files(root: Path) -> list[Path]:
 
 def _read_source(path: Path, root: Path) -> tuple[str, str, int]:
     try:
-        content = path.read_bytes().decode("utf-8", errors="replace")
-        return content, _hash_file(path), path.stat().st_size
+        content = path.read_bytes()
+        return (
+            content.decode("utf-8", errors="replace"),
+            hashlib.sha256(content).hexdigest(),
+            len(content),
+        )
     except OSError:
         return "", "", 0
 
@@ -87,6 +91,8 @@ def _scan_shard(
     registry: dict[str, Any],
 ) -> dict[str, Any]:
     """Scan one bounded shard and return only path/hash/provenance metadata."""
+    feature_map = _registry_features(registry)
+    feature_search = _feature_search_index(feature_map)
     results: list[dict[str, Any]] = []
     for path in paths:
         relative = _relative(path, root)
@@ -95,34 +101,45 @@ def _scan_shard(
             results.append({"path": relative, "status": "SKIPPED", "reason": "unreadable"})
             continue
         lower = content.lower()
+        normalized_lower = _normalize(lower)
+        path_parts = {part.lower() for part in Path(relative).parts}
+        mention_matches: dict[str, list[str]] = {}
+        implementation_features: list[str] = []
+        test_features: list[str] = []
+        setup_features: list[str] = []
+        for feature_id, search in feature_search.items():
+            matched = [term for term in search["mention_terms"] if term in lower]
+            if matched:
+                mention_matches[feature_id] = matched
+            if any(term and term in normalized_lower for term in search["normalized_terms"]):
+                implementation_features.append(feature_id)
+            if feature_id in lower or feature_id.replace("-", "_") in lower:
+                if feature_id not in implementation_features:
+                    implementation_features.append(feature_id)
+            if ("test" in path_parts or "tests" in path_parts) and (
+                search["app_term"] in lower
+                or any(term in lower for term in search["test_setup_terms"])
+            ):
+                test_features.append(feature_id)
+            if any(part in {"setup", "config", "configs", "workflows", "scripts"} for part in path_parts) and (
+                search["app_term"] in lower
+                or any(term in lower for term in search["test_setup_terms"])
+            ):
+                setup_features.append(feature_id)
         evidence = {
             "path": relative,
             "sha256": digest,
             "bytes": size,
             "status": "SCANNED",
-            "feature_mentions": [],
-            "implementation": False,
-            "test": False,
-            "setup_or_config": False,
+            "feature_mentions": sorted(mention_matches),
+            "mention_matches": mention_matches,
+            "implementation_features": sorted(implementation_features),
+            "test_features": sorted(test_features),
+            "setup_or_configuration_features": sorted(setup_features),
+            "implementation": bool(implementation_features),
+            "test": "test" in path_parts or "tests" in path_parts,
+            "setup_or_config": any(part in {"setup", "config", "configs", "workflows", "scripts"} for part in path_parts),
         }
-        for app_id, metadata in registry.items():
-            app_terms = [app_id, str(metadata.get("name", "")), str(metadata.get("category", ""))]
-            for feature_id, feature_metadata in metadata.get("features", {}).items():
-                terms = [feature_id, str(feature_metadata.get("description", ""))]
-                terms.extend(str(value) for value in feature_metadata.get("aliases", []))
-                matched_terms = [term for term in terms if term and term.lower() in lower]
-                if matched_terms:
-                    evidence["feature_mentions"].append(feature_id)
-                if feature_id in lower or any(term.lower() in lower for term in terms):
-                    evidence["implementation"] = True
-        for app_id in registry:
-            if app_id in lower or str(app_id).lower() in lower:
-                evidence["implementation"] = True
-        path_parts = {part.lower() for part in Path(relative).parts}
-        if any(part in {"test", "tests"} for part in path_parts):
-            evidence["test"] = True
-        if any(part in {"setup", "config", "configs", "workflows", "scripts"} for part in path_parts):
-            evidence["setup_or_config"] = True
         results.append(evidence)
     return {
         "number": shard_number,
@@ -149,6 +166,23 @@ def _registry_features(registry: dict[str, Any]) -> dict[str, dict[str, Any]]:
                 "aliases": list(feature_metadata.get("aliases", [])),
             }
     return feature_map
+
+
+def _feature_search_index(feature_map: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    search_index = {}
+    for feature_id, metadata in feature_map.items():
+        terms = [feature_id, metadata["name"], metadata["description"], *metadata["aliases"]]
+        search_index[feature_id] = {
+            "mention_terms": [str(term).lower() for term in terms if term],
+            "normalized_terms": [_normalize(term) for term in terms],
+            "app_term": metadata["app_id"].lower(),
+            "test_setup_terms": [
+                feature_id,
+                metadata["name"].lower(),
+                *[str(alias).lower() for alias in metadata["aliases"]],
+            ],
+        }
+    return search_index
 
 
 def _capability_key(value: str) -> str:
@@ -256,12 +290,27 @@ def _render_all_features(
 def build_feature_audit(
     root: Path | str,
     registry: dict[str, Any] | None = None,
+    *,
+    scanned_records: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build a candidate feature ledger from a local tree and explicit registry."""
     source_root = Path(root).resolve()
     registry = registry or {}
     files = _discover_files(source_root)
     feature_map = _registry_features(registry)
+    feature_search = {}
+    for feature_id, metadata in feature_map.items():
+        terms = [feature_id, metadata["name"], metadata["description"], *metadata["aliases"]]
+        feature_search[feature_id] = {
+            "mention_terms": [str(term).lower() for term in terms if term],
+            "normalized_terms": [_normalize(term) for term in terms],
+            "app_term": metadata["app_id"].lower(),
+            "test_setup_terms": [
+                feature_id,
+                metadata["name"].lower(),
+                *[str(alias).lower() for alias in metadata["aliases"]],
+            ],
+        }
     all_paths = {path.relative_to(source_root).as_posix(): path for path in files}
     features: dict[str, dict[str, Any]] = {}
     mentions: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -269,18 +318,50 @@ def build_feature_audit(
     test_paths: dict[str, set[str]] = defaultdict(set)
     setup_paths: dict[str, set[str]] = defaultdict(set)
     skipped: list[dict[str, str]] = []
+    records_by_path = {
+        record.get("path"): record
+        for record in scanned_records or []
+        if isinstance(record, dict) and isinstance(record.get("path"), str)
+    }
 
     for path in files:
         relative = _relative(path, source_root)
+        if scanned_records is not None:
+            record = records_by_path.get(relative)
+            if not record or record.get("status") != "SCANNED" or not record.get("sha256"):
+                skipped.append({"path": relative, "reason": "missing_or_unreadable_shard_record"})
+                continue
+            digest = record["sha256"]
+            size = record.get("bytes", 0)
+            for feature_id, matched in record.get("mention_matches", {}).items():
+                if feature_id in feature_map and matched:
+                    mentions[feature_id].append({
+                        "path": relative,
+                        "sha256": digest,
+                        "bytes": size,
+                        "matched_terms": matched,
+                    })
+            for feature_id in record.get("implementation_features", []):
+                if feature_id in feature_map:
+                    implementation_paths[feature_id].add(relative)
+            for feature_id in record.get("test_features", []):
+                if feature_id in feature_map:
+                    test_paths[feature_id].add(relative)
+            for feature_id in record.get("setup_or_configuration_features", []):
+                if feature_id in feature_map:
+                    setup_paths[feature_id].add(relative)
+            continue
+
         content, digest, size = _read_source(path, source_root)
         if not digest:
             skipped.append({"path": relative, "reason": "unreadable"})
             continue
         lower = content.lower()
+        normalized_lower = _normalize(lower)
         path_parts = {part.lower() for part in Path(relative).parts}
         for feature_id, metadata in feature_map.items():
-            terms = [feature_id, metadata["name"], metadata["description"], *metadata["aliases"]]
-            normalized_terms = [str(term).lower() for term in terms if term]
+            search = feature_search[feature_id]
+            normalized_terms = search["mention_terms"]
             matched = [term for term in normalized_terms if term in lower]
             if matched:
                 mentions[feature_id].append({
@@ -289,21 +370,21 @@ def build_feature_audit(
                     "bytes": size,
                     "matched_terms": matched,
                 })
-            if any(_normalize(term) and _normalize(term) in _normalize(lower) for term in terms):
+            if any(term and term in normalized_lower for term in search["normalized_terms"]):
                 implementation_paths[feature_id].add(relative)
         for feature_id in feature_map:
             if feature_id in lower or feature_id.replace("-", "_") in lower:
                 implementation_paths[feature_id].add(relative)
         for feature_id, metadata in feature_map.items():
-            app_id = metadata["app_id"]
-            app_term = app_id.lower()
-            feature_terms = [feature_id, metadata["name"].lower(), *[str(alias).lower() for alias in metadata["aliases"]]]
+            search = feature_search[feature_id]
             if ("test" in path_parts or "tests" in path_parts) and (
-                app_term in lower or any(term in lower for term in feature_terms)
+                search["app_term"] in lower
+                or any(term in lower for term in search["test_setup_terms"])
             ):
                 test_paths[feature_id].add(relative)
             if any(part in {"setup", "config", "configs", "workflows", "scripts"} for part in path_parts) and (
-                app_term in lower or any(term in lower for term in feature_terms)
+                search["app_term"] in lower
+                or any(term in lower for term in search["test_setup_terms"])
             ):
                 setup_paths[feature_id].add(relative)
 
@@ -409,7 +490,8 @@ def run_parallel_feature_audit(
             shard_results.append(future.result())
     shard_results.sort(key=lambda item: item["number"])
 
-    audit = build_feature_audit(source_root, registry)
+    scanned_records = [record for shard in shard_results for record in shard["records"]]
+    audit = build_feature_audit(source_root, registry, scanned_records=scanned_records)
     feature_manifest = {
         "schema_version": 1,
         "root": str(source_root),
@@ -466,6 +548,7 @@ def run_parallel_feature_audit(
             "shard_count": len(shard_results),
             "files_scanned": sum(shard["file_count"] for shard in shard_results),
             "registered_feature_count": audit["metrics"]["registered_feature_count"],
+            "capability_count": audit["metrics"]["capability_count"],
             "mentioned_feature_count": audit["metrics"]["mentioned_feature_count"],
             "mapped_local_feature_count": audit["metrics"]["mapped_local_feature_count"],
             "candidate_feature_count": audit["metrics"]["candidate_feature_count"],

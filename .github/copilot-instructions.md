@@ -60,6 +60,7 @@ The Ollama completion engine maintains a resumable, priority-ordered queue for n
 - Remote completion must be independently verified against the exact repository, ref, and SHA using terminal target-owned workflow evidence and the corresponding remote tree/artifact/check evidence. A workflow dispatch, local scan/test, PR existence, or elapsed-time target is not completion proof.
 - Use bounded resumable shards and safe parallel work; stop on authorization, security, unavailable-source, or terminal-evidence blockers rather than retrying indefinitely or implying the agent can replace human judgment.
 - The full inventory also refreshes finance-document categories and redacted amount/currency, revenue, payment, wallet/banking, deal, employment/payroll, jurisdiction, project-budget, and financial-security candidates. These counts are neither semantic/coverage proof nor authorization; never store raw amounts, account identifiers, credentials, or source lines.
+- Reuse existing target-owned CodeQL run metadata only when bound to the exact repository/ref/SHA; never launch a duplicate scan in the fast QAUDITS path. A CodeQL success cannot satisfy the completion gate, and denied alert access is `UNKNOWN`, not a clean result.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

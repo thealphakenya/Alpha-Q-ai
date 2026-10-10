@@ -3,7 +3,7 @@
 <!-- BEGIN QMOI MANAGED: materialized-link-inventory -->
 ## Materialized Markdown link inventory
 
-- Link references: `8616`; URL query strings and fragments are omitted from display.
+- Link references: `8624`; URL query strings and fragments are omitted from display.
 - A listed link is not a reachability or permission check; local missing targets remain in `repository_surface_audit.json`.
 
 | Source path | Line | Sanitized target | Target SHA-256 | Kind |
@@ -175,8 +175,8 @@
 | `QMOI_AUTOMATION_GUIDE.md` | 435 | `.github/workflows/QMOI-autonomous-agent.yml` | `c728b27bbbc121aaf3e734b32e72736dd0c44bb55588f46ab1580c420c143b20` | `local` |
 | `QAUDITS.md` | 5 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `QAUDITS.md` | 7 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
-| `QAUDITS.md` | 80 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
-| `QAUDITS.md` | 109 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
+| `QAUDITS.md` | 91 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `QAUDITS.md` | 120 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `VERCELPAYED.md` | `4e68358d3081c50efb141b7e0008676671fb33bc11516d036061940c6e73fc41` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUMPAYED.md` | `0ea9235e0afe898dd3589a58d06ebdf47758216c1170b712588d4376fc675be5` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUM.md` | `f39d66bf63a5cda11e56c8ab153a9b47673b78f34e9b2469d6097f1ab0e6aba9` | `local` |
@@ -201,12 +201,12 @@
 | `QVERSIONMANAGER.md` | 13 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
 | `QVERSIONMANAGER.md` | 13 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `QVERSIONMANAGER.md` | 13 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
-| `QVERSIONMANAGER.md` | 220 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
-| `QVERSIONMANAGER.md` | 253 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
-| `QVERSIONMANAGER.md` | 269 | `QMOItracks/qaudit_universe.json` | `a16a3d2024195943acdde328294804b4c993c076bb7ea9e79bb0844010fbf744` | `local` |
-| `QVERSIONMANAGER.md` | 269 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
-| `QVERSIONMANAGER.md` | 279 | `scripts/checkpoint_manager.py` | `0c406fbeec19b6e088e4a95c6dd84fd1922355333efb1dc68353af236ac9f619` | `local` |
-| `QVERSIONMANAGER.md` | 279 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `QVERSIONMANAGER.md` | 222 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
+| `QVERSIONMANAGER.md` | 255 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `QVERSIONMANAGER.md` | 271 | `QMOItracks/qaudit_universe.json` | `a16a3d2024195943acdde328294804b4c993c076bb7ea9e79bb0844010fbf744` | `local` |
+| `QVERSIONMANAGER.md` | 271 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `QVERSIONMANAGER.md` | 281 | `scripts/checkpoint_manager.py` | `0c406fbeec19b6e088e4a95c6dd84fd1922355333efb1dc68353af236ac9f619` | `local` |
+| `QVERSIONMANAGER.md` | 281 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
 | `Qtrade.md` | 40 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
 | `Qtrade.md` | 293 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
 | `Qtrade.md` | 294 | `TRADINGREADME.md` | `4676daa204a64892b41af786d7ebfe24c8b59d46f17e45d48b48624249483f4f` | `local` |
@@ -273,15 +273,15 @@
 | `STYLES.md` | 9 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
 | `STYLES.md` | 13 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
 | `STYLES.md` | 13 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
-| `STYLES.md` | 114 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
-| `STYLES.md` | 115 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `STYLES.md` | 116 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
-| `STYLES.md` | 117 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
-| `STYLES.md` | 118 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `STYLES.md` | 119 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
-| `STYLES.md` | 120 | `qmoi-enhanced-history-14/STYLES.md` | `d65308a76e8116770d3fe357d978835c0dce2c75a0bb749fe6f105ca79dcd3c4` | `local` |
-| `STYLES.md` | 121 | `qmoi-enhanced-history-14/UNIVERSALS.md` | `c0f47cced70c423e588bd7d40af2c8e65335cd03422b22d6aa37906540a34a72` | `local` |
-| `STYLES.md` | 122 | `qmoi-enhanced-history-14/ALLMDFILESREFS.md` | `6e67cb97d703008b0b3db815cba88e23cf2cb3f21e0b6c5f71acd34ed5ef9275` | `local` |
+| `STYLES.md` | 122 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `STYLES.md` | 123 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `STYLES.md` | 124 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
+| `STYLES.md` | 125 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
+| `STYLES.md` | 126 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
+| `STYLES.md` | 127 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
+| `STYLES.md` | 128 | `qmoi-enhanced-history-14/STYLES.md` | `d65308a76e8116770d3fe357d978835c0dce2c75a0bb749fe6f105ca79dcd3c4` | `local` |
+| `STYLES.md` | 129 | `qmoi-enhanced-history-14/UNIVERSALS.md` | `c0f47cced70c423e588bd7d40af2c8e65335cd03422b22d6aa37906540a34a72` | `local` |
+| `STYLES.md` | 130 | `qmoi-enhanced-history-14/ALLMDFILESREFS.md` | `6e67cb97d703008b0b3db815cba88e23cf2cb3f21e0b6c5f71acd34ed5ef9275` | `local` |
 | `SYNC.md` | 319 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
 | `SYNC.md` | 320 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
 | `SYNC.md` | 321 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
@@ -294,44 +294,46 @@
 | `TRADINGREADME.md` | 100 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
 | `TRADINGREADME.md` | 101 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
 | `TRADINGREADME.md` | 102 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `TRANSION.md` | 13 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
-| `TRANSION.md` | 14 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
-| `TRANSION.md` | 15 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
-| `TRANSION.md` | 16 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
-| `TRANSION.md` | 17 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
-| `TRANSION.md` | 18 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
-| `TRANSION.md` | 19 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
-| `TRANSION.md` | 20 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `TRANSION.md` | 21 | `OFCA.md` | `f1dc533a81732ba7c4c6947a11881212b248785ad4f42ed1975190b0eaa2b82a` | `local` |
-| `TRANSION.md` | 22 | `ALLTESTSAUTOTESTS.md` | `94bb772a3400354c94b2d6fb36bc5d92a2adc0ec158a9cb06a74f9890463bf30` | `local` |
-| `TRANSION.md` | 23 | `ALLHOOKSWEBHOOKS.md` | `4355598b1f107b6cf3b0466cb375671226b6e7f82237abfc74cc26cecb0e575c` | `local` |
-| `TRANSION.md` | 24 | `COMPONENTS.md` | `eb975a80998ce43dadc636ae432d176e7dd2a5bf4259db1cf588678a813c173e` | `local` |
-| `TRANSION.md` | 25 | `TREE.md` | `8332eb041983621ebf42cdd8b9ded8935b422c49df6bfe86614690e4470b73bc` | `local` |
-| `TRANSION.md` | 26 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
-| `TRANSION.md` | 27 | `VERCELLINKS.md` | `f1c95b483a2feab989a1abee74b333995c1e3a9b18d93d7b9c28547578572b81` | `local` |
-| `TRANSION.md` | 28 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
-| `TRANSION.md` | 29 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
-| `TRANSION.md` | 30 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
-| `TRANSION.md` | 31 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
-| `TRANSION.md` | 32 | `INTERNALRESEARCH.md` | `d447234db29b500c82a556d6cedeaee7cd05604649490e0907042f5aac6b6283` | `local` |
-| `TRANSION.md` | 33 | `EXTERNALRESEARCH.md` | `7292c71a81cc5adcb4484db85b9cc1040dc1d74e61de5ca623c95adc44f4413c` | `local` |
-| `TRANSION.md` | 113 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
-| `TRANSION.md` | 114 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
-| `TRANSION.md` | 115 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
-| `TRANSION.md` | 116 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
-| `TRANSION.md` | 117 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
-| `TRANSION.md` | 118 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
-| `TRANSION.md` | 119 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
-| `TRANSION.md` | 120 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
-| `TRANSION.md` | 121 | `OFCA.md` | `f1dc533a81732ba7c4c6947a11881212b248785ad4f42ed1975190b0eaa2b82a` | `local` |
-| `TRANSION.md` | 122 | `ALLTESTSAUTOTESTS.md` | `94bb772a3400354c94b2d6fb36bc5d92a2adc0ec158a9cb06a74f9890463bf30` | `local` |
-| `TRANSION.md` | 123 | `ALLHOOKSWEBHOOKS.md` | `4355598b1f107b6cf3b0466cb375671226b6e7f82237abfc74cc26cecb0e575c` | `local` |
-| `TRANSION.md` | 124 | `INTERNALRESEARCH.md` | `d447234db29b500c82a556d6cedeaee7cd05604649490e0907042f5aac6b6283` | `local` |
-| `TRANSION.md` | 125 | `EXTERNALRESEARCH.md` | `7292c71a81cc5adcb4484db85b9cc1040dc1d74e61de5ca623c95adc44f4413c` | `local` |
-| `TRANSION.md` | 126 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
-| `TRANSION.md` | 127 | `production.md` | `2e3bdb96d0724399f7fe714de5836a3b8f248e4f522ebf68bbf2d560fcb021fa` | `local` |
-| `TRANSION.md` | 128 | `productionenhanced.md` | `5b33a2bfe48ada25bd62d9dbcd593fb7cf7d1738fb43b3b1ee978858fc9bdcd8` | `local` |
-| `TRANSION.md` | 129 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `TRANSION.md` | 7 | `TRANSITION.md` | `c247c5019341791ac8e59c68e1d887a19f5364586148130ea5bf7e3e37be91c8` | `local` |
+| `TRANSION.md` | 15 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `TRANSION.md` | 16 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `TRANSION.md` | 17 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `TRANSION.md` | 18 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `TRANSION.md` | 19 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `TRANSION.md` | 20 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
+| `TRANSION.md` | 21 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
+| `TRANSION.md` | 22 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `TRANSION.md` | 23 | `OFCA.md` | `f1dc533a81732ba7c4c6947a11881212b248785ad4f42ed1975190b0eaa2b82a` | `local` |
+| `TRANSION.md` | 24 | `ALLTESTSAUTOTESTS.md` | `94bb772a3400354c94b2d6fb36bc5d92a2adc0ec158a9cb06a74f9890463bf30` | `local` |
+| `TRANSION.md` | 25 | `ALLHOOKSWEBHOOKS.md` | `4355598b1f107b6cf3b0466cb375671226b6e7f82237abfc74cc26cecb0e575c` | `local` |
+| `TRANSION.md` | 26 | `COMPONENTS.md` | `eb975a80998ce43dadc636ae432d176e7dd2a5bf4259db1cf588678a813c173e` | `local` |
+| `TRANSION.md` | 27 | `TREE.md` | `8332eb041983621ebf42cdd8b9ded8935b422c49df6bfe86614690e4470b73bc` | `local` |
+| `TRANSION.md` | 28 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
+| `TRANSION.md` | 29 | `VERCELLINKS.md` | `f1c95b483a2feab989a1abee74b333995c1e3a9b18d93d7b9c28547578572b81` | `local` |
+| `TRANSION.md` | 30 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
+| `TRANSION.md` | 31 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
+| `TRANSION.md` | 32 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
+| `TRANSION.md` | 33 | `ALLPORTS.md` | `1ef12fa276e209a09cb03f0f626ad2717ab91a7602a53ca839ecdda7ca3b1764` | `local` |
+| `TRANSION.md` | 34 | `INTERNALRESEARCH.md` | `d447234db29b500c82a556d6cedeaee7cd05604649490e0907042f5aac6b6283` | `local` |
+| `TRANSION.md` | 35 | `EXTERNALRESEARCH.md` | `7292c71a81cc5adcb4484db85b9cc1040dc1d74e61de5ca623c95adc44f4413c` | `local` |
+| `TRANSION.md` | 118 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `TRANSION.md` | 119 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `TRANSION.md` | 120 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `TRANSION.md` | 121 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `TRANSION.md` | 122 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
+| `TRANSION.md` | 123 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
+| `TRANSION.md` | 124 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
+| `TRANSION.md` | 125 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `TRANSION.md` | 126 | `OFCA.md` | `f1dc533a81732ba7c4c6947a11881212b248785ad4f42ed1975190b0eaa2b82a` | `local` |
+| `TRANSION.md` | 127 | `ALLTESTSAUTOTESTS.md` | `94bb772a3400354c94b2d6fb36bc5d92a2adc0ec158a9cb06a74f9890463bf30` | `local` |
+| `TRANSION.md` | 128 | `ALLHOOKSWEBHOOKS.md` | `4355598b1f107b6cf3b0466cb375671226b6e7f82237abfc74cc26cecb0e575c` | `local` |
+| `TRANSION.md` | 129 | `INTERNALRESEARCH.md` | `d447234db29b500c82a556d6cedeaee7cd05604649490e0907042f5aac6b6283` | `local` |
+| `TRANSION.md` | 130 | `EXTERNALRESEARCH.md` | `7292c71a81cc5adcb4484db85b9cc1040dc1d74e61de5ca623c95adc44f4413c` | `local` |
+| `TRANSION.md` | 131 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
+| `TRANSION.md` | 132 | `production.md` | `2e3bdb96d0724399f7fe714de5836a3b8f248e4f522ebf68bbf2d560fcb021fa` | `local` |
+| `TRANSION.md` | 133 | `productionenhanced.md` | `5b33a2bfe48ada25bd62d9dbcd593fb7cf7d1738fb43b3b1ee978858fc9bdcd8` | `local` |
+| `TRANSION.md` | 134 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `TRANSITION.md` | 3 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
 | `UNIVERSAL.md` | 5 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
 | `UNIVERSAL.md` | 5 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
 | `UNIVERSAL.md` | 5 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
@@ -356,9 +358,9 @@
 | `UNIVERSALS.md` | 21 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `UNIVERSALS.md` | 22 | `qmoi-enhanced-history-14` | `d4989bb27542f1206d6e337e54afd4fa83013fdd18331d963be1c85413f5db64` | `local` |
 | `UNIVERSALS.md` | 23 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
-| `UNIVERSALS.md` | 325 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
-| `UNIVERSALS.md` | 325 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
-| `UNIVERSALS.md` | 345 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `UNIVERSALS.md` | 333 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `UNIVERSALS.md` | 333 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `UNIVERSALS.md` | 353 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
 | `VERCELLINKS.md` | 14 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
 | `VERCELPAYED.md` | 31 | `QUANTUMPAYED.md` | `0ea9235e0afe898dd3589a58d06ebdf47758216c1170b712588d4376fc675be5` | `local` |
 | `compare.md` | 42 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
@@ -416,8 +418,14 @@
 | `trigger.md` | 179 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `trigger.md` | 179 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
 | `trigger.md` | 179 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
-| `undoredo.md` | 66 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
-| `undoredo.md` | 66 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `undoredo.md` | 81 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `undoredo.md` | 81 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 65 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/github-api.instructions.md` | 62 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/release.instructions.md` | 55 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/security.instructions.md` | 55 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workflows.instructions.md` | 59 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workspace.instructions.md` | 64 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 9 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 10 | `./DOWNLOADQMOIAIAPPALLDEVICES.md` | `3d44031161ffd6826fe255f72f1f9079d1841f51c3976a325a056d7c0e48e0a6` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 17 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
@@ -8629,20 +8637,20 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10446`; directories: `1270`; Markdown: `2418`.
+- Status: `NEEDS_REVIEW`; materialized files: `10603`; directories: `1280`; Markdown: `2421`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2156, build_download_install=2110, orchestration=2062, qteam_accountability=2050, release_tag_publish=2089, tree_inventory=2001`.
+- Managed-document family candidates: `app_platform=2157, build_download_install=2113, disability_accessibility=268, orchestration=2065, qteam_accountability=2053, release_tag_publish=2092, tree_inventory=2004`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2223`; needs review: `187`; metric candidate lines: `52718`; percentage occurrences: `22237`.
-- Markdown word count: `3554796`; heuristic sentence count: `674081`; sentence records indexed: `674081`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29838` metric claims; `10664` completion claims; `29741` metric and `10535` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9047` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13342`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Markdown structural checks passed: `2226`; needs review: `187`; metric candidate lines: `52756`; percentage occurrences: `22237`.
+- Markdown word count: `3562982`; heuristic sentence count: `674722`; sentence records indexed: `674722`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `29846` metric claims; `10693` completion claims; `29749` metric and `10564` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `9053` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40052` lines in `3673` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `290`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40146` lines in `3689` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

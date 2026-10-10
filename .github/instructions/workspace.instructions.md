@@ -37,6 +37,8 @@ Keep the workspace safe, deterministic, and consistent with the repository’s r
 - On every full `audit-inventory` refresh, regenerate `ALLMDFILESREFS.md` category assignments from materialized Markdown paths/content and refresh the financial-document catalog plus the managed finance evidence section in `FINANCIALMANAGER.md`. Bind financial candidate artifacts to the same checkpoint; report incomplete or excluded sources rather than implying full country/currency coverage.
 - Long inventory commands must write a paired `IN_PROGRESS` checkpoint before scanning and finalize under that correlation ID; if interrupted, retain the unfinished checkpoint as the current state.
 - Remote completion remains blocked until exact repository/ref/SHA, terminal target-owned workflow result, remote tree/artifact verification, and required authority/security gates are independently evidenced.
+- For long QAUDITS runs, record phase timing and the active correlation ID in paired evidence; avoid concurrent duplicate full-tree scans and use deterministic, bounded work where available. Keep user-edited mission content intact, preserve the mission mirror byte-for-byte, and retain interrupted scans as `IN_PROGRESS` until a fresh run reaches a terminal checkpoint.
+- CodeQL fast-path integration is read-only: reuse exact-SHA workflow metadata already fetched, never launch a duplicate analysis, and keep alert API 403/404 or stale/missing runs explicitly unknown/incomplete.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
@@ -58,3 +60,7 @@ Keep the workspace safe, deterministic, and consistent with the repository’s r
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Mission roadmap
+
+- Follow the canonical [root mission](../../MISSION.md) and keep `.github/instructions/MISSION.md` byte-identical to it; the focused regression enforces both mirror parity and instruction links. This file's workspace preservation, checkpoint, and remote-first rules remain controlling.

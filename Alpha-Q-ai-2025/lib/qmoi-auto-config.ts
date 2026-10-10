@@ -51,7 +51,7 @@ class QMOIAutoConfig {
       const connectionTest = await this.testMpesaConnection();
       
       if (connectionTest.success) {
-        console.log('✅ M-Pesa connection test successful');
+        console.log('✅ M-Pesa JK  connection test successful');
         logEvent('mpesa_auto_config_success', { environment: mpesaConfig.MPESA_ENVIRONMENT });
       } else {
         console.log('⚠️ M-Pesa connection test failed, but configuration saved');

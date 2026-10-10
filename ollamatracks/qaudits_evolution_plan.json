@@ -1,0 +1,409 @@
+{
+  "blockers": [
+    "Plan entries are not execution results or production implementations.",
+    "Remote completion requires authorized target-owned terminal exact-SHA and tree evidence."
+  ],
+  "plan_sha256": "fd1ddf6f07508eba214c03c25c5873e5590d5f31274afe0d40e996e5e806c754",
+  "qstats": {
+    "available_contract_file_count": 20,
+    "interpretation": "derived_local_inventory_counts_not_completion_or_remote_proof",
+    "missing_or_unavailable_contract_file_count": 1,
+    "planned_stage_count": 13,
+    "remote_verified_stage_count": 0,
+    "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d",
+    "stage_count": 13
+  },
+  "remote_verification_complete": false,
+  "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d",
+  "source_root": "/workspaces/Alpha-Q-ai",
+  "source_scope": "materialized_local_only",
+  "stages": [
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "autodev",
+      "metrics": {
+        "available_source_file_count": 1,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 1,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 1,
+      "source_files": [
+        {
+          "bytes": 6855,
+          "path": "AUTODEV.md",
+          "sha256": "2951b9de3fd5d1f1706c5b712906d7eba6b4cfde82cbd29f28ce67ea50e2938c",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "3520c56987e74bcd6efb8c3335fd7b6e1def95798a95e65ecc84e37adbeb34e4",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "model_evolution",
+      "metrics": {
+        "available_source_file_count": 1,
+        "missing_or_unavailable_source_file_count": 1,
+        "remote_verified": false,
+        "source_file_count": 2,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 2,
+      "source_files": [
+        {
+          "bytes": 5816,
+          "path": "MODELEVOLUTIONO.md",
+          "sha256": "a142289ed5474dc2cab00856d66f5668f46ec8d05e857cc3392f8be27dc54d55",
+          "status": "observed_local"
+        },
+        {
+          "bytes": null,
+          "path": "MODELEVUTIONO.md",
+          "sha256": null,
+          "status": "missing_or_unsafe"
+        }
+      ],
+      "source_sha256": "f2c203820e25c9678edba915feb62acdf5824ed5d85b00bbc988342b8dc79c4a",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "qvillage_evolution",
+      "metrics": {
+        "available_source_file_count": 1,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 1,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 3,
+      "source_files": [
+        {
+          "bytes": 24402,
+          "path": "Qvillageevolutions.md",
+          "sha256": "21b322f1aa5cd6f5ce7012090d72e13cfcb5ed3b2ad781b25050ba33d1c8e8d9",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "e4a401efdfe8ce7e19f4e5c34cc3299c3029da32745b656c4ad1de402a74c02f",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "internal_research",
+      "metrics": {
+        "available_source_file_count": 1,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 1,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 4,
+      "source_files": [
+        {
+          "bytes": 9186,
+          "path": "INTERNALRESEARCH.md",
+          "sha256": "15ae76a381333717902e9da62f64fdadfb52e5b791a7d7f054798a824edd5635",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "175b86be2b2b0da971c1da620e0dc8da99bf9ff1e727c62a5855dd9c3f8c0876",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "external_research",
+      "metrics": {
+        "available_source_file_count": 2,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 2,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 5,
+      "source_files": [
+        {
+          "bytes": 5457,
+          "path": "EXTERNALRESEARCH.md",
+          "sha256": "2d6e9c527e07291b7d6ff8f33fadd7154fe88391732b86695027cc9a05f51ad4",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 11286,
+          "path": "EXTERIORRESEARCH.md",
+          "sha256": "d1667b3552c02962176c82dfdf3f5216e78101769528a1bf48e988b2ac85680c",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "e1d19e2399cda61f6b09a4253b8c45e0193b3b745762364d7b1625061516f3a8",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "q_seed",
+      "metrics": {
+        "available_source_file_count": 1,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 1,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 6,
+      "source_files": [
+        {
+          "bytes": 8441,
+          "path": "QSEED.md",
+          "sha256": "484f6b9d975d5de4635195e7afe04a4d23f074521ed7fcdd6a9f41e4728e674f",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "cefec4d8a83a0d8643e7aa707d41ccfa149760859c8c19c26fe454b934504c09",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "q_version",
+      "metrics": {
+        "available_source_file_count": 1,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 1,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 7,
+      "source_files": [
+        {
+          "bytes": 129815,
+          "path": "QVERSIONMANAGER.md",
+          "sha256": "f1dda2120224d73deddbb9812e10cc62b98e8d1ed37c4c98e6bc0be73d1018e1",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "b9f63f548dd4acd722561a4d086c20a2f8347a28efcadf6841f1ec8113625bb6",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "instruction_inventory",
+      "metrics": {
+        "available_source_file_count": 2,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 2,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 8,
+      "source_files": [
+        {
+          "bytes": 6761,
+          "path": "AGENTS.md",
+          "sha256": "9b1c21acb83478dc64623acd5455877e1ff94ea27784fdd300e9084a39cac911",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 7477,
+          "path": ".github/copilot-instructions.md",
+          "sha256": "0dd6b616904d22c807c38aef5ab5a10dfd90d73eef4655dc9fc9e2394dfe2fc8",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "fce7e0d1d8e1d3cbb94da4e959cdb04cff9f44d1f64f923b4b1836b2d6b33404",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "repository_surface_audit",
+      "metrics": {
+        "available_source_file_count": 2,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 2,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 9,
+      "source_files": [
+        {
+          "bytes": 128486,
+          "path": "QAUDITS.md",
+          "sha256": "91f7c921e282dca863e42fb4dfdaf8e70642c1899431af1de4187141ca860848",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 8258,
+          "path": "OFCA.md",
+          "sha256": "bc8c85476aa256570c622cd87a752855ba38cd333c18fd9ec8d7dacea6cdc584",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "d6f737f8c7f985a87b17ddd7b7952f4c987ae2d288bd4e8dcd0795c9fc2650c5",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "markdown_refresh",
+      "metrics": {
+        "available_source_file_count": 3,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 3,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 10,
+      "source_files": [
+        {
+          "bytes": 89267697,
+          "path": "ALLMDFILESREFS.md",
+          "sha256": "57f7d88fb87dc631bd372a4266ce28bc3dfd609931904b5271e96e8da1b690cf",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 15804,
+          "path": "TRANSION.md",
+          "sha256": "57ac5c9a344451926fdb68f665a5db6549bc442c23edfc20a0af5dbefe8a194c",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 5669,
+          "path": "TRANSITION.md",
+          "sha256": "f87fe01861c95360bec4597acf8f5e1685b258974abc3c52fa29ec69366e955f",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "ac6b0e0a5ff3b26773fd64b047a2349faaa280682f5b797a6438f3e09d458084",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "production_gate",
+      "metrics": {
+        "available_source_file_count": 2,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 2,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 11,
+      "source_files": [
+        {
+          "bytes": 781421,
+          "path": "production.md",
+          "sha256": "66ea5757befcf000c443d9dad52b218fd695f54a726f446cbdf4d4ee569dd955",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 657312,
+          "path": "productionenhanced.md",
+          "sha256": "0c6d10bc119f7e73ec0ee253cc1f5f97e6884e59a3e693c622d05414d2554d71",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "3cf38cf4c4495eafba9ed3021d3160c73ac79fb7f99c213ca873419d0e016261",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "validation",
+      "metrics": {
+        "available_source_file_count": 1,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 1,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 12,
+      "source_files": [
+        {
+          "bytes": 12024,
+          "path": "ALLVALIDATIONS.md",
+          "sha256": "0e06babbcadc5446de9f1e70dfbc418e3c35375ce94780b6ee06684ed5f31023",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "04b7cd9ba53200d4da5ab47b61121fa79127c6771f5be3f6b2de43b263d57972",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "remote_verification",
+      "metrics": {
+        "available_source_file_count": 2,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 2,
+        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+      },
+      "sequence": 13,
+      "source_files": [
+        {
+          "bytes": 439260,
+          "path": "remotecompletion.md",
+          "sha256": "5ce85075d87160130fc6f597c93ca65454abd6a5d317ef1585f149dc8da33ede",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 58681,
+          "path": "remote-completion.json",
+          "sha256": "9dcc291fb4d0b336a3c7b70de51a69614a09047c3fe121fc9c2976b0d052c20c",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "720e488a08b915fa927ced206faabb8aa07a25414f12578ec55636c0a5985e1b",
+      "state": "PLANNED",
+      "status": "PLANNED"
+    }
+  ],
+  "status": "PLANNED"
+}

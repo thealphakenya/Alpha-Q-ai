@@ -1859,6 +1859,17 @@ def test_q_version_and_sync_contract_are_explicit(tmp_path):
     assert contract.as_dict()["contract_hash"]
 
 
+def test_mission_mirror_and_instruction_links_stay_synchronized():
+    root = Path(__file__).resolve().parents[1]
+    canonical = (root / "MISSION.md").read_bytes()
+    mirror = (root / ".github" / "instructions" / "MISSION.md").read_bytes()
+
+    assert mirror == canonical
+    instruction_files = sorted((root / ".github" / "instructions").glob("*.instructions.md"))
+    assert instruction_files
+    assert all(b"../../MISSION.md" in path.read_bytes() for path in instruction_files)
+
+
 def test_q_version_identifiers_are_canonical_and_strict():
     assert QVersionManager.parse_version("Q.0.0.12") == 12
     for value in ("Q.0.0.0", "Q.0.0.01", "Q.0.0.1.md", "Q.0.0.1-extra", "Q.1.0.1"):

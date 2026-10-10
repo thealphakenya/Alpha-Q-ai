@@ -39,6 +39,7 @@ Remote completion is only valid when the target-owned workflow and exact remote 
 - The `audit-inventory` financial pass discovers amount/currency, revenue, payment, wallet/banking, deals, employment/payroll, jurisdiction, project-budget, and security candidates without persisting source values. Treat results as overlapping keyword candidates; financial operations require separate provider, owner, legal, security, and exact-SHA evidence.
 - Remote completion requires independently verified target-owned terminal workflow evidence bound to the exact repository/ref/SHA, plus remote tree and required artifact/check evidence. Dispatch acceptance, local tests, a clean worktree, or a locally generated report alone never passes this gate.
 - Prefer bounded, resumable, risk-prioritized work and measured parallelism. Do not trade correctness for an elapsed-time target or claim that work spanning months/years is completed in minutes; retain unresolved work as prioritized blockers.
+- Reuse target-owned CodeQL run metadata already collected for the exact repository/ref/SHA; do not launch a duplicate analysis for speed. A passing CodeQL run is security evidence, not remote-completion proof, and denied/missing alert access remains unknown rather than zero findings.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

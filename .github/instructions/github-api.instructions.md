@@ -35,6 +35,7 @@ Record:
 - A run or dispatch ID is not terminal success. Require a terminal successful conclusion on the exact SHA, then independently verify the remote ref/tree and required artifact/check state before marking any gate passed.
 - Refresh `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl` through the supported checkpoint path. Record whether evidence is observed, terminal, or independently verified; leave remote verification false when any binding or authority gate is absent.
 - QAUDITS can queue and prioritize authorized work but cannot self-authorize a mutation, infer identity from secret presence, bypass branch protection, or convert local completion into remote completion.
+- CodeQL workflow and code-scanning observations must be bound to the canonical repository, exact ref/full SHA, run/check ID, and terminal status. Reuse an existing workflow-run response where possible; an HTTP 403/404 alert response, absent run, stale SHA, or in-progress job is `UNKNOWN`/incomplete, never zero findings or success.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
@@ -56,3 +57,7 @@ Record:
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Mission roadmap
+
+- Follow the canonical [root mission](../../MISSION.md) and its instruction-directory mirror for requirement mapping and evidence status. This file's identity, authorization, exact-SHA, and terminal-verification rules remain controlling.

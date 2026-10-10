@@ -126,6 +126,70 @@ def parse_remote_tree_sha(repo: str, commit_sha: str | None) -> str | None:
     return tree_sha if tree_sha else None
 
 
+def summarize_codeql_evidence(
+    workflows: list[dict[str, Any]],
+    workflow_runs: list[dict[str, Any]],
+    remote_sha: str | None,
+    branch: str,
+) -> dict[str, Any]:
+    codeql_workflows = sorted({
+        str(workflow.get("name") or "")
+        for workflow in workflows
+        if isinstance(workflow, dict) and "codeql" in str(workflow.get("name") or "").casefold()
+    })
+    codeql_runs = [
+        run for run in workflow_runs
+        if isinstance(run, dict)
+        and "codeql" in str(run.get("workflowName") or run.get("name") or "").casefold()
+    ]
+    exact_runs = [
+        run for run in codeql_runs
+        if remote_sha
+        and str(run.get("headSha") or "") == remote_sha
+        and str(run.get("headBranch") or "") == branch
+    ]
+    latest_run = max(
+        exact_runs,
+        key=lambda run: str(run.get("updatedAt") or run.get("createdAt") or ""),
+        default=None,
+    )
+    status = "NOT_OBSERVED"
+    if latest_run:
+        run_status = str(latest_run.get("status") or "").casefold()
+        conclusion = str(latest_run.get("conclusion") or "").casefold()
+        if run_status != "completed":
+            status = "IN_PROGRESS"
+        elif conclusion == "success":
+            status = "SUCCESS"
+        elif conclusion == "skipped":
+            status = "SKIPPED"
+        else:
+            status = "NON_SUCCESSFUL"
+
+    latest_evidence = None
+    if latest_run:
+        latest_evidence = {
+            "workflow_run_id": latest_run.get("databaseId"),
+            "workflow_name": latest_run.get("workflowName") or latest_run.get("name"),
+            "head_sha": latest_run.get("headSha"),
+            "head_branch": latest_run.get("headBranch"),
+            "status": latest_run.get("status"),
+            "conclusion": latest_run.get("conclusion"),
+            "updated_at": latest_run.get("updatedAt") or latest_run.get("createdAt"),
+            "url": latest_run.get("url"),
+        }
+    return {
+        "status": status,
+        "verification_level": "same_response_exact_sha_workflow_metadata_only",
+        "remote_sha": remote_sha,
+        "branch": branch,
+        "workflow_names": codeql_workflows,
+        "exact_sha_run_count": len(exact_runs),
+        "latest_exact_sha_run": latest_evidence,
+        "analysis_triggered_by_verifier": False,
+    }
+
+
 def build_completion_status(
     repo: str,
     local_head: str,
@@ -144,6 +208,7 @@ def build_completion_status(
     matching_workflow_runs = [
         run for run in workflow_runs
         if isinstance(run, dict)
+        and "codeql" not in str(run.get("workflowName") or run.get("name") or "").casefold()
         and str(run.get("headSha") or "") == str(remote_main_sha or "")
         and str(run.get("headBranch") or "") == default_branch
         and str(run.get("status") or "").lower() == "completed"
@@ -206,6 +271,12 @@ def build_completion_status(
         "branch_protection_status": branch_protection_status,
         "workflows": workflows,
         "workflow_runs": workflow_runs,
+        "codeql_evidence": summarize_codeql_evidence(
+            workflows,
+            workflow_runs,
+            remote_main_sha,
+            default_branch,
+        ),
         "exact_sha_successful_workflow": exact_sha_successful_workflow,
         "exact_sha_workflow_runs": [
             {

@@ -28,6 +28,7 @@
 - Use QAUDITS to inventory release-related requirements, docs, workflow evidence, artifact hashes, install/runtime checks, and unresolved omissions. Candidate discovery and local validation are planning evidence, not release evidence.
 - Update `RELEASES.md` and related app/build/download/tag/publish/QTeam documents only from observed release state; bind every claim to release/tag ID, source SHA, artifact hashes, verification, and remote retrieval evidence.
 - QAUDITS must not publish, tag, sign, or deploy on its own. Require explicit authority and all release gates, then record terminal target-owned workflow results and independently verified remote state; otherwise retain the release as blocked in paired completion records.
+- Bind any CodeQL evidence used in release review to the release source SHA and record terminal run/check status. A successful scan alone does not establish release readiness; missing alert access or unresolved findings remain explicit blockers, and release automation must not trigger a duplicate scan solely to accelerate completion.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
@@ -49,3 +50,7 @@
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Mission roadmap
+
+- Follow the canonical [root mission](../../MISSION.md) and its instruction-directory mirror for release task ordering and evidence tracking. This file's release, credential, provenance, and explicit-authority gates remain controlling.

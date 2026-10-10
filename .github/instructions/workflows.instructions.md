@@ -31,6 +31,7 @@ The autonomous agent must bind every queued or dispatched job to the exact repos
 - Validate triggers, permissions, reuse, and concurrency before any authorized dispatch. Bind dispatches to the exact SHA, cap retries, preserve failed results, and never treat dispatch acceptance or a queued run as completion.
 - Require terminal conclusions plus independent remote ref/tree and artifact verification. Update paired `oe2.txt`/`remotecompletion.md` and machine evidence with the correlation ID and evidence level; leave remote completion blocked when any required check is missing.
 - Keep heavy validation on target-owned workflows where available; local QAUDITS is orchestration and evidence, not a substitute for remote worker results or human authorization.
+- Prefer the repository's existing CodeQL default setup. QAUDITS may summarize CodeQL workflow-run metadata from the workflow-run response it already fetched, but must bind it to the exact remote SHA/ref, label missing or stale runs `NOT_OBSERVED`, and must not launch a duplicate scan or extra API request as part of the fast completion path. Record run ID and per-language job terminal state; in-progress jobs and unavailable alert APIs stay incomplete/unknown. CodeQL metadata alone neither proves clean findings nor satisfies the remote-completion gate; required checks, security findings, authorization, and independent remote verification remain authoritative.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
@@ -52,3 +53,7 @@ The autonomous agent must bind every queued or dispatched job to the exact repos
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Mission roadmap
+
+- Follow the canonical [root mission](../../MISSION.md) and its instruction-directory mirror for workflow task mapping, bounded retries, and evidence collection. This file's exact-SHA, authorization, terminal-result, and independent-verification gates remain controlling.
