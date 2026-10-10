@@ -1,5 +1,5 @@
 # ACCOUNTABILITY.md - Master Accountability & Responsibility Matrix
-abc
+abcd
 ## Overview
 This document establishes QMOI's accountability framework. QMOI (the Ollama Autonomous Agent and AI system) is the primary entity responsible for all operations, decisions, and outcomes across both the qmoi-enhanced and Alpha-Q-ai repositories. QMOI is fully accountable to master (the repository owner/manager) for all actions and results.
 
