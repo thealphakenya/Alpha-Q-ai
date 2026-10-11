@@ -1,5 +1,14 @@
 MASTER MISSION: FAST, COMPLETE, EVIDENCE-VERIFIED QMOI REMOTE COMPLETION
 
+## Continuation checkpoint — 2026-10-11
+
+- Repository: `thealphakenya/Alpha-Q-ai`
+- Working status: `LOCAL_VALIDATION_PASSED_REMOTE_COMPLETION_BLOCKED`
+- Local evidence: `pytest tests/test_validate_workflows.py -q` → `5 passed in 0.18s`
+- Workflow evidence: `python scripts/validate_workflows.py` → `17 valid workflow files` with active false-success prevention and critical workflow gate checks; the output explicitly states: `Local workflow checks passed; remote execution and deployment are not verified.`
+- Current blocker: exact remote SHA parity, branch-protection authority, and deployment/merge proof remain unverified.
+- Safe action: continue only local-safe validation and mission-evidence synchronization; no push, merge, release, deploy, or remote completion claim is allowed without exact remote proof.
+
 Repositories
 
 - "thealphakenya/Alpha-Q-ai"
@@ -13,7 +22,7 @@ Operate autonomously within actual granted permissions. Inspect the real reposit
 
 EXECUTION TIME BUDGET AND CURRENT LIVE SCHEDULE
 
-This repository requires a fail-closed execution plan. The schedule below is the real-time estimate for the remaining work in this environment and is not a completion claim. The current blocking condition is remote GitHub authorization and local/remote SHA parity; only after that gate is proven can the later phases be completed with actual remote evidence.
+This repository requires a fail-closed execution plan. The schedule below is the real-time estimate for the remaining work in this environment and is not a completion claim. The current blocking condition is remote GitHub authorization and local/remote SHA parity; only after that gate is proven can the later phases be completed with actual remote evidence. This mission schedule was refreshed on 2026-10-11 and must be kept current with every subsequent checkpoint.
 
 - Phase 0 — Baseline and repo state: 20 minutes (0:20)
 - Phase 1 — Auth, protection, permissions, and remote blockers: 35 minutes (0:35)
@@ -28,11 +37,44 @@ This repository requires a fail-closed execution plan. The schedule below is the
 - Phase 10 — Fast-path continuation and remaining blockers: 45 minutes (0:45)
 - Total live execution budget: 495 minutes (8 hours 15 minutes)
 
+Current live time accounting — 2026-10-11:
+- Measured local safe-work subtotal: 37 minutes 24 seconds (0:37:24), including the 143.76-second full run of the Ollama runtime, model-review, and QSeed test modules. Subsequent configuration, workflow, and dependency checks were not separately timed.
+- Nominal budget remainder at the last measured point: 457 minutes 36 seconds (7:37:36); actual remaining wall-clock budget is unverified because subsequent work was not timed.
+- Status: the affected modules passed (32 tests), workflow-validator regressions passed (5 tests), all 17 local workflows passed their checks, and `pip-audit` found no known vulnerabilities. Netlify config points to absent root `index.html` and `functions/`; intended app root/output remains unknown, and PR #54 still has three failed checks with provider logs unavailable. Its TOML syntax fix is local only. QMOI main CodeQL run `38166328047` completed successfully on SHA `bbc6ad328534488238e86a62950de9859a75e578` (JS/TS job `114549536412`); alert visibility remains unverified. Phase 1 remains blocked by HTTP 403 protection reads and unverified remote parity. No remote completion or finalization claim is valid.
+
 Current session priority sequence:
 1. Confirm GitHub auth, branch protection, and existing workflows on the exact remote SHA.
 2. Reconcile local branch state with the live remote main and record blockers if parity remains unavailable.
 3. Finalize the evidence ledger and targeted validation for the current branch state.
 4. Continue the safe local implementation work only after the remote gate is unblocked and the exact SHA is proven.
+
+## Mission phase dashboard (live metrics)
+
+Update this table at every checkpoint. It tracks phase status, progress, remaining work, and evidence freshness so the current mission state is visible without reading the full ledger.
+
+| Phase | Scope | Status | Progress | Remaining | Evidence status | Next action |
+|---|---|---|---:|---:|---|---|
+| 0 | Repo baseline and branch state | Completed | 100% | 0 | Fresh local evidence | Preserve and continue |
+| 1 | Auth, permission, branch protection, remote blockers | Blocked | 25% | 75% | HTTP 403 / unknown authorization | Wait for owner-approved remote proof |
+| 2 | Completion ledger and evidence rules | In progress | 60% | 40% | Mission docs and ledgers synchronized | Keep append-only evidence current |
+| 3 | Safe execution plan and dependency graph | In progress | 70% | 30% | Local execution plan updated | Continue safe work only |
+| 4 | Ollama agent and automation review | In progress | 55% | 45% | Local validation passed | Continue bounded automation review |
+| 5 | CI/CD and deployment root-cause repair | Blocked | 35% | 65% | Netlify config exists but output target is unknown | Confirm provider architecture and logs |
+| 6 | CodeQL and security verification | In progress | 60% | 40% | Local checks pass; remote alerts unverified | Keep security and CodeQL evidence fresh |
+| 7 | QAUDITS and feature timestamp coverage | In progress | 50% | 50% | Local inventory and workflow checks pass | Keep audit gap list explicit |
+| 8 | Metrics and evidence capture | In progress | 65% | 35% | Dashboard and evidence records updated | Refresh metrics at each checkpoint |
+| 9 | Remote verification, push, merge, final proof | Blocked | 0% | 100% | Remote parity and protected branch proof missing | Await authorized target-owned verification |
+| 10 | Continuation, cleanup, remaining blockers | In progress | 45% | 55% | Local-safe continuation active | Keep checkpoint chain and blockers visible |
+
+### Live mission metrics summary
+- Total phases: 11
+- Completed: 1
+- In progress: 7
+- Blocked: 3
+- Local validation status: PASS (workflow and regression checks only)
+- Remote completion status: BLOCKED
+- Current mission gate: exact SHA parity + protected-branch authorization + provider log proof required
+- Update rule: every mission checkpoint must refresh this dashboard and the evidence ledger before closing a phase.
 
 Autonomous continuation contract:
 - Continue automatically through every remaining safe, local, evidence-backed mission task without skipping, forgetting, or silently deferring any in-scope item.

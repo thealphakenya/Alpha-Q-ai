@@ -165,6 +165,14 @@ def _selected_source(root: Path, relative_path: str) -> tuple[Path, str, bytes]:
             "source_type_unsupported",
             "Select one regular Markdown, source, JSON, or YAML file.",
         )
+    for part in source.relative_to(root).parts:
+        normalized = part.lower()
+        basename = normalized.split(".", 1)[0]
+        if normalized in SENSITIVE_PATH_PARTS or basename in SENSITIVE_PATH_PARTS:
+            raise AuditModelReviewError(
+                "sensitive_source_path_blocked",
+                "Files in credential, private-key, secret, token, password, or .env paths are blocked.",
+            )
     if any(part.lower() in SENSITIVE_PATH_PARTS for part in source.relative_to(root).parts):
         raise AuditModelReviewError(
             "sensitive_source_path_blocked",

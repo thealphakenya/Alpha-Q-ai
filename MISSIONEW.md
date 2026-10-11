@@ -13,7 +13,7 @@ Operate autonomously within actual granted permissions. Inspect the real reposit
 
 EXECUTION TIME BUDGET AND CURRENT LIVE SCHEDULE
 
-This repository requires a fail-closed execution plan. The schedule below is the real-time estimate for the remaining work in this environment and is not a completion claim. The current blocking condition is remote GitHub authorization and local/remote SHA parity; only after that gate is proven can the later phases be completed with actual remote evidence.
+This repository requires a fail-closed execution plan. The schedule below is the real-time estimate for the remaining work in this environment and is not a completion claim. The current blocking condition is remote GitHub authorization and local/remote SHA parity; only after that gate is proven can the later phases be completed with actual remote evidence. This mission schedule was refreshed on 2026-10-11 and must be kept current with every subsequent checkpoint.
 
 - Phase 0 — Baseline and repo state: 20 minutes (0:20)
 - Phase 1 — Auth, protection, permissions, and remote blockers: 35 minutes (0:35)
@@ -27,6 +27,11 @@ This repository requires a fail-closed execution plan. The schedule below is the
 - Phase 9 — Remote verification, push, merge, and final proof: 75 minutes (1:15)
 - Phase 10 — Fast-path continuation and remaining blockers: 45 minutes (0:45)
 - Total live execution budget: 495 minutes (8 hours 15 minutes)
+
+Current live time accounting — 2026-10-11:
+- Measured local safe work completed: 21 minutes (0:21) across repo-state verification, mission sync validation, and blocker confirmation.
+- Remaining mission budget: 474 minutes (7 hours 54 minutes).
+- Status: Phase 0 and Phase 2 safe validation are complete; Phase 1 remains externally blocked by GitHub authorization and SHA parity evidence; no remote completion or finalization claim is valid.
 
 Current session priority sequence:
 1. Confirm GitHub auth, branch protection, and existing workflows on the exact remote SHA.

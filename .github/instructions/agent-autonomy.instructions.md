@@ -27,12 +27,13 @@ applyTo: "**"
 - On GitHub credential tasks, read the latest `or.md`, `oe2.txt`, `remotecompletion.md`, `githubapp.md`, `github.md`, `githubapppermissions.md`, and `CREDENTIAL_READINESS.md` before acting; treat dated prior chat summaries as pointers, not current proof.
 - Carry forward user requirements only when they are explicit in the active request or recorded in current repository evidence. Preserve newer user edits and reconcile conflicts in favor of the newest instruction without claiming cross-session memory that is not actually available.
 - Secret-variable presence is not authentication. Distinguish Codespaces secrets, Actions secrets/variables, user tokens, and App installation tokens. Never print, persist, or place secret values in prompts, evidence, commands, or workflow summaries.
-- Do not authenticate with an App key marked compromised until the owner confirms revocation/rotation and replacement. App permission snapshots are reported configuration until independently verified; use least privilege and short-lived tokens.
+- Do not authentictate with an App key marked compromised until the owner confirms revocation/rotation and replacement. App permission snapshots are reported configuration until independently verified; use least privilege and short-lived tokens.
 - QMOI may inventory names, prepare setup checklists, and validate through authorized read-only endpoints. It must not invent or self-issue provider credentials, alter accounts, or claim readiness when external ownership, authorization, or verification is missing.
 
 ## QAUDITS-driven execution
 
 - Use QAUDITS as a resumable evidence coordinator, not an unrestricted autonomous executor. Each work item must retain its owner/scope, prerequisites, correlation ID, repository/ref/SHA, status, measured duration, artifact references, coverage counts, omissions, blockers, and next action.
+- Keep the current phase budget and live time accounting synchronized in `oe2.txt` and `remotecompletion.md`; if a mission checkpoint changes date or phase scope, update the recorded time and status in the same pass.
 - Prioritize bounded shards by risk and dependencies; parallelize only independent work with isolated outputs and deterministic aggregation. Preserve failed shards and checkpoints, cap retries, and report the exact uncovered remainder.
 - Refresh the supported paired `oe2.txt`/`remotecompletion.md` checkpoint and JSON/JSONL evidence after audit operations. Keep local validation distinct from remote validation and do not claim complete coverage for unreadable, skipped, ignored, or out-of-bound inputs.
 - Continue automatically only for safe local or read-only tasks. Remote mutations, releases, deployments, protected changes, and finalization remain authority-gated; remote completion requires a terminal target-owned result and independently verified exact repository/ref/SHA/tree evidence.

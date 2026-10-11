@@ -2,7 +2,7 @@
 """
 Comprehensive Workflow Validation Script
 
-Validates all 8 GitHub workflows to ensure:
+Validates GitHub workflows to ensure:
 1. YAML syntax is valid
 2. Success criteria are properly enforced
 3. False-success prevention is active
@@ -11,6 +11,7 @@ Validates all 8 GitHub workflows to ensure:
 
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -226,13 +227,42 @@ def check_critical_workflows():
     else:
         print("   ❌ Branch Sync workflow not found")
 
+    def workflow_jobs(path):
+        config = load_workflow(path)
+        return config.get('jobs', {}) if isinstance(config, dict) else {}
+
+    pr_jobs = workflow_jobs(pr_val)
+    orchestrator_jobs = workflow_jobs(master_orch)
+    agent_jobs = workflow_jobs(agent_wf)
+    agent_job = agent_jobs.get('ollama-agent', {})
+    agent_steps = agent_job.get('steps', []) if isinstance(agent_job, dict) else []
+    agent_step_names = [step.get('name', '') for step in agent_steps if isinstance(step, dict)]
+    sync_content = sync_wf.read_text() if sync_wf.exists() else ""
+
+    return (
+        'workflow-integrity' in pr_jobs
+        and any('platform' in job.lower() for job in pr_jobs)
+        and any('test' in job.lower() for job in pr_jobs)
+        and any('final' in job.lower() for job in pr_jobs)
+        and 'pre-flight-checks' in orchestrator_jobs
+        and 'comprehensive-validation' in orchestrator_jobs
+        and any('dispatch' in job.lower() or 'trigger-agent' in job.lower() for job in orchestrator_jobs)
+        and bool(agent_job)
+        and any('bootstrap' in name.lower() or 'ollama' in name.lower() for name in agent_step_names)
+        and any('autonomous' in name.lower() or 'agent' in name.lower() for name in agent_step_names)
+        and any('validation' in name.lower() for name in agent_step_names)
+        and any('health' in name.lower() or 'gate' in name.lower() or 'enforce' in name.lower() for name in agent_step_names)
+        and ('Alpha-Q-ai' in sync_content or 'alpha-q-ai' in sync_content)
+        and 'autosync-backup' in sync_content
+    )
+
 def validate_success_contract_schema():
     """Validate OLLAMA_SUCCESS.json schema."""
     print("\n" + "="*70)
-    print("SUCCESS CONTRACT SCHEMA VALIDATION")
+    print("SUCCESS CONTRACT REQUIREMENTS (NOT DYNAMICALLY VALIDATED)")
     print("="*70)
     
-    print("\nRequired fields in OLLAMA_SUCCESS.json:")
+    print("\nFields to verify in OLLAMA_SUCCESS.json:")
     required_fields = [
         'final_status',           # SUCCESS, FAILED, BLOCKED, NOT_RUN
         'workflow_run_id',
@@ -257,24 +287,24 @@ def validate_success_contract_schema():
     ]
     
     for field in required_fields:
-        print(f"  ✅ {field}")
+        print(f"  - {field}")
     
     print("\nSuccess Criteria:")
-    print("  ✅ final_status must equal 'SUCCESS'")
-    print("  ✅ ollama_started must be true")
-    print("  ✅ ollama_healthy must be true")
-    print("  ✅ model_available must be true")
-    print("  ✅ inference_verified must be true")
-    print("  ✅ llm_coding_started must be true")
-    print("  ✅ validation_passed must be true")
-    print("  ✅ lint_passed must be true")
-    print("  ✅ checkpoint_created must be true")
+    print("  - final_status must equal 'SUCCESS'")
+    print("  - ollama_started must be true")
+    print("  - ollama_healthy must be true")
+    print("  - model_available must be true")
+    print("  - inference_verified must be true")
+    print("  - llm_coding_started must be true")
+    print("  - validation_passed must be true")
+    print("  - lint_passed must be true")
+    print("  - checkpoint_created must be true")
     
     print("\nFalse-Success Prevention:")
-    print("  ✅ Cannot report SUCCESS with ollama_started=false")
-    print("  ✅ Cannot report SUCCESS with inference_verified=false")
-    print("  ✅ Cannot report SUCCESS with validation_passed=false")
-    print("  ✅ Missing OLLAMA_SUCCESS.json means FAILED status")
+    print("  - Reject SUCCESS with ollama_started=false")
+    print("  - Reject SUCCESS with inference_verified=false")
+    print("  - Reject SUCCESS with validation_passed=false")
+    print("  - Treat missing OLLAMA_SUCCESS.json as FAILED")
 
 def validate_agent_cli():
     """Validate agent CLI commands."""
@@ -313,27 +343,42 @@ def validate_agent_cli():
                 print("✅ Agent CLI responds to --help")
                 
                 # Check for supported commands
+                missing_commands = set(commands)
                 for cmd in commands:
                     if cmd in result.stdout or cmd in result.stderr:
                         print(f"  ✅ {cmd}")
+                        missing_commands.discard(cmd)
+                if missing_commands:
+                    for cmd in sorted(missing_commands):
+                        print(f"  ❌ {cmd}")
+                    return False
+                return True
             else:
                 print("❌ Agent CLI failed")
+                return False
         except subprocess.TimeoutExpired:
             print("⚠️  Agent CLI help timed out")
+            return False
         except Exception as e:  # noqa: BLE001 - CLI validation reports unexpected tool failures
             print(f"❌ Error testing agent CLI: {e}")
+            return False
+    print(f"❌ Agent script not found: {agent_script}")
+    return False
 
 def main():
     """Run comprehensive workflow validation."""
     print("\n" + "="*70)
     print("COMPREHENSIVE WORKFLOW VALIDATION")
-    print("Repository: thealphakenya/qmoi-enhanced")
-    print("Date: 2026-08-29")
+    print(f"Repository directory: {Path(__file__).resolve().parents[1].name}")
+    print(f"Date (UTC): {datetime.now(timezone.utc).date().isoformat()}")
     print("="*70)
     
     # Validate YAML
     workflows, yaml_issues = validate_workflow_yaml()
     
+    if yaml_issues:
+        print(f"\n❌ Workflow YAML validation failed: {yaml_issues}")
+        return 1
     if not workflows:
         print(f"\n❌ No valid workflows found. Issues: {yaml_issues}")
         return 1
@@ -345,17 +390,25 @@ def main():
     print("FALSE-SUCCESS PREVENTION CHECK")
     print("="*70)
     
+    prevention_passed = True
     for workflow_file, config in workflows.items():
-        validate_success_prevention(config, workflow_file)
+        if not validate_success_prevention(config, workflow_file):
+            prevention_passed = False
+    if not prevention_passed:
+        print("\n❌ False-success prevention validation failed")
+        return 1
     
     # Check critical workflows
-    check_critical_workflows()
+    critical_workflows_passed = check_critical_workflows()
     
     # Validate contract schema
     validate_success_contract_schema()
     
     # Validate agent CLI
-    validate_agent_cli()
+    agent_cli_passed = validate_agent_cli()
+    if not critical_workflows_passed or not agent_cli_passed:
+        print("\n❌ Local workflow validation failed")
+        return 1
     
     # Final summary
     print("\n" + "="*70)
@@ -364,15 +417,9 @@ def main():
     print("\n✅ All workflows YAML-valid")
     print("✅ False-success prevention active")
     print("✅ Critical workflows present")
-    print("✅ Success contract schema defined")
+    print("✅ Documented success contract requirements listed")
     print("✅ Agent CLI implemented")
-    print("\n🎉 Workflows are ready for GitHub Actions execution!")
-    print("\n📋 Next Steps:")
-    print("   1. Push code to GitHub")
-    print("   2. Monitor PR Validation workflow")
-    print("   3. Verify Master Orchestrator execution")
-    print("   4. Validate Agent workflow with real Ollama")
-    print("   5. Collect OLLAMA_SUCCESS.json evidence")
+    print("\n✅ Local workflow checks passed; remote execution and deployment are not verified.")
     
     return 0
 

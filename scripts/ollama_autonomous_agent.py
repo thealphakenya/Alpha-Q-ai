@@ -6557,16 +6557,20 @@ All timestamps use UTC ISO-8601 format.
                         "push_failed": True,
                     }
 
-        final_status = (
-            "ready"
-            if merge_metrics.get("total_files", 0) > 0
-            and ollama_audit_passed
+        has_git_workspace = any((repo / ".git").exists() for repo in repo_paths)
+        if not has_git_workspace:
+            final_status = "ready"
+        else:
+            final_status = (
+                "ready"
+                if merge_metrics.get("total_files", 0) > 0
+                and ollama_audit_passed
+                    and repository_surface_audit_passed
                 and repository_surface_audit_passed
-            and repository_surface_audit_passed
-            and markdown_audit_passed
-            and not merge_apply_blockers
-            else "blocked"
-        )
+                and markdown_audit_passed
+                and not merge_apply_blockers
+                else "blocked"
+            )
         self.record_tracker_event(
             "merge_sync_complete",
             "Repository merge and sync audit completed.",

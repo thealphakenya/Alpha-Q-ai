@@ -2,16 +2,54 @@
 
 This file is the saved markdown form of the live execution ledger for the QMOI repository continuity and production-readiness program.
 
+## Continuation checkpoint — 2026-10-11
+
+- Repository: thealphakenya/Alpha-Q-ai
+- Status: LOCAL_VALIDATION_PASSED_REMOTE_COMPLETION_BLOCKED
+- Evidence:
+  - `pytest tests/test_validate_workflows.py -q` -> `5 passed in 0.18s`
+  - `python scripts/validate_workflows.py` -> `17 valid workflow files`; false-success prevention remains active; critical workflow gates are present; output states that remote execution and deployment are not verified.
+- Blockers: exact remote SHA parity, protected-branch authority, and deployment/provider proof remain unavailable.
+- Safe next action: continue local-safe validation and evidence synchronization only; no push, merge, deploy, release, or completion claim without exact remote proof.
+
 ## Completion status
 
 Status: local continuity work is in progress and remote completion remains blocked pending verified GitHub authorization and exact SHA parity. The current estimate for the remaining execution plan is 495 minutes total, or 8 hours 15 minutes, broken down phase-by-phase below.
 
-## Live time accounting — 2026-10-10
+## Mission phase dashboard (live metrics)
+
+Update this table at every checkpoint. It tracks phase status, progress, remaining work, and evidence freshness so the current mission state is visible without reading the full ledger.
+
+| Phase | Scope | Status | Progress | Remaining | Evidence status | Next action |
+|---|---|---|---:|---:|---|---|
+| 0 | Repo baseline and branch state | Completed | 100% | 0 | Fresh local evidence | Preserve and continue |
+| 1 | Auth, permission, branch protection, remote blockers | Blocked | 25% | 75% | HTTP 403 / unknown authorization | Wait for owner-approved remote proof |
+| 2 | Completion ledger and evidence rules | In progress | 60% | 40% | Mission docs and ledgers synchronized | Keep append-only evidence current |
+| 3 | Safe execution plan and dependency graph | In progress | 70% | 30% | Local execution plan updated | Continue safe work only |
+| 4 | Ollama agent and automation review | In progress | 55% | 45% | Local validation passed | Continue bounded automation review |
+| 5 | CI/CD and deployment root-cause repair | Blocked | 35% | 65% | Netlify config exists but output target is unknown | Confirm provider architecture and logs |
+| 6 | CodeQL and security verification | In progress | 60% | 40% | Local checks pass; remote alerts unverified | Keep security and CodeQL evidence fresh |
+| 7 | QAUDITS and feature timestamp coverage | In progress | 50% | 50% | Local inventory and workflow checks pass | Keep audit gap list explicit |
+| 8 | Metrics and evidence capture | In progress | 65% | 35% | Dashboard and evidence records updated | Refresh metrics at each checkpoint |
+| 9 | Remote verification, push, merge, final proof | Blocked | 0% | 100% | Remote parity and protected branch proof missing | Await authorized target-owned verification |
+| 10 | Continuation, cleanup, remaining blockers | In progress | 45% | 55% | Local-safe continuation active | Keep checkpoint chain and blockers visible |
+
+### Live mission metrics summary
+- Total phases: 11
+- Completed: 1
+- In progress: 7
+- Blocked: 3
+- Local validation status: PASS (workflow and regression checks only)
+- Remote completion status: BLOCKED
+- Current mission gate: exact SHA parity + protected-branch authorization + provider log proof required
+- Update rule: every mission checkpoint must refresh this dashboard and the evidence ledger before closing a phase.
+
+## Live time accounting — 2026-10-11
 
 - Measured local safe work completed: 21 minutes (0:21) across repo-state verification, mission sync validation, and blocker confirmation.
 - Mission budget remaining after current safe work: 474 minutes (7 hours 54 minutes).
 - Current status: Phase 0 and Phase 2 safe validation are complete; Phase 1 remote GitHub authorization and SHA parity remain blocked; no remote completion or finalization claim is valid.
-- Time is a gating factor under the mission contract: progress is counted only when supported by fresh evidence, and remote completion remains blocked until exact SHA parity and branch-protection authority are verified.
+- Time is a gating factor under the mission contract: progress is counted only when supported by fresh evidence, and remote completion remains blocked until exact SHA parity and branch-protection authority are verified. This checkpoint is current as of 2026-10-11 and must remain synchronized with any future phase updates.
 
 ## Continuation checkpoint — 2026-10-10
 

@@ -219,8 +219,16 @@ def encrypt_file(
         raise QSeedError("Refusing symlinked QSeed input")
     source = source.resolve()
     plaintext = _read_regular_file(source, "QSeed input", max_bytes=MAX_PAYLOAD_BYTES)
-    fernet = _read_key(key_file, root)
     seed_id = str(uuid.uuid4())
+    destination = (
+        _external_path(output_path, root, "encrypted output")
+        if output_path is not None
+        else DEFAULT_VAULT_DIR / f"{seed_id}.qseed"
+    )
+    destination = destination.resolve()
+    if _inside(destination, root):
+        raise QSeedError("Encrypted output must be outside the repository")
+    fernet = _read_key(key_file, root)
     payload = {
         "schema_version": QSEED_SCHEMA_VERSION,
         "seed_id": seed_id,
@@ -248,14 +256,6 @@ def encrypt_file(
         sort_keys=True,
         separators=(",", ":"),
     ).encode("utf-8") + b"\n"
-    destination = (
-        _external_path(output_path, root, "encrypted output")
-        if output_path is not None
-        else DEFAULT_VAULT_DIR / f"{seed_id}.qseed"
-    )
-    destination = destination.resolve()
-    if _inside(destination, root):
-        raise QSeedError("Encrypted output must be outside the repository")
     _write_new_private_file(destination, envelope)
     return {
         "status": "ENCRYPTED",
