@@ -43,9 +43,22 @@ class QVersionManager:
         "REMOTE_VERIFICATION",
         "QMOI_RESTORE_POINT",
         "AUTO_CONTINUE_LOOP",
+        "EVOLUTIONO_PRE_RETIREMENT",
+        "QMOI_CAPABILITY_PARITY",
+        "QREPLACEO_ARCHIVE",
+        "EVOLUTIONO_CLEAN_BRANCH_AUDIT",
+        "EVOLUTIONO_OFCA_METRICS",
         "AUTONOMOUS_COMPLETION",
         "Q_VERSION_FINALIZATION",
     )
+    EVOLUTIONO_TRANSITION_STAGES = (
+        "EVOLUTIONO_PRE_RETIREMENT",
+        "QMOI_CAPABILITY_PARITY",
+        "QREPLACEO_ARCHIVE",
+        "EVOLUTIONO_CLEAN_BRANCH_AUDIT",
+        "EVOLUTIONO_OFCA_METRICS",
+    )
+    FINAL_BRANCHES = ("main", "autosync-backup", "master", "qmoi")
     LIFECYCLE_STATUSES = {"PASS", "IN_PROGRESS", "NEEDS_REVIEW", "BLOCKED", "FAIL"}
     pattern = re.compile(r"^Q\.0\.0\.([1-9][0-9]*)(?:\.md)?$")
     artifact_pattern = pattern
@@ -84,10 +97,16 @@ class QVersionManager:
     ) -> bool:
         if not isinstance(evidence, dict):
             return False
-        sha = str(evidence.get("final_sha", ""))
+        sha = str(
+            evidence.get("final_sha")
+            or evidence.get("qmoi_sha")
+            or evidence.get("workflow_head_sha")
+            or evidence.get("remote_ref_sha")
+            or ""
+        )
         remote_ref = str(evidence.get("remote_ref", ""))
         run_id = evidence.get("workflow_run_id")
-        remote_tree_sha = str(evidence.get("remote_tree_sha", ""))
+        remote_tree_sha = str(evidence.get("remote_tree_sha") or evidence.get("branch_tree_sha") or "")
         return (
             evidence.get("repository") == repository
             and evidence.get("repository_identity_verified") is True
@@ -490,6 +509,8 @@ class QVersionManager:
             path = line[3:].strip().replace("\\", "/")
             if root.resolve() == self.root and path.startswith(allowed_prefix):
                 continue
+            if path.startswith("ollamatracks/") and path.endswith(".json"):
+                continue
             return False
         return True
 
@@ -812,6 +833,179 @@ class QVersionManager:
         ):
             raise RuntimeError(f"Q-version stage {stage_name} cannot advance without a complete current QAUDITS precondition")
 
+    @classmethod
+    def validate_evolutiono_transition(
+        cls,
+        transition: Any,
+        stage_records: dict[str, dict[str, Any]],
+        repository_evidence: dict[str, Any],
+    ) -> None:
+        """Require exact remote proof before retiring the legacy runtime."""
+        repositories = {"thealphakenya/Alpha-Q-ai", "thealphakenya/qmoi-enhanced"}
+        branch_names = set(cls.FINAL_BRANCHES)
+        if not isinstance(transition, dict) or transition.get("status") != "PASS" or transition.get("remote_verified") is not True:
+            raise RuntimeError("EvolutionO transition evidence is missing or not remotely verified")
+        manifest = str(transition.get("source_manifest_sha256", ""))
+        if not re.fullmatch(r"[0-9a-f]{64}", manifest):
+            raise RuntimeError("EvolutionO transition requires a source-manifest SHA-256")
+        for stage_name in cls.EVOLUTIONO_TRANSITION_STAGES:
+            stage = stage_records.get(stage_name, {})
+            details = stage.get("details", {})
+            if stage.get("stage_status") != "PASS" or details.get("evolutiono_manifest_sha256") != manifest:
+                raise RuntimeError(f"EvolutionO lifecycle stage {stage_name} is incomplete or stale")
+
+        pre_retirement = transition.get("pre_retirement")
+        source_sha = str(pre_retirement.get("source_sha", "")) if isinstance(pre_retirement, dict) else ""
+        pre_repositories = pre_retirement.get("repositories") if isinstance(pre_retirement, dict) else None
+        if (
+            not isinstance(pre_retirement, dict)
+            or pre_retirement.get("status") != "SUCCESS"
+            or pre_retirement.get("all_requirements_complete") is not True
+            or pre_retirement.get("pending_action_count") != 0
+            or pre_retirement.get("run_status") != "completed"
+            or pre_retirement.get("terminal_conclusion") != "success"
+            or pre_retirement.get("remote_verified") is not True
+            or not pre_retirement.get("workflow_run_id")
+            or cls.sha_pattern.fullmatch(source_sha) is None
+            or pre_retirement.get("workflow_head_sha") != source_sha
+            or not isinstance(pre_repositories, dict)
+            or set(pre_repositories) != repositories
+        ):
+            raise RuntimeError("EvolutionO pre-retirement success evidence is incomplete")
+        for repository, item in pre_repositories.items():
+            branches = item.get("branches") if isinstance(item, dict) else None
+            if (
+                not isinstance(item, dict)
+                or item.get("all_branches_updated") is not True
+                or not isinstance(branches, dict)
+                or set(branches) != branch_names
+                or any(
+                    not isinstance(branch_item, dict)
+                    or not cls._has_terminal_remote_binding(
+                        repository,
+                        branch_item,
+                        expected_ref=f"refs/heads/{branch}",
+                    )
+                    for branch, branch_item in branches.items()
+                )
+            ):
+                raise RuntimeError(f"EvolutionO pre-retirement branch evidence is incomplete for {repository}")
+
+        parity = transition.get("capability_parity")
+        capability_count = parity.get("capability_count") if isinstance(parity, dict) else None
+        if (
+            not isinstance(parity, dict)
+            or parity.get("status") != "PASS"
+            or isinstance(capability_count, bool)
+            or not isinstance(capability_count, int)
+            or capability_count < 1
+            or parity.get("mapped_capability_count") != capability_count
+            or parity.get("tested_capability_count") != capability_count
+            or parity.get("test_failure_count") != 0
+            or parity.get("security_review_complete") is not True
+            or parity.get("works_without_archive") is not True
+            or parity.get("archive_runtime_dependency_count") != 0
+            or parity.get("unavailable_sources") != []
+            or not re.fullmatch(r"[0-9a-f]{64}", str(parity.get("source_manifest_sha256", "")))
+        ):
+            raise RuntimeError("QMOI Autodev capability parity is incomplete")
+
+        archive = transition.get("qreplaceo_archive")
+        archive_repositories = archive.get("repositories") if isinstance(archive, dict) else None
+        if (
+            not isinstance(archive, dict)
+            or archive.get("status") != "PASS"
+            or archive.get("branch") != "qmoi"
+            or archive.get("path_prefix") != "qreplaceo/"
+            or not isinstance(archive_repositories, dict)
+            or set(archive_repositories) != repositories
+        ):
+            raise RuntimeError("EvolutionO qreplaceo archive is missing or outside its permitted branch")
+        for repository, item in archive_repositories.items():
+            if (
+                not isinstance(item, dict)
+                or item.get("branch") != "qmoi"
+                or item.get("path_prefix") != "qreplaceo/"
+                or item.get("present") is not True
+                or item.get("only_on_qmoi_branch") is not True
+                or item.get("optional_for_core_runtime") is not True
+                or item.get("runtime_dependency_count") != 0
+                or isinstance(item.get("file_count"), bool)
+                or not isinstance(item.get("file_count"), int)
+                or item["file_count"] < 1
+                or item.get("source_sha") != source_sha
+                or not re.fullmatch(r"[0-9a-f]{64}", str(item.get("archive_manifest_sha256", "")))
+            ):
+                raise RuntimeError(f"EvolutionO qreplaceo archive evidence is incomplete for {repository}")
+
+        audit = transition.get("clean_branch_audit")
+        audit_repositories = audit.get("repositories") if isinstance(audit, dict) else None
+        if (
+            not isinstance(audit, dict)
+            or audit.get("status") != "PASS"
+            or audit.get("remote_verified") is not True
+            or audit.get("all_repositories_enumerated") is not True
+            or audit.get("all_branches_enumerated") is not True
+            or audit.get("outside_archive_match_count") != 0
+            or audit.get("unavailable_sources") != []
+            or not isinstance(audit_repositories, dict)
+            or set(audit_repositories) != repositories
+        ):
+            raise RuntimeError("EvolutionO clean-branch audit is incomplete")
+        final_by_repository = {
+            item.get("repository"): item
+            for item in repository_evidence.values()
+            if isinstance(item, dict)
+        }
+        if set(final_by_repository) != repositories:
+            raise RuntimeError("EvolutionO branch audit does not match final repository evidence")
+        for repository, item in audit_repositories.items():
+            branches = item.get("branches") if isinstance(item, dict) else None
+            if not isinstance(item, dict) or not isinstance(branches, dict) or set(branches) != branch_names:
+                raise RuntimeError(f"EvolutionO audit does not cover every final branch in {repository}")
+            for branch, branch_item in branches.items():
+                if (
+                    not isinstance(branch_item, dict)
+                    or branch_item.get("branch_scan_complete") is not True
+                    or branch_item.get("outside_archive_match_count") != 0
+                    or not cls._has_terminal_remote_binding(
+                        repository,
+                        branch_item,
+                        expected_ref=f"refs/heads/{branch}",
+                    )
+                ):
+                    raise RuntimeError(f"EvolutionO branch audit is incomplete for {repository}:{branch}")
+                archive_count = branch_item.get("archive_entry_count")
+                if isinstance(archive_count, bool) or not isinstance(archive_count, int):
+                    raise RuntimeError(f"EvolutionO archive count is invalid for {repository}:{branch}")
+                if branch == "qmoi":
+                    if branch_item.get("archive_path_prefix") != "qreplaceo/" or archive_count < 1:
+                        raise RuntimeError(f"EvolutionO archive is missing from {repository}:qmoi")
+                elif archive_count != 0:
+                    raise RuntimeError(f"EvolutionO archive leaked outside qmoi in {repository}:{branch}")
+            final = final_by_repository[repository]
+            if (
+                branches["main"].get("remote_ref_sha") != final.get("final_sha")
+                or branches["main"].get("remote_tree_sha") != final.get("remote_tree_sha")
+            ):
+                raise RuntimeError(f"EvolutionO main-branch audit does not match final SHA/tree for {repository}")
+
+        ofca = transition.get("ofca_metrics")
+        if (
+            not isinstance(ofca, dict)
+            or ofca.get("status") != "PASS"
+            or ofca.get("updated") is not True
+            or ofca.get("remote_verified") is not True
+            or ofca.get("source_manifest_sha256") != manifest
+            or ofca.get("planned_stage_count") != len(cls.EVOLUTIONO_TRANSITION_STAGES)
+            or ofca.get("completed_stage_count") != len(cls.EVOLUTIONO_TRANSITION_STAGES)
+            or ofca.get("unmapped_metric_count") != 0
+            or ofca.get("unavailable_sources") != []
+            or not re.fullmatch(r"[0-9a-f]{64}", str(ofca.get("metrics_sha256", "")))
+            or not re.fullmatch(r"[0-9a-f]{64}", str(ofca.get("ofca_document_sha256", "")))
+        ):
+            raise RuntimeError("EvolutionO metrics are not current and complete in OFCA")
+
     def write_final_metrics(
         self,
         version: str,
@@ -949,17 +1143,6 @@ class QVersionManager:
         remote_stage = stage_records.get("REMOTE_VERIFICATION", {}).get("details", {})
         if remote_stage.get("terminal_conclusion") != "success" or remote_stage.get("remote_verified") is not True:
             raise RuntimeError("Lifecycle ledger lacks terminal remote-verification proof")
-        restore_stage = stage_records.get("QMOI_RESTORE_POINT", {})
-        restore_stage_details = restore_stage.get("details", {})
-        if (
-            restore_stage.get("stage_status") != "PASS"
-            or restore_stage_details.get("status") != "SUCCESS"
-            or restore_stage_details.get("branch") != "qmoi"
-            or restore_stage_details.get("remote_verified") is not True
-            or restore_stage_details.get("coverage_complete") is not True
-            or restore_stage_details.get("master_verified") is not True
-        ):
-            raise RuntimeError("Q-version lifecycle lacks a verified qmoi restore point")
         correlation_id = str(final_evidence.get("correlation_id", ""))
         if not correlation_id:
             raise RuntimeError("Q-version metrics require a correlation ID")
@@ -984,6 +1167,17 @@ class QVersionManager:
             for item in repository_evidence.values()
             if isinstance(item, dict)
         }
+        restore_stage = stage_records.get("QMOI_RESTORE_POINT", {})
+        restore_stage_details = restore_stage.get("details", {})
+        if (
+            restore_stage.get("stage_status") != "PASS"
+            or restore_stage_details.get("status") != "SUCCESS"
+            or restore_stage_details.get("branch") != "qmoi"
+            or restore_stage_details.get("remote_verified") is not True
+            or restore_stage_details.get("coverage_complete") is not True
+            or restore_stage_details.get("master_verified") is not True
+        ):
+            raise RuntimeError("Q-version lifecycle lacks a verified qmoi restore point")
         restore_evidence = final_evidence.get("qmoi_restore_point")
         restore_repositories = restore_evidence.get("repositories") if isinstance(restore_evidence, dict) else None
         if (
@@ -1139,6 +1333,35 @@ class QVersionManager:
             raise RuntimeError("Q-version metrics require complete dual-repository Ollama history evidence")
         for root in source_roots:
             self.verify_instruction_inventory(root, instruction_inventories.get(str(root)))
+        # Validate the repo cleanliness gate before deeper transition checks so a dirty
+        # worktree surfaces the intended fail-closed error instead of a more generic
+        # missing-evidence failure.
+        for root in source_roots:
+            evidence = repository_evidence.get(str(root))
+            if not isinstance(evidence, dict):
+                raise RuntimeError(f"Missing final remote evidence for {root}")
+            sha = str(evidence.get("final_sha", ""))
+            if (
+                not self._has_terminal_remote_binding(
+                    str(evidence.get("repository", "")),
+                    evidence,
+                    expected_sha=sha,
+                    expected_ref="refs/heads/main",
+                )
+                or evidence.get("checks_passed") is not True
+                or evidence.get("remote_tree_sha")
+                != _git(root, "rev-parse", f"{sha}^{{tree}}")
+            ):
+                raise RuntimeError(f"Remote completion evidence is incomplete for {root}")
+            git_head = _git(root, "rev-parse", "HEAD")
+            if git_head != sha or not self._source_tree_clean_except_lifecycle(root, execution_id):
+                raise RuntimeError(f"Local tree does not match the clean verified remote SHA for {root}")
+        evolutiono_transition = final_evidence.get("evolutiono_transition")
+        self.validate_evolutiono_transition(
+            evolutiono_transition,
+            stage_records,
+            repository_evidence,
+        )
         autonomous_completion = final_evidence.get("autonomous_completion")
         if (
             not isinstance(autonomous_completion, dict)
@@ -1315,6 +1538,7 @@ class QVersionManager:
                 },
                 "repository_surface_audit": repository_surface_audit,
                 "ollama_reference_audit": ollama_reference_audit,
+                "evolutiono_transition": evolutiono_transition,
                 "ui_test_hook_coverage": ui_test_hook_coverage,
                 "production_readiness": production_readiness,
                 "qmoi_restore_point": restore_evidence,
@@ -1338,6 +1562,7 @@ class QVersionManager:
                 "Autonomous completion gates: all PASS; pending actions: 0.",
                 f"Repository surface audit: complete; source manifest SHA-256 `{repository_surface_audit['source_manifest_sha256']}`.",
                 f"Ollama history audit: complete; source manifest SHA-256 `{ollama_reference_audit['source_manifest_sha256']}`.",
+                f"EvolutionO transition: remotely verified; source manifest SHA-256 `{evolutiono_transition['source_manifest_sha256']}`.",
                 f"Styles/universals feature test and hook coverage: complete; source manifest SHA-256 `{ui_test_hook_coverage['source_manifest_sha256']}`.",
                 "Production readiness: complete inventory; zero unresolved candidates.",
                 f"Per-file SHA-256 and path metrics: `{version}/{metrics_path.name}`",

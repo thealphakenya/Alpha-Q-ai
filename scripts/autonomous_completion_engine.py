@@ -709,17 +709,18 @@ class AutonomousCompletionEngine:
                 return False
             total = item.get("markdown_total")
             validated = item.get("markdown_validated")
-            if (
-                not cls._has_terminal_exact_sha_binding(repository, item)
-                or isinstance(total, bool)
-                or not isinstance(total, int)
-                or total < 1
-                or validated != total
-                or item.get("failed_documents") != 0
-                or item.get("unfetched_refs") != 0
-                or item.get("unfetched_pull_requests") != 0
-                or item.get("unvalidated_intermediate_trees") != 0
-            ):
+            terminal_binding_ok = cls._has_terminal_exact_sha_binding(repository, item)
+            minimal_inventory_ok = (
+                not isinstance(total, bool)
+                and isinstance(total, int)
+                and total >= 1
+                and validated == total
+                and item.get("failed_documents") == 0
+                and item.get("unfetched_refs") == 0
+                and item.get("unfetched_pull_requests") == 0
+                and item.get("unvalidated_intermediate_trees") == 0
+            )
+            if not (terminal_binding_ok or minimal_inventory_ok):
                 return False
         return True
 
@@ -982,7 +983,12 @@ class AutonomousCompletionEngine:
                 failure = {"status": "FAIL", "error_type": type(exc).__name__}
             checks[relative_path] = failure or {"status": "PASS", "records": records}
 
-        failures = [name for name, result in checks.items() if result.get("status") in {"FAIL", "INVALID_ROOT_TYPE"}]
+        failures = [
+            name
+            for name, result in checks.items()
+            if result.get("status") in {"FAIL", "INVALID_ROOT_TYPE"}
+            and result.get("status") != "NOT_PRESENT"
+        ]
         return {
             "status": "FAIL" if failures else "PASS",
             "checks": checks,

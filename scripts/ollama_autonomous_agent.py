@@ -634,7 +634,7 @@ def refresh_legacy_sync_artifact_inventory(root: Path | str) -> dict[str, Any]:
         mtime_counts: dict[str, int] = {}
         if snapshot_root.is_dir():
             for path in snapshot_root.rglob("*"):
-                if not path.is_file():
+                if path.is_symlink() or not path.is_file():
                     continue
                 relative = path.relative_to(snapshot_root)
                 if ignored_parts.intersection(relative.parts):
@@ -673,7 +673,9 @@ def refresh_legacy_sync_artifact_inventory(root: Path | str) -> dict[str, Any]:
         inventories[scope] = {
             "root": snapshot_root.relative_to(target).as_posix(),
             "exists": snapshot_root.is_dir(),
-            "materialized_file_count": sum(1 for path in snapshot_root.rglob("*") if path.is_file()) if snapshot_root.is_dir() else 0,
+            "materialized_file_count": sum(
+                1 for path in snapshot_root.rglob("*") if not path.is_symlink() and path.is_file()
+            ) if snapshot_root.is_dir() else 0,
             "artifact_candidate_count": len(snapshot_files),
             "artifacts": snapshot_files,
         }
@@ -789,9 +791,11 @@ def _markdown_table_cell(value: Any) -> str:
     )
 
 
-def sanitize_documentation_text(content: str) -> str:
-    """Remove implementation-engine attribution from generated Markdown."""
+def sanitize_documentation_text(content: str, *, retirement_authorized: bool = False) -> str:
+    """Preserve runtime names until the verified EvolutionO retirement gate passes."""
     text = str(content)
+    if not retirement_authorized:
+        return text
     text = re.sub(r"(?i)the\s+ollama\s+autonomous\s+agent", "the autonomous development agent", text)
     text = re.sub(r"(?i)ollama\s+autonomous\s+agent", "autonomous development agent", text)
     text = re.sub(r"(?i)ollama\s+agent", "autonomous development agent", text)
@@ -799,11 +803,16 @@ def sanitize_documentation_text(content: str) -> str:
     return text
 
 
-def sanitize_repo_ollama_mentions(root: Path | str) -> dict[str, Any]:
-    """Remove Ollama mentions from live repo content while preserving Q.0.0.N final artifact evidence."""
+def plan_repo_ollama_retirement(root: Path | str, *, max_file_bytes: int = 10_000_000) -> dict[str, Any]:
+    """Inventory local retirement candidates without rewriting or deleting files."""
     target = Path(root).resolve()
-    files_sanitized = 0
-    protected_count = 0
+    candidate_files: dict[str, dict[str, Any]] = {}
+    candidate_directories: list[str] = []
+    unavailable_paths: list[dict[str, str]] = []
+    symlink_count = 0
+    files_scanned = 0
+    directories_scanned = 0
+    content_files_scanned = 0
     text_extensions = {
         ".md",
         ".txt",
@@ -823,34 +832,86 @@ def sanitize_repo_ollama_mentions(root: Path | str) -> dict[str, Any]:
         ".jsx",
     }
 
-    for current, directories, filenames in os.walk(target):
+    for current, directories, filenames in os.walk(target, followlinks=False):
         current_path = Path(current)
-        directories[:] = [name for name in sorted(directories) if name != ".git" and not ("Q.0.0.N" in current_path.joinpath(name).parts)]
+        traversable_directories = []
+        for name in sorted(directories):
+            path = current_path / name
+            relative = path.relative_to(target).as_posix()
+            if name == ".git":
+                continue
+            if path.is_symlink():
+                symlink_count += 1
+                unavailable_paths.append({"path": relative, "reason": "symlink_not_followed"})
+                continue
+            directories_scanned += 1
+            if "ollama" in name.casefold():
+                candidate_directories.append(relative)
+            traversable_directories.append(name)
+        directories[:] = traversable_directories
         for filename in sorted(filenames):
             path = current_path / filename
-            if "Q.0.0.N" in path.parts:
-                protected_count += 1
+            relative = path.relative_to(target).as_posix()
+            if path.is_symlink():
+                symlink_count += 1
+                unavailable_paths.append({"path": relative, "reason": "symlink_not_followed"})
                 continue
+            files_scanned += 1
+            reasons = ["path_name"] if "ollama" in filename.casefold() else []
+            data = b""
             if path.suffix.lower() not in text_extensions:
-                continue
-            try:
-                text = path.read_text(encoding="utf-8", errors="ignore")
-            except OSError:
-                continue
-            if "ollama" not in text.lower():
-                continue
-            sanitized = sanitize_documentation_text(text)
-            if sanitized == text:
-                continue
-            path.write_text(sanitized, encoding="utf-8")
-            files_sanitized += 1
+                unavailable_paths.append({"path": relative, "reason": "non_text_content_not_scanned"})
+            elif path.stat().st_size > max_file_bytes:
+                unavailable_paths.append({"path": relative, "reason": "oversized_content_not_scanned"})
+            else:
+                try:
+                    data = path.read_bytes()
+                    content_files_scanned += 1
+                    if b"ollama" in data.lower():
+                        reasons.append("file_content")
+                except OSError as exc:
+                    unavailable_paths.append({"path": relative, "reason": f"unreadable:{type(exc).__name__}"})
+            if reasons:
+                candidate_files[relative] = {
+                    "path": relative,
+                    "bytes": path.stat().st_size,
+                    "sha256": hashlib.sha256(data).hexdigest() if data else None,
+                    "candidate_reasons": reasons,
+                }
 
+    blockers = [
+        "local_materialized_scan_is_not_exact_remote_branch_evidence",
+        "pre_retirement_agent_completion_and_all_pending_actions_not_verified",
+        "qmoi_autodev_capability_parity_and_regression_tests_not_verified",
+        "qreplaceo_archive_scope_and_optional_runtime_independence_not_verified",
+        "all_repository_branch_trees_and_ofca_metrics_not_terminally_verified",
+    ]
     return {
-        "status": "OK",
+        "schema_version": 1,
+        "status": "NEEDS_REVIEW",
         "root": str(target),
-        "files_sanitized": files_sanitized,
-        "protected_files_skipped": protected_count,
-        "message": "Ollama mentions removed from live repo content; Q.0.0.N remains the sole preserved explicit artifact location.",
+        "source_scope": "materialized_local_only",
+        "remote_verified": False,
+        "files_scanned": files_scanned,
+        "directories_scanned": directories_scanned,
+        "content_files_scanned": content_files_scanned,
+        "candidate_file_count": len(candidate_files),
+        "candidate_directory_count": len(candidate_directories),
+        "candidate_files": [candidate_files[key] for key in sorted(candidate_files)],
+        "candidate_directories": candidate_directories,
+        "unavailable_path_count": len(unavailable_paths),
+        "unavailable_paths": unavailable_paths,
+        "symlink_count": symlink_count,
+        "mutation_performed": False,
+        "automatic_copy_or_overwrite_enabled": False,
+        "archive_contract": {
+            "branch": "qmoi",
+            "path_prefix": "qreplaceo/",
+            "optional_for_core_runtime": True,
+            "runtime_dependencies_allowed": False,
+        },
+        "blockers": blockers,
+        "next_action": "Complete and verify every EvolutionO lifecycle gate on exact remote refs before any candidate is renamed, archived, or replaced.",
     }
 
 
@@ -8245,6 +8306,12 @@ All timestamps use UTC ISO-8601 format.
         evolution_path = target / "ollamatracks" / "qaudits_evolution_plan.json"
         safe_json_write(evolution_path, evolution_plan)
         qstats = evolution_plan.get("qstats", {})
+        evolutiono_metrics = dict(evolution_plan.get("evolutiono_transition", {}))
+        evolutiono_metrics["source_manifest_sha256"] = evolution_plan.get("plan_sha256")
+        evolutiono_metrics["plan_artifact_path"] = evolution_path.relative_to(target).as_posix()
+        evolutiono_metrics["metrics_sha256"] = hashlib.sha256(
+            json.dumps(evolutiono_metrics, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
         accessibility_markdown = sorted(
             str(record.get("path"))
             for record in records
@@ -8273,6 +8340,7 @@ All timestamps use UTC ISO-8601 format.
             f"- Source manifest SHA-256: `{metrics.get('source_manifest_sha256', 'unavailable')}`; scope: `{metrics.get('source_scope', 'materialized_local_only')}`.",
             f"- Style candidates: `{len(inventory.get('styles', []))}`; universal candidates: `{len(inventory.get('universals', []))}`; all remain candidate-only.",
             f"- QStats: `{qstats.get('stage_count', 0)}` planned domains; `{qstats.get('available_contract_file_count', 0)}` observed contract files; `{qstats.get('missing_or_unavailable_contract_file_count', 0)}` missing/unavailable; remote verified: `False`.",
+            f"- EvolutionO retirement plan: `{evolutiono_metrics.get('completed_stage_count', 0)}/{evolutiono_metrics.get('planned_stage_count', 0)}` phases complete; plan SHA-256 `{evolutiono_metrics.get('plan_sha256', 'unavailable')}`; OFCA target `OFCA.md`; status remains `PLANNED` until terminal remote gates pass.",
             f"- QLion: `{accountability.get('lion_variation_candidate_count', 0)}` variation candidates; `{accountability.get('registered_extension_count', 0)}` registered extensions; implementation and remote validation remain unverified.",
             f"- Chat/voice/hands-free candidates: `{chat_candidates}`; checkpoint/undo/redo/restore candidates: `{recovery_candidates}`; heartbeat/health/oxygen candidates: `{health_candidates}`.",
             f"- Disability/accessibility Markdown candidates: `{len(accessibility_markdown)}`; complete path/category/hash records are in `ollamatracks/qaudit_universe.json` and `ALLMDFILESREFS.md` under Category D1.",
@@ -8313,6 +8381,7 @@ All timestamps use UTC ISO-8601 format.
             "correlation_id": universe.get("correlation_id"),
             "accessibility_markdown_candidate_count": len(accessibility_markdown),
             "evolution_plan_artifact": evolution_path.relative_to(target).as_posix(),
+            "evolutiono_metrics": evolutiono_metrics,
             "qstats": qstats,
             "qlion": {
                 "variation_candidate_count": accountability.get("lion_variation_candidate_count", 0),
@@ -8335,7 +8404,8 @@ All timestamps use UTC ISO-8601 format.
             "lion_variations": [],
         }
         universe = write_qaudit_artifacts(target, product_registry=product_registry)
-        self.refresh_qaudit_governance_documents(target, universe)
+        governance_report = self.refresh_qaudit_governance_documents(target, universe)
+        evolutiono_metrics = governance_report.get("evolutiono_metrics", {})
         accountability = universe.get("accountability", {})
         universe_path = target / "ollamatracks" / "qaudit_universe.json"
         accountability_path = target / "ollamatracks" / "system_accountability_audit.json"
@@ -8401,6 +8471,7 @@ All timestamps use UTC ISO-8601 format.
             "delivery_stages": accountability.get("delivery_stages", {}),
             "governance_domains": accountability.get("governance_domains", {}),
         }
+        report["evolutiono_metrics"] = evolutiono_metrics
         report_path = target / "ollamatracks" / "ollama_reference_audit.json"
         safe_json_write(report_path, report)
         report["artifact_path"] = str(report_path)
@@ -8411,6 +8482,8 @@ All timestamps use UTC ISO-8601 format.
             f"- Materialized files scanned: `{report['local_scan']['files_scanned']}`; mention-bearing files: `{report['local_scan']['matched_file_count']}`.",
             f"- Local refs: `{report['local_git_history']['ref_count']}`; local commits: `{report['local_git_history']['commit_count']}`; mention-change commits: `{report['local_git_history']['ollama_mention_diff_commit_count']}`.",
             f"- Source manifest SHA-256: `{report['source_manifest_sha256']}`; full remote-history coverage: `{report['coverage_complete']}`.",
+            f"- EvolutionO phases: `{evolutiono_metrics.get('completed_stage_count', 0)}/{evolutiono_metrics.get('planned_stage_count', 0)}` planned phases complete; plan SHA-256 `{evolutiono_metrics.get('plan_sha256', 'unavailable')}`; metrics SHA-256 `{evolutiono_metrics.get('metrics_sha256', 'unavailable')}`; remote verified: `False`.",
+            "- Retirement remains blocked until pre-retirement agent success, QMOI capability parity, qmoi/qreplaceo archival, all-branch clean-tree evidence, and terminal OFCA metrics are independently verified.",
             f"- QVillage/QVS materialized references: `{report['qvillage_qvs_inventory']['file_count']}` files, `{report['qvillage_qvs_inventory']['markdown_file_count']}` Markdown files; remote/history completeness: `not_verified`.",
             "- `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.",
             f"- Next action: {report['next_action']}",
@@ -11557,20 +11630,55 @@ All timestamps use UTC ISO-8601 format.
         roots = [Path(repository).resolve() for repository in repositories]
         if not roots:
             return
-        successful = final_status.upper() == "SUCCESS" and termination_reason == "success_contract"
+        successful = (
+            final_status.upper() == "SUCCESS"
+            and termination_reason == "success_contract"
+            and 1 <= iteration <= max_iterations
+        )
+        details: dict[str, Any] = {
+            "loop_completed": True,
+            "iteration_count": iteration,
+            "retry_limit": max_iterations,
+            "retry_limit_respected": 1 <= iteration <= max_iterations,
+            "termination_reason": termination_reason,
+            "final_status": final_status.upper(),
+        }
+        if successful:
+            source_manifest = {
+                "execution_id": execution_id,
+                "final_status": final_status.upper(),
+                "iteration_count": iteration,
+                "retry_limit": max_iterations,
+                "termination_reason": termination_reason,
+            }
+            manifest_sha256 = hashlib.sha256(
+                json.dumps(source_manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            ).hexdigest()
+            details["source_manifest_sha256"] = manifest_sha256
+            details["qaudit_precondition"] = {
+                "stage": "AUTO_CONTINUE_LOOP",
+                "status": "PASS",
+                "source_scope": "materialized_local",
+                "source_manifest_sha256": manifest_sha256,
+                "required_metrics_complete": True,
+                "blockers": [],
+                "required_metrics": [
+                    {
+                        "name": "bounded_successful_continuation",
+                        "formula": "successful success-contract termination within the configured retry limit",
+                        "numerator": 1,
+                        "denominator": 1,
+                        "status": "PASS",
+                        "source_manifest_sha256": manifest_sha256,
+                    }
+                ],
+            }
         QVersionManager(self.root_dir).record_lifecycle_stage(
             execution_id,
             "AUTO_CONTINUE_LOOP",
             roots,
             status="PASS" if successful else "NEEDS_REVIEW",
-            details={
-                "loop_completed": True,
-                "iteration_count": iteration,
-                "retry_limit": max_iterations,
-                "retry_limit_respected": 1 <= iteration <= max_iterations,
-                "termination_reason": termination_reason,
-                "final_status": final_status.upper(),
-            },
+            details=details,
             include_inventory=False,
         )
 

@@ -14,6 +14,7 @@ Keep the workspace safe, deterministic, and consistent with the repository’s r
 - Inventory and read all repository instructions before protected work; record path, scope, hash, and read outcome without copying policy text into telemetry.
 - Preserve human-authored instructions; automation may update generated status and evidence only unless an authorized policy change explicitly says otherwise.
 - Keep autonomous retries bounded and checkpointed; retain authorization blockers instead of spinning or self-approving.
+- Continue automatically across all remaining safe local mission work until the queue is exhausted or the required remote/protected authorization gate blocks a specific action. Never silently skip, forget, or defer an in-scope item.
 - For App work, preserve user-authored credentials notes and inspect `githubapppermissions.md` as a reported snapshot; record whether each fact is user-reported, locally observed, or remotely verified.
 - Keep `or.md`, `oe2.txt`, `githubapp.md`, `github.md`, `CREDENTIAL_READINESS.md`, and `remotecompletion.md` aligned on current App variable presence, installation-ID availability, rotation state, secret-list access, and exact local/remote SHA.
 - Do not claim Copilot Chat or Ollama can authenticate merely because a Codespaces secret is present. Use a value-free preflight, approved secret source, short-lived scoped token, and independent identity/API evidence; preserve `AUTH_BLOCKED` when any gate is unavailable.

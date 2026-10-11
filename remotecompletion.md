@@ -1,3 +1,27 @@
+## Planned execution timeline and phase budget
+
+This checkpoint records the remaining execution budget for the current repo continuity cycle. These estimates are for the live work still required in this environment and are not proof of completion. The current blocker is remote authorization and exact SHA parity with the live GitHub main branch.
+
+- Phase 0 — baseline and repo state check: 20 minutes (0:20)
+- Phase 1 — auth, permissions, branch protection, and remote blockers: 35 minutes (0:35)
+- Phase 2 — completion ledger and exact-evidence bookkeeping: 30 minutes (0:30)
+- Phase 3 — safe execution plan and dependency graph: 70 minutes (1:10)
+- Phase 4 — Ollama agent and automation review: 40 minutes (0:40)
+- Phase 5 — CI/CD and deployment root-cause repair: 55 minutes (0:55)
+- Phase 6 — CodeQL and complete security verification: 35 minutes (0:35)
+- Phase 7 — QAUDITS and feature timestamp coverage: 65 minutes (1:05)
+- Phase 8 — metrics and evidence tracking: 25 minutes (0:25)
+- Phase 9 — remote validation, push, merge, and final proof: 75 minutes (1:15)
+- Phase 10 — continuation, cleanup, and remaining blocker closure: 45 minutes (0:45)
+- Total planned execution time: 495 minutes (8 hours 15 minutes)
+
+## Live time accounting — 2026-10-10
+
+- Measured local safe work completed: 21 minutes (0:21) across repo-state verification, mission sync validation, and blocker confirmation.
+- Mission budget remaining after current safe work: 474 minutes (7 hours 54 minutes).
+- Current status: Phase 0 and Phase 2 safe validation are complete; Phase 1 remote GitHub authorization and SHA parity remain blocked; no remote completion or finalization claim is valid.
+- Time is a gating factor under the mission contract: progress is counted only when supported by fresh evidence, and remote completion remains blocked until exact SHA parity and branch-protection authority are verified.
+
 ## User-requested pause checkpoint — four branches, memory, and 2025 sync audit — 2026-10-05
 
 - Correlation ID `83806f20-a1b5-439b-8557-f8caba318315`; repository `thealphakenya/Alpha-Q-ai`; branch `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; local HEAD `55144555d9934a4294f03949cb34e15ae4670438`.
@@ -2014,7 +2038,7 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 <!-- BEGIN OLLAMA BANK AUTOMATION STATUS -->
 ## Bank Automation Gate
 
-- Updated: 2026-10-10T03:10:29.043201Z
+- Updated: 2026-10-11T18:00:12.392499Z
 - Runbook SHA-256: `201bdd6d156775cd784dfa3a9e9706304590bee1f766862b522aa6cd760e9865`; numbered requirement lines detected: 110.
 - Gate: BLOCKED pending implementation-to-test/auth mapping, provider-backed read-only verification, and terminal exact-SHA remote evidence for Alpha-Q-ai and qmoi-enhanced.
 - QMOI Masks bank policy: DOCUMENTED_RUNTIME_UNVERIFIED; secure local evidence masking is required, but provider-facing identity/network masking stays disabled unless explicitly permitted. Runtime enforcement is unverified.
@@ -3574,3 +3598,107 @@ Correlation ID: `f9c77c4e-6b72-4c68-bcce-d7af60f6f7b7`; repository `thealphakeny
 - Remote verified: `False`; remote mutation performed: `False`.
 - Blockers: `["feature_mapping_remains_local_NEEDS_REVIEW","remote_completion_gates_remain_blocked_by_denied_permissions_and_failed_required_statuses","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
 - Next action: Use reconciled current hashes for the single-pass benchmark; avoid reusing the superseded pre-rerun feature hashes. Continue remote completion only after exact-SHA required checks, authorization, and alert visibility are verified.
+
+## Paired QAUDITS checkpoint — 2026-10-10T22:27:13.907073Z
+
+- Correlation ID: `46245b41-e042-48b6-abda-8cbb0362cfe5`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `legacy-sync-artifact-inventory`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"phase":"inventory_start","remote_mutation_performed":false}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["legacy_sync_inventory_not_terminal","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Run the bounded metadata/hash comparison for both local historical snapshots.
+
+## Paired QAUDITS checkpoint — 2026-10-10T22:27:17.633112Z
+
+- Correlation ID: `46245b41-e042-48b6-abda-8cbb0362cfe5`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `legacy-sync-artifact-inventory`; status: `NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; artifact SHA-256: `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`.
+- Additional artifact references: `{}`.
+- Metrics: `{"artifact_candidate_counts":{"alpha_2025_snapshot":33,"qmoi_history_snapshot":1043},"automatic_copy_or_overwrite_enabled":false,"duration_seconds":3.639,"live_qmoi_enhanced_checkout_present":false,"snapshot_file_counts":{"alpha_2025_snapshot":1648,"qmoi_history_snapshot":7087}}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["historical_snapshot_filesystem_mtimes_are_extraction_times_not_source_dates","legacy_sync_requires_live_peer_and_original_date_evidence","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Review candidate matches against live qmoi-enhanced refs, original source commits, workflow evidence, tests, and owners before migration or deprecation.
+
+## Paired QAUDITS checkpoint — 2026-10-10T22:51:24.163087Z
+
+- Correlation ID: `c02d83b3-7745-46aa-83ef-7956df23826d`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `safe-local-mission-continuation`; status: `LOCAL_VALIDATION_PASS_REMOTE_BLOCKED`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; artifact SHA-256: `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`.
+- Additional artifact references: `{"anonymous_public_refs":{"thealphakenya/Alpha-Q-ai":{"autosync-backup":"6d925c33f0093035755772137d863618b3818ab0","main":"e6c999402332b7c99f4c044ab779e5b9612f5454","master":"not_advertised","qmoi":"not_advertised"},"thealphakenya/qmoi-enhanced":{"autosync-backup":"d371de28f77b3ebea0244ccc1c13793a2654c395","main":"6043caa8adae1cc4fc03c7041d18cbd730ce3dfa","master":"not_advertised","qmoi":"not_advertised"}},"inventory_report":{"path":"ollamatracks/legacy_sync_artifact_inventory.json","sha256":"864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea"},"test_modules":["tests/test_control_plane.py","tests/test_cross_repo_sync.py","tests/test_ollama_autonomous_agent.py"],"workflow_validator":"scripts/validate_workflows.py"}`.
+- Metrics: `{"equal_hash_matches":13,"full_affected_tests_passed":246,"full_test_duration_seconds":385.62,"handled_headless_timeout_skips":1,"inventory_candidate_counts":{"alpha_2025_snapshot":33,"qmoi_history_snapshot":1043},"inventory_duration_seconds":3.639,"jsonl_records_valid":154,"python_compile_passed":true,"remote_verified":false,"same_path_candidates":29,"workflows_yaml_valid":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["QVILLAGE_diff_changed_during_test_run_and_requires_review","both_repositories_have_main_autosync_backup_divergence","branch_protection_and_write_authority_not_verified","full_QAUDITS_feature_universe_and_remote_history_coverage_not_complete","historical_candidate_ownership_tests_and_terminal_workflow_evidence_unverified","live_qmoi_enhanced_checkout_and_original_snapshot_source_history_unavailable","local_head_does_not_match_either_observed_remote_main_sha","remote_master_and_qmoi_refs_not_advertised_by_anonymous_observation","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Review the test-generated QVILLAGE delta and continue safe local requirement mapping; obtain authorized target-owned exact-SHA history, workflow, tree, and protection evidence before any remote completion action.
+
+## Paired QAUDITS checkpoint — 2026-10-10T23:02:32.251316Z
+
+- Correlation ID: `7a3c2616-7977-4a9f-9835-98c6a744c1d8`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `safe-local-mission-continuation`; status: `LOCAL_VALIDATION_PASS_REMOTE_BLOCKED`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; artifact SHA-256: `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`.
+- Additional artifact references: `{"full_affected_test_command":".venv/bin/python -m pytest -q tests/test_control_plane.py tests/test_cross_repo_sync.py tests/test_ollama_autonomous_agent.py","historical_inventory":"ollamatracks/legacy_sync_artifact_inventory.json","public_refs":{"thealphakenya/Alpha-Q-ai":{"autosync-backup":"6d925c33f0093035755772137d863618b3818ab0","main":"e6c999402332b7c99f4c044ab779e5b9612f5454","master":"not_advertised","qmoi":"not_advertised"},"thealphakenya/qmoi-enhanced":{"autosync-backup":"d371de28f77b3ebea0244ccc1c13793a2654c395","main":"6043caa8adae1cc4fc03c7041d18cbd730ce3dfa","master":"not_advertised","qmoi":"not_advertised"}},"test_isolation_regression":"tests/test_ollama_autonomous_agent.py::TestFeatureTester and TestPlatformSpecificFeatures","workflow_validation":"scripts/validate_workflows.py"}`.
+- Metrics: `{"JSON_artifacts_valid":4,"automatic_copy_or_overwrite_enabled":false,"equal_hash_matches":13,"full_affected_tests_passed":246,"full_test_duration_seconds":385.62,"handled_headless_timeout_skips":1,"isolation_tests_passed":5,"legacy_artifact_candidates":{"alpha_2025_snapshot":33,"qmoi_history_snapshot":1043},"legacy_snapshot_counts":{"Alpha-Q-ai-2025":1648,"qmoi-enhanced-history-14":7087},"pre_final_checkpoint_JSONL_records_valid":155,"python_compile_passed":true,"remote_verified":false,"same_path_candidates":29,"workflow_yaml_valid":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["QVILLAGE_trailing_blank_line_at_EOF","both_repositories_have_main_autosync_backup_divergence","branch_protection_and_write_authority_not_verified","full_QAUDITS_feature_universe_and_remote_history_coverage_not_complete","historical_candidate_ownership_tests_and_terminal_workflow_evidence_unverified","live_qmoi_enhanced_checkout_and_original_snapshot_source_history_unavailable","local_head_does_not_match_either_observed_remote_main_sha","remote_master_and_qmoi_refs_not_advertised_by_anonymous_observation","target_owned_terminal_remote_sha_proof_unavailable","test_generated_synthetic_monitor_telemetry_retained_as_append_only_data","worktree_dirty_or_status_unavailable"]`.
+- Next action: Continue safe local requirement-to-test mapping and review candidate provenance; resolve the QVillage EOF whitespace item and classify synthetic telemetry, and obtain authorized target-owned exact-SHA history/tree/workflow/protection evidence before remote completion.
+
+## Paired QAUDITS checkpoint — 2026-10-10T23:04:13.750010Z
+
+- Correlation ID: `56cb4c71-687a-47ce-91ad-7e60cde29a47`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `safe-local-mission-continuation`; status: `LOCAL_VALIDATION_PASS_REMOTE_BLOCKED`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; artifact SHA-256: `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`.
+- Additional artifact references: `{"affected_test_modules":["tests/test_control_plane.py","tests/test_cross_repo_sync.py","tests/test_ollama_autonomous_agent.py"],"legacy_inventory":"ollamatracks/legacy_sync_artifact_inventory.json","source_scope":"local historical snapshots and active Alpha checkout only; no live peer/source history or remote workflow proof","workflow_validation":"scripts/validate_workflows.py"}`.
+- Metrics: `{"JSON_artifacts_valid":4,"active_candidate_paths_missing":1074,"active_candidate_paths_present":2,"active_hash_matches":0,"automatic_copy_or_overwrite_enabled":false,"full_affected_tests_passed":246,"full_test_duration_seconds":385.62,"handled_headless_timeout_skips":1,"historical_candidate_records":1076,"historical_oversized_unhashed":4,"isolation_tests_passed":5,"pre_checkpoint_JSONL_records_valid":155,"python_compile_passed":true,"remote_verified":false,"snapshot_same_hash_matches":13,"snapshot_same_path_candidates":29,"test_basename_mentions":13,"workflow_yaml_valid":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["QVILLAGE_trailing_blank_line_at_EOF","both_repositories_have_main_autosync_backup_divergence","branch_protection_and_write_authority_not_verified","full_QAUDITS_feature_universe_and_remote_history_coverage_not_complete","historical_candidate_ownership_tests_and_terminal_workflow_evidence_unverified","live_qmoi_enhanced_checkout_and_original_snapshot_source_history_unavailable","local_head_does_not_match_either_observed_remote_main_sha","remote_master_and_qmoi_refs_not_advertised_by_anonymous_observation","target_owned_terminal_remote_sha_proof_unavailable","test_generated_synthetic_monitor_telemetry_retained_as_append_only_data","worktree_dirty_or_status_unavailable"]`.
+- Next action: Obtain original snapshot source history and authorized target-owned exact-SHA tree/workflow/protection evidence; locally review the two path-present candidates and their actual tests before proposing any migration.
+
+## Paired QAUDITS checkpoint — 2026-10-10T23:09:54.577501Z
+
+- Correlation ID: `e4b01d7c-10b1-456f-b0a7-b12832056b87`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `historical-snapshot-provenance-review`; status: `BLOCKED_ORIGINAL_SOURCE_PROVENANCE_UNAVAILABLE`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; artifact SHA-256: `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`.
+- Additional artifact references: `{"alpha_archive_import_commit":"ad8e80c8c44d7562d4ef0c36a19280f876042264","archival_files":{"active_qvillage":"4254368bba5d157fdece7568a450b5ea1a53d13b2dc4c8886dbf5fbaeca3bbca","alpha_snapshot_qvillage":"c9e0ad992ede051ac299b52251abce4f40f6c404829d65b69ad2109ba9b9a91a","qmoi_history_qvillage":"143f8c0d0f47fb94d4b2bfde2ff9b54f5169f971fc2fe4a443d135419ebad429","sync_log":"ae51fe1d6811b054091e99d69bc4846f6cb4b7f4d18efcad578be905091d4aa1","sync_repositories_doc":"9442a51aded39a685d37863467caf04d2019ad9f2966a97d11b9951abb67e67b"},"inventory_artifact":"ollamatracks/legacy_sync_artifact_inventory.json","qmoienhanced_history_patch_directory":"qmoi-enhanced-history-14/tools/patches"}`.
+- Metrics: `{"active_qvillage_hash_matches_snapshot":false,"archival_sync_claim_independently_verified":false,"archival_sync_log_entries":1,"cross_repo_sync_tests_passed":17,"nested_git_metadata_found":false,"patch_commit_objects_resolved":0,"patch_files_examined":9,"remote_verified":false}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["archival_sync_log_has_no_exact_sha_ref_run_or_terminal_artifact_binding","archive_patch_ids_do_not_resolve_to_local_commit_objects","candidate_ownership_and_semantic_test_coverage_not_verified","live_qmoi_enhanced_checkout_not_materialized","original_qmoi_enhanced_source_history_unavailable","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Obtain the original qmoi-enhanced source commit/tree or independently verifiable target-owned terminal workflow evidence; then reconcile candidate ownership and tests before any migration.
+
+## Paired QAUDITS checkpoint — 2026-10-10T23:10:43.465831Z
+
+- Correlation ID: `e4b01d7c-10b1-456f-b0a7-b12832056b87`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `historical-snapshot-provenance-review`; status: `BLOCKED_ORIGINAL_SOURCE_PROVENANCE_UNAVAILABLE`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; artifact SHA-256: `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`.
+- Additional artifact references: `{"alpha_archive_import_commit":"ad8e80c8c44d7562d4ef0c36a19280f876042264","archive_sync_doc":"qmoi-enhanced-history-14/SYNCREPOS.md","archive_sync_log":"qmoi-enhanced-history-14/.sync-log","saved_markdown_ledger":"oe2.md","sync_doc":"SYNC.md"}`.
+- Metrics: `{"archive_sync_log_entries":1,"independent_terminal_workflow_proofs":0,"nested_git_metadata_found":false,"patch_commit_objects_resolved":0,"patch_files_examined":9,"remote_verified":false,"sync_regression_tests_passed":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["archive_patch_ids_do_not_resolve_to_local_commit_objects","archive_sync_log_unbound_to_exact_sha_ref_or_terminal_workflow_run","candidate_ownership_and_semantic_test_coverage_not_verified","live_qmoi_enhanced_checkout_not_materialized","original_qmoi_enhanced_source_history_unavailable","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Obtain original peer source history or target-owned terminal workflow evidence bound to exact repository/ref/SHA, then review candidate ownership and behavior before migration.
+
+## Paired QAUDITS checkpoint — 2026-10-10T23:11:47.181640Z
+
+- Correlation ID: `e4b01d7c-10b1-456f-b0a7-b12832056b87`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `8af00784a86de1dabdce7cae6513b98fa4c11093`; local tree: `37509aa86bd7cd09ee46dbb426389de856db2b99`; dirty: `True`.
+- Operation: `historical-snapshot-provenance-review`; status: `BLOCKED_ORIGINAL_SOURCE_PROVENANCE_UNAVAILABLE`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; artifact SHA-256: `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`.
+- Additional artifact references: `{"archive_sync_doc":"qmoi-enhanced-history-14/SYNCREPOS.md","archive_sync_log":"qmoi-enhanced-history-14/.sync-log","saved_markdown_ledger":"oe2.md","sync_doc":"SYNC.md"}`.
+- Metrics: `{"archive_sync_log_entries":1,"independent_terminal_workflow_proofs":0,"nested_git_metadata_found":false,"patch_commit_objects_resolved":0,"patch_files_examined":9,"remote_verified":false,"sync_regression_tests_passed":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["archive_patch_ids_do_not_resolve_to_local_commit_objects","archive_sync_log_unbound_to_exact_sha_ref_or_terminal_workflow_run","candidate_ownership_and_semantic_test_coverage_not_verified","live_qmoi_enhanced_checkout_not_materialized","original_qmoi_enhanced_source_history_unavailable","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Obtain original peer source history or target-owned terminal workflow evidence bound to exact repository/ref/SHA, then review candidate ownership and behavior before migration.

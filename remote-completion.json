@@ -44,6 +44,7 @@
     "QSEED_second_repository_live_checkout_and_remote_parity_not_verified",
     "QSeed_security_and_round_trip_tests_not_fully_validated",
     "QStats values are derived local counts and are not production health or balance evidence",
+    "QVILLAGE_trailing_blank_line_at_EOF",
     "QVS_restore_point_autosync_undo_redo_and_evolution_integration_not_complete",
     "QVS_restore_point_autosync_undo_redo_evolution_integration_not_complete_or_verified",
     "Remote completion remains blocked until independently verified target-owned terminal exact-SHA and tree evidence is recorded.",
@@ -66,6 +67,9 @@
     "alpha_q_ai_vercel_status_failed",
     "alpha_realtime_tracker_failed_on_previous_main_sha_and_is_not_current_sha_proof",
     "alpha_vercel_status_failed",
+    "archival_sync_log_has_no_exact_sha_ref_run_or_terminal_artifact_binding",
+    "archive_patch_ids_do_not_resolve_to_local_commit_objects",
+    "archive_sync_log_unbound_to_exact_sha_ref_or_terminal_workflow_run",
     "audit_inventory_remaining_catalog_instruction_memory_and_legacy_phases_not_terminal",
     "audit_inventory_shards_remaining",
     "authorized remote completion gate remains blocked",
@@ -73,10 +77,12 @@
     "authorized_exact_sha_remote_completion_proof_unavailable",
     "autonomous_agent_suite_has_three_existing_failures_and_one_headless_skip",
     "both_repositories_have_failed_vercel_status_contexts",
+    "both_repositories_have_main_autosync_backup_divergence",
     "bounded_shard_run_not_terminal",
     "branch_protection_and_code_scanning_alert_reads_denied_or_unavailable",
     "branch_protection_and_code_scanning_alert_reads_http_403",
     "branch_protection_and_rulesets_unverified",
+    "branch_protection_and_write_authority_not_verified",
     "branch_protection_and_write_authority_unverified",
     "branch_protection_http_403",
     "branch_protection_http_403_for_both_repositories",
@@ -86,6 +92,7 @@
     "broader_autonomous_agent_suite_has_three_failures_and_one_headless_skip",
     "broader_control_plane_and_autonomous_agent_suites_have_unrelated_failures",
     "broader_control_plane_suite_has_five_failing_expectations",
+    "candidate_ownership_and_semantic_test_coverage_not_verified",
     "chat UI and oxygen provider remain unverified in the active checkout",
     "chat_ui_and_oxygen_provider_not_verified_in_active_checkout",
     "code_scanning_alert_access_http_403_for_both_repositories",
@@ -118,18 +125,25 @@
     "five_broader_control_plane_tests_fail_on_completion_audit_and_restore_point_fixtures",
     "fresh_full_inventory_run_required",
     "fresh_full_materialized_manifest_not_generated_after_current_edits",
+    "full_QAUDITS_feature_universe_and_remote_history_coverage_not_complete",
     "full_QSeed_tests_not_run_in_dependency_ready_workspace",
     "full_local_audit_inventory_not_terminal",
     "full_surface_and_remote_history_refresh_not_verified",
     "full_surface_coverage_requires_bounded_resumable_shards",
     "github_cli_authentication_unavailable",
+    "historical_candidate_ownership_tests_and_terminal_workflow_evidence_unverified",
+    "historical_snapshot_filesystem_mtimes_are_extraction_times_not_source_dates",
     "interrupted_inventory_attempt_has_no_terminal_feature_manifest",
     "known_model_review_sensitive_filename_regression_requires_fix_and_focused_retest",
+    "legacy_sync_inventory_not_terminal",
     "legacy_sync_requires_live_peer_and_original_date_evidence",
+    "live_qmoi_enhanced_checkout_and_original_snapshot_source_history_unavailable",
+    "live_qmoi_enhanced_checkout_not_materialized",
     "local_head_differs_from_both_current_remote_main_shas",
     "local_head_differs_from_both_remote_main_shas",
     "local_head_differs_from_current_remote_main_shas",
     "local_head_does_not_match_current_remote_main_shas",
+    "local_head_does_not_match_either_observed_remote_main_sha",
     "local_validation_is_not_remote_completion",
     "local_worktree_dirty_and_head_differs_from_both_remote_main_refs",
     "local_worktree_dirty_and_not_equal_to_remote_main_shas",
@@ -142,6 +156,7 @@
     "no_authorized_target_owned_exact_sha_remote_completion_proof",
     "ofca_remote_history_scan_incomplete",
     "optimized_full_audit_inventory_not_terminal",
+    "original_qmoi_enhanced_source_history_unavailable",
     "prior_audit_inventory_run_interrupted_and_not_terminal",
     "prior_full_audit_inventory_interrupted; generated universe manifest is stale after subsequent edits",
     "prior_full_audit_inventory_interrupted_and_not_terminal",
@@ -164,6 +179,7 @@
     "remote_completion_requires_authorized_exact_sha_terminal_proof",
     "remote_completion_requires_authorized_target_owned_exact_sha_proof",
     "remote_lfs_quota_unverified",
+    "remote_master_and_qmoi_refs_not_advertised_by_anonymous_observation",
     "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
     "second_live_repository_and_remote_QSeed_parity_not_verified",
     "semantic feature/test mapping remains local and incomplete",
@@ -185,6 +201,7 @@
     "target_owned_terminal_remote_exact_SHA_and_independent_remote_tree_evidence_unavailable",
     "target_owned_terminal_remote_sha_and_tree_proof_unavailable",
     "target_owned_terminal_remote_sha_proof_unavailable",
+    "test_generated_synthetic_monitor_telemetry_retained_as_append_only_data",
     "this_checkpoint_updates_continuation_records_only_no_ollama_execution_claimed",
     "unreadable_files:27",
     "vercel_checks_fail_on_both_current_main_shas",
@@ -196,33 +213,28 @@
     "worktree_dirty_or_status_unavailable",
     "worktree_dirty_preserved"
   ],
-  "correlation_id": "ad0ad61c-f6f5-408b-b371-3a703ca95798",
+  "correlation_id": "e4b01d7c-10b1-456f-b0a7-b12832056b87",
   "current_local_checkpoint": {
-    "artifact_bytes": 2162556,
-    "artifact_path": "ollamatracks/qaudits_all_features/feature_manifest.json",
+    "artifact_bytes": 843074,
+    "artifact_path": "ollamatracks/legacy_sync_artifact_inventory.json",
     "artifact_refs": {
-      "audit_script": "scripts/qaudit_all_features.py",
-      "feature_evidence": {
-        "bytes": 5423335,
-        "path": "ollamatracks/qaudits_all_features/feature_evidence.json",
-        "sha256": "8d6fe0e67d7d9d4e887f575ba615d90f43f31817df657012ace418140f353ae4"
-      },
-      "feature_manifest": {
-        "bytes": 2162556,
-        "path": "ollamatracks/qaudits_all_features/feature_manifest.json",
-        "sha256": "5e8194faadf8b3818b6d38f7191317d508fbd276d96bb94d329f6a4720aed089"
-      },
-      "focused_test": "tests/test_qaudit_all_features.py::test_parallel_feature_audit_reads_each_source_once"
+      "archive_sync_doc": "qmoi-enhanced-history-14/SYNCREPOS.md",
+      "archive_sync_log": "qmoi-enhanced-history-14/.sync-log",
+      "saved_markdown_ledger": "oe2.md",
+      "sync_doc": "SYNC.md"
     },
-    "artifact_sha256": "5e8194faadf8b3818b6d38f7191317d508fbd276d96bb94d329f6a4720aed089",
+    "artifact_sha256": "864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea",
     "blockers": [
-      "feature_mapping_remains_local_NEEDS_REVIEW",
-      "remote_completion_gates_remain_blocked_by_denied_permissions_and_failed_required_statuses",
+      "archive_patch_ids_do_not_resolve_to_local_commit_objects",
+      "archive_sync_log_unbound_to_exact_sha_ref_or_terminal_workflow_run",
+      "candidate_ownership_and_semantic_test_coverage_not_verified",
+      "live_qmoi_enhanced_checkout_not_materialized",
+      "original_qmoi_enhanced_source_history_unavailable",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
-    "correlation_id": "ad0ad61c-f6f5-408b-b371-3a703ca95798",
-    "generated_at": "2026-10-10T04:11:05.195041Z",
+    "correlation_id": "e4b01d7c-10b1-456f-b0a7-b12832056b87",
+    "generated_at": "2026-10-10T23:11:47.181640Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -232,25 +244,25 @@
         "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea"
       },
       {
-        "bytes": 7743,
+        "bytes": 8195,
         "path": ".github/copilot-instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": "repository-root",
-        "sha256": "cc9c381b684666b8e1cd54335e87e7191b698ee17e053beea9776f15d4d73cd8"
+        "sha256": "5669c3131495568e3154d57fb103271ae8fb5ac660e131165b8f7e03b705ae1c"
       },
       {
-        "bytes": 19459,
+        "bytes": 19429,
         "path": ".github/instructions/MISSION.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "28ac2a9ccfa549dba5256302f25ac3538b2cb169e1abced3981f47b96b7c52c5"
+        "sha256": "2b7425b7df7f442f9ab966a11197381a3fb95d86cab2b5621963d3cefc2be075"
       },
       {
-        "bytes": 9558,
+        "bytes": 10078,
         "path": ".github/instructions/agent-autonomy.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "cbb9e022e79beba904607e73d96ca1271b5c545a66deb29d5f2c9b82b2446b08"
+        "sha256": "1c0668629923356d307bc5cfee824ba83d6b88155f1e284c258ed8475e09a818"
       },
       {
         "bytes": 6282,
@@ -281,33 +293,30 @@
         "sha256": "1966197feb57e343297708fd76a1f74c2eb9d0e26545d95c60bfed76031046dd"
       },
       {
-        "bytes": 7420,
+        "bytes": 7653,
         "path": ".github/instructions/workspace.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "21a798bd3d2cf54078b202b4562269bceff15ae86487a50befe58892ef5e87d8"
+        "sha256": "06ce4570e2b42e268494e9cffbdb2789438eef67d6a955877fd4cd48eef766b5"
       }
     ],
-    "instruction_inventory_sha256": "8132a46b9542e8b05c135571892a916b0e43b13148a64abf13eb6a8762e84f49",
-    "local_head_sha": "bd69dd178e72a1b9fdf66c1fe3309228f70451a0",
-    "local_tree_sha": "11ded3e4f7496ec84389836331767b619675f6d8",
+    "instruction_inventory_sha256": "45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869",
+    "local_head_sha": "8af00784a86de1dabdce7cae6513b98fa4c11093",
+    "local_tree_sha": "37509aa86bd7cd09ee46dbb426389de856db2b99",
     "metrics": {
-      "capabilities": 162,
-      "duration_seconds": 349.067678,
-      "evidence_hash_reconciled": true,
-      "feature_status": "NEEDS_REVIEW",
-      "files_scanned": 8698,
-      "manifest_hash_reconciled": true,
-      "parent_benchmark_correlation_id": "ad0ad61c-f6f5-408b-b371-3a703ca95798",
-      "registered_features": 139,
+      "archive_sync_log_entries": 1,
+      "independent_terminal_workflow_proofs": 0,
+      "nested_git_metadata_found": false,
+      "patch_commit_objects_resolved": 0,
+      "patch_files_examined": 9,
       "remote_verified": false,
-      "shard_count": 35
+      "sync_regression_tests_passed": 17
     },
-    "next_action": "Use reconciled current hashes for the single-pass benchmark; avoid reusing the superseded pre-rerun feature hashes. Continue remote completion only after exact-SHA required checks, authorization, and alert visibility are verified.",
-    "operation": "single-pass-benchmark-hash-reconciliation",
+    "next_action": "Obtain original peer source history or target-owned terminal workflow evidence bound to exact repository/ref/SHA, then review candidate ownership and behavior before migration.",
+    "operation": "historical-snapshot-provenance-review",
     "paired_document_sha256": {
-      "oe2.txt": "6fdc59703064ba834f5df3bc7f8c85c2247dd2e03224d14a89c9155e89d4f509",
-      "remotecompletion.md": "9beb16897abbdd58d873d85e082f7c92a4d82a578bef9fd1794c828f018152fa"
+      "oe2.txt": "7883cf12112367043af77bcb755fbfa32eb40a952ae684fa8e4db3eff0ae2bff",
+      "remotecompletion.md": "6a3f97a36f7c6600b0bbafe3d0fed88ed52b29c03011c016323d9db92753704c"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -315,7 +324,7 @@
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
     "source_manifest_sha256": null,
-    "status": "NEEDS_REVIEW",
+    "status": "BLOCKED_ORIGINAL_SOURCE_PROVENANCE_UNAVAILABLE",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": true
   },
@@ -332,7 +341,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-10T04:11:05.195041Z",
+  "generated_at": "2026-10-10T23:11:47.181640Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -663,31 +672,26 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 2162556,
-      "artifact_path": "ollamatracks/qaudits_all_features/feature_manifest.json",
+      "artifact_bytes": 843074,
+      "artifact_path": "ollamatracks/legacy_sync_artifact_inventory.json",
       "artifact_refs": {
-        "audit_script": "scripts/qaudit_all_features.py",
-        "feature_evidence": {
-          "bytes": 5423335,
-          "path": "ollamatracks/qaudits_all_features/feature_evidence.json",
-          "sha256": "8d6fe0e67d7d9d4e887f575ba615d90f43f31817df657012ace418140f353ae4"
-        },
-        "feature_manifest": {
-          "bytes": 2162556,
-          "path": "ollamatracks/qaudits_all_features/feature_manifest.json",
-          "sha256": "5e8194faadf8b3818b6d38f7191317d508fbd276d96bb94d329f6a4720aed089"
-        },
-        "focused_test": "tests/test_qaudit_all_features.py::test_parallel_feature_audit_reads_each_source_once"
+        "archive_sync_doc": "qmoi-enhanced-history-14/SYNCREPOS.md",
+        "archive_sync_log": "qmoi-enhanced-history-14/.sync-log",
+        "saved_markdown_ledger": "oe2.md",
+        "sync_doc": "SYNC.md"
       },
-      "artifact_sha256": "5e8194faadf8b3818b6d38f7191317d508fbd276d96bb94d329f6a4720aed089",
+      "artifact_sha256": "864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea",
       "blockers": [
-        "feature_mapping_remains_local_NEEDS_REVIEW",
-        "remote_completion_gates_remain_blocked_by_denied_permissions_and_failed_required_statuses",
+        "archive_patch_ids_do_not_resolve_to_local_commit_objects",
+        "archive_sync_log_unbound_to_exact_sha_ref_or_terminal_workflow_run",
+        "candidate_ownership_and_semantic_test_coverage_not_verified",
+        "live_qmoi_enhanced_checkout_not_materialized",
+        "original_qmoi_enhanced_source_history_unavailable",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
-      "correlation_id": "ad0ad61c-f6f5-408b-b371-3a703ca95798",
-      "generated_at": "2026-10-10T04:11:05.195041Z",
+      "correlation_id": "e4b01d7c-10b1-456f-b0a7-b12832056b87",
+      "generated_at": "2026-10-10T23:11:47.181640Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -697,25 +701,25 @@
           "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea"
         },
         {
-          "bytes": 7743,
+          "bytes": 8195,
           "path": ".github/copilot-instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": "repository-root",
-          "sha256": "cc9c381b684666b8e1cd54335e87e7191b698ee17e053beea9776f15d4d73cd8"
+          "sha256": "5669c3131495568e3154d57fb103271ae8fb5ac660e131165b8f7e03b705ae1c"
         },
         {
-          "bytes": 19459,
+          "bytes": 19429,
           "path": ".github/instructions/MISSION.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "28ac2a9ccfa549dba5256302f25ac3538b2cb169e1abced3981f47b96b7c52c5"
+          "sha256": "2b7425b7df7f442f9ab966a11197381a3fb95d86cab2b5621963d3cefc2be075"
         },
         {
-          "bytes": 9558,
+          "bytes": 10078,
           "path": ".github/instructions/agent-autonomy.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "cbb9e022e79beba904607e73d96ca1271b5c545a66deb29d5f2c9b82b2446b08"
+          "sha256": "1c0668629923356d307bc5cfee824ba83d6b88155f1e284c258ed8475e09a818"
         },
         {
           "bytes": 6282,
@@ -746,33 +750,30 @@
           "sha256": "1966197feb57e343297708fd76a1f74c2eb9d0e26545d95c60bfed76031046dd"
         },
         {
-          "bytes": 7420,
+          "bytes": 7653,
           "path": ".github/instructions/workspace.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "21a798bd3d2cf54078b202b4562269bceff15ae86487a50befe58892ef5e87d8"
+          "sha256": "06ce4570e2b42e268494e9cffbdb2789438eef67d6a955877fd4cd48eef766b5"
         }
       ],
-      "instruction_inventory_sha256": "8132a46b9542e8b05c135571892a916b0e43b13148a64abf13eb6a8762e84f49",
-      "local_head_sha": "bd69dd178e72a1b9fdf66c1fe3309228f70451a0",
-      "local_tree_sha": "11ded3e4f7496ec84389836331767b619675f6d8",
+      "instruction_inventory_sha256": "45144ac6590216b8ec510175d234909e97c7036e3c6f71f2123f2f22d79b4869",
+      "local_head_sha": "8af00784a86de1dabdce7cae6513b98fa4c11093",
+      "local_tree_sha": "37509aa86bd7cd09ee46dbb426389de856db2b99",
       "metrics": {
-        "capabilities": 162,
-        "duration_seconds": 349.067678,
-        "evidence_hash_reconciled": true,
-        "feature_status": "NEEDS_REVIEW",
-        "files_scanned": 8698,
-        "manifest_hash_reconciled": true,
-        "parent_benchmark_correlation_id": "ad0ad61c-f6f5-408b-b371-3a703ca95798",
-        "registered_features": 139,
+        "archive_sync_log_entries": 1,
+        "independent_terminal_workflow_proofs": 0,
+        "nested_git_metadata_found": false,
+        "patch_commit_objects_resolved": 0,
+        "patch_files_examined": 9,
         "remote_verified": false,
-        "shard_count": 35
+        "sync_regression_tests_passed": 17
       },
-      "next_action": "Use reconciled current hashes for the single-pass benchmark; avoid reusing the superseded pre-rerun feature hashes. Continue remote completion only after exact-SHA required checks, authorization, and alert visibility are verified.",
-      "operation": "single-pass-benchmark-hash-reconciliation",
+      "next_action": "Obtain original peer source history or target-owned terminal workflow evidence bound to exact repository/ref/SHA, then review candidate ownership and behavior before migration.",
+      "operation": "historical-snapshot-provenance-review",
       "paired_document_sha256": {
-        "oe2.txt": "6fdc59703064ba834f5df3bc7f8c85c2247dd2e03224d14a89c9155e89d4f509",
-        "remotecompletion.md": "9beb16897abbdd58d873d85e082f7c92a4d82a578bef9fd1794c828f018152fa"
+        "oe2.txt": "7883cf12112367043af77bcb755fbfa32eb40a952ae684fa8e4db3eff0ae2bff",
+        "remotecompletion.md": "6a3f97a36f7c6600b0bbafe3d0fed88ed52b29c03011c016323d9db92753704c"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -780,7 +781,7 @@
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
       "source_manifest_sha256": null,
-      "status": "NEEDS_REVIEW",
+      "status": "BLOCKED_ORIGINAL_SOURCE_PROVENANCE_UNAVAILABLE",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": true
     },
@@ -856,7 +857,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "bd69dd178e72a1b9fdf66c1fe3309228f70451a0",
+    "local_head_sha": "8af00784a86de1dabdce7cae6513b98fa4c11093",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

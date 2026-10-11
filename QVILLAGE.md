@@ -19,3 +19,4 @@ QVillage is the live QMOI community, model, and knowledge coordination surface. 
 
 - Current blocker: No restore-point preflight artifact is available in this checkout.
 <!-- END QMOI MANAGED: restore-point-memory-sync -->
+

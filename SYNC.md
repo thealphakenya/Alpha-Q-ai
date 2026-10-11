@@ -272,11 +272,24 @@ QMOI Ollama Agent maintains awareness of:
 
 ## Autonomous Merge Completion Contract
 
-The current workspace contains `qmoi-enhanced` and the materialized historical
-snapshot, but it does not contain a local `Alpha-Q-ai` checkout. The agent must
-therefore treat cross-repository completion as blocked until it can authenticate
-and inventory the actual Alpha-Q-ai repository. Documentation or a remote URL is
-not evidence that the second repository was merged.
+The current workspace is the `Alpha-Q-ai` checkout and contains historical
+snapshots, but it does not contain a live `qmoi-enhanced` checkout. Cross-repository
+completion is therefore blocked until the live peer can be authenticated and
+inventoried. Documentation or a remote URL is not evidence that the second
+repository was merged.
+
+### Historical snapshot evidence status — 2026-10-10
+
+- The local-only inventory is `ollamatracks/legacy_sync_artifact_inventory.json`; its refresh correlation is `56cb4c71-687a-47ce-91ad-7e60cde29a47`. It is metadata/hash comparison evidence, not a migration or autosync-success record.
+- The scan found 1,648 regular files in `Alpha-Q-ai-2025` and 7,087 in `qmoi-enhanced-history-14`; 33 and 1,043 respectively matched the inventory's sync, memory, model-card, QVillage/evolution, or Q-version filename/path patterns.
+- Of 29 same-path candidates, 13 had equal SHA-256 hashes. Four historical candidates exceeded the 10 MB hashing limit. These matches do not establish ownership, tests, successful transfer, or a current live counterpart.
+- The Alpha snapshot has no filename date tokens and two candidate files with embedded date tokens. The historical QMOI snapshot has 151 candidate filenames and 192 candidate files with embedded date tokens. These are date-token counts, not provenance validation.
+- Local Git records `ad8e80c8c44d7562d4ef0c36a19280f876042264` (`2026-09-22T20:16:32Z`, “Add Alpha-Q-ai-2025 archival snapshot”) as the snapshot import commit. It added 2,049 paths; this is the archive-import time, not the original source dates or proof of a 2025 sync.
+- Neither snapshot contains nested `.git` metadata. The nine commit-named patch files in the QMOI history snapshot do not have commit/date headers, and their names do not resolve to commit objects in this checkout. `git -C` resolves to this parent Alpha-Q-ai repository; its path history is not the source repository history.
+- Provenance review checkpoint correlation: `e4b01d7c-10b1-456f-b0a7-b12832056b87`; status `BLOCKED_ORIGINAL_SOURCE_PROVENANCE_UNAVAILABLE`; remote verification remains false.
+- The archive's `.sync-log` contains a single `SUCCESS Repo fully synced` line dated `2025-09-29 05:29:54`; `SYNCREPOS.md` lists both repositories and has automated-document date markers from 2025-10-25/26. These are archive-local claims, not independently verified workflow evidence: no exact source SHA/tree, repository/ref binding, workflow/run ID, or terminal check artifact accompanies them.
+- The only active-tree candidate is `QVILLAGE.md`; its current SHA-256 differs from both archived copies. The local comparison did not establish owner, deletion/migration rationale, or semantic test coverage.
+- Filesystem mtimes describe the current extracted snapshots. The live `qmoi-enhanced` checkout, original source commit history, per-file owners/tests, and historical terminal workflow evidence are unavailable here; migration and historical autosync claims remain unverified. Automatic copy/overwrite remains disabled.
 
 Before claiming a complete merge, the agent must:
 

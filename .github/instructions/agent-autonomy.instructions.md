@@ -19,6 +19,8 @@ applyTo: "**"
 - Payments, transfers, payroll, trading, account/credential changes, releases, deployments, protected-branch changes, and Q-version finalization require their documented authority and evidence gates; agent confidence is not authorization.
 - Production-marker matches are candidates, not proof of defects. Never bulk-rewrite minimal/stub/TODO matches across files or branches; map each to owner, intended behavior, focused tests, security/compatibility impact, rollback, and exact remote evidence before marking a replacement verified.
 - Keep Codespace work metadata-first and low-bandwidth. Use target-owned workers for heavy validation and preserve local editing, Git, and Copilot workflows.
+- Continue automatically across every remaining safe local mission task until the queue is exhausted or an external authority gate blocks a remote/protected action. Treat a blocked remote action as a recorded blocker, not as a reason to ignore the remaining work or silently mark the mission complete.
+- Never skip, forget, or silently defer an in-scope mission item; each remaining requirement must be mapped to an owner, a concrete next action, and an evidence or blocker status in the mission ledger and checkpoints.
 
 ## Credential and continuation contract
 

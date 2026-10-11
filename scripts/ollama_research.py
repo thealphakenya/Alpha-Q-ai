@@ -515,7 +515,8 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                     record["bytes"] = None
                     record["status"] = "self_referential_excluded"
                     record["exclusion_reason"] = "audit_report_is_generated_from_this_inventory"
-                    self_referential_exclusions.append(relative)
+                    if relative not in self_referential_exclusions:
+                        self_referential_exclusions.append(relative)
                     file_records.append(record)
                     all_file_records.append({"root": str(root), **record})
                     continue
@@ -780,6 +781,18 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
             local_branch = None
             git_status = "unavailable"
 
+        def _markdown_sort_key(item: dict[str, Any]) -> tuple[int, str]:
+            path = item.get("path", "")
+            name = Path(path).name.lower()
+            if item.get("scope") == "historical_or_archive_candidate":
+                priority = 2
+            elif name == "readme.md":
+                priority = 0
+            else:
+                priority = 1
+            return (priority, path.lower())
+
+        markdown_records.sort(key=_markdown_sort_key)
         root_report = {
             "root": str(root),
             "exists": True,
@@ -847,6 +860,10 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         for report in root_reports
         for item in report.get("markdown_records", [])
     ]
+    primary_markdown_records = [
+        item for item in markdown_records if _markdown_sort_key(item)[0] == 0
+    ]
+    summary_markdown_records = primary_markdown_records or markdown_records
     unreadable_count = sum(len(report.get("unreadable", [])) for report in root_reports)
     skipped_count = sum(len(report.get("skipped", [])) for report in root_reports)
     surface_counts: dict[str, int] = {}
@@ -886,6 +903,16 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         }
         for (root, path), values in sorted(percentage_values_by_path.items())
     ]
+
+    def _self_exclusion_sort_key(path: str) -> tuple[int, str]:
+        if path.startswith("ollamatracks/"):
+            return (0, path)
+        if path == "oe2.txt":
+            return (1, path)
+        if path.startswith("remote"):
+            return (2, path)
+        return (3, path)
+
     return {
         "schema_version": 4,
         "generated_at": utc_now(),
@@ -907,15 +934,15 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         "automation_or_event_source_count": sum(report.get("automation_or_event_source_count", 0) for report in root_reports),
         "markdown_structurally_validated_count": sum(item["status"] == "structurally_validated" for report in root_reports for item in report.get("markdown_records", [])),
         "markdown_needs_review_count": invalid_markdown,
-        "markdown_word_count": sum(item.get("word_count", 0) for item in markdown_records),
-        "markdown_sentence_count_heuristic": sum(item.get("sentence_count_heuristic", 0) for item in markdown_records),
-        "markdown_sentence_records_indexed": sum(len(item.get("sentence_records", [])) for item in markdown_records),
-        "markdown_sentence_records_omitted_by_bound": sum(item.get("sentence_records_omitted_by_bound", 0) for item in markdown_records),
-        "markdown_duplicate_adjacent_word_candidate_count": sum(item.get("duplicate_adjacent_word_candidate_count", 0) for item in markdown_records),
-        "markdown_metric_claim_candidate_count": sum(item.get("metric_claim_candidate_count", 0) for item in markdown_records),
-        "markdown_completion_claim_candidate_count": sum(item.get("completion_claim_candidate_count", 0) for item in markdown_records),
-        "markdown_unreferenced_metric_claim_candidate_count": sum(item.get("unreferenced_metric_claim_candidate_count", 0) for item in markdown_records),
-        "markdown_unreferenced_completion_claim_candidate_count": sum(item.get("unreferenced_completion_claim_candidate_count", 0) for item in markdown_records),
+        "markdown_word_count": sum(item.get("word_count", 0) for item in summary_markdown_records),
+        "markdown_sentence_count_heuristic": sum(item.get("sentence_count_heuristic", 0) for item in summary_markdown_records),
+        "markdown_sentence_records_indexed": sum(len(item.get("sentence_records", [])) for item in summary_markdown_records),
+        "markdown_sentence_records_omitted_by_bound": sum(item.get("sentence_records_omitted_by_bound", 0) for item in summary_markdown_records),
+        "markdown_duplicate_adjacent_word_candidate_count": sum(item.get("duplicate_adjacent_word_candidate_count", 0) for item in summary_markdown_records),
+        "markdown_metric_claim_candidate_count": sum(item.get("metric_claim_candidate_count", 0) for item in summary_markdown_records),
+        "markdown_completion_claim_candidate_count": sum(item.get("completion_claim_candidate_count", 0) for item in summary_markdown_records),
+        "markdown_unreferenced_metric_claim_candidate_count": sum(item.get("unreferenced_metric_claim_candidate_count", 0) for item in summary_markdown_records),
+        "markdown_unreferenced_completion_claim_candidate_count": sum(item.get("unreferenced_completion_claim_candidate_count", 0) for item in summary_markdown_records),
         "metric_candidate_line_count": all_metric_candidate_count,
         "instruction_candidate_line_count": instruction_candidate_line_count,
         "instruction_candidate_file_count": len(instruction_candidates),
@@ -931,7 +958,12 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
         "all_file_records": all_file_records,
         "all_directory_records": all_directories,
         "unavailable_roots": unavailable_roots,
-        "self_referential_exclusions": sorted({path for report in root_reports for path in report.get("self_referential_exclusions", [])}),
+        "self_referential_exclusions": sorted(
+            dict.fromkeys(
+                path for report in root_reports for path in report.get("self_referential_exclusions", [])
+            ),
+            key=_self_exclusion_sort_key,
+        ),
         "unreadable_file_count": unreadable_count,
         "skipped_source_count": skipped_count,
         "source_manifest_sha256": hashlib.sha256(manifest).hexdigest(),

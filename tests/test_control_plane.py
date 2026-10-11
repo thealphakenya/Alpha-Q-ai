@@ -31,7 +31,7 @@ from scripts.ollama_research import (
 )
 from scripts.ollama_autonomous_agent import (
     OllamaAutonomousAgent,
-    sanitize_repo_ollama_mentions,
+    plan_repo_ollama_retirement,
 )
 from scripts.sync_contract import build_sync_contract
 from scripts.control_plane_supervisor import ControlPlaneSupervisor
@@ -86,6 +86,131 @@ def q_version_production_readiness() -> dict[str, object]:
         "candidate_count": 0,
         "unreadable_files": [],
         "oversized_files_not_read": 0,
+    }
+
+
+def q_version_evolutiono_transition(repository_evidence: dict[str, object]) -> dict[str, object]:
+    repositories = {
+        item["repository"]: item
+        for item in repository_evidence.values()
+        if isinstance(item, dict)
+    }
+    source_sha = "d" * 40
+    source_tree = "e" * 40
+    branch_names = QVersionManager.FINAL_BRANCHES
+
+    def binding(repository: str, branch: str, sha: str, tree_sha: str, run_id: str) -> dict[str, object]:
+        return {
+            "repository": repository,
+            "repository_identity_verified": True,
+            "remote_verified": True,
+            "remote_ref": f"refs/heads/{branch}",
+            "remote_ref_sha": sha,
+            "workflow_head_sha": sha,
+            "remote_tree_sha": tree_sha,
+            "workflow_tree_sha": tree_sha,
+            "run_status": "completed",
+            "terminal_conclusion": "success",
+            "workflow_run_id": run_id,
+        }
+
+    pre_repositories = {}
+    archive_repositories = {}
+    audit_repositories = {}
+    for index, repository in enumerate(sorted(repositories)):
+        pre_repositories[repository] = {
+            "all_branches_updated": True,
+            "branches": {
+                branch: binding(repository, branch, source_sha, source_tree, f"pre-{index}-{branch}")
+                for branch in branch_names
+            },
+        }
+        archive_repositories[repository] = {
+            "branch": "qmoi",
+            "path_prefix": "qreplaceo/",
+            "present": True,
+            "only_on_qmoi_branch": True,
+            "optional_for_core_runtime": True,
+            "runtime_dependency_count": 0,
+            "file_count": 3,
+            "source_sha": source_sha,
+            "archive_manifest_sha256": "f" * 64,
+        }
+        branches = {}
+        for branch_index, branch in enumerate(branch_names):
+            final = repositories[repository]
+            if branch == "main":
+                branch_item = dict(final)
+            else:
+                branch_sha = f"{branch_index + 1:x}" * 40
+                branch_tree = f"{branch_index + 5:x}" * 40
+                branch_item = binding(repository, branch, branch_sha, branch_tree, f"final-{index}-{branch}")
+            branch_item.update({
+                "branch_scan_complete": True,
+                "outside_archive_match_count": 0,
+                "archive_entry_count": 3 if branch == "qmoi" else 0,
+            })
+            if branch == "qmoi":
+                branch_item["archive_path_prefix"] = "qreplaceo/"
+            branches[branch] = branch_item
+        audit_repositories[repository] = {"branches": branches}
+
+    return {
+        "status": "PASS",
+        "remote_verified": True,
+        "source_manifest_sha256": "a" * 64,
+        "pre_retirement": {
+            "status": "SUCCESS",
+            "all_requirements_complete": True,
+            "pending_action_count": 0,
+            "run_status": "completed",
+            "terminal_conclusion": "success",
+            "remote_verified": True,
+            "repository_identity_verified": True,
+            "workflow_run_id": "pre-retirement-run",
+            "workflow_head_sha": source_sha,
+            "source_sha": source_sha,
+            "repositories": pre_repositories,
+        },
+        "capability_parity": {
+            "status": "PASS",
+            "capability_count": 4,
+            "mapped_capability_count": 4,
+            "tested_capability_count": 4,
+            "test_failure_count": 0,
+            "security_review_complete": True,
+            "works_without_archive": True,
+            "archive_runtime_dependency_count": 0,
+            "unavailable_sources": [],
+            "source_manifest_sha256": "b" * 64,
+        },
+        "qreplaceo_archive": {
+            "status": "PASS",
+            "branch": "qmoi",
+            "path_prefix": "qreplaceo/",
+            "repositories": archive_repositories,
+        },
+        "clean_branch_audit": {
+            "status": "PASS",
+            "remote_verified": True,
+            "all_repositories_enumerated": True,
+            "all_branches_enumerated": True,
+            "outside_archive_match_count": 0,
+            "unavailable_sources": [],
+            "repositories": audit_repositories,
+        },
+        "ofca_metrics": {
+            "status": "PASS",
+            "updated": True,
+            "remote_verified": True,
+            "source_manifest_sha256": "a" * 64,
+            "planned_stage_count": len(QVersionManager.EVOLUTIONO_TRANSITION_STAGES),
+            "completed_stage_count": len(QVersionManager.EVOLUTIONO_TRANSITION_STAGES),
+            "unmapped_metric_count": 0,
+            "unavailable_sources": [],
+            "metrics_sha256": "c" * 64,
+            "ofca_document_sha256": "c" * 64,
+        },
     }
 
 
@@ -443,6 +568,11 @@ def record_successful_q_lifecycle(
             "gates": {name: "PASS" for name in REQUIRED_GATES},
             "pending_action_count": 0,
         },
+        "EVOLUTIONO_PRE_RETIREMENT": {"evolutiono_manifest_sha256": "a" * 64},
+        "QMOI_CAPABILITY_PARITY": {"evolutiono_manifest_sha256": "a" * 64},
+        "QREPLACEO_ARCHIVE": {"evolutiono_manifest_sha256": "a" * 64},
+        "EVOLUTIONO_CLEAN_BRANCH_AUDIT": {"evolutiono_manifest_sha256": "a" * 64},
+        "EVOLUTIONO_OFCA_METRICS": {"evolutiono_manifest_sha256": "a" * 64},
         "REPOSITORY_SURFACE_AUDIT": {
             "coverage_complete": True,
             "source_manifest_sha256": "e" * 64,
@@ -499,6 +629,11 @@ def test_q_version_manager_tracks_complete_autonomous_system_stages():
         "REMOTE_VERIFICATION",
         "QMOI_RESTORE_POINT",
         "AUTO_CONTINUE_LOOP",
+        "EVOLUTIONO_PRE_RETIREMENT",
+        "QMOI_CAPABILITY_PARITY",
+        "QREPLACEO_ARCHIVE",
+        "EVOLUTIONO_CLEAN_BRANCH_AUDIT",
+        "EVOLUTIONO_OFCA_METRICS",
         "AUTONOMOUS_COMPLETION",
         "Q_VERSION_FINALIZATION",
     )
@@ -1746,22 +1881,33 @@ def test_research_visit_requires_exact_source_and_records_content_hash():
         )
 
 
-def test_repo_cleanup_policy_keeps_ollama_outside_q_version_only(tmp_path):
+def test_repo_retirement_plan_is_metadata_only_and_never_rewrites_without_gates(tmp_path):
     repo = tmp_path / "repo"
     repo.mkdir()
-    (repo / "README.md").write_text("# QMOI\nOllama is not the product name.\n", encoding="utf-8")
+    readme = repo / "README.md"
+    original = "# QMOI\nOllama is not the product name.\n"
+    readme.write_text(original, encoding="utf-8")
+    (repo / "ollama_plugins").mkdir()
+    (repo / "ollama-guide.md").write_text("# Runtime notes\n", encoding="utf-8")
     qdir = repo / "Q.0.0.N"
     qdir.mkdir()
     (qdir / "manifest.md").write_text("Ollama final version artifact.\n", encoding="utf-8")
 
-    result = sanitize_repo_ollama_mentions(repo)
+    result = plan_repo_ollama_retirement(repo)
 
-    text = (repo / "README.md").read_text(encoding="utf-8")
-    q_text = (qdir / "manifest.md").read_text(encoding="utf-8")
-    assert "Ollama" not in text and "ollama" not in text.lower()
-    assert "Ollama" in q_text or "ollama" in q_text.lower()
-    assert result["files_sanitized"] >= 1
-    assert result["status"] == "OK"
+    assert readme.read_text(encoding="utf-8") == original
+    assert "Ollama" in (qdir / "manifest.md").read_text(encoding="utf-8")
+    assert result["status"] == "NEEDS_REVIEW"
+    assert result["mutation_performed"] is False
+    assert result["automatic_copy_or_overwrite_enabled"] is False
+    assert "ollama_plugins" in result["candidate_directories"]
+    assert {item["path"] for item in result["candidate_files"]} >= {"README.md", "ollama-guide.md", "Q.0.0.N/manifest.md"}
+    assert result["archive_contract"] == {
+        "branch": "qmoi",
+        "path_prefix": "qreplaceo/",
+        "optional_for_core_runtime": True,
+        "runtime_dependencies_allowed": False,
+    }
 
 
 def test_completion_rejects_markdown_gate_without_full_remote_inventory_evidence(tmp_path):
@@ -2171,6 +2317,7 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
             [item["final_sha"] for item in repository_evidence.values()],
             "run-qmoi-restore",
         ),
+        "evolutiono_transition": q_version_evolutiono_transition(repository_evidence),
         "repositories": repository_evidence,
     }
 
@@ -2302,6 +2449,22 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         manager.write_final_metrics("Q.0.0.3", roots, evidence)
     restore_point["repositories"][repository_key]["master_sha"] = missing_master
 
+    evolutiono_transition = evidence.pop("evolutiono_transition")
+    with pytest.raises(RuntimeError, match="EvolutionO transition evidence is missing"):
+        manager.write_final_metrics("Q.0.0.3", roots, evidence)
+    evidence["evolutiono_transition"] = evolutiono_transition
+    incomplete_transition = {
+        **evolutiono_transition,
+        "clean_branch_audit": {
+            **evolutiono_transition["clean_branch_audit"],
+            "outside_archive_match_count": 1,
+        },
+    }
+    evidence["evolutiono_transition"] = incomplete_transition
+    with pytest.raises(RuntimeError, match="EvolutionO clean-branch audit is incomplete"):
+        manager.write_final_metrics("Q.0.0.3", roots, evidence)
+    evidence["evolutiono_transition"] = evolutiono_transition
+
     result = manager.write_final_metrics("Q.0.0.3", roots, evidence)
 
     assert result["status"] == "PREPARED_PENDING_REMOTE_VERIFICATION"
@@ -2321,6 +2484,8 @@ def test_q_version_final_metrics_write_exact_sha_manifests_for_both_repositories
         assert metrics["ui_test_hook_coverage"]["coverage_verified"] is True
         assert metrics["repository_surface_audit"]["coverage_complete"] is True
         assert metrics["production_readiness"]["candidate_count"] == 0
+        assert metrics["evolutiono_transition"]["status"] == "PASS"
+        assert metrics["evolutiono_transition"]["qreplaceo_archive"]["path_prefix"] == "qreplaceo/"
         assert document_path.is_file()
         assert "Directories inventoried:" in document_path.read_text(encoding="utf-8")
         paths_to_add = ["Q.0.0.3", "Q.0.0.3.md"]

@@ -99,6 +99,7 @@ class TestAutonomousContinuation:
         assert continue_stage["stage_status"] == "PASS"
         assert continue_stage["details"]["loop_completed"] is True
         assert continue_stage["details"]["retry_limit_respected"] is True
+        assert continue_stage["details"]["qaudit_precondition"]["source_manifest_sha256"] == continue_stage["details"]["source_manifest_sha256"]
 
 
 class TestAuditInventoryCommand:
@@ -380,11 +381,15 @@ class TestRestorePointMemoryAndLegacyInventory:
         alpha_file.write_text(content, encoding="utf-8")
         qmoi_file.write_text(content, encoding="utf-8")
         (qmoi / "sync_memory.py").write_text("# memory sync\n", encoding="utf-8")
+        external_sync_file = tmp_path / "external_sync.py"
+        external_sync_file.write_text("# outside snapshot\n", encoding="utf-8")
+        (alpha / "sync_external.py").symlink_to(external_sync_file)
 
         report = refresh_legacy_sync_artifact_inventory(tmp_path)
 
         alpha_inventory = report["snapshots"]["alpha_2025_snapshot"]["artifacts"]
         candidate = next(item for item in alpha_inventory if item["path"].endswith("backup_restore_2025-07-16.py"))
+        assert all(item["path"] != "scripts/sync_external.py" for item in alpha_inventory)
         assert report["status"] == "NEEDS_LIVE_PEER_AND_ORIGINAL_DATE_EVIDENCE"
         assert report["live_qmoi_enhanced_checkout_present"] is False
         assert candidate["historical_qmoi_exact_path"]["sha256_equal"] is True
@@ -583,6 +588,7 @@ class TestCrossRepositoryAutonomyManager:
 
         ledger_path = Path(result["q_version_lifecycle_path"])
         records = [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").splitlines()]
+        records_by_stage = {record["stage"]: record for record in records}
         assert [record["stage"] for record in records] == [
             "MERGE_START",
             "PRE_MERGE_INVENTORY",
@@ -591,6 +597,10 @@ class TestCrossRepositoryAutonomyManager:
             "EXTERNAL_RESEARCH",
             "REPOSITORY_SURFACE_AUDIT",
             "OLLAMA_FULL_COVERAGE_AUDIT",
+            "PRODUCT_PLATFORM_CATALOG",
+            "LION_AND_EXTENSION_VARIANTS",
+            "RELEASE_DELIVERY_LIFECYCLE",
+            "QTEAM_ACCOUNTABILITY",
             "MARKDOWN_SOURCE_INDEX",
             "UI_TEST_HOOK_COVERAGE",
             "MERGE_PLAN",
@@ -598,34 +608,40 @@ class TestCrossRepositoryAutonomyManager:
             "POST_MERGE_AUDIT",
         ]
         assert records[0]["details"]["first_agent_operation"] == "merge and source inventory"
-        assert records[2]["stage_status"] == "NEEDS_REVIEW"
-        instruction_inventory = records[2]["details"]["repositories"][str(repo.resolve())]
+        assert records_by_stage["INSTRUCTION_INVENTORY"]["stage_status"] == "NEEDS_REVIEW"
+        instruction_inventory = records_by_stage["INSTRUCTION_INVENTORY"]["details"]["repositories"][str(repo.resolve())]
         assert instruction_inventory["source_contents_recorded"] is False
-        assert records[3]["stage_status"] == "PASS"
-        surface_audit = records[3]["details"]["repository_surface_audit"]
+        internal_research = records_by_stage["INTERNAL_RESEARCH"]
+        assert internal_research["stage_status"] == "NEEDS_REVIEW"
+        surface_audit = internal_research["details"]["repository_surface_audit"]
         assert surface_audit["file_count"] >= 1
         assert surface_audit["percentage_occurrence_count"] >= 0
         assert Path(surface_audit["artifact_path"]).is_file()
-        assert records[4]["details"]["surface_audit_manifest_sha256"] == surface_audit["source_manifest_sha256"]
-        assert "model-evaluation" in records[4]["details"]["requested_topics"]
-        assert "financial-controls" in records[4]["details"]["requested_topics"]
+        external_research = records_by_stage["EXTERNAL_RESEARCH"]
+        assert external_research["details"]["surface_audit_manifest_sha256"] == surface_audit["source_manifest_sha256"]
+        assert "model-evaluation" in external_research["details"]["requested_topics"]
+        assert "financial-controls" in external_research["details"]["requested_topics"]
         assert all((repo / name).is_file() for name in ("QAUDITS.md", "INTERNALREFSEARCH.md", "EXTERNALRESEARCH.md", "COMPONENTS.md", "TREE.md", "ALLLINKS.md"))
-        assert records[4]["stage_status"] == "NEEDS_REVIEW"
-        assert records[4]["details"]["visited_count"] == 0
-        assert records[5]["details"]["audit_name"] == "repository_surface_audit"
-        assert records[5]["stage_status"] == "NEEDS_REVIEW"
-        assert records[5]["details"]["file_count"] >= 1
-        assert records[6]["details"]["audit_name"] == "OFCA"
-        assert records[6]["details"]["prMergeIncluded"] is True
-        assert records[6]["details"]["position"] == "after_source_inventory_and_immediately_before_merge_activity"
-        assert records[6]["stage_status"] == "NEEDS_REVIEW"
-        assert records[7]["details"]["index_complete"] is True
-        assert records[7]["stage_status"] == "PASS"
-        assert records[8]["stage_status"] == "NEEDS_REVIEW"
-        assert records[9]["details"]["merge_plan"]
-        assert records[10]["stage_status"] == "BLOCKED"
-        assert records[10]["details"]["ofca_prMergeIncluded"] is True
-        assert records[10]["details"]["repository_surface_audit_complete"] is False
+        assert external_research["stage_status"] == "NEEDS_REVIEW"
+        assert external_research["details"]["visited_count"] == 0
+        surface_stage = records_by_stage["REPOSITORY_SURFACE_AUDIT"]
+        assert surface_stage["details"]["audit_name"] == "repository_surface_audit"
+        assert surface_stage["stage_status"] == "NEEDS_REVIEW"
+        assert surface_stage["details"]["file_count"] >= 1
+        coverage_stage = records_by_stage["OLLAMA_FULL_COVERAGE_AUDIT"]
+        assert coverage_stage["details"]["audit_name"] == "OFCA"
+        assert coverage_stage["details"]["prMergeIncluded"] is True
+        assert coverage_stage["details"]["position"] == "after_source_inventory_and_immediately_before_merge_activity"
+        assert coverage_stage["stage_status"] == "NEEDS_REVIEW"
+        markdown_stage = records_by_stage["MARKDOWN_SOURCE_INDEX"]
+        assert markdown_stage["details"]["index_complete"] is True
+        assert markdown_stage["stage_status"] == "NEEDS_REVIEW"
+        assert records_by_stage["UI_TEST_HOOK_COVERAGE"]["stage_status"] == "NEEDS_REVIEW"
+        assert records_by_stage["MERGE_PLAN"]["details"]["merge_plan"]
+        merge_apply = records_by_stage["MERGE_APPLY"]
+        assert merge_apply["stage_status"] == "BLOCKED"
+        assert merge_apply["details"]["ofca_prMergeIncluded"] is True
+        assert merge_apply["details"]["repository_surface_audit_complete"] is False
         premerge = records[1]["root_metrics"][str(repo.resolve())]
         assert any(item["path"] == "README.md" for item in premerge["files"])
         audit = QVersionManager(repo).audit_lifecycle(records[0]["execution_id"])
@@ -1107,7 +1123,7 @@ class TestFeatureTester:
         for feature in required_features:
             assert feature in features, f"Missing feature: {feature}"
 
-    def test_qcity_clone_platform_automation_is_exposed(self):
+    def test_qcity_clone_platform_automation_is_exposed(self, tmp_path):
         """QCity should advertise the GitHub, Gitpod, Vercel, and Hugging Face automation surfaces."""
         tester = FeatureTester("qcity", "web")
         features = tester.test_qcity_features()
@@ -1121,7 +1137,7 @@ class TestFeatureTester:
         ]:
             assert feature in features, f"Missing QCity automation feature: {feature}"
 
-        agent = OllamaAutonomousAgent()
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
         automation = agent.build_qcity_platform_automation()
 
         assert set(automation.keys()) >= {"github", "gitpod", "vercel", "huggingface", "qvillage"}
@@ -1130,9 +1146,9 @@ class TestFeatureTester:
         assert automation["vercel"]["automated"] is True
         assert automation["huggingface"]["automated"] is True
 
-    def test_clone_platform_automation_includes_netlify_and_all_required_clone_surfaces(self):
+    def test_clone_platform_automation_includes_netlify_and_all_required_clone_surfaces(self, tmp_path):
         """The autonomous agent should cover the broader clone and autoclone ecosystem, including Netlify."""
-        agent = OllamaAutonomousAgent()
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
         automation = agent.build_qcity_platform_automation()
 
         required = {
@@ -1152,7 +1168,7 @@ class TestFeatureTester:
         assert automation["gitlab"]["automated"] is True
         assert automation["quantum"]["automated"] is True
 
-        refreshed = agent.refresh_clone_platform_documents(root=Path(__file__).resolve().parents[1])
+        refreshed = agent.refresh_clone_platform_documents(root=tmp_path)
         assert set(refreshed.keys()) >= {
             "NETLIFYPAYED.md",
             "GITHUBPAYED.md",
@@ -2451,9 +2467,9 @@ class TestBranchSyncManager:
         assert "autosync-backup" in content
         assert "Alpha-Q-ai" in content
 
-    def test_cross_repo_autonomy_manager_includes_alpha_q_ai(self):
+    def test_cross_repo_autonomy_manager_includes_alpha_q_ai(self, tmp_path):
         """The autonomy manager must include Alpha-Q-ai in every autonomous operation."""
-        manager = OllamaAutonomousAgent().cross_repo_manager
+        manager = OllamaAutonomousAgent(base_path=tmp_path).cross_repo_manager
         plan = manager.build_autonomy_plan()
         assert plan["alpha_q_ai_included"] is True
         assert any(item["repo"] == "thealphakenya/Alpha-Q-ai" for item in plan["repos"])
@@ -2464,7 +2480,7 @@ class TestBranchSyncManager:
         repo.mkdir()
         (repo / "placeholder.txt").write_text("TODO: this is a stub prototype\n", encoding="utf-8")
 
-        manager = OllamaAutonomousAgent().cross_repo_manager
+        manager = OllamaAutonomousAgent(base_path=repo).cross_repo_manager
         result = manager.productionize_repo("Alpha-Q-ai", repo)
         assert result["production_ready"] is True
         content = (repo / "placeholder.txt").read_text(encoding="utf-8")
@@ -2791,9 +2807,9 @@ class TestResilienceAndAutoHealing:
 class TestPlatformSpecificFeatures:
     """Tests for the platform-specific features with safe type handling."""
 
-    def test_features_covered_across_platforms(self):
+    def test_features_covered_across_platforms(self, tmp_path):
         """Features should cover all 6 platforms, safely handling dictionary or list data structures."""
-        agent = OllamaAutonomousAgent()
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
         features = agent.PLATFORM_SPECIFIC_FEATURES
 
         platforms = ["windows", "macos", "linux", "ios", "android", "web"]

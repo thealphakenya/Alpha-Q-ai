@@ -24,6 +24,10 @@ def successful_agent_evidence(source_sha):
     }
 
 
+def git_in_bare(repo, *args, **kwargs):
+    return subprocess.run(["git", "--git-dir", str(repo), *args], **kwargs)
+
+
 def init_repo(root, filename, content):
     root.mkdir()
     subprocess.run(["git", "-C", str(root), "init", "-q"], check=True)
@@ -112,7 +116,7 @@ def make_synchronized_repositories(tmp_path):
         bare = tmp_path / f"{name}.git"
         bare_repositories.append(bare)
         subprocess.run(["git", "init", "--bare", "-q", str(bare)], check=True)
-        subprocess.run(["git", "-C", str(bare), "symbolic-ref", "HEAD", "refs/heads/main"], check=True)
+        git_in_bare(bare, "symbolic-ref", "HEAD", "refs/heads/main", check=True)
         for branch in ("main", "autosync-backup", "master"):
             subprocess.run(
                 ["git", "-C", str(seed), "push", str(bare), f"{seed_sha}:refs/heads/{branch}"],
@@ -227,8 +231,11 @@ def test_qmoi_branch_creation_blocks_backup_drift_and_conflicting_branch(tmp_pat
     assert "main, autosync-backup, and master" in drift["blocker"]
     assert all(remote_sha(repo, "qmoi") is None for repo in repositories)
 
-    subprocess.run(
-        ["git", "-C", str(bare_repositories[0]), "update-ref", "refs/heads/autosync-backup", workspace_sha],
+    git_in_bare(
+        bare_repositories[0],
+        "update-ref",
+        "refs/heads/autosync-backup",
+        workspace_sha,
         check=True,
     )
     subprocess.run(
@@ -526,7 +533,7 @@ def test_promoted_sync_creates_master_in_both_repositories_when_absent(tmp_path,
     report_path = tmp_path / "sync-report.json"
     expected_sha = run_git(qmoi, "rev-parse", "refs/remotes/origin/main")
     for bare in bare_repositories:
-        subprocess.run(["git", "-C", str(bare), "update-ref", "-d", "refs/heads/master"], check=True)
+        git_in_bare(bare, "update-ref", "-d", "refs/heads/master", check=True)
     for repo in repositories:
         run_git(repo, "fetch", "origin", "--prune")
     monkeypatch.setattr(cross_repo_sync, "audit", lambda *_args: {"directions": {}})

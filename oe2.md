@@ -4,7 +4,52 @@ This file is the saved markdown form of the live execution ledger for the QMOI r
 
 ## Completion status
 
-Status: complete for the active operational requirements in this session.
+Status: local continuity work is in progress and remote completion remains blocked pending verified GitHub authorization and exact SHA parity. The current estimate for the remaining execution plan is 495 minutes total, or 8 hours 15 minutes, broken down phase-by-phase below.
+
+## Live time accounting — 2026-10-10
+
+- Measured local safe work completed: 21 minutes (0:21) across repo-state verification, mission sync validation, and blocker confirmation.
+- Mission budget remaining after current safe work: 474 minutes (7 hours 54 minutes).
+- Current status: Phase 0 and Phase 2 safe validation are complete; Phase 1 remote GitHub authorization and SHA parity remain blocked; no remote completion or finalization claim is valid.
+- Time is a gating factor under the mission contract: progress is counted only when supported by fresh evidence, and remote completion remains blocked until exact SHA parity and branch-protection authority are verified.
+
+## Continuation checkpoint — 2026-10-10
+
+- The historical snapshot comparison ran under correlation ID `46245b41-e042-48b6-abda-8cbb0362cfe5` and took 3.639 seconds for the inventory function. The paired checkpoint is in `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl`.
+- Inventory artifact: `ollamatracks/legacy_sync_artifact_inventory.json`; SHA-256 `864f911d2ae91c59a17c4151fac6fe5011217ff076e4160ba4ece7b9f304b4ea`; 1,648 and 7,087 regular snapshot files, 33 and 1,043 candidate artifacts, 29 same-path matches, and 13 equal hashes.
+- Local active-tree comparison of those 29 same-path candidates found 1 path present and 28 absent; the present file matched neither snapshot hash. One candidate basename appeared in test source. These are path/hash/name signals only, not deletion, ownership, migration, or semantic test-coverage proof.
+- Comparing all 1,076 candidate records (duplicates counted) against the active Alpha tree found 2 paths present, 1,074 absent, and 0 active hashes equal to a snapshot candidate; 13 candidate basenames appeared in test source, and 4 historical candidates exceeded the hash limit. These remain candidate/path observations only.
+- Hardened the historical inventory to skip symlinked files and exclude them from regular-file counts. Focused regression: `pytest -q tests/test_ollama_autonomous_agent.py -k legacy_sync_inventory_matches_snapshot_artifacts_without_inferring_dates` -> `1 passed, 125 deselected`.
+- Parent-repository provenance: `ad8e80c8c44d7562d4ef0c36a19280f876042264` imported the Alpha archive on 2026-09-22T20:16:32Z. Neither snapshot has nested `.git` metadata; `git -C` resolves to the parent repository. Nine QMOI-history patch filenames do not resolve to local commit objects and their diff-only files lack commit/date headers.
+- Archive-local claim: `qmoi-enhanced-history-14/.sync-log` has a single `2025-09-29 05:29:54 SUCCESS Repo fully synced` entry (SHA-256 `ae51fe1d6811b054091e99d69bc4846f6cb4b7f4d18efcad578be905091d4aa1`); `SYNCREPOS.md` (SHA-256 `9442a51aded39a685d37863467caf04d2019ad9f2966a97d11b9951abb67e67b`) names both repos and contains document markers dated 2025-10-25/26. These records do not bind a source SHA/tree, exact repo/ref, workflow/run ID, or terminal artifact, so they are not independent sync proof.
+- Original snapshot provenance status: `BLOCKED_UNVERIFIED`. The live peer, source commit history, original workflow artifacts, candidate owners, and semantic test mappings are unavailable. Do not infer source dates from extraction mtimes, move candidate files, or report historical sync success.
+- Provenance review checkpoint: correlation ID `e4b01d7c-10b1-456f-b0a7-b12832056b87`; status `BLOCKED_ORIGINAL_SOURCE_PROVENANCE_UNAVAILABLE`; local-only evidence, remote verification false.
+- The active `QVILLAGE.md` SHA-256 is `4254368bba5d157fdece7568a450b5ea1a53d13b2dc4c8886dbf5fbaeca3bbca`; the archived Alpha and QMOI copies are `c9e0ad992ede051ac299b52251abce4f40f6c404829d65b69ad2109ba9b9a91a` and `143f8c0d0f47fb94d4b2bfde2ff9b54f5169f971fc2fe4a443d135419ebad429`. They differ. The remaining archive candidates are absent by path in this active checkout. The current mission remains local-only and remote-blocked; original provenance requires source history or target-owned exact-SHA workflow evidence.
+
+## Integrated local validation — 2026-10-10
+
+- `tests/test_control_plane.py`, `tests/test_cross_repo_sync.py`, and `tests/test_ollama_autonomous_agent.py` passed under `.venv/bin/python -m pytest`: 246 passed, 1 handled headless CLI timeout skip, 385.62 seconds.
+- `scripts/validate_workflows.py` reported 17 YAML-valid workflows and passed the false-success, critical workflow, and success-contract checks. The output labels the repository as `qmoi-enhanced`; treat this as local workflow-file validation, not proof about a remote checkout.
+- Python compilation passed for `scripts/ollama_autonomous_agent.py` and `tests/test_ollama_autonomous_agent.py`. `remote-completion.json`, the legacy inventory JSON, and all 155 JSONL evidence records parsed successfully. Editor diagnostics found no errors in the production script; test-file imports remain unresolved in the editor environment.
+- The full test run exposed an isolation defect: clone-platform tests refreshed docs and tracker state in the live checkout. Those tests now use `tmp_path`; the focused isolation slice passed 5 tests. QVillage, mask/bank docs, and mutable startup status were restored to their clean pre-test content. The append-only telemetry retains test-generated startup/monitor entries, including a synthetic run ID; these are not worker-liveness evidence.
+- After restoring the test-generated docs and fixing test isolation, `git diff --check` still reports one trailing blank line at EOF in `QVILLAGE.md`; it is a formatting-only residual. The latest test-generated monitor entries remain append-only in telemetry and include a synthetic run ID, so they must not be interpreted as remote worker activity.
+- Anonymous read-only refs at this observation: Alpha-Q-ai `main=e6c999402332b7c99f4c044ab779e5b9612f5454`, `autosync-backup=6d925c33f0093035755772137d863618b3818ab0`; qmoi-enhanced `main=6043caa8adae1cc4fc03c7041d18cbd730ce3dfa`, `autosync-backup=d371de28f77b3ebea0244ccc1c13793a2654c395`. No `master` or `qmoi` refs were advertised by these public `ls-remote` queries. Both repositories have main/backup divergence; local HEAD `8af00784a86de1dabdce7cae6513b98fa4c11093` differs from both remote main SHAs.
+- No authenticated API, branch-protection read, protected mutation, dispatch, push, merge, release, deployment, or Q-version finalization was performed. Remote completion remains blocked.
+
+## Planned execution time by phase
+
+- Phase 0 — baseline and repo state check: 20 minutes (0:20)
+- Phase 1 — auth, repo protection, permissions, and remote blocker diagnosis: 35 minutes (0:35)
+- Phase 2 — completion ledger and evidence rules: 30 minutes (0:30)
+- Phase 3 — safe execution plan, dependency graph, and task ordering: 70 minutes (1:10)
+- Phase 4 — Ollama agent and automation review: 40 minutes (0:40)
+- Phase 5 — CI/CD and deployment root-cause remediation: 55 minutes (0:55)
+- Phase 6 — CodeQL and security verification: 35 minutes (0:35)
+- Phase 7 — QAUDITS and feature timestamp verification: 65 minutes (1:05)
+- Phase 8 — measurement and metrics capture: 25 minutes (0:25)
+- Phase 9 — remote verification, push, merge, and final proof: 75 minutes (1:15)
+- Phase 10 — fast-path continuation and final blocker capture: 45 minutes (0:45)
+- Total planned time: 495 minutes (8 hours 15 minutes)
 
 ## Unified execution plan for all live activity stream work
 
