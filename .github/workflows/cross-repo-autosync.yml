@@ -121,6 +121,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          if [ "${QMOI_BRANCH_PUBLICATION_AUTHORIZED,,}" != "true" ]; then
+            echo "::notice::Counterpart autosync contract bootstrap is skipped until QMOI_BRANCH_PUBLICATION_AUTHORIZED=true."
+            exit 0
+          fi
           cp .github/workflows/cross-repo-autosync.yml counterpart/.github/workflows/cross-repo-autosync.yml
           cp .github/workflows/branch-sync.yml counterpart/.github/workflows/branch-sync.yml
           cp scripts/cross_repo_sync.py counterpart/scripts/cross_repo_sync.py

@@ -69,3 +69,45 @@ def test_main_reports_local_context_without_claiming_remote_readiness(monkeypatc
     assert "Documented success contract requirements listed" in output
     assert "SUCCESS CONTRACT REQUIREMENTS (NOT DYNAMICALLY VALIDATED)" in output
     assert "ready for GitHub Actions execution" not in output
+
+
+def test_security_merge_gate_does_not_suppress_npm_audit_failures():
+    workflow_path = Path(__file__).resolve().parents[1] / ".github/workflows/security-merge-gates.yml"
+    workflow = workflow_validator.load_workflow(workflow_path)
+
+    assert isinstance(workflow, dict)
+    audit_steps = [
+        step
+        for job in workflow["jobs"].values()
+        for step in job.get("steps", [])
+        if "npm audit" in step.get("run", "")
+    ]
+
+    assert len(audit_steps) == 1
+    assert audit_steps[0]["run"].strip() == "npm audit --omit=dev --audit-level=high"
+    assert audit_steps[0].get("continue-on-error") is not True
+
+
+def test_realtime_monitor_reports_tracking_persistence_failures():
+    workflow_path = (
+        Path(__file__).resolve().parents[1]
+        / ".github/workflows/ollama-autonomous-agent-realtime-monitor.yml"
+    )
+    workflow = workflow_validator.load_workflow(workflow_path)
+
+    assert isinstance(workflow, dict)
+    persistence_steps = [
+        step
+        for job in workflow["jobs"].values()
+        for step in job.get("steps", [])
+        if step.get("name") == "Persist tracking state"
+    ]
+
+    assert len(persistence_steps) == 1
+    script = persistence_steps[0]["run"]
+    conflict_path = script.split('if ! git rebase "origin/${target_branch}"; then', 1)[1].split(
+        "\n            fi", 1
+    )[0]
+    assert "git rebase --abort || true" in conflict_path
+    assert "exit 1" in conflict_path
+    assert script.rstrip().endswith("exit 1")

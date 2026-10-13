@@ -46,7 +46,7 @@ jobs:
           PY
 
       - name: Audit npm dependencies
-        run: npm audit --omit=dev --audit-level=high || true
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Run repository tests
         env:

@@ -2027,11 +2027,12 @@ jobs:
             if ! git rebase "origin/${target_branch}"; then
               echo "::warning::Tracking rebase conflicted; preserving the artifact and leaving the remote state for the next tracker run."
               git rebase --abort || true
-              exit 0
+              exit 1
             fi
           done
 
           echo "::warning::Tracking state could not be pushed after bounded retries; the uploaded artifact remains available."
+          exit 1
 
 
       # ======================================================================

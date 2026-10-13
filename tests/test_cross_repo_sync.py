@@ -598,3 +598,18 @@ def test_restore_workflow_contract_requires_success_checks_and_reported_secret_a
     assert "QMOI_BRANCH_PUBLICATION_AUTHORIZED" in agent
     assert "secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN" in autosync
     assert "secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN" in branch_sync
+
+
+def test_counterpart_contract_bootstrap_requires_publication_authorization():
+    root = Path(__file__).resolve().parents[1]
+    autosync = (root / ".github/workflows/cross-repo-autosync.yml").read_text(encoding="utf-8")
+    bootstrap = autosync.split(
+        "      - name: Bootstrap counterpart autosync contract\n", 1
+    )[1].split("\n      - name: Run guarded cross-repository sync", 1)[0]
+
+    authorization_gate = 'if [ "${QMOI_BRANCH_PUBLICATION_AUTHORIZED,,}" != "true" ]; then'
+    assert "QMOI_BRANCH_PUBLICATION_AUTHORIZED: ${{ vars.QMOI_BRANCH_PUBLICATION_AUTHORIZED || 'false' }}" in autosync
+    assert authorization_gate in bootstrap
+    assert bootstrap.index(authorization_gate) < bootstrap.index("cp .github/workflows/")
+    assert bootstrap.index(authorization_gate) < bootstrap.index("git -C counterpart push origin HEAD:main")
+    assert "exit 0" in bootstrap
