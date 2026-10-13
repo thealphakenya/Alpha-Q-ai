@@ -165,7 +165,9 @@ def test_tracker_directory_inventory_bounds_hashing_of_oversized_files(
     )
 
     reference = inventory["tracking_system_source_references"][0]
-    assert inventory["metrics"]["tracking_system_file_reference_count"] == 1
+    assert inventory["metrics"]["tracking_system_file_reference_count"] == 5
+    assert len(inventory["tracking_system_source_references"]) == 1
+    assert len(inventory["tracking_system_output_references"]) == 4
     assert reference["status"] == "oversized_not_hashed"
     assert reference["sha256"] is None
     assert reference["metric_values_read"] is False

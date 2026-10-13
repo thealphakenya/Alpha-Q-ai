@@ -82,6 +82,34 @@ def test_resuming_an_interrupted_task_preserves_attempt_history():
     assert task["attempt_history"][0]["elapsed_seconds"] == 120
 
 
+def test_resuming_partially_completed_task_preserves_prior_elapsed_time():
+    ledger = _ledger()
+    task = next(item for item in ledger["tasks"] if item["id"] == "M04")
+    task.update(
+        {
+            "status": "PARTIALLY_COMPLETE",
+            "started_at": "2026-10-13T14:00:00Z",
+            "finished_at": "2026-10-13T14:01:00Z",
+            "elapsed_seconds": 60,
+        }
+    )
+    task.pop("attempt_history", None)
+
+    task = start_task(ledger, "M04", now="2026-10-13T14:02:00Z")
+    assert task["attempt_history"][0]["elapsed_seconds"] == 60
+    assert task["attempt_history"][0]["outcome"] == "PARTIALLY_COMPLETE"
+
+    task = finish_task(
+        ledger,
+        "M04",
+        "PARTIALLY_COMPLETE",
+        evidence_refs=["test://resumed-task"],
+        next_action="Continue the task.",
+        now="2026-10-13T14:02:30Z",
+    )
+    assert task["elapsed_seconds"] == 90
+
+
 def test_phase_transitions_record_elapsed_time_and_evidence():
     ledger = _ledger()
     phase = start_phase(ledger, "P02_REQUIREMENT_AND_CONTINUATION_INSPECTION", now="2026-10-13T14:00:00Z")

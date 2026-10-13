@@ -260,8 +260,28 @@ def start_task(ledger: dict[str, Any], task_id: str, *, now: str | None = None) 
     timestamp = now or utc_now()
     instant = _parse_utc(timestamp)
     prior_status = task["status"]
+    attempts = task.setdefault("attempt_history", [])
+    if (
+        not attempts
+        and prior_status in TERMINAL_TASK_STATUSES
+        and task.get("elapsed_seconds") is not None
+    ):
+        previous_elapsed = float(task["elapsed_seconds"])
+        if previous_elapsed > 0:
+            attempts.append(
+                {
+                    "started_at": task.get("started_at"),
+                    "finished_at": task.get("finished_at"),
+                    "elapsed_seconds": previous_elapsed,
+                    "outcome": (
+                        prior_status
+                        if prior_status in TERMINAL_TASK_STATUSES
+                        else "INTERRUPTED_OR_RESTARTED"
+                    ),
+                    "active_time_known": False,
+                }
+            )
     if prior_status == "IN_PROGRESS":
-        attempts = task.setdefault("attempt_history", [])
         if attempts and attempts[-1].get("finished_at") is None:
             previous_start = _parse_utc(attempts[-1]["started_at"])
             attempts[-1].update(
@@ -282,7 +302,6 @@ def start_task(ledger: dict[str, Any], task_id: str, *, now: str | None = None) 
     if unmet and prior_status != "IN_PROGRESS":
         raise LedgerError(f"Cannot start {task_id}; dependencies are not verified: {', '.join(unmet)}")
 
-    attempts = task.setdefault("attempt_history", [])
     if attempts:
         task["retries"] = int(task.get("retries", 0)) + 1
     attempts.append(

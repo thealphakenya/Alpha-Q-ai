@@ -3,7 +3,7 @@ QMOI MASTER MISSION: VERIFIED REMOTE COMPLETION IN 120 MINUTES WITH AUTOMATIC CO
 MISSION CONFIGURATION
 
 - Repository: "thealphakenya/Alpha-Q-ai"
-- Required branch: "codespace-sturdy-fishstick-69wx9rjjgw5pfrq65"
+- Required branch: "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65"
 - Initial execution deadline: 120 minutes maximum
 - Primary objective: Complete the highest possible amount of work to a verified, production-quality standard within two hours.
 - Persistent objective: Automatically resume and finish every remaining feasible requirement without losing requirements, progress, evidence, timestamps, or context.
@@ -38,7 +38,7 @@ git status --short --branch
 git branch --show-current
 git rev-parse HEAD
 git fetch origin --prune
-git ls-remote --heads origin codespace-sturdy-fishstick-69wx9rjjgw5pfrq65
+git ls-remote --heads origin codespace-sturdy-fishstick-69wxr9jjgw5pfrq65
 git branch -vv
 
 If the target branch is inaccessible, investigate remote branch listings, pull-request head references, commit history, and available refs. Do not silently substitute "main", create a replacement branch, or claim to have inspected a branch that cannot be resolved.
@@ -571,3 +571,32 @@ Start now. Verify the target, inspect requirements, implement continuously, vali
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Conceptual architecture execution contract
+
+Use the user-provided `conceparch.md` concept as a workflow model, not as proof that a bridge, runtime, quota, or performance target is available:
+
+`Developer input -> Copilot Chat planning -> structured task payload -> verified local agent bridge -> bounded local Ollama work -> local validation/repair -> result and evidence returned to Copilot and the developer`
+
+Every phase `M01`–`M16` must follow this same closed loop: state the goal and constraints in a structured payload; check the required executor and permissions; execute only bounded, authorized work; validate the result against the pre-change baseline; and return the diff, test outcomes, risks, evidence, and next action. If the bridge or Ollama runtime is unavailable, record the blocker and continue only with safe work supported by the current environment. This local loop never substitutes for terminal, exact-SHA remote verification or human approval.
+
+| Mission section | Architecture application |
+|---|---|
+| M01 — target verification | Confirm the input, repository/ref/SHA, local bridge and Ollama availability; do not infer readiness. |
+| M02 — requirement reconciliation | Convert source requirements into traceable, structured task payloads without losing constraints. |
+| M03 — task ledger | Persist payload identity, dependencies, status, evidence, and resume action in the canonical ledger. |
+| M04 — execution clock | Measure actual phase/task time and checkpoint continuity; do not estimate elapsed work. |
+| M05 — prioritization | Send bounded, risk-ranked work units to the local executor only when eligible. |
+| M06 — implementation | Keep edits scoped, preserve compatibility, and return each proposed diff for validation. |
+| M07 — checkpoints | Persist sanitized inputs, outputs, test evidence, and recovery data; never persist secrets. |
+| M08 — continuation | Resume from validated state through the supported executor; prevent duplicate work. |
+| M09 — Ollama execution | Verify model/runtime availability and resource limits for each applicable run. |
+| M10 — automation | Keep bridge and workflow permissions least-privilege; distinguish local and hosted execution. |
+| M11 — validation | Feed failures into bounded local repair loops, then rerun relevant checks. |
+| M12 — reconciliation | Return results to Copilot/developer and reconcile against every source requirement. |
+| M13 — delivery | Keep local results separate from authorized push, CI, merge, release, and deployment evidence. |
+| M14 — adaptation | Reprioritize from measured throughput, errors, test duration, and remaining work. |
+| M15 — recovery | Verify that an independent run can load the checkpoint without repeating completed work. |
+| M16 — final report | Report the returned diff, evidence, measured outcomes, unknowns, blockers, and next action. |
+
+For each phase, record planned/started/completed/blocked work, local execution and validation outcomes, repair iterations, and result-handoff completeness; use `NOT_MEASURED` when telemetry is unavailable. The concept note's approximately 20% Copilot-limit use and 400%+ local work-volume statements are unverified source claims, not measured baselines, guarantees, targets, or completion evidence. Preserve behavior by requiring a baseline, focused non-regression checks, bounded changes, and explicit rollback/stop conditions before accepting any enhancement.

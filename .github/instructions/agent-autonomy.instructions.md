@@ -24,6 +24,13 @@ Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISS
 - Continue automatically across every remaining safe local mission task until the queue is exhausted or an external authority gate blocks a remote/protected action. Treat a blocked remote action as a recorded blocker, not as a reason to ignore the remaining work or silently mark the mission complete.
 - Never skip, forget, or silently defer an in-scope mission item; each remaining requirement must be mapped to an owner, a concrete next action, and an evidence or blocker status in the mission ledger and checkpoints.
 
+## Conceptual execution loop
+
+- Route eligible work as a structured goal, constraints, dependencies, acceptance checks, and bounded resource/time budget through the verified local agent bridge to Ollama; preserve a human/Copilot reviewable diff.
+- Keep planning, local execution, validation/repair, and result handoff as distinct evidence stages. Return the diff, actual tests, repair count, limitations, and next action to Copilot/developer; do not treat a proposed payload or an Ollama response as completion.
+- If bridge/model availability, permissions, or resource limits are unknown, mark that step `NOT_MEASURED` or blocked and use only a safe, verified alternate path. Do not bypass existing authorization or remote verification gates.
+- Measure payload completeness, local execution counts, repair iterations, validation outcomes, handoff completeness, and regressions per phase when instrumentation exists. Treat the concept note's quota/work-volume numbers as unverified claims, never as targets or progress.
+
 ## Credential and continuation contract
 
 - On GitHub credential tasks, read the latest `or.md`, `oe2.txt`, `remotecompletion.md`, `githubapp.md`, `github.md`, `githubapppermissions.md`, and `CREDENTIAL_READINESS.md` before acting; treat dated prior chat summaries as pointers, not current proof.

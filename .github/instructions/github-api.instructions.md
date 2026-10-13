@@ -11,6 +11,7 @@ Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISS
 - Use repository dispatch or target-owned workflow triggers only when explicitly authorized.
 - Never claim success from a dispatch acceptance alone.
 - The autonomous agent must apply these identity, protection, authorization, and terminal-evidence checks to each remote operation; an access preflight is not mutation authority or parity evidence.
+- The Copilot-to-local-bridge-to-Ollama loop is a local execution path, not a GitHub credential path. Keep tokens and private keys out of structured payloads, model context, diffs, and return summaries; request remote work only through authorized least-privilege integrations and report its exact terminal evidence separately.
 
 ## Evidence requirements
 

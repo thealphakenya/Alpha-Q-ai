@@ -196,3 +196,9 @@ Result:
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
+
+## Conceptual architecture metrics
+
+The current mission documents now map the conceptual handoff across `M01`–`M16`: developer intent -> Copilot plan -> structured payload -> verified local bridge -> bounded Ollama execution -> local validation/repair -> result returned to Copilot and the developer. Measure payload completeness, local task execution, repair iterations, validation outcomes, handoff completeness, and regression deltas at each phase; record `NOT_MEASURED` when runtime evidence is unavailable.
+
+The concept note's approximate 20% Copilot monthly-limit usage and 400%+ local work-volume figures are unverified source claims, not measured performance or success criteria. The latest correlated evidence in `oe2.txt` and `remotecompletion.md` records the 16-phase mapping and focused documentation regression result; bridge/Ollama runtime telemetry and remote completion remain unverified.

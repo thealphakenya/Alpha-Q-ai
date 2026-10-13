@@ -5,10 +5,10 @@
 
 This generated QMOI tracker includes currently registered and planned/unverified feature requirements. It creates review work automatically; it does not claim feature availability or silently install runtime telemetry.
 
-- Status: `NEEDS_REVIEW`; correlation: `25d14058-ca64-463b-9869-41f745965ef1`.
-- Source manifest: `db28d0833e61b4bb94bcec31c07a13e36383f6eb0635a400ddf655b23d51092c`; local source SHA: `cfab9094463d60fb28b2085b1c45e2a7b1d49bdd`.
+- Status: `NEEDS_REVIEW`; correlation: `32748e4b-c579-417a-a451-1ee0c489130d`.
+- Source manifest: `fb3b6e92ea04c3cc485c12c8a5a49840fcc8095f4fa8e76352910237bb5b28d9`; local source SHA: `280abad164ac2a3b248b7ff37f5853869af375c4`.
 - Registered features: `404`; planned/UIS requirements: `160`.
-- Local Ollama tracker artifacts: `537`; QMOI tracker artifacts: `0`.
+- Local Ollama tracker file paths: `2226`; QMOI tracker file paths: `3`. Managed output paths are path-listed but excluded from self-hashing.
 - All requirements with a generated monitoring-review action: `576/576`.
 - Verified monitor mappings: `0/576`; coverage verified: `False`.
 

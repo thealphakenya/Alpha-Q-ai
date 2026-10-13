@@ -49,6 +49,16 @@ OUTPUT_PATHS = {
     "ollamatracks/alltracks_monitoring_inventory.json",
     "QMOItracks/qmoitracks_monitoring_inventory.json",
 }
+TRACKING_SYSTEM_OUTPUTS = {
+    "ollamatracks": (
+        "ollamatracks/ALLTRACKS.md",
+        "ollamatracks/alltracks_monitoring_inventory.json",
+    ),
+    "qmoitracks": (
+        "QMOItracks/QMOITRACKS.md",
+        "QMOItracks/qmoitracks_monitoring_inventory.json",
+    ),
+}
 MONITORING_REQUIREMENT = (
     "Define owner, signal, unit, source, freshness, thresholds, alert/runbook, "
     "privacy scope, and positive/negative tests before treating monitoring as implemented."
@@ -419,11 +429,23 @@ def build_tracking_inventory(
     )
     tracking_artifacts_by_system = {
         system: {
-            "file_reference_count": sum(
+            "source_file_reference_count": sum(
                 item["path"].split("/", 1)[0].lower() == system
                 and "tracking_system_source_reference" in item["roles"]
                 for item in source_records
             ),
+            "generated_output_reference_count": len(
+                TRACKING_SYSTEM_OUTPUTS[system]
+            ),
+            "generated_inventory_output_count": sum(
+                path.endswith("_monitoring_inventory.json")
+                for path in TRACKING_SYSTEM_OUTPUTS[system]
+            ),
+            "file_reference_count": sum(
+                item["path"].split("/", 1)[0].lower() == system
+                and "tracking_system_source_reference" in item["roles"]
+                for item in source_records
+            ) + len(TRACKING_SYSTEM_OUTPUTS[system]),
             "artifact_reference_count": sum(
                 item["path"].split("/", 1)[0].lower() == system
                 and "tracking_artifact_reference" in item["roles"]
@@ -442,6 +464,16 @@ def build_tracking_inventory(
         }
         for system in ("ollamatracks", "qmoitracks")
     }
+    tracking_system_output_references = [
+        {
+            "path": path,
+            "scope": "active_checkout",
+            "status": "managed_output_path_excluded_from_source_hash",
+            "content_read": False,
+        }
+        for paths in TRACKING_SYSTEM_OUTPUTS.values()
+        for path in paths
+    ]
 
     metric_definitions = {
         "feature_monitoring_mapping_rate_percent": {
@@ -471,6 +503,7 @@ def build_tracking_inventory(
                 "planned_records": planned_records,
                 "uis_records": uis_records,
                 "action_queue": action_queue,
+                "tracking_system_output_references": tracking_system_output_references,
                 "access_mode_names": sorted(access_modes),
                 "source_scope": source_scope,
                 "policy_version": 1,
@@ -523,6 +556,7 @@ def build_tracking_inventory(
         "tracking_system_source_references": [
             item for item in source_records if "tracking_system_source_reference" in item["roles"]
         ],
+        "tracking_system_output_references": tracking_system_output_references,
         "tracking_artifacts_by_system": tracking_artifacts_by_system,
         "metrics": {
             "indexed_materialized_path_count": len(indexed_paths),
@@ -538,7 +572,7 @@ def build_tracking_inventory(
             "tracking_system_file_reference_count": sum(
                 "tracking_system_source_reference" in item["roles"]
                 for item in source_records
-            ),
+            ) + len(tracking_system_output_references),
             "monitoring_mappings_verified_count": 0,
             "monitoring_unmapped_requirement_count": all_requirements,
             "monitoring_action_queue_count": len(action_queue),
@@ -641,9 +675,9 @@ def render_tracking_markdown(inventory: Mapping[str, Any]) -> str:
         f"| Metric artifact references | {metrics['metric_artifact_reference_count']} | Hashed file references; values were not read |",
         f"| Tracking document references | {metrics['tracking_document_reference_count']} | Local Markdown path candidates |",
         f"| Tracking artifacts referenced | {metrics['tracking_artifact_reference_count']} | Local JSON/JSONL/CSV files under tracker roots; metric values are never read and hashing is bounded |",
-        f"| Tracker-directory files indexed | {metrics['tracking_system_file_reference_count']} | All materialized non-ignored files under Ollama/QMOI tracker roots; path, scope, size, and bounded hash status |",
-        f"| Ollama tracker files / metric artifacts | {inventory['tracking_artifacts_by_system']['ollamatracks']['file_reference_count']} / {inventory['tracking_artifacts_by_system']['ollamatracks']['metric_artifact_reference_count']} | File path/metadata inventory; hashes are bounded to {MAX_SOURCE_HASH_BYTES} bytes; metric values are not read |",
-        f"| QMOI tracker files / metric artifacts | {inventory['tracking_artifacts_by_system']['qmoitracks']['file_reference_count']} / {inventory['tracking_artifacts_by_system']['qmoitracks']['metric_artifact_reference_count']} | File path/metadata inventory; hashes are bounded to {MAX_SOURCE_HASH_BYTES} bytes; metric values are not read |",
+        f"| Tracker-directory file path references | {metrics['tracking_system_file_reference_count']} | Materialized non-ignored input files plus managed output paths; self-referential output contents are excluded |",
+        f"| Ollama tracker file paths / metric artifacts | {inventory['tracking_artifacts_by_system']['ollamatracks']['file_reference_count']} / {inventory['tracking_artifacts_by_system']['ollamatracks']['metric_artifact_reference_count']} | Input path/metadata inventory; input hashes are bounded to {MAX_SOURCE_HASH_BYTES} bytes; metric values are not read |",
+        f"| QMOI tracker file paths / metric artifacts | {inventory['tracking_artifacts_by_system']['qmoitracks']['file_reference_count']} / {inventory['tracking_artifacts_by_system']['qmoitracks']['metric_artifact_reference_count']} | Input path/metadata inventory; input hashes are bounded to {MAX_SOURCE_HASH_BYTES} bytes; metric values are not read |",
         f"| Verified per-requirement monitor mappings | {metrics['monitoring_mappings_verified_count']} | Evidence-linked feature mappings only |",
         f"| Pending monitoring review actions | {metrics['monitoring_action_queue_count']} | One durable review action per requirement; no runtime mutation authorized |",
         f"| Monitor-mapping rate | {metrics['feature_monitoring_mapping_rate_percent']}% | Verified mappings / all requirements; zero currently verified |",
@@ -736,7 +770,7 @@ def render_qmoi_tracks_markdown(inventory: Mapping[str, Any]) -> str:
         f"- Status: `{inventory['status']}`; correlation: `{inventory['correlation_id']}`.",
         f"- Source manifest: `{inventory['source_manifest_sha256']}`; local source SHA: `{inventory.get('local_head_sha') or 'unavailable'}`.",
         f"- Registered features: `{metrics['feature_requirement_count']}`; planned/UIS requirements: `{metrics['planned_feature_requirement_count'] + metrics['universal_intelligence_requirement_count']}`.",
-        f"- Local Ollama tracker files: `{inventory['tracking_artifacts_by_system']['ollamatracks']['file_reference_count']}`; QMOI tracker files: `{inventory['tracking_artifacts_by_system']['qmoitracks']['file_reference_count']}`.",
+        f"- Local Ollama tracker file paths: `{inventory['tracking_artifacts_by_system']['ollamatracks']['file_reference_count']}`; QMOI tracker file paths: `{inventory['tracking_artifacts_by_system']['qmoitracks']['file_reference_count']}`. Managed output paths are path-listed but excluded from self-hashing.",
         f"- All requirements with a generated monitoring-review action: `{metrics['monitoring_action_queue_count']}/{metrics['monitoring_requirement_count']}`.",
         f"- Verified monitor mappings: `{metrics['monitoring_mappings_verified_count']}/{metrics['monitoring_requirement_count']}`; coverage verified: `{inventory['coverage_verified']}`.",
         "",

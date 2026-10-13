@@ -1215,7 +1215,7 @@ Every UI/API/backend feature must have a stable feature ID, owning repository/re
 ### Styles and universals test/hook mapping: `ollamatracks/feature_test_hook_coverage.json`
 
 Registered feature count: `404`; test mappings: `0`; reviewed hook applicability: `0/404`; status: `NEEDS_FEATURE_TEST_HOOK_MAPPING`.
-Styles/universals replacement plan: `ollamatracks/style_universal_replacement_inventory.json`; `1679` style files, `1871` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
+Styles/universals replacement plan: `ollamatracks/style_universal_replacement_inventory.json`; `1680` style files, `1872` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
 <!-- END QMOI MANAGED: active-test-feature-coverage -->
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->

@@ -1,13 +1,19 @@
 {
   "base_sha": "abe325da0bed9a0b51fd8e2a397a5ba07a2ce2b9",
   "blockers": [
-    "Checked-out branch codespace-sturdy-fishstick-69wxr9jjgw5pfrq65 differs from required mission branch codespace-sturdy-fishstick-69wx9rjjgw5pfrq65.",
-    "Remote target branch ref was not observed; absence is ambiguous without authenticated repository access.",
     "GitHub CLI is unauthenticated; identity, branch policy, write permission, workflow runs, and remote SHA are unverified.",
     "Local Ollama executable exists but no local Ollama service is responding.",
     "Existing six-hour/twelve-hour workflows check out the default branch; their connection to this mission ledger and independent resume behavior are not verified.",
     "The existing worktree contains pre-existing user edits; preserve them and do not stage or publish the whole tree."
   ],
+  "branch_ref_observation": {
+    "method": "git ls-remote --heads origin codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+    "observed_at": "2026-10-13T22:23:23Z",
+    "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+    "remote_verified": false,
+    "sha": "280abad164ac2a3b248b7ff37f5853869af375c4",
+    "status": "OBSERVED"
+  },
   "canonical_source": {
     "byte_identical_mirrors": [
       "MISSION.md",
@@ -43,12 +49,39 @@
         "previous_sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
         "remote_verified": false,
         "target_branch_matches_local": false
+      },
+      {
+        "basis": "All listed local mission source mirrors were read and byte-compared.",
+        "local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+        "observed_at": "2026-10-13T21:59:36.391388Z",
+        "observed_sha256": "2833b4e2804a20ad229a9bf100abeae48d5b39e3e8460b9299fb73a6e246cc66",
+        "previous_sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
+        "remote_verified": false,
+        "target_branch_matches_local": false
+      },
+      {
+        "basis": "All listed local mission source mirrors were read and byte-compared.",
+        "local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+        "observed_at": "2026-10-13T22:04:57.698100Z",
+        "observed_sha256": "b5934d7bccafdfb2d24ffc8c15c40ad5464242294176f2bcb23100843a8cd941",
+        "previous_sha256": "2833b4e2804a20ad229a9bf100abeae48d5b39e3e8460b9299fb73a6e246cc66",
+        "remote_verified": false,
+        "target_branch_matches_local": false
+      },
+      {
+        "basis": "All listed local mission source mirrors were read and byte-compared.",
+        "local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+        "observed_at": "2026-10-13T22:12:43.528858Z",
+        "observed_sha256": "02210093fc94f16833fa6831bec42bb89874f73f714a74dfe6c77e16a94a2fe7",
+        "previous_sha256": "b5934d7bccafdfb2d24ffc8c15c40ad5464242294176f2bcb23100843a8cd941",
+        "remote_verified": false,
+        "target_branch_matches_local": true
       }
     ],
-    "mirror_sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
+    "mirror_sha256": "02210093fc94f16833fa6831bec42bb89874f73f714a74dfe6c77e16a94a2fe7",
     "mission_section_count": 16,
     "path": "NEWMISSION.md",
-    "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950"
+    "sha256": "02210093fc94f16833fa6831bec42bb89874f73f714a74dfe6c77e16a94a2fe7"
   },
   "continuation": {
     "independent_checkpoint_resume_demonstrated": false,
@@ -70,19 +103,423 @@
     ]
   },
   "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
+  "current_phase": "P02_REQUIREMENT_AND_CONTINUATION_INSPECTION",
   "inventory_coverage": {
     "instruction_files_discovered_and_read": 9,
     "mission_sections_mapped": 16,
     "mission_sections_total": 16,
-    "oe2_txt_full_requirement_reconciliation": "PENDING",
-    "other_requirement_sources": "NOT_YET_FULLY_INVENTORIED",
-    "remotecompletion_md_full_requirement_reconciliation": "PENDING",
+    "oe2_txt_full_requirement_reconciliation": "IN_PROGRESS",
+    "other_requirement_sources": "PARTIALLY_INVENTORIED",
+    "remotecompletion_md_full_requirement_reconciliation": "IN_PROGRESS",
+    "requirement_source_reconciliation": {
+      "method": "Group normative sources by mission requirement/task, keep historical checkpoint events as evidence records, and report heuristic candidates and source mismatches without inferring semantic completion.",
+      "requirement_groups": [
+        {
+          "acceptance_evidence": "Local repository/ref identity and exact upstream SHA observed; GitHub identity, branch protection, write authority, and policy still need authorized verification.",
+          "group": "Target, repository, branch, identity, authorization",
+          "task_ids": [
+            "M01",
+            "M13"
+          ]
+        },
+        {
+          "acceptance_evidence": "All discovered sources listed with status and source references; each requirement mapped to acceptance evidence, or explicitly blocked/pending.",
+          "group": "Requirement discovery, mission policy, and conflict resolution",
+          "task_ids": [
+            "M02",
+            "M12"
+          ]
+        },
+        {
+          "acceptance_evidence": "Validated ledger, real UTC task/phase timing, correlated paired documents and machine state, append-only event, and measured resource/validation metrics.",
+          "group": "Canonical task state, timing, checkpoint integrity, and evidence",
+          "task_ids": [
+            "M03",
+            "M04",
+            "M07",
+            "M14"
+          ]
+        },
+        {
+          "acceptance_evidence": "Dependency-ready priority decisions grounded in risk/value; implementations have confirmed requirements, compatible behavior, regression tests, and rollback/security review.",
+          "group": "Priority, dependency, and bounded execution",
+          "task_ids": [
+            "M05",
+            "M06"
+          ]
+        },
+        {
+          "acceptance_evidence": "Measure structured payload/handoff, bridge, bounded inference, validation/repair, and independent checkpoint restoration separately; unavailable runtime measurements remain NOT_MEASURED.",
+          "group": "Conceptual architecture handoff and autonomous recovery",
+          "task_ids": [
+            "M03",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M15"
+          ]
+        },
+        {
+          "acceptance_evidence": "Inspect existing executor/workflows; verify real authorized inference, triggers, exact ref, bounded retries, checkpoint loading, and an independent resume before declaring continuation verified.",
+          "group": "Ollama runtime, models, workflows, and automation",
+          "task_ids": [
+            "M08",
+            "M09",
+            "M10",
+            "M15"
+          ]
+        },
+        {
+          "acceptance_evidence": "Record exact local commands/results and security uncertainties; remote checks/releases remain gated on authority and terminal exact-SHA evidence.",
+          "group": "Tests, security, dependencies, and release safeguards",
+          "task_ids": [
+            "M06",
+            "M10",
+            "M11",
+            "M12",
+            "M13"
+          ]
+        },
+        {
+          "acceptance_evidence": "Report task states separately from implementation and remote verification; retain concrete owner/action/evidence for all unresolved work.",
+          "group": "Handover and durable next actions",
+          "task_ids": [
+            "M07",
+            "M12",
+            "M14",
+            "M15",
+            "M16"
+          ]
+        }
+      ],
+      "sources": {
+        ".github/copilot-instructions.md": {
+          "scope": "Agent-wide implementation, testing, credential, policy, and continuation behavior.",
+          "status": "INVENTORIED",
+          "task_ids": [
+            "M02",
+            "M03",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M15"
+          ]
+        },
+        ".github/instructions/": {
+          "file_count": 7,
+          "scope": "Mission, autonomy, GitHub API, release, security, workflows, and workspace instructions; instruction inventory metadata is in the latest paired checkpoint.",
+          "status": "INVENTORIED",
+          "task_ids": [
+            "M01",
+            "M02",
+            "M03",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ]
+        },
+        "AGENTS.md": {
+          "scope": "Repository policy: safe worktree handling, verification, evidence, remote-completion gates.",
+          "status": "INVENTORIED",
+          "task_ids": [
+            "M01",
+            "M02",
+            "M03",
+            "M07",
+            "M11",
+            "M12",
+            "M13",
+            "M15",
+            "M16"
+          ]
+        },
+        "MISSION.md": {
+          "scope": "All 16 mission sections and the appended conceptual-architecture and measurement contracts.",
+          "status": "MAPPED_TO_CANONICAL_TASKS",
+          "task_ids": [
+            "M01",
+            "M02",
+            "M03",
+            "M04",
+            "M05",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ]
+        },
+        "conceparch.md": {
+          "scope": "Conceptual reference supplied by the user; preserve the file and do not treat it as proof of implementation.",
+          "status": "UNTRACKED_READ_ONLY_SOURCE; CONTENT_NOT_COPIED_TO_EVIDENCE",
+          "task_ids": [
+            "M02"
+          ]
+        },
+        "conceptual_architecture": {
+          "scope": "Copilot planning, structured work payload, local bridge, bounded Ollama execution, validation/repair, and handoff; do not claim runtime execution from documentation.",
+          "status": "MAPPED_TO_ALL_MISSION_PHASES; RUNTIME_METRICS_UNMEASURED",
+          "task_ids": [
+            "M01",
+            "M02",
+            "M03",
+            "M04",
+            "M05",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ]
+        },
+        "deployment_sources": {
+          "candidate_config_count": 7,
+          "files": [
+            "netlify.toml",
+            "Alpha-Q-ai-2025/netlify.toml",
+            "Alpha-Q-ai-2025/vercel.json",
+            "qmoi-enhanced-history-14/netlify.toml",
+            "qmoi-enhanced-history-14/vercel.json",
+            "qmoi-enhanced-history-14/_archive_qmoi-enhanced/netlify.toml",
+            "qmoi-enhanced-history-14/_archive_qmoi-enhanced/vercel.json"
+          ],
+          "scope": "Path discovery covers seven listed configuration files across active/archive trees; configured provider, deployed site, and production logs remain unverified.",
+          "status": "CONFIG_PATHS_INVENTORIED; PROVIDER_AND_PRODUCTION_STATE_UNVERIFIED",
+          "task_ids": [
+            "M02",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M16"
+          ]
+        },
+        "github_remote_sources": {
+          "scope": "Issues, pull requests, required checks, branch protection, and deployment/provider records were not freshly verified through an authenticated GitHub API in this continuation.",
+          "status": "BLOCKED_UNVERIFIED",
+          "task_ids": [
+            "M01",
+            "M02",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M16"
+          ]
+        },
+        "mission_source_mirrors": {
+          "canonical_sha256": "02210093fc94f16833fa6831bec42bb89874f73f714a74dfe6c77e16a94a2fe7",
+          "files": [
+            "NEWMISSION.md",
+            "MISSIONNEWEST.md",
+            "MISSIONNEW.md",
+            "MISSIONEW.md",
+            ".github/instructions/MISSION.md"
+          ],
+          "status": "BYTE_IDENTICAL"
+        },
+        "oe2.txt": {
+          "scope": "Current plan/dashboard and 230 checkpoint sections containing 230 operation events across 74 distinct operation names; 592 directive-candidate lines are heuristic review inputs.",
+          "status": "INVENTORIED; SEMANTIC_RECONCILIATION_PENDING",
+          "task_ids": [
+            "M01",
+            "M02",
+            "M03",
+            "M04",
+            "M05",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ]
+        },
+        "oe2_remotecompletion_checkpoint_comparison": {
+          "difference": "The historical user-continuation handover is present only in oe2.txt. It was introduced in commit 7c40ff79dd1f046cf03b5253a7e273f6f483594b, which changed both files; the paragraph is absent from that commit's remotecompletion.md blob. Preserve the source-history difference and map its handover requirements without rewriting history or fabricating a paired event.",
+          "differing_blocks": 1,
+          "differing_timestamp": "2026-10-13T14:11:55.768819Z",
+          "distinct_operation_names_per_file": 74,
+          "introducing_commit": "7c40ff79dd1f046cf03b5253a7e273f6f483594b",
+          "introducing_commit_is_ancestor_of_current_head": true,
+          "matching_timestamp_blocks": 230,
+          "operation_events_per_file": 230,
+          "operation_names_identical": true,
+          "status": "HISTORICAL_OE2_ONLY_HANDOVER_PROVENANCE_IDENTIFIED; REQUIREMENTS_MAPPED",
+          "task_ids": [
+            "M02",
+            "M08",
+            "M12",
+            "M16"
+          ],
+          "text_identical_blocks": 229
+        },
+        "remotecompletion.md": {
+          "scope": "Current remote-completion plan/dashboard and 230 checkpoint sections containing 230 operation events across 74 distinct operation names; 606 directive-candidate lines are heuristic review inputs.",
+          "status": "INVENTORIED; SEMANTIC_RECONCILIATION_PENDING",
+          "task_ids": [
+            "M01",
+            "M02",
+            "M03",
+            "M04",
+            "M05",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ]
+        },
+        "test_sources": {
+          "root_test_module_count": 28,
+          "scope": "Root tests/ contains 28 Python test modules; the focused mission task-ledger suite passed separately.",
+          "status": "INVENTORIED; BROAD_SUITE_NOT_RUN_IN_THIS_CONTINUATION",
+          "task_ids": [
+            "M06",
+            "M10",
+            "M11",
+            "M15"
+          ]
+        },
+        "todo_sources": {
+          "candidate_file_count": 37,
+          "scope": "Discovered TODO-like paths are within qmoi-enhanced-history-14 and Alpha-Q-ai-2025 archive trees; no root active TODO inventory or ownership/test mapping is established.",
+          "status": "PATH_INVENTORY_ONLY; ARCHIVE_CANDIDATES_NOT_SEMANTICALLY_RECONCILED",
+          "task_ids": [
+            "M02",
+            "M05",
+            "M06",
+            "M12",
+            "M16"
+          ]
+        },
+        "tracking_sources": {
+          "files": [
+            "ollamatracks/CURRENT_STATUS.txt",
+            "ollamatracks/PR_STATUS.txt",
+            "ollamatracks/TRACKING_INDEX.txt",
+            "ollamatracks/TRACKING_PROTOCOL.txt"
+          ],
+          "scope": "CURRENT_STATUS.txt and PR_STATUS.txt both report 2026-10-13T18:35:29.440667Z; treat their 'running/monitoring' values as stale snapshots, not current execution proof.",
+          "status": "INVENTORIED; STATUS_SNAPSHOT_STALENESS_RECORDED",
+          "task_ids": [
+            "M02",
+            "M03",
+            "M07",
+            "M14",
+            "M16"
+          ]
+        },
+        "user_continuation_handover": {
+          "introducing_commit": "7c40ff79dd1f046cf03b5253a7e273f6f483594b",
+          "scope": "User requested continuing all unfinished requirements, maintaining task/evidence/time state, and reporting implementation versus test versus remote status; original handover branch and status assertions are historical and have been superseded by later observed evidence.",
+          "source": "oe2.txt:4706-4710 at the 2026-10-13T14:11:55.768819Z paired checkpoint",
+          "status": "HISTORICAL_SOURCE_MAPPED",
+          "task_ids": [
+            "M02",
+            "M08",
+            "M12",
+            "M16"
+          ]
+        },
+        "workflow_and_continuation_sources": {
+          "findings": [
+            "Neither reviewed workflow references mission-task-ledger.json or mission_task_ledger.",
+            "The autonomous-agent workflow checks out github.event.repository.default_branch.",
+            "That workflow persists resumefromhere.txt and ollamatracks/checkpoint.json; these are not proof of loading/selecting work from the canonical mission ledger.",
+            "The agent's instruction-inventory and universal-intelligence-plan commands read the ledger only to reuse its correlation ID; they do not execute or resume canonical mission tasks.",
+            "No workflow-level independent mission-ledger resume was demonstrated."
+          ],
+          "reviewed_files": [
+            ".github/workflows/ollama-autonomous-agent.yml",
+            ".github/workflows/ollama-master-orchestrator.yml"
+          ],
+          "status": "LOCAL_SOURCE_AUDIT_PARTIAL; INDEPENDENT_RESUME_UNVERIFIED",
+          "task_ids": [
+            "M08",
+            "M09",
+            "M10",
+            "M15"
+          ],
+          "workflow_file_count": 17
+        }
+      },
+      "status": "PARTIAL_SOURCE_TO_TASK_MAPPING; SEMANTIC_CANDIDATE_REVIEW_AND_REFERENCED_SOURCE_INVENTORY_PENDING",
+      "unresolved": [
+        "Review the directive-candidate lines and 74 operation types semantically; keyword counts are not requirement coverage.",
+        "Follow and inventory additional requirement sources referenced from both logs, including all work plans, tracking ledgers, workflows, tests, issues, pull requests, and deployment/provider records; inaccessible sources remain unknown.",
+        "Review requirement-bearing historical checkpoint payloads and additional referenced sources for any obligations not covered by the task-group map; keep old branch and status claims as historical evidence, not current truth."
+      ]
+    },
+    "source_inventory_snapshot": {
+      "captured_at": "2026-10-13T22:29:03Z",
+      "interpretation": "File, heading, checkpoint, operation, and directive-candidate counts are metadata only; they do not establish semantic requirement coverage.",
+      "oe2.txt": {
+        "bytes": 909922,
+        "checkpoint_blocks": 230,
+        "directive_candidate_lines": 592,
+        "distinct_operation_names": 74,
+        "headings": 452,
+        "lines": 6132,
+        "operation_events": 230,
+        "sha256": "045de88e536a5c201105e0201aa07c27d17dcebdb6cd597ca373f801a3241dd0"
+      },
+      "remotecompletion.md": {
+        "bytes": 770999,
+        "checkpoint_blocks": 230,
+        "directive_candidate_lines": 606,
+        "distinct_operation_names": 74,
+        "headings": 518,
+        "lines": 5565,
+        "operation_events": 230,
+        "sha256": "b561242dbee672bf9f17921f23069b5a4201a324ca3ddf328185d3fde5b60cc3"
+      }
+    },
     "weighted_completion_percent": null,
     "weighting_method": "Not calculated until measurable acceptance evidence and defensible per-requirement weights are established; section counts are tracking only."
   },
   "ledger_id": "newmission-120-minute-2026-10-13",
   "ledger_type": "canonical_mission_section_execution_ledger",
-  "local_head_sha": "abe325da0bed9a0b51fd8e2a397a5ba07a2ce2b9",
+  "local_head_sha": "280abad164ac2a3b248b7ff37f5853869af375c4",
   "mission_clock": {
     "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
     "clock_source": "active request timestamp",
@@ -101,15 +538,25 @@
       "status": "PARTIALLY_COMPLETE"
     },
     {
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": null,
+          "finished_at": null,
+          "outcome": "IN_PROGRESS",
+          "started_at": "2026-10-13T22:13:04.817558Z"
+        }
+      ],
       "elapsed_seconds": null,
       "finished_at": null,
       "id": "P02_REQUIREMENT_AND_CONTINUATION_INSPECTION",
+      "last_started_at": "2026-10-13T22:13:04.817558Z",
       "result": null,
       "started_at": "2026-10-13T13:52:55Z",
       "status": "IN_PROGRESS"
     }
   ],
-  "remote_sha": null,
+  "remote_sha": "280abad164ac2a3b248b7ff37f5853869af375c4",
   "remote_verified": false,
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
@@ -122,27 +569,48 @@
     "pending": 5,
     "verified_complete": 0
   },
-  "target_branch": "codespace-sturdy-fishstick-69wx9rjjgw5pfrq65",
-  "target_branch_matches_local": false,
+  "target_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+  "target_branch_matches_local": true,
   "tasks": [
     {
       "acceptance_criteria": "Observe repository identity, target branch, local and remote SHAs, worktree state, authentication and required remote policy; retain explicit uncertainty for unavailable evidence.",
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 155.925,
+          "finished_at": "2026-10-13T13:52:55Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-13T13:50:19.075+00:00"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 0.194,
+          "finished_at": "2026-10-13T22:15:11.296194Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-13T22:15:11.101784Z"
+        }
+      ],
       "blockers": [
-        "Remote branch query returned no ref; gh is unauthenticated."
+        "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified."
       ],
       "dependencies": [],
-      "elapsed_seconds": 155.925,
+      "elapsed_seconds": 156.119,
       "estimated_duration_minutes": null,
+      "evidence_refs": [
+        "remote-evidence-ledger.jsonl:correlation_id=b57e7caf-9994-4400-bdad-96a066b8a14e"
+      ],
       "failure_history": [],
-      "finished_at": "2026-10-13T13:52:55Z",
+      "finished_at": "2026-10-13T22:15:11.296194Z",
       "heading": "Verify the target before changing anything",
       "id": "M01",
       "implementation_sha": null,
-      "next_action": "Repeat authenticated read-only branch, identity, and protection checks if access becomes available.",
+      "last_started_at": "2026-10-13T22:15:11.101784Z",
+      "next_action": "Verify GitHub identity and branch policy through an authorized read-only path if access becomes available.",
       "owner": "Current mission execution; remote authority remains external.",
       "priority": "P0",
-      "remote_sha": null,
-      "retries": 0,
+      "remote_sha": "280abad164ac2a3b248b7ff37f5853869af375c4",
+      "result": "Corrected required branch binding to the exact checked-out/upstream origin ref; git ls-remote observed the ref at the same SHA as local HEAD. M01 remains partial because identity and protection evidence are unavailable.",
+      "retries": 1,
       "risk": "HIGH",
       "section": 1,
       "source_line": 18,
@@ -153,18 +621,40 @@
     },
     {
       "acceptance_criteria": "Map every requirement in the mission, oe2.txt, remotecompletion.md, AGENTS.md, and applicable instructions to a stable task, acceptance evidence, and outcome.",
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": null,
+          "finished_at": null,
+          "outcome": "IN_PROGRESS",
+          "started_at": "2026-10-13T22:13:04.997594Z"
+        }
+      ],
       "blockers": [],
       "dependencies": [
         "M01"
       ],
       "elapsed_seconds": null,
       "estimated_duration_minutes": null,
+      "evidence_refs": [
+        "oe2.txt:230 paired checkpoint sections; 230 operation events; 74 distinct operation names; source SHA recorded in inventory_coverage",
+        "remotecompletion.md:230 paired checkpoint sections; 230 operation events; 74 distinct operation names; source SHA recorded in inventory_coverage",
+        "oe2.txt and remotecompletion.md:229 identical timestamp blocks; one provenance-bound historical OE2-only handover at 2026-10-13T14:11:55.768819Z; introducing commit 7c40ff79dd1f046cf03b5253a7e273f6f483594b",
+        ".github/workflows/:17 workflow files discovered; current continuation source audit found no canonical mission-ledger references in the two Ollama workflows",
+        "tests/:28 root Python test modules discovered; focused mission-ledger suite passed",
+        "Deployment configs:7 paths discovered across active and archive trees; provider and production state remain unknown",
+        "TODO-like paths:37 discovered in archived trees; ownership and semantic applicability remain unverified",
+        "ollamatracks/CURRENT_STATUS.txt and PR_STATUS.txt: local status timestamp 2026-10-13T18:35:29.440667Z is stale and is not current process evidence",
+        "MISSION.md:M01-M16; six byte-identical mission sources; conceptual phase contract reviewed",
+        ".github/instructions/:7 files plus root AGENTS.md and .github/copilot-instructions.md; 9 instruction sources inventoried"
+      ],
       "failure_history": [],
       "finished_at": null,
       "heading": "Read and reconcile every requirement",
       "id": "M02",
       "implementation_sha": null,
-      "next_action": "Reconcile the complete content of oe2.txt and remotecompletion.md plus other referenced requirement sources.",
+      "last_started_at": "2026-10-13T22:13:04.997594Z",
+      "next_action": "Continue semantic review of directive candidates and the 74 recorded operation types; inventory referenced plans, tracking artifacts, workflows, tests, issues, pull requests, and deployment records; keep historical-only claims separated from current state.",
       "owner": "Current mission execution.",
       "priority": "P0",
       "remote_sha": null,
@@ -313,7 +803,8 @@
     {
       "acceptance_criteria": "A supported independent runner loads and validates the canonical ledger/checkpoint, selects a dependency-ready task, executes bounded work, persists results, and resumes without duplicating completed work.",
       "blockers": [
-        "Existing workflow/agent connection to this 16-task ledger is not verified."
+        "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
+        "No independent mission-ledger resume has been demonstrated."
       ],
       "dependencies": [
         "M03",
@@ -321,12 +812,19 @@
       ],
       "elapsed_seconds": null,
       "estimated_duration_minutes": null,
+      "evidence_refs": [
+        ".github/workflows/ollama-autonomous-agent.yml:162-167 checks out github.event.repository.default_branch; no mission-task-ledger or mission_task_ledger reference",
+        ".github/workflows/ollama-autonomous-agent.yml:823-839 persists resumefromhere.txt and ollamatracks/checkpoint.json only",
+        ".github/workflows/ollama-master-orchestrator.yml: inspected selected executor steps; no canonical mission-ledger reference",
+        "scripts/ollama_autonomous_agent.py: instruction-inventory and universal-intelligence-plan read the ledger only for correlation ID reuse, not task selection",
+        "remote-evidence-ledger.jsonl:correlation_id=b57e7caf-9994-4400-bdad-96a066b8a14e"
+      ],
       "failure_history": [],
       "finished_at": null,
       "heading": "Make automatic continuation functional",
       "id": "M08",
       "implementation_sha": null,
-      "next_action": "Map the real workflow trigger to the checkpoint loading and task-selection code; keep execution blocked until tested.",
+      "next_action": "Design and test a non-mutating bridge that lets a supported runner validate the canonical ledger and choose dependency-ready work without changing the default-branch or persistence policy; do not dispatch remotely.",
       "priority": "P0",
       "remote_sha": null,
       "retries": 0,
@@ -598,7 +1096,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-13T16:34:05.712265Z",
+  "updated_at": "2026-10-13T22:31:03.044982Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

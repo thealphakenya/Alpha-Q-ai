@@ -21,6 +21,10 @@ This repository follows the remote-first completion and evidence model described
 - The autonomous continuation contract is: keep working through every remaining safe local mission task without ignoring, forgetting, or silently deferring an in-scope item, and update the mission/checkpoint/ledger as each task is completed or blocked.
 - If external authority is required for a remote/protected action, record the exact blocker and continue with the next local-safe task instead of stopping progress or declaring the mission complete.
 
+## Conceptual execution architecture
+
+Use the workflow model in `conceparch.md` as a bounded, verifiable handoff: developer intent is planned in Copilot Chat, expressed as a structured payload, passed through an available and verified local bridge to Ollama for authorized local work, validated locally, and returned to Copilot/developer with the diff and evidence. Treat bridge/runtime availability as a precondition to verify, not an assumption. Sanitize payloads and outputs; never route secrets through chat or telemetry. For every `M01`–`M16` phase, record actual execution, repair, validation, handoff, and blocker metrics or `NOT_MEASURED`. The note's ~20% Copilot quota and 400%+ local-volume figures are unverified estimates, not KPIs or guarantees. Local execution and passing local tests do not satisfy remote CI, authorization, or exact-SHA completion gates.
+
 ## Required artifacts
 
 Keep these artifacts current and honest:

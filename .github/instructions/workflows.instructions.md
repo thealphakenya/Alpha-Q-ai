@@ -20,6 +20,8 @@ A workflow run is not completion. A terminal result plus independently verified 
 
 The autonomous agent must bind every queued or dispatched job to the exact repository/ref/SHA, preserve the run ID and result, resume from checkpoints, and stop at authorization or unavailable-evidence blockers without retrying indefinitely.
 
+The conceptual Copilot -> local bridge -> Ollama loop may perform bounded local work, but it must remain distinct from a hosted workflow. Return the local diff and validation evidence to the requester; only the actual target-owned workflow's terminal result and independent exact-SHA verification count as remote evidence. Keep credentials within approved workflow/runtime boundaries.
+
 ## GitHub App workflow contract
 
 - For cross-repository reads, prefer `actions/create-github-app-token@v3` with an owner and explicit repository list and only the minimum read permissions. Supported Actions names may include `APP_CLIENT_ID`/`APP_PRIVATE_KEY` or `QMOI_GITHUB_CLIENT_ID`/`QMOI_GITHUB_APP_ID`/`QMOI_GITHUB_PRIVATE_KEY`. Do not use Codespaces secrets in Actions; configure Actions variables/secrets separately and verify their setup via authorized metadata/read-only checks.

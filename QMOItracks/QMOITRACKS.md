@@ -5,8 +5,9 @@
 
 The root [QMOITRACKS.md](../QMOITRACKS.md) is the canonical QMOI feature and monitoring report. This managed directory index is refreshed from the same local inventory.
 
-- Inventory: `qmoitracks_monitoring_inventory.json`; SHA-256: `1451e757d9eebf6659e969edb1f696dce449cf410a41a01ec1073b689f992d9b`.
-- Tracked artifact references: `0`; metric artifact references: `0`.
+- Inventory: `qmoitracks_monitoring_inventory.json`; SHA-256: `49318645e90f2d61a928d71408c494548ad0662a752388bfdd7618fe410636da`.
+- Tracker-directory file-path references: `3`; metric artifact candidates: `0`.
+- Every materialized non-ignored input file has a path/size/scope record; generated outputs are listed separately and excluded from self-hashing. Input hashes are capped at 1 MB per file.
 - QMOI registered requirements: `404`; planned and UIS requirements: `160`.
 - Requirements queued for monitoring review: `576`; verified monitor mappings: `0`.
 - Artifact values are not read by the inventory. Hashes and discovery counts do not prove live metric freshness, service health, or monitor execution.

@@ -9,6 +9,7 @@ Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISS
 - Keep failed artifacts and successful artifacts separate in evidence.
 - Retain release provenance and do not delete evidence to hide a failed attempt.
 - Autonomous release planning may run without supervision, but tag, publish, or deploy operations remain blocked until all release gates and explicit authority are verified.
+- Copilot/bridge/Ollama may prepare and locally validate bounded release work only. Return its diff and test evidence for review; do not let a local result initiate or imply a tag, publish, signing, deployment, or release approval.
 
 ## Required evidence
 

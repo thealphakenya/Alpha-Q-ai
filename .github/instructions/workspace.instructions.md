@@ -6,6 +6,10 @@ Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISS
 
 Keep the workspace safe, deterministic, and consistent with the repository’s remote-first policy.
 
+## Conceptual execution path
+
+Use a verified, bounded sequence from developer input through Copilot planning and a structured task payload, then through the available local bridge to Ollama, local validation/repair, and a reviewable result returned to Copilot/developer. Check runtime and permissions before dispatch; preserve the local/remote evidence boundary. Record actual phase counts, repair iterations, check outcomes, handoff completeness, and non-regression results where measured, otherwise `NOT_MEASURED`. The concept note's quota and work-volume figures remain unverified claims.
+
 ## Required behavior
 
 - Prefers metadata, hashes, and deltas over large downloads.

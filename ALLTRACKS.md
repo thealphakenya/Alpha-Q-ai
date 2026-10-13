@@ -6,9 +6,9 @@
 This report is a generated local inventory and implementation plan. Path discovery and source hashes do not prove that a monitor executes, that a metric is live/fresh, or that a feature is implemented.
 
 - Status: `NEEDS_REVIEW`; scope: `materialized_nonignored_local_checkout`.
-- Repository/ref/local HEAD: `Alpha-Q-ai` / `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `cfab9094463d60fb28b2085b1c45e2a7b1d49bdd`.
-- Correlation ID: `25d14058-ca64-463b-9869-41f745965ef1`; generated: `2026-10-13T18:27:30.904744Z`.
-- Source-manifest SHA-256: `db28d0833e61b4bb94bcec31c07a13e36383f6eb0635a400ddf655b23d51092c`.
+- Repository/ref/local HEAD: `Alpha-Q-ai` / `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `280abad164ac2a3b248b7ff37f5853869af375c4`.
+- Correlation ID: `32748e4b-c579-417a-a451-1ee0c489130d`; generated: `2026-10-13T18:36:56.713284Z`.
+- Source-manifest SHA-256: `fb3b6e92ea04c3cc485c12c8a5a49840fcc8095f4fa8e76352910237bb5b28d9`.
 - Complete path-level references and hashes: `ollamatracks/alltracks_monitoring_inventory.json`.
 
 ### Calculated QAUDITS metrics
@@ -24,13 +24,15 @@ This report is a generated local inventory and implementation plan. Path discove
 | Monitoring source candidates | 39 | Path candidates; execution not verified |
 | Metric artifact references | 35 | Hashed file references; values were not read |
 | Tracking document references | 18 | Local Markdown path candidates |
-| Tracking artifacts referenced | 537 | All local JSON/JSONL/CSV files under tracker roots, hashed without reading values |
-| Ollama tracker artifacts / metric artifacts | 537 / 35 | Hashed local references; metric contents are not read |
-| QMOI tracker artifacts / metric artifacts | 0 / 0 | Hashed local references; metric contents are not read |
+| Tracking artifacts referenced | 537 | Local JSON/JSONL/CSV files under tracker roots; metric values are never read and hashing is bounded |
+| Tracker-directory file path references | 2229 | Materialized non-ignored input files plus managed output paths; self-referential output contents are excluded |
+| Ollama tracker file paths / metric artifacts | 2226 / 35 | Input path/metadata inventory; input hashes are bounded to 1000000 bytes; metric values are not read |
+| QMOI tracker file paths / metric artifacts | 3 / 0 | Input path/metadata inventory; input hashes are bounded to 1000000 bytes; metric values are not read |
 | Verified per-requirement monitor mappings | 0 | Evidence-linked feature mappings only |
 | Pending monitoring review actions | 576 | One durable review action per requirement; no runtime mutation authorized |
 | Monitor-mapping rate | 0.0% | Verified mappings / all requirements; zero currently verified |
-| Source hash coverage | 100.0% | Hashed candidates / discovered source candidates; local integrity only |
+| Source hash coverage | 98.73% | Hashed candidates / discovered source candidates; local integrity only |
+| Unhashed, unavailable, or changed sources | 29 | Check `unavailable_sources` for per-path reasons, including the 1 MB hashing bound |
 | Live metric samples observed | 0 | No runtime endpoint was read |
 | Verified live provider connections | 0 | No provider connection was made |
 

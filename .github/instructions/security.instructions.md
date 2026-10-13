@@ -8,6 +8,7 @@ Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISS
 - Record security findings explicitly and do not mask them.
 - Keep secrets and token values out of logs, prompts, and documentation.
 - Respect vulnerable dependency and secrets scanning results until resolved or explicitly classified as external blockers.
+- Treat the structured Copilot-to-bridge payload and Ollama input/output as security boundaries: minimize and sanitize context, exclude secrets and unnecessary personal data, constrain local commands and file scope, and preserve reviewable diffs. Local execution is not inherently trusted or authorized.
 
 ## Required policy
 
