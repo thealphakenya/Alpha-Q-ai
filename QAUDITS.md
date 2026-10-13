@@ -298,3 +298,19 @@ This section is refreshed from the same local QAUDITS universe on every invocati
 - Missing, stale, or provider-unverified health/oxygen values remain `UNKNOWN`; dashboard balances and account values require authorized provider evidence and are not inferred from prose.
 - Updating this managed section never rewrites historical/archive documents, policy instructions, or Q-version artifacts.
 <!-- END QMOI MANAGED: qaudit-style-universal-accessibility-coverage -->
+
+<!-- BEGIN QMOI MANAGED: tracking-and-live-metric-inventory -->
+## Tracking and live-metric inventory
+
+QAUDITS refreshes [ALLTRACKS.md](ALLTRACKS.md) and the path/hash catalog at `ollamatracks/alltracks_monitoring_inventory.json` from the current feature registry and materialized source inventory.
+The same refresh updates [QMOITACKS.md](QMOITACKS.md), canonical [QMOITRACKS.md](QMOITRACKS.md), and directory indexes under `ollamatracks/` and `QMOItracks/`, with a matching inventory JSON under each tracker directory.
+
+- Registered feature requirements: `404`; master UI requirements: `12`.
+- Planned/unverified requirements: `138`; UIS requirements: `22`.
+- Monitor source candidates: `39`; metric artifact references: `35`; verified feature-monitor mappings: `0`.
+- Pending feature-monitor review actions: `576`; machine inventory: `ollamatracks/alltracks_monitoring_inventory.json`.
+- Mapping rate: `0.0%`; exact numerator, denominator, formula, and limitations are in the machine inventory.
+- Candidate discovery and file timestamps are not evidence of a live metric, a fresh health sample, a working monitor, or implemented feature coverage. No live provider was contacted by this inventory.
+- Preserve public/authenticated/master access boundaries, data minimization, styles/universal transition requirements, feature ownership, monitoring tests, failure/recovery states, and explicit blockers.
+- The inventory does not automatically install telemetry or make broad UI/access changes; per-feature monitoring and master/backend authorization require reviewed implementation and tests.
+<!-- END QMOI MANAGED: tracking-and-live-metric-inventory -->

@@ -5,10 +5,10 @@
 
 Scope: current checkout's tracked and non-ignored files only. Historical refs, peer repositories, and unfetched PR trees require separate audit artifacts.
 
-- Active-checkout test files discovered: `27`.
+- Active-checkout test files discovered: `28`.
 - Snapshot test files discovered (not active coverage): `25`.
 - Historical/archive test files discovered (not active coverage): `525`.
-- Total test-like paths discovered across these scopes: `577`.
+- Total test-like paths discovered across these scopes: `578`.
 - UI feature registry rows: `24`; registry entries are requirements, not proof of implementation or test coverage.
 - Coverage state: `discovered_unmapped` until a feature ID maps to implementation files, positive/negative tests, and an exact-SHA run result.
 - Completion state: `tested_local` and `tested_remote` are separate; remote status requires a terminal target-owned run for the exact source SHA.
@@ -586,6 +586,7 @@ Scope: current checkout's tracked and non-ignored files only. Historical refs, p
 | `tests/test_qaudit_all_features.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qaudit_model_review.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qaudit_shard_runner.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_qaudit_tracking.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qaudit_universe.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qaudits_evolution_planner.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qaudits_parallel_auditor.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
@@ -631,7 +632,7 @@ Materialized source paths are candidates, not proof of implementation, authoriza
 - Candidate files: `552`; materialized scope counts: `{"active_checkout": 19, "historical_archive": 432, "snapshot": 101}`.
 - Candidate role counts: `{"backend_api_or_adapter": 175, "documentation": 43, "frontend_ui": 81, "runtime_or_integration_candidate": 226, "test": 40}`.
 - Venue mentions: `{"binance": 27, "bitget": 62, "bybit": 2, "cashon": 101, "coinbase": 10, "kraken": 10, "megavault": 34, "okx": 2, "paypal": 39}`.
-- Local refs discovered: `39`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.
+- Local refs discovered: `42`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.
 - Machine-readable path, size, hash, source scope, role, and venue evidence: `ollamatracks/trading_surface_inventory.json`.
 - Coverage state: `discovered_unmapped`; platform execution, credential validity, balances, provider webhook registration, and live-order readiness are not verified by path discovery.
 ### Credential references and provider verification
@@ -1214,7 +1215,7 @@ Every UI/API/backend feature must have a stable feature ID, owning repository/re
 ### Styles and universals test/hook mapping: `ollamatracks/feature_test_hook_coverage.json`
 
 Registered feature count: `404`; test mappings: `0`; reviewed hook applicability: `0/404`; status: `NEEDS_FEATURE_TEST_HOOK_MAPPING`.
-Styles/universals replacement plan: `ollamatracks/style_universal_replacement_inventory.json`; `1677` style files, `1867` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
+Styles/universals replacement plan: `ollamatracks/style_universal_replacement_inventory.json`; `1679` style files, `1871` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
 <!-- END QMOI MANAGED: active-test-feature-coverage -->
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->

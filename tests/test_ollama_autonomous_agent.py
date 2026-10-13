@@ -38,6 +38,7 @@ from ollama_autonomous_agent import (
     restore_point_memory_snapshot,
     detect_resume_file_origin,
     update_resume_file_metadata,
+    build_autonomous_agent_prompt,
 )
 from git_execution_manager import GitExecutionManager
 from q_version_manager import QVersionManager
@@ -232,12 +233,59 @@ class TestAuditInventoryCommand:
             for requirement in section["requirements"]
         )
         assert report["access_policy"]["sister_operator"] == "NOT_VERIFIED; do not infer identity or grant access from archive content or account names."
+        assert "every supported and enabled feature" in report["access_policy"]["master_operator"]
+        assert "never overrides" in report["access_policy"]["master_operator"]
+        assert "safe alternative" in report["access_policy"]["request_handling"]
         assert "revocable" in report["access_policy"]["location_data"]
         assert "No covert locating" in report["access_policy"]["location_data"]
         assert "Preserve the authored objective." in refreshed
         assert refreshed.count("<!-- BEGIN QMOI MANAGED: universal-intelligence-execution-plan -->") == 1
         assert first["source_sha256"] == second["source_sha256"]
         assert authored_prefix in refreshed
+
+    def test_mask_privacy_contract_is_refreshed_without_claiming_runtime_capabilities(self, tmp_path):
+        masks_path = tmp_path / "QMOIMASKS.md"
+        masks_path.write_text("# QMOI Masks\n\nKeep authored guidance.\n", encoding="utf-8")
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+
+        first = agent.refresh_mask_privacy_contract()
+        first_text = masks_path.read_text(encoding="utf-8")
+        second = agent.refresh_mask_privacy_contract()
+        refreshed_text = masks_path.read_text(encoding="utf-8")
+
+        assert first["status"] == "DOCUMENTED_RUNTIME_UNVERIFIED"
+        assert first["implementation_verified"] is False
+        assert first["vpn_runtime_verified"] is False
+        assert first["ip_or_identity_masking_activated"] is False
+        assert first["evasion_enabled"] is False
+        assert first["remote_completion_verified"] is False
+        assert "Keep authored guidance." in refreshed_text
+        assert refreshed_text.count(
+            "<!-- BEGIN QMOI MANAGED: ollama-privacy-decision-contract -->"
+        ) == 1
+        assert "Never use VPN" in refreshed_text
+        assert "A VPN does not guarantee anonymity" in refreshed_text
+        assert "required human approval still apply and cannot be bypassed" in refreshed_text
+        assert first_text.count(
+            "<!-- BEGIN QMOI MANAGED: ollama-privacy-decision-contract -->"
+        ) == 1
+        assert second == first
+
+    def test_autonomous_agent_prompt_includes_access_and_privacy_gates(self):
+        prompt = build_autonomous_agent_prompt(
+            [{"path": "README.md", "content": "local source"}],
+            max_files=1,
+        )
+
+        assert "all supported, enabled capabilities" in prompt
+        assert "without unnecessary refusal" in prompt
+        assert "Never use VPN" in prompt
+        assert "refuse unapproved redirects" in prompt
+        assert "never bypass a gate" in prompt
+        assert "ALLTRACKS.md" in prompt
+        assert "live metric source" in prompt or "live metric" in prompt
+        assert "public/authenticated/master access" in prompt
+        assert '"path": "README.md"' in prompt
 
     def test_instruction_inventory_command_refreshes_and_checkpoints(self, tmp_path, monkeypatch, capsys):
         track_dir = tmp_path / "ollamatracks"
@@ -2896,6 +2944,10 @@ class TestGitHubProofContract:
         agent = OllamaAutonomousAgent(tmp_path)
         for app_doc in ("QMOIAI.md", "QCITY.md", "QMOISPACE.md", "QALPHA.md"):
             (tmp_path / app_doc).write_text("# App documentation\n", encoding="utf-8")
+        (tmp_path / "QMOIUNIVERSALINTELLIGENCESYSTEM.md").write_text(
+            "# Universal Intelligence\n\n1. Access\n- Require verified, authorized access.\n",
+            encoding="utf-8",
+        )
         proof = agent.build_github_proof_contract()
         assert proof["status"] == "ready_for_github"
         assert proof["proof"]["platform_validation_passed"] is True
@@ -2909,6 +2961,15 @@ class TestGitHubProofContract:
         assert proof["proof"]["product_catalog_app_count"] == 5
         assert proof["proof"]["clone_platform_ui_record_count"] == 54
         assert proof["proof"]["master_access_verified"] is False
+        masks_text = (tmp_path / "QMOIMASKS.md").read_text(encoding="utf-8")
+        master_text = (tmp_path / "MASTEROWNS.md").read_text(encoding="utf-8")
+        universal_text = (tmp_path / "UNIVERSAL.md").read_text(encoding="utf-8")
+        assert "Agent-managed privacy decision contract" in masks_text
+        assert "Never use VPN" in masks_text
+        assert "every supported, enabled QMOI feature" in master_text
+        assert "without unnecessary refusal" in master_text
+        assert "every supported, enabled QMOI feature" in universal_text
+        assert "unverified sister role" in universal_text
 
 
 class TestPRSuccessContract:

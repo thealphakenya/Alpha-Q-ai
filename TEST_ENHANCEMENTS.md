@@ -446,7 +446,7 @@ pytest tests/test_ollama_autonomous_agent.py -m security
 
 Test discovery is not coverage. Each feature needs a stable ID and explicit implementation, positive, negative/boundary, authorization, UI-state, hook-delivery, and recovery test mappings.
 
-- Active tests discovered: `27`; snapshot tests: `25`; archive tests: `525`.
+- Active tests discovered: `28`; snapshot tests: `25`; archive tests: `525`.
 - Trading source candidates: `552`; exact paths, hashes, roles, venues, and source scopes: `ollamatracks/trading_surface_inventory.json`.
 - Unmapped features remain `discovered_unmapped`; only local test results and terminal exact-SHA target runs may advance test state.
 - Hook tests must cover signature/auth rejection, replay, idempotency, duplicate delivery, retries, dead-letter behavior, redaction, and outage/recovery. Workflow trigger discovery is not webhook registration or delivery proof.

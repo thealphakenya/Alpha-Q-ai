@@ -3,19 +3,19 @@
   "candidate_path_index_complete": false,
   "canonical_policy_documents": [
     {
-      "bytes": 88902,
+      "bytes": 88906,
       "path": "STYLES.md",
-      "sha256": "2fea35e9f6af3f7bb89b07e9eb5736f9aca4d0951a453b87feef2c51a9e797e4"
+      "sha256": "34318d933a4dfaef1e90623509dce7676e3b89bfab17f3bae5fe72b330b903ed"
     },
     {
-      "bytes": 10179,
+      "bytes": 10485,
       "path": "UNIVERSAL.md",
-      "sha256": "78c788ea6de51eaa6ebf322147c70fd3bf2931381c942c3d9b64d1445cfb4364"
+      "sha256": "9e9b4d183c132b55eafcc241f4ee96705f1749ddde9a14bba609191657581c42"
     },
     {
-      "bytes": 27619,
+      "bytes": 27621,
       "path": "UNIVERSALS.md",
-      "sha256": "8dcbedb020357c2d6efca97ca3437384932691cf135233ad8553950205816e54"
+      "sha256": "923722ac3c60412f6404056ff7bee830c7735851c44894d8ef8629d31cfad399"
     }
   ],
   "canonical_policy_paths": [
@@ -15333,6 +15333,7 @@
         "scripts/q_version_manager.py",
         "scripts/qaudit_model_review.py",
         "scripts/qaudit_shard_runner.py",
+        "scripts/qaudit_tracking.py",
         "scripts/qaudit_universe.py",
         "scripts/qmoi_orchestrator_service.py",
         "scripts/qmoi_release_autofix.py",
@@ -15347,7 +15348,7 @@
       "path": "scripts",
       "status": "review_required",
       "styles": 7,
-      "universals": 22
+      "universals": 23
     },
     {
       "candidate_file_paths": [
@@ -15401,7 +15402,7 @@
     },
     ".py": {
       "styles": 182,
-      "universals": 673
+      "universals": 674
     },
     ".ts": {
       "styles": 311,
@@ -15433,8 +15434,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 35361,
-      "candidate_id": "1e0b57d05c5adb2e0af0",
+      "bytes": 38202,
+      "candidate_id": "c418f10ae3fbe0aea302",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15448,7 +15449,7 @@
       "path": ".github/instructions/MISSION.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "cd2a6d2329258c4988046143ee71f47aa7e42b5c413fdf23420df7eff7bd23ea",
+      "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -15573,8 +15574,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 12836,
-      "candidate_id": "2edf3279286e034552fb",
+      "bytes": 12840,
+      "candidate_id": "5484ae8f486292852023",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15585,7 +15586,7 @@
       "path": "ACCOUNTABILITY.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "115586104eb7807c8b0e84a7062e98f06678d21a014ecccfd5b9e1faace24b53",
+      "sha256": "cdca316f5d70bd1f2fa6a13c25e0a33b51ccc9ea21e1a02dcc6762907ce461cd",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -15659,8 +15660,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 7258,
-      "candidate_id": "946e98e9e96ab370de11",
+      "bytes": 7276,
+      "candidate_id": "70495679f79adf114cba",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15671,7 +15672,7 @@
       "path": "ALLHOOKSWEBHOOKS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "964631ece53ad88000cbbf5ee5565aaca9ca53630758960c11617ca81386430b",
+      "sha256": "617c53a0f1a8481ecc6e7cbfb3f7e4f6c25b2fa193d47937c9d9bd95cda91d6b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -15728,8 +15729,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 180471,
-      "candidate_id": "105977a57a0469d742d6",
+      "bytes": 180924,
+      "candidate_id": "95ccce2de1cfc5239bc6",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15740,13 +15741,31 @@
       "path": "ALLTESTSAUTOTESTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "a12ed3d7e25fa92fa96663da7092278c0b3065d7a5817e258ce7f65d7d4e6d26",
+      "sha256": "717f91fa08204cb7b78c72545f28ca1e9ab7fa8887422f55ba76f46fab1b3af0",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 12000,
-      "candidate_id": "49c1496e3fde064b79c4",
+      "bytes": 88854,
+      "candidate_id": "b9820622fee2517bf03c",
+      "directory_paths": [],
+      "domains": [
+        "styles",
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "ALLTRACKS.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "c01b2a40a0153fc3cd55896f687e3e292164a7b55d8a3e423d57e1aacbb84997",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 12002,
+      "candidate_id": "1f37bffee326f1bed37b",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15757,7 +15776,7 @@
       "path": "ALLVALIDATIONS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "5806e6e1d0d994b4e645df65021f78a437a31df5c16537209129762a73ef4e05",
+      "sha256": "c0ddb9203ba27c2c7623f2ebd9fa63edc8616c7c005d1e6bca4d77185c9779b4",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -33641,8 +33660,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 13313,
-      "candidate_id": "77760f11d227bc28a5c7",
+      "bytes": 13315,
+      "candidate_id": "afa2e04424ab7116765d",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33653,13 +33672,13 @@
       "path": "CREDENTIALS_ROTATION_PLAYBOOK.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "a7380c5a7c976e1e265dc3e2e01fced83765ed16349d881d55153acfa14b6500",
+      "sha256": "aca3953c9cddf9e79a8b39771ef11a95db8a4a83b115c903d0a6400f8a23b1d3",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 11486,
-      "candidate_id": "2223adf4c90871c5bc2f",
+      "bytes": 11488,
+      "candidate_id": "72ff604b9b91c0a3cfcb",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33670,7 +33689,7 @@
       "path": "CREDENTIAL_READINESS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "bcaf04d708f505425a371d16aa7f453b04d8bebd4c4db802948af0491c37fb4c",
+      "sha256": "f537d0f75a1feba340348d2741a286cc098e104accf7e1bbd72a8b3185b96f01",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -33794,8 +33813,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 28368,
-      "candidate_id": "ca3939c8cb8139e60626",
+      "bytes": 28372,
+      "candidate_id": "1c0cc362bfc72fbf809a",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33806,7 +33825,7 @@
       "path": "FINANCIALMANAGER.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "f319f15c058dd1fbbe9543ac51f3b683bef5b405e7f22e7af2f4fbdd1b171a74",
+      "sha256": "fe8370c907df23d06c327dcb92f2978b2dc789c2465f58462315e92f6994e708",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -33880,8 +33899,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5459,
-      "candidate_id": "c776a6d2c7d9ce827c5f",
+      "bytes": 5772,
+      "candidate_id": "6f6a13df69c258538595",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33893,7 +33912,7 @@
       "path": "MASTEROWNS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "687e33f61bb014f863743013b837cff60de75626cc4706ad9cfd2564f722c4b2",
+      "sha256": "974f2f181b4fc25c6522ef133d32d7566620b687fce0e06213e550e150876673",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -33916,8 +33935,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 38260,
-      "candidate_id": "a5beec95fa542d87cba2",
+      "bytes": 38202,
+      "candidate_id": "382edc39aac98ac30511",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33928,13 +33947,13 @@
       "path": "MISSION.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 38260,
-      "candidate_id": "49e0f0ace092b021a85f",
+      "bytes": 38202,
+      "candidate_id": "cbcfbf42895b490d8162",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33945,13 +33964,13 @@
       "path": "MISSIONEW.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 38260,
-      "candidate_id": "a6213ed4173e1e8d2a8d",
+      "bytes": 38202,
+      "candidate_id": "f58c4a4e8d0b9c728faa",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33962,13 +33981,13 @@
       "path": "MISSIONNEW.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 38260,
-      "candidate_id": "d9551af5fe174ebd408c",
+      "bytes": 38202,
+      "candidate_id": "ca29fbcf865879b416cf",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33979,7 +33998,7 @@
       "path": "MISSIONNEWEST.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34053,8 +34072,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 38260,
-      "candidate_id": "ddd91cab09f33fdfbaa6",
+      "bytes": 38202,
+      "candidate_id": "1bb97f6c25deecf1c9be",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34065,7 +34084,7 @@
       "path": "NEWMISSION.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34192,8 +34211,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 132050,
-      "candidate_id": "0c4c3dd39294f70783eb",
+      "bytes": 133705,
+      "candidate_id": "755b8ff4e3639a9c2285",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34205,7 +34224,7 @@
       "path": "QAUDITS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "fbd54b5f100feec837d630ec57e3f212a0c9faad904e9d8baa43e7291dfdf16e",
+      "sha256": "86a213b90a0fec14f8241862fb2566231eb4a1e4ae88295f268e6be33b205524",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34278,8 +34297,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 115924,
-      "candidate_id": "96cad807aaefcda53787",
+      "bytes": 118454,
+      "candidate_id": "fbf7de86067b208e7704",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34290,7 +34309,7 @@
       "path": "QMOIMASKS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "1b7b69655a672e5cd984126bc2cda3769dde7e8981c6183b53360b6cad930c6a",
+      "sha256": "521d994ef1fdaf7b2100c4ed8389f54bb1dfec89503e51c8c02ba5298d421f64",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34326,6 +34345,59 @@
       "replacement_authorized": false,
       "scope": "active_checkout",
       "sha256": "f7110c56b638ce7adb3b77248e7c97e3c2db4e16abc6ad54d7f12e3d1032e37e",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 77999,
+      "candidate_id": "42385682ea3e023dd197",
+      "directory_paths": [],
+      "domains": [
+        "styles",
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "QMOITACKS.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "417afeebdd12ec9f63544bf9bffffbd3d95b4d612d6587cfa201e54ae1f919c6",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 78002,
+      "candidate_id": "65c3fc9827aa9df294cd",
+      "directory_paths": [],
+      "domains": [
+        "styles",
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "QMOITRACKS.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "f4d7f6d36552a49f2d635b795f7a95e20e51ca6533cfcd0674296430e27fd545",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 7168,
+      "candidate_id": "0900d6ee79c13ee14f00",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "QMOIUNIVERSALINTELLIGENCESYSTEM.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "23c506649032782cdbe06c3a08ec0cfd4e6bc7f2361b15905c09373f982aa7b0",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34486,8 +34558,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 36698,
-      "candidate_id": "c627d80fa13fc0b97271",
+      "bytes": 36700,
+      "candidate_id": "c269a464b3bc67472fdd",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34498,7 +34570,7 @@
       "path": "Qtrade.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "5909a673815783368d4c391305b273e1e3194589796f7fd1df98ce128b291c1b",
+      "sha256": "f392ab9c2e17e9c585a5eea5c054cc0ab7a7d9f26ed134226dfc46200ff2452c",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34657,8 +34729,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 88902,
-      "candidate_id": "75af94dfc829a7b086de",
+      "bytes": 88906,
+      "candidate_id": "c456edb276447cd5fbf2",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34670,7 +34742,7 @@
       "path": "STYLES.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "2fea35e9f6af3f7bb89b07e9eb5736f9aca4d0951a453b87feef2c51a9e797e4",
+      "sha256": "34318d933a4dfaef1e90623509dce7676e3b89bfab17f3bae5fe72b330b903ed",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34692,8 +34764,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 16298,
-      "candidate_id": "34e46059a81654251455",
+      "bytes": 16300,
+      "candidate_id": "00ccbf6dcf311337ab4c",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34704,13 +34776,13 @@
       "path": "TEST_ENHANCEMENTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "e1114860538ca7fca22dcb50e152062936f5e272cc3b5f2b55d1adb53b2d5413",
+      "sha256": "c68c0101348b44f84303486f6cdd5597a96d98519bab81c46c3077096f767552",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 10029,
-      "candidate_id": "d8733b275aa1a8f9f20b",
+      "bytes": 10031,
+      "candidate_id": "af6743a09338c4e8e225",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34721,7 +34793,7 @@
       "path": "TRADINGREADME.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "421346c6ba27a991b4f21c0263de0fa54574503f98eda1c4612e0112e610df62",
+      "sha256": "c2a7b02feb67c7c12172499660fe2148db1f43dcf84cb7a386f8c92c3e14f21b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34777,8 +34849,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 10179,
-      "candidate_id": "4dfe70931dc4dc411173",
+      "bytes": 10485,
+      "candidate_id": "ac95e89b88ab6f66e6a5",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34790,13 +34862,13 @@
       "path": "UNIVERSAL.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "78c788ea6de51eaa6ebf322147c70fd3bf2931381c942c3d9b64d1445cfb4364",
+      "sha256": "9e9b4d183c132b55eafcc241f4ee96705f1749ddde9a14bba609191657581c42",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 27619,
-      "candidate_id": "c87fe38a4fef72d46cbe",
+      "bytes": 27621,
+      "candidate_id": "96970a95dcd974e63870",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34808,7 +34880,7 @@
       "path": "UNIVERSALS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8dcbedb020357c2d6efca97ca3437384932691cf135233ad8553950205816e54",
+      "sha256": "923722ac3c60412f6404056ff7bee830c7735851c44894d8ef8629d31cfad399",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -78970,8 +79042,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 578593,
-      "candidate_id": "4cd116fafe80adac8589",
+      "bytes": 721607,
+      "candidate_id": "a89ed05f8e7a04c79fe9",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -78983,7 +79055,7 @@
       "path": "remotecompletion.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "4da6366827f85b5a57173762a1abff7c2ce7a2abb11dbbb261286df8fc74d72f",
+      "sha256": "720ad65f5fc7d1ab992f0b3a229fc4e537baea64935c0dc156f3e73705c6660a",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79176,8 +79248,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 626844,
-      "candidate_id": "31983c8428ac17330c32",
+      "bytes": 675610,
+      "candidate_id": "4f7ef64fc0eb74bde49d",
       "directory_paths": [
         "scripts"
       ],
@@ -79191,7 +79263,7 @@
       "path": "scripts/ollama_autonomous_agent.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "506c3324d456b0ed687d5f652770b7bceb997e697ed2666397410b7dd6b43850",
+      "sha256": "fc011c0c8696c19639a2f262d50f20a06bd92585f654b818dee00665c1f80ca5",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79287,6 +79359,25 @@
       "replacement_authorized": false,
       "scope": "active_checkout",
       "sha256": "9ab2e28c91e31cbe1d822d153b6381ffdbc4e14449ce5a10e31e5d7aa9682acd",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 39918,
+      "candidate_id": "517d276491c3fa1bbc62",
+      "directory_paths": [
+        "scripts"
+      ],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".py",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "scripts/qaudit_tracking.py",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "5fdd7138d868df230ba3cd288984caf0511bf7eef94fcdd12f88df325343cb0a",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79543,8 +79634,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 139157,
-      "candidate_id": "763e3f3dfba7a2a967e2",
+      "bytes": 152936,
+      "candidate_id": "d23bf5375a45ab905f24",
       "directory_paths": [
         "tests"
       ],
@@ -79557,7 +79648,7 @@
       "path": "tests/test_ollama_autonomous_agent.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "0d2db25982aa13d8ea61998734cca53555623b30b71f5776d62c804e16a5a091",
+      "sha256": "ca542aebd1cdc4618cd7987aa3d9a6bb25ad28a0183e18be0c3e5ed0b0a8845f",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79673,11 +79764,11 @@
       "tests_required_before_replacement": true
     }
   ],
-  "files_scanned": 7322,
+  "files_scanned": 7330,
   "materialized_scan_complete": false,
   "replacement_lineage_complete": false,
   "replacement_lineage_policy": "A candidate is not replaced until a reviewer supplies a record matching the schema; no path deletion or automatic replacement is authorized.",
-  "replacement_manifest_sha256": "747a613af1469b51284ccc7950c285c387ecf6066c02699dc904a6305b604c98",
+  "replacement_manifest_sha256": "6fdb7d27b15f629d084b43ec71ee09cd03f2083d2ceff89a71323bb3775400c5",
   "replacement_record_schema": [
     "replacement_id",
     "source_paths",
@@ -79701,7 +79792,7 @@
   "scope_candidate_counts": {
     "active_checkout": {
       "styles": 10,
-      "universals": 47
+      "universals": 48
     },
     "historical_archive": {
       "styles": 3432,
@@ -79780,8 +79871,8 @@
   ],
   "source_contents_recorded": false,
   "status": "CANDIDATE_ONLY",
-  "style_candidate_count": 1677,
-  "universal_candidate_count": 1867,
+  "style_candidate_count": 1680,
+  "universal_candidate_count": 1872,
   "verified_replaced_directory_count": 0,
   "verified_replaced_file_count": 0
 }

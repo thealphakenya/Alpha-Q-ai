@@ -42,15 +42,17 @@ Start now. Do not stop after producing a plan or a report. Implement the highest
 <!-- BEGIN QMOI MANAGED: universal-intelligence-execution-plan -->
 ## Agent-managed Universal Intelligence execution plan
 
-- Refreshed by the bounded agent lifecycle at: `2026-10-13T17:03:41.607167Z`.
+- Refreshed by the bounded agent lifecycle at: `2026-10-13T18:27:30.030524Z`.
 - Authored-source SHA-256 (managed block excluded): `9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e`.
 - Scope: `8` workstreams, `22` source-line requirements; `22` remain `PENDING_EVIDENCE`.
 - Dependency plan: `UIS-PLAN-01` inventory → `UIS-PLAN-02` identity/privacy → `UIS-PLAN-03` orchestration → authorized modules/model/interfaces → verification → authority-gated delivery.
 - Capability matrix: copilot/voice/multimodal, vision/OCR, cited OSINT, geospatial, authorized sensors, cases/defensive security, RAG/model, and accessible dashboards remain individually pending evidence.
 - Every autonomous/continuation cycle refreshes this plan; refresh is not proof of implementation or external research.
 - Research remains `PLANNED_NOT_VISITED` unless an authorized, allowlisted source visit produces timestamped, hashed evidence.
+- UIS topics join the existing official-source queue; geospatial/satellite providers, camera/sensor standards, and jurisdiction-specific biometric rules remain unmapped until approved sources are registered.
 - Evolution is bounded and proposal-led; tests, rollback evidence, and human approval are required for high-impact changes.
-- Master-only administration requires server-side role verification, MFA/step-up, audit context, and required human confirmation.
+- A verified master role can access all supported, enabled features; server-side role checks, MFA/step-up, consent, safety policy, and required human confirmation still apply.
+- Do not unnecessarily refuse safe, authorized requests; explain exact blockers and offer safe alternatives without bypassing policy or authorization.
 - Sister role: `NOT_VERIFIED`; the agent must not infer identity or grant access from names, archives, or credentials in historical content.
 - Location: explicit, visible, time-limited, revocable subject opt-in only; no covert, device-less, offline, or consent-bypassing location discovery.
 - Status: `NEEDS_REVIEW`; no UIS feature is marked implemented or verified by this plan.

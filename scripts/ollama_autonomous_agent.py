@@ -118,6 +118,11 @@ from scripts.ollama_research import (
 )
 from scripts.q_version_manager import QVersionManager
 from scripts.qaudit_all_features import run_parallel_feature_audit
+from scripts.qaudit_tracking import (
+    build_tracking_inventory,
+    render_qmoi_tracks_markdown,
+    render_tracking_markdown,
+)
 from scripts.qaudit_universe import write_qaudit_artifacts
 from scripts.qaudits_evolution_planner import build_evolution_plan
 from scripts.qaudit_shard_runner import run_bounded_audit_shards
@@ -353,9 +358,29 @@ UNIVERSAL_UI_ACCESS_MODES: dict[str, tuple[str, ...]] = {
     ),
     "master_operator": (
         "Explicit master role, MFA or equivalent step-up verification, current capability, and audit context.",
-        "Administrative mutations require backend authorization and human confirmation where impact is high; master and sister may configure bank accounts, wallets, payment APIs, and project-linked payment destinations.",
+        "Expose every supported, enabled QMOI feature to the verified master role; feature authorization, consent, safety policy, provider rules, and required human confirmation still apply.",
+        "Administrative mutations require backend authorization and human confirmation where impact is high; do not infer access from an account name or unverified sister role.",
     ),
 }
+
+OLLAMA_AGENT_POLICY_LINES: tuple[str, ...] = (
+    "Treat QMOIUNIVERSALINTELLIGENCESYSTEM.md as a capability requirements inventory, not proof that a feature is implemented or available.",
+    "A server-verified master role gets access to all supported, enabled capabilities; server-side authorization, consent, safety rules, provider requirements, and required human approval still apply and cannot be bypassed.",
+    "Complete safe, authorized requests without unnecessary refusal. If blocked, state the exact blocker, offer a safe alternative, and continue independent safe mission work; never bypass a gate.",
+    "Redact credentials and unnecessary personal data before logs, telemetry, ordinary UI, or evidence are written; preserve only the minimum auditable metadata needed for accountability.",
+    "Refresh ALLTRACKS.md, QMOITACKS.md, QMOITRACKS.md, and both tracker directories from the current QAUDITS inventory; report source paths, hashes, scope, units, formulas, denominators, omissions, and blockers without treating candidates as runtime health.",
+    "Treat metric artifact paths and static file timestamps as references only; claim a live metric only after an authorized runtime sample records its source, observation time, unit, scope, and freshness. Missing evidence is UNKNOWN or STALE.",
+    "For each registered or newly proposed feature, map ownership, public/authenticated/master access, shared style/universal transition, monitoring applicability, signals, freshness, thresholds, alert/runbook, privacy scope, and tests; leave unmapped items visible instead of inferring coverage.",
+    "Keep public views free of personal data, authenticated views scoped to the verified user's own data, and master monitoring behind verified role checks and auditable backend authorization; a dashboard requirement is not proof that access controls work.",
+    "Monitor Ollama and QMOI through evidence-bound health, availability, failures, duration, queue age, checkpoint freshness, source-manifest changes, and recovery outcomes; stale or missing observations are UNKNOWN/STALE, not healthy.",
+    "Do not automatically instrument or expose a feature until its owner, applicability, authorized data scope, privacy/security impact, acceptance tests, rollback, and required human approval are explicit.",
+    "Consider an approved VPN only for an authorized user/session on an untrusted network or when the applicable privacy policy requires it. Verify tunnel and route health before sensitive egress; if verification fails, stop privacy-dependent egress instead of silently falling back.",
+    "Before visiting an external URL, use an approved HTTPS source, validate the destination against the applicable allowlist, refuse unapproved redirects, and preserve request/source attribution and evidence.",
+    "Use scoped, visible, expiring, revocable anti-tracking controls only in user-controlled contexts. Do not alter service identity, provider authentication signals, audit context, or security controls.",
+    "Never use VPN, IP/server/fingerprint masking, or identity rotation to evade detection, attribution, access controls, rate limits, abuse prevention, provider rules, or lawful oversight. A VPN does not guarantee anonymity or conceal activity from the destination or network operator.",
+    "If masking would break authorization, consent, attribution, security review, or evidence capture, do not mask that context; block the protected action when necessary and retain safe diagnostics.",
+    "Feature scaling is evidence-led; do not multiply mask or VPN behavior by an arbitrary factor or enable repeated identity/route changes without a tested, authorized requirement.",
+)
 
 APP_UI_ACCESS_REQUIREMENTS: dict[str, tuple[str, ...]] = {
     "qmoiaiui": ("public guest interaction", "authenticated profile and private conversation controls"),
@@ -364,6 +389,21 @@ APP_UI_ACCESS_REQUIREMENTS: dict[str, tuple[str, ...]] = {
     "qalpha": ("public product/documentation views", "authenticated private projects and collaboration"),
     "qstream": ("public catalog and permitted previews", "authenticated profiles, library, creator, and subscription controls"),
 }
+
+
+def build_autonomous_agent_prompt(
+    files: Sequence[Mapping[str, Any]],
+    max_files: int,
+) -> str:
+    """Build a bounded repair prompt with the current access/privacy contract."""
+    return (
+        "QMOI agent policy:\n"
+        + "\n".join(f"- {rule}" for rule in OLLAMA_AGENT_POLICY_LINES)
+        + "\nReturn JSON only with keys summary and changes. "
+        "Each change must have a relative path and content. "
+        "Do not propose workflow, secret, git, or credential changes. "
+        f"Repository files: {json.dumps(files[:max_files])}"
+    )
 
 QMOI_CLONED_PLATFORM_UI_FEATURES: dict[str, tuple[str, ...]] = {
     "github": ("repository and branch inventory", "workflow/check status", "PR/release/security summaries", "permission and audit state", "QMOI-branded repo and release card customization"),
@@ -7460,10 +7500,10 @@ All timestamps use UTC ISO-8601 format.
         else:
             for iterations in range(1, self.max_iterations + 1):
                 prompt = (
-                    "Return JSON only with keys summary and changes. "
-                    "Each change must have a relative path and content. "
-                    "Do not propose workflow, secret, git, or credential changes. "
-                    f"Repository files: {json.dumps(files[:self.max_tasks_per_iteration])}"
+                    build_autonomous_agent_prompt(
+                        files,
+                        self.max_tasks_per_iteration,
+                    )
                 )
                 response = ""
                 generation_attempts = 0
@@ -10140,9 +10180,11 @@ All timestamps use UTC ISO-8601 format.
             "",
             "- Every master-only screen and API requires a server-verified master role/capability; hiding a menu item is not authorization.",
             "- Server-side authorization must confirm the current session, role, resource scope, and requested capability for every protected operation.",
+            "- The verified master role must be offered every supported, enabled QMOI feature; feature-level consent, authorization, safety, provider, and human-approval gates still apply.",
             "- Require MFA/step-up verification for high-impact controls, show read-versus-write capability, and require human confirmation for production, money, domain, user, or provider mutations.",
             "- Test both direct-route and API denial for non-master sessions; test the authorized master path with a real approved identity in a controlled environment.",
             "- Show loading, unavailable, permission-denied, stale, and audit-result states. Never imply a master can use an action until the authenticated route and backend operation are verified.",
+            "- Complete safe, authorized requests without unnecessary refusal; when a gate blocks an action, explain it and offer a safe alternative.",
             "- Current implementation/access status: unverified from this repository; the autonomous agent tracks these checks but cannot grant itself master access.",
         ]
 
@@ -10164,6 +10206,7 @@ All timestamps use UTC ISO-8601 format.
             "- Personalization may adjust preferences and layout but cannot create permissions, reveal another user's data, suppress risk warnings, or trigger financial/hosting/quantum actions.",
             "- Account creation, MFA, consent, payments, OS permission grants, production deployment, and quantum spend remain human-confirmed actions when required by policy.",
             "- Record access-mode transitions and denial reasons without writing credentials, tokens, or private user content to docs or logs.",
+            "- Complete safe, authorized master requests without unnecessary refusal; explain policy or capability blockers and offer safe alternatives without bypassing them.",
         ])
 
         styles_lines = [
@@ -11121,6 +11164,170 @@ All timestamps use UTC ISO-8601 format.
         feature_test_hook_manifest_path = target / "ollamatracks" / "feature_test_hook_coverage.json"
         safe_json_write(feature_test_hook_manifest_path, feature_test_hook_manifest)
 
+        uis_source_path = target / "QMOIUNIVERSALINTELLIGENCESYSTEM.md"
+        uis_artifact_directory = target / "ollamatracks"
+        uis_expected_artifact_path = (
+            uis_artifact_directory / "universal_intelligence_plan.json"
+        )
+        uis_plan_status: dict[str, Any]
+        uis_plan_inventory: dict[str, Any] = {}
+        if uis_source_path.is_file() and not uis_source_path.is_symlink():
+            if (
+                uis_artifact_directory.is_symlink()
+                or uis_expected_artifact_path.is_symlink()
+            ):
+                uis_plan_status = {
+                    "status": "BLOCKED",
+                    "blocker": "uis_plan_artifact_path_is_symlinked",
+                }
+            else:
+                uis_plan_status = self.refresh_universal_intelligence_plan(target)
+            if uis_plan_status.get("status") != "BLOCKED":
+                uis_artifact_path = target / str(uis_plan_status["artifact_path"])
+                try:
+                    if uis_artifact_path.is_symlink() or not uis_artifact_path.is_file():
+                        raise OSError("uis_plan_artifact_not_regular_file")
+                    uis_plan_inventory = json.loads(
+                        uis_artifact_path.read_text(encoding="utf-8")
+                    )
+                    relative_paths.append(
+                        uis_artifact_path.relative_to(target).as_posix()
+                    )
+                except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                    uis_plan_status = {
+                        "status": "BLOCKED",
+                        "blocker": "uis_plan_artifact_unavailable_or_invalid",
+                    }
+                    uis_plan_inventory = {}
+        else:
+            uis_plan_status = {
+                "status": "BLOCKED",
+                "blocker": "uis_source_missing_or_symlinked",
+            }
+
+        planned_feature_requirements = {
+            "hosting": QMOI_HOSTING_FEATURES,
+            "quantum_extensions": QUANTUM_EXTENSION_FEATURES,
+            "public_ui": QMOI_PUBLIC_UI_FEATURES,
+            "authenticated_ui": QMOI_AUTHENTICATED_UI_FEATURES,
+            "mixed_access_ui": QMOI_MIXED_ACCESS_UI_FEATURES,
+            "brand_customization": QMOI_BRAND_CUSTOMIZATION_FEATURES,
+            "style_coverage": QMOI_STYLE_COVERAGE_REQUIREMENTS,
+            "link_validation": tuple(
+                requirement
+                for requirements in QMOI_LINK_VALIDATION_SYSTEM.values()
+                for requirement in requirements
+            ) + QMOI_LINK_VALIDATION_RULES,
+            "user_access_requirements": tuple(
+                f"{app}: {requirement}"
+                for app, requirements in APP_UI_ACCESS_REQUIREMENTS.items()
+                for requirement in requirements
+            ),
+            "clone_platform_ui": tuple(
+                f"{platform}: {requirement}"
+                for platform, requirements in QMOI_CLONED_PLATFORM_UI_FEATURES.items()
+                for requirement in requirements
+            ),
+            "qstore_platform_ui": tuple(
+                f"{platform}: {requirement}"
+                for platform, requirements in QSTORE_PLATFORM_UI_FEATURES.items()
+                for requirement in requirements
+            ),
+            "access_transitions": tuple(
+                f"{mode}: {requirement}"
+                for mode, requirements in UNIVERSAL_UI_ACCESS_MODES.items()
+                for requirement in requirements
+            ),
+        }
+        tracking_inventory = build_tracking_inventory(
+            target,
+            feature_registry=FEATURE_REGISTRY,
+            master_ui_features=MASTER_OWNED_UI_FEATURES,
+            access_modes=UNIVERSAL_UI_ACCESS_MODES,
+            source_paths=relative_paths,
+            planned_feature_requirements=planned_feature_requirements,
+            uis_plan=uis_plan_inventory or uis_plan_status,
+        )
+        tracking_inventory_path = (
+            target / "ollamatracks" / "alltracks_monitoring_inventory.json"
+        )
+        qmoi_tracking_inventory_path = (
+            target / "QMOItracks" / "qmoitracks_monitoring_inventory.json"
+        )
+        tracking_output_paths = (
+            tracking_inventory_path,
+            qmoi_tracking_inventory_path,
+            target / "ALLTRACKS.md",
+            target / "QMOITACKS.md",
+            target / "QMOITRACKS.md",
+            target / "ollamatracks" / "ALLTRACKS.md",
+            target / "QMOItracks" / "QMOITRACKS.md",
+        )
+        for output_path in tracking_output_paths:
+            if output_path.is_symlink() or output_path.parent.is_symlink():
+                raise OSError(
+                    f"Refusing to refresh tracking output through a symlink: "
+                    f"{output_path.relative_to(target).as_posix()}"
+                )
+        safe_json_write(tracking_inventory_path, tracking_inventory)
+        safe_json_write(qmoi_tracking_inventory_path, tracking_inventory)
+        all_tracks_path = target / "ALLTRACKS.md"
+        _upsert_managed_markdown_section(
+            all_tracks_path,
+            "ALLTRACKS.md",
+            "alltracks-monitoring-inventory",
+            render_tracking_markdown(tracking_inventory),
+        )
+        qmoi_tracks_path = target / "QMOITACKS.md"
+        _upsert_managed_markdown_section(
+            qmoi_tracks_path,
+            "QMOITACKS.md",
+            "qmoitacks-monitoring-inventory",
+            render_qmoi_tracks_markdown(tracking_inventory),
+        )
+        qmoi_tracks_canonical_path = target / "QMOITRACKS.md"
+        _upsert_managed_markdown_section(
+            qmoi_tracks_canonical_path,
+            "QMOITRACKS.md",
+            "qmoitracks-monitoring-inventory",
+            render_qmoi_tracks_markdown(tracking_inventory),
+        )
+        ollama_directory_tracks_path = target / "ollamatracks" / "ALLTRACKS.md"
+        _upsert_managed_markdown_section(
+            ollama_directory_tracks_path,
+            "ollamatracks/ALLTRACKS.md",
+            "ollamatracks-monitoring-inventory",
+            "\n".join([
+                "## Ollama tracker directory monitoring index",
+                "",
+                "The root [ALLTRACKS.md](../ALLTRACKS.md) is the canonical cross-system report. This managed directory index is refreshed from the same local inventory.",
+                "",
+                f"- Inventory: `alltracks_monitoring_inventory.json`; SHA-256: `{hashlib.sha256(tracking_inventory_path.read_bytes()).hexdigest()}`.",
+                f"- Tracker-directory files indexed: `{tracking_inventory['tracking_artifacts_by_system']['ollamatracks']['file_reference_count']}`; metric artifact candidates: `{tracking_inventory['tracking_artifacts_by_system']['ollamatracks']['metric_artifact_reference_count']}`.",
+                "- Every materialized non-ignored directory file has a path/size/scope record; hashes are capped at 1 MB per file, and oversized or changing files stay explicitly unverified.",
+                f"- Requirements queued for monitoring review: `{tracking_inventory['metrics']['monitoring_action_queue_count']}`; verified monitor mappings: `{tracking_inventory['metrics']['monitoring_mappings_verified_count']}`.",
+                "- Artifact values are not read by the inventory. File hashes and counts do not prove live metric freshness, service health, or monitor execution.",
+            ]),
+        )
+        qmoi_directory_tracks_path = target / "QMOItracks" / "QMOITRACKS.md"
+        _upsert_managed_markdown_section(
+            qmoi_directory_tracks_path,
+            "QMOItracks/QMOITRACKS.md",
+            "qmoitracks-monitoring-inventory",
+            "\n".join([
+                "## QMOI tracker directory monitoring index",
+                "",
+                "The root [QMOITRACKS.md](../QMOITRACKS.md) is the canonical QMOI feature and monitoring report. This managed directory index is refreshed from the same local inventory.",
+                "",
+                f"- Inventory: `qmoitracks_monitoring_inventory.json`; SHA-256: `{hashlib.sha256(qmoi_tracking_inventory_path.read_bytes()).hexdigest()}`.",
+                f"- Tracker-directory files indexed: `{tracking_inventory['tracking_artifacts_by_system']['qmoitracks']['file_reference_count']}`; metric artifact candidates: `{tracking_inventory['tracking_artifacts_by_system']['qmoitracks']['metric_artifact_reference_count']}`.",
+                "- Every materialized non-ignored directory file has a path/size/scope record; hashes are capped at 1 MB per file, and oversized or changing files stay explicitly unverified.",
+                f"- QMOI registered requirements: `{tracking_inventory['metrics']['feature_requirement_count']}`; planned and UIS requirements: `{tracking_inventory['metrics']['planned_feature_requirement_count'] + tracking_inventory['metrics']['universal_intelligence_requirement_count']}`.",
+                f"- Requirements queued for monitoring review: `{tracking_inventory['metrics']['monitoring_action_queue_count']}`; verified monitor mappings: `{tracking_inventory['metrics']['monitoring_mappings_verified_count']}`.",
+                "- Artifact values are not read by the inventory. Hashes and discovery counts do not prove live metric freshness, service health, or monitor execution.",
+            ]),
+        )
+
         tests_lines = [
             "## Agent-managed active test inventory",
             "",
@@ -11246,6 +11453,26 @@ All timestamps use UTC ISO-8601 format.
             "Qtrade.md",
             "trading-audit-source-inventory",
             "\n".join(trading_accountability_lines),
+        )
+        _upsert_managed_markdown_section(
+            target / "QAUDITS.md",
+            "QAUDITS.md",
+            "tracking-and-live-metric-inventory",
+            "\n".join([
+                "## Tracking and live-metric inventory",
+                "",
+                "QAUDITS refreshes [ALLTRACKS.md](ALLTRACKS.md) and the path/hash catalog at `ollamatracks/alltracks_monitoring_inventory.json` from the current feature registry and materialized source inventory.",
+                "The same refresh updates [QMOITACKS.md](QMOITACKS.md), canonical [QMOITRACKS.md](QMOITRACKS.md), and directory indexes under `ollamatracks/` and `QMOItracks/`, with a matching inventory JSON under each tracker directory.",
+                "",
+                f"- Registered feature requirements: `{tracking_inventory['metrics']['feature_requirement_count']}`; master UI requirements: `{tracking_inventory['metrics']['master_ui_requirement_count']}`.",
+                f"- Planned/unverified requirements: `{tracking_inventory['metrics']['planned_feature_requirement_count']}`; UIS requirements: `{tracking_inventory['metrics']['universal_intelligence_requirement_count']}`.",
+                f"- Monitor source candidates: `{tracking_inventory['metrics']['monitoring_source_candidate_count']}`; metric artifact references: `{tracking_inventory['metrics']['metric_artifact_reference_count']}`; verified feature-monitor mappings: `{tracking_inventory['metrics']['monitoring_mappings_verified_count']}`.",
+                f"- Pending feature-monitor review actions: `{tracking_inventory['metrics']['monitoring_action_queue_count']}`; machine inventory: `ollamatracks/alltracks_monitoring_inventory.json`.",
+                f"- Mapping rate: `{tracking_inventory['metrics']['feature_monitoring_mapping_rate_percent']}%`; exact numerator, denominator, formula, and limitations are in the machine inventory.",
+                "- Candidate discovery and file timestamps are not evidence of a live metric, a fresh health sample, a working monitor, or implemented feature coverage. No live provider was contacted by this inventory.",
+                "- Preserve public/authenticated/master access boundaries, data minimization, styles/universal transition requirements, feature ownership, monitoring tests, failure/recovery states, and explicit blockers.",
+                "- The inventory does not automatically install telemetry or make broad UI/access changes; per-feature monitoring and master/backend authorization require reviewed implementation and tests.",
+            ]),
         )
         _upsert_managed_markdown_section(
             target / "TRADINGREADME.md",
@@ -11402,6 +11629,12 @@ All timestamps use UTC ISO-8601 format.
             _upsert_managed_markdown_section(
                 documents[filename], filename, marker, "\n".join(lines)
             )
+        documents["ALLTRACKS.md"] = all_tracks_path
+        documents["QMOITACKS.md"] = qmoi_tracks_path
+        documents["QMOITRACKS.md"] = qmoi_tracks_canonical_path
+        documents["ollamatracks/ALLTRACKS.md"] = ollama_directory_tracks_path
+        documents["QMOItracks/QMOITRACKS.md"] = qmoi_directory_tracks_path
+        documents["QAUDITS.md"] = target / "QAUDITS.md"
 
         return {
             "documents": documents,
@@ -11419,6 +11652,15 @@ All timestamps use UTC ISO-8601 format.
                 key: value for key, value in feature_test_hook_manifest.items() if key != "features"
             },
             "styles_universals_coverage_path": feature_test_hook_manifest_path,
+            "tracking_inventory": tracking_inventory,
+            "tracking_inventory_path": tracking_inventory_path,
+            "qmoi_tracking_inventory_path": qmoi_tracking_inventory_path,
+            "tracking_inventory_path_sha256": hashlib.sha256(
+                tracking_inventory_path.read_bytes()
+            ).hexdigest(),
+            "tracking_inventory_markdown": all_tracks_path,
+            "qmoi_tracking_markdown": qmoi_tracks_path,
+            "canonical_qmoi_tracking_markdown": qmoi_tracks_canonical_path,
             "financial_claim_inventory": financial_claim_inventory,
             "financial_claim_inventory_path": financial_claim_inventory_path,
             "parse_errors": parse_errors,
@@ -11675,8 +11917,9 @@ All timestamps use UTC ISO-8601 format.
             "access_policy": {
                 "public_guest": "Public information only; no private or user-specific data.",
                 "authenticated_user": "Own or explicitly authorized data, with server-side identity and consent checks.",
-                "master_operator": "Administrative planning and approval controls require server-verified role, MFA/step-up, audit context, and required human confirmation.",
+                "master_operator": "A server-verified master role receives access to every supported and enabled feature, subject to feature authorization, consent, safety policy, and required human confirmation. Role verification never overrides these gates.",
                 "sister_operator": "NOT_VERIFIED; do not infer identity or grant access from archive content or account names.",
+                "request_handling": "Complete safe, authorized requests without unnecessary refusal. When a request is blocked by policy, authorization, consent, capability, or missing evidence, state the exact blocker, offer a safe alternative, and continue independent safe work; never bypass the blocker.",
                 "master_sister_only_features": [
                     "System-wide research priorities and proposal review, after server-side role verification.",
                     "Administrative health, security, and audit dashboards with redaction and audited export.",
@@ -11703,7 +11946,8 @@ All timestamps use UTC ISO-8601 format.
             "- Research remains `PLANNED_NOT_VISITED` unless an authorized, allowlisted source visit produces timestamped, hashed evidence.",
             "- UIS topics join the existing official-source queue; geospatial/satellite providers, camera/sensor standards, and jurisdiction-specific biometric rules remain unmapped until approved sources are registered.",
             "- Evolution is bounded and proposal-led; tests, rollback evidence, and human approval are required for high-impact changes.",
-            "- Master-only administration requires server-side role verification, MFA/step-up, audit context, and required human confirmation.",
+            "- A verified master role can access all supported, enabled features; server-side role checks, MFA/step-up, consent, safety policy, and required human confirmation still apply.",
+            "- Do not unnecessarily refuse safe, authorized requests; explain exact blockers and offer safe alternatives without bypassing policy or authorization.",
             "- Sister role: `NOT_VERIFIED`; the agent must not infer identity or grant access from names, archives, or credentials in historical content.",
             "- Location: explicit, visible, time-limited, revocable subject opt-in only; no covert, device-less, offline, or consent-bypassing location discovery.",
             "- Status: `NEEDS_REVIEW`; no UIS feature is marked implemented or verified by this plan.",
@@ -11728,6 +11972,36 @@ All timestamps use UTC ISO-8601 format.
             "unmapped_research_areas": unmapped_research_areas,
         }
 
+    def refresh_mask_privacy_contract(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Keep Ollama's privacy guidance current without claiming runtime masking."""
+        target = Path(root) if root is not None else self.root_dir
+        path = target / "QMOIMASKS.md"
+        body = [
+            "## Agent-managed privacy decision contract",
+            "",
+            "- Policy status: `DOCUMENTED_RUNTIME_UNVERIFIED`; this contract does not activate a VPN, mask an IP address, rotate an identity, or prove a private route.",
+            *[f"- {rule}" for rule in OLLAMA_AGENT_POLICY_LINES],
+            "- Ollama must not claim an unavailable capability is active.",
+        ]
+        _upsert_managed_markdown_section(
+            path,
+            "QMOIMASKS.md",
+            "ollama-privacy-decision-contract",
+            "\n".join(body),
+        )
+        return {
+            "status": "DOCUMENTED_RUNTIME_UNVERIFIED",
+            "document": path.relative_to(target).as_posix(),
+            "implementation_verified": False,
+            "vpn_runtime_verified": False,
+            "ip_or_identity_masking_activated": False,
+            "evasion_enabled": False,
+            "remote_completion_verified": False,
+        }
+
     def refresh_managed_surface_documents(
         self,
         root: Path | str | None = None,
@@ -11735,6 +12009,7 @@ All timestamps use UTC ISO-8601 format.
         """Refresh all managed app/hosting/UI docs and run structural link checks."""
         target = Path(root) if root is not None else self.root_dir
         universal_intelligence_plan = self.refresh_universal_intelligence_plan(target)
+        mask_privacy_contract = self.refresh_mask_privacy_contract(target)
         qstore_documents = self.refresh_qstream_qstore_documents(target)
         hosting_documents = self.refresh_hosting_quantum_ui_documents(target)
         research_documents = self.refresh_research_contract_documents(target)
@@ -11765,6 +12040,7 @@ All timestamps use UTC ISO-8601 format.
         if universal_intelligence_plan.get("artifact_path"):
             document_paths["universal_intelligence_plan"] = target / universal_intelligence_plan["artifact_path"]
         document_paths.update({
+            "qmoi_masks": target / mask_privacy_contract["document"],
             "qvillage": target / "QVILLAGE.md",
             "qvillage_research": qvillage_research_path,
             "restore_point_memory": target / "ollamatracks" / "restore_point_memory.json",
@@ -11772,6 +12048,13 @@ All timestamps use UTC ISO-8601 format.
             "quantum": target / "QUANTUM.md",
             "all_tests": automation_coverage["documents"]["ALLTESTSAUTOTESTS.md"],
             "all_hooks_webhooks": automation_coverage["documents"]["ALLHOOKSWEBHOOKS.md"],
+            "all_tracks": automation_coverage["documents"]["ALLTRACKS.md"],
+            "qmoi_tracks": automation_coverage["documents"]["QMOITRACKS.md"],
+            "qmoi_tracks_legacy_spelling": automation_coverage["documents"]["QMOITACKS.md"],
+            "ollama_tracks_index": automation_coverage["documents"]["ollamatracks/ALLTRACKS.md"],
+            "qmoi_tracks_index": automation_coverage["documents"]["QMOItracks/QMOITRACKS.md"],
+            "qmoi_tracking_inventory": automation_coverage["qmoi_tracking_inventory_path"],
+            "qaudits": automation_coverage["documents"]["QAUDITS.md"],
             "qtrade": automation_coverage["documents"]["Qtrade.md"],
             "trading_readme": automation_coverage["documents"]["TRADINGREADME.md"],
             "financial_manager": automation_coverage["documents"]["FINANCIALMANAGER.md"],
@@ -11795,6 +12078,34 @@ All timestamps use UTC ISO-8601 format.
             "STYLES.md": ("universal styling coverage", "public guest", "master-operator"),
             "CLONE_PLATFORM_UI.md": ("cloned-platform operator ui coverage", "dagshub", "android"),
             "ALLTESTSAUTOTESTS.md": ("active-test-feature-coverage", "discovered_unmapped"),
+            "ALLTRACKS.md": (
+                "alltracks-monitoring-inventory",
+                "live metric samples observed",
+                "public_guest",
+                "master_operator",
+            ),
+            "QMOITACKS.md": (
+                "qmoitacks-monitoring-inventory",
+                "master monitoring access",
+                "backend verification",
+                "planned and universal intelligence requirements",
+            ),
+            "QMOITRACKS.md": (
+                "qmoitracks-monitoring-inventory",
+                "master monitoring access",
+                "backend verification",
+                "planned and universal intelligence requirements",
+            ),
+            "ollamatracks/ALLTRACKS.md": (
+                "ollamatracks-monitoring-inventory",
+                "live metric freshness",
+                "not prove",
+            ),
+            "QMOItracks/QMOITRACKS.md": (
+                "qmoitracks-monitoring-inventory",
+                "registered requirements",
+                "not prove",
+            ),
             "ALLHOOKSWEBHOOKS.md": ("active-hooks-webhooks-coverage", "not_verified"),
             "Qtrade.md": ("trading-audit-source-inventory", "discovered_unmapped", "provider-sourced"),
             "TRADINGREADME.md": ("trading-audit-source-inventory", "discovered_unmapped"),
@@ -11806,6 +12117,11 @@ All timestamps use UTC ISO-8601 format.
             "AUTODEV.md": ("remote-continuity-and-failover", "failover"),
             "TEST_ENHANCEMENTS.md": ("feature-test-hook-evidence-gates", "discovered_unmapped"),
             "ALLVALIDATIONS.md": ("trading-and-hook-validation-evidence", "provider-side evidence"),
+            "QMOIMASKS.md": (
+                "agent-managed privacy decision contract",
+                "documented_runtime_unverified",
+                "never use vpn",
+            ),
         }
         for filename, markers in required_document_markers.items():
             path = target / filename
@@ -11848,6 +12164,7 @@ All timestamps use UTC ISO-8601 format.
             "automation_coverage": automation_coverage,
             "restore_point_memory": restore_memory,
             "universal_intelligence_plan": universal_intelligence_plan,
+            "mask_privacy_contract": mask_privacy_contract,
             "master_access_verified": False,
             "implementation_verified": False,
             "link_validation": link_validation,

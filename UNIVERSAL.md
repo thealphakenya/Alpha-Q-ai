@@ -23,7 +23,8 @@ All apps and cloned-platform consoles use the same public, authenticated-user, a
 
 ### master_operator
 - Explicit master role, MFA or equivalent step-up verification, current capability, and audit context.
-- Administrative mutations require backend authorization and human confirmation where impact is high; master and sister may configure bank accounts, wallets, payment APIs, and project-linked payment destinations.
+- Expose every supported, enabled QMOI feature to the verified master role; feature authorization, consent, safety policy, provider rules, and required human confirmation still apply.
+- Administrative mutations require backend authorization and human confirmation where impact is high; do not infer access from an account name or unverified sister role.
 
 ### Per-user UI generation
 
@@ -32,6 +33,7 @@ All apps and cloned-platform consoles use the same public, authenticated-user, a
 - Personalization may adjust preferences and layout but cannot create permissions, reveal another user's data, suppress risk warnings, or trigger financial/hosting/quantum actions.
 - Account creation, MFA, consent, payments, OS permission grants, production deployment, and quantum spend remain human-confirmed actions when required by policy.
 - Record access-mode transitions and denial reasons without writing credentials, tokens, or private user content to docs or logs.
+- Complete safe, authorized master requests without unnecessary refusal; explain policy or capability blockers and offer safe alternatives without bypassing them.
 <!-- END QMOI MANAGED: universal-ui-access-contract -->
 
 <!-- BEGIN QMOI MANAGED: feature-test-event-accountability -->

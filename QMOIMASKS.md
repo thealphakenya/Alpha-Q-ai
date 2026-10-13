@@ -942,3 +942,20 @@ The orchestrator should treat masks and VPN as operational capabilities, not as 
 - Compatibility requirement: no regression to Git, Codespaces, Copilot, bank login, MFA, consent, recovery, or evidence capture; prove this with targeted tests before enabling runtime masks.
 - Evidence: `ollamatracks/bank_automation_status.json`; no provider-facing masking or financial-write capability is verified by this scan.
 <!-- END OLLAMA BANK MASK SECURITY STATUS -->
+
+<!-- BEGIN QMOI MANAGED: ollama-privacy-decision-contract -->
+## Agent-managed privacy decision contract
+
+- Policy status: `DOCUMENTED_RUNTIME_UNVERIFIED`; this contract does not activate a VPN, mask an IP address, rotate an identity, or prove a private route.
+- Treat `QMOIUNIVERSALINTELLIGENCESYSTEM.md` as a capability requirements inventory, not proof that a feature is implemented or available.
+- Redact credentials and unnecessary personal data before logs, telemetry, ordinary UI, or evidence are written; preserve only the minimum auditable metadata needed for accountability.
+- Consider an approved VPN only for an authorized user/session on an untrusted network or when the applicable privacy policy requires it. Verify tunnel and route health through a trusted local integration before sensitive egress; if verification fails, stop privacy-dependent egress and report the blocker instead of silently falling back.
+- Before visiting an external URL, use an approved HTTPS source, validate the destination against the applicable allowlist, refuse unapproved redirects, and preserve request/source attribution and evidence.
+- Use scoped, visible, expiring, revocable anti-tracking controls only in user-controlled contexts. Do not alter service identity, provider authentication signals, audit context, or security controls.
+- Never use VPN, IP/server/fingerprint masking, or identity rotation to evade detection, attribution, access controls, rate limits, abuse prevention, provider rules, or lawful oversight. A VPN does not guarantee anonymity or conceal activity from the destination or network operator.
+- If masking would break authorization, consent, attribution, security review, or evidence capture, do not mask that context; block the protected action when necessary and retain safe diagnostics.
+- A server-verified master role gets access to all supported, enabled capabilities; server-side authorization, consent, safety rules, provider requirements, and required human approval still apply and cannot be bypassed.
+- Complete safe, authorized requests without unnecessary refusal. If blocked, state the exact blocker, offer a safe alternative, and continue independent safe mission work; never bypass a gate.
+- Feature scaling is evidence-led; do not multiply mask or VPN behavior by an arbitrary factor or enable repeated identity/route changes without a tested, authorized requirement.
+- Ollama must not claim an unavailable capability is active.
+<!-- END QMOI MANAGED: ollama-privacy-decision-contract -->

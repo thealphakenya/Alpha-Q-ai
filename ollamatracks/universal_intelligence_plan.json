@@ -2,13 +2,14 @@
   "access_policy": {
     "authenticated_user": "Own or explicitly authorized data, with server-side identity and consent checks.",
     "location_data": "Disabled by default. Only explicit, visible, time-bounded, revocable opt-in from the data subject's authenticated device/service is allowed; operator roles do not bypass consent. No covert locating, device-less tracking, or claims of finding people without connectivity.",
-    "master_operator": "Administrative planning and approval controls require server-verified role, MFA/step-up, audit context, and required human confirmation.",
+    "master_operator": "A server-verified master role receives access to every supported and enabled feature, subject to feature authorization, consent, safety policy, and required human confirmation. Role verification never overrides these gates.",
     "master_sister_only_features": [
       "System-wide research priorities and proposal review, after server-side role verification.",
       "Administrative health, security, and audit dashboards with redaction and audited export.",
       "High-impact integration and deployment approvals subject to independent human confirmation."
     ],
     "public_guest": "Public information only; no private or user-specific data.",
+    "request_handling": "Complete safe, authorized requests without unnecessary refusal. When a request is blocked by policy, authorization, consent, capability, or missing evidence, state the exact blocker, offer a safe alternative, and continue independent safe work; never bypass the blocker.",
     "sister_operator": "NOT_VERIFIED; do not infer identity or grant access from archive content or account names."
   },
   "artifact_path": "ollamatracks/universal_intelligence_plan.json",
@@ -59,7 +60,7 @@
     "mode": "bounded_proposals_with_tests_and_rollback",
     "self_modifying_policy": false
   },
-  "generated_at": "2026-10-13T17:03:41.607167Z",
+  "generated_at": "2026-10-13T18:27:30.030524Z",
   "implementation_plan": [
     {
       "acceptance_criteria": [
@@ -239,9 +240,95 @@
   "research_policy": {
     "default_external_fetch": false,
     "evolution_cycle": "bounded topic selection, source review, proposal, evaluation, tests, rollback plan, then human approval for high-impact changes",
+    "external_fetch_gate": "Requires GitHub-hosted execution and QMOI_EXTERNAL_RESEARCH_ENABLED=true; otherwise remain PLANNED_NOT_VISITED.",
     "external_sources": "Official, allowlisted sources only; record retrieval time, URL, content hash, license, limitations, and validation evidence before marking visited.",
     "refresh_on_agent_cycle": true,
-    "research_status": "PLANNED_NOT_VISITED"
+    "research_status": "PLANNED_NOT_VISITED",
+    "topic_mapping": [
+      {
+        "official_topics": [
+          "github-rest-api",
+          "python-testing"
+        ],
+        "plan_id": "UIS-PLAN-01",
+        "status": "MAPPED_TO_OFFICIAL_CATALOG"
+      },
+      {
+        "official_topics": [
+          "application-security"
+        ],
+        "plan_id": "UIS-PLAN-02",
+        "status": "MAPPED_TO_OFFICIAL_CATALOG"
+      },
+      {
+        "official_topics": [
+          "github-actions-auth",
+          "python-testing"
+        ],
+        "plan_id": "UIS-PLAN-03",
+        "status": "MAPPED_TO_OFFICIAL_CATALOG"
+      },
+      {
+        "official_topics": [
+          "model-hosting",
+          "model-evaluation",
+          "github-rest-api",
+          "application-security"
+        ],
+        "plan_id": "UIS-PLAN-04",
+        "status": "PARTIAL_MAPPING"
+      },
+      {
+        "official_topics": [
+          "ollama-runtime",
+          "model-evaluation",
+          "model-hosting"
+        ],
+        "plan_id": "UIS-PLAN-05",
+        "status": "MAPPED_TO_OFFICIAL_CATALOG"
+      },
+      {
+        "official_topics": [
+          "accessibility",
+          "http-semantics"
+        ],
+        "plan_id": "UIS-PLAN-06",
+        "status": "MAPPED_TO_OFFICIAL_CATALOG"
+      },
+      {
+        "official_topics": [
+          "application-security",
+          "python-testing"
+        ],
+        "plan_id": "UIS-PLAN-07",
+        "status": "MAPPED_TO_OFFICIAL_CATALOG"
+      },
+      {
+        "official_topics": [
+          "github-actions-auth",
+          "github-rest-api"
+        ],
+        "plan_id": "UIS-PLAN-08",
+        "status": "MAPPED_TO_OFFICIAL_CATALOG"
+      }
+    ],
+    "unmapped_research_areas": [
+      {
+        "area": "Geospatial APIs, geocoding, and route-analysis providers",
+        "plan_id": "UIS-PLAN-04",
+        "status": "OFFICIAL_SOURCE_MAPPING_REQUIRED"
+      },
+      {
+        "area": "Satellite/aerial imagery providers and licensing",
+        "plan_id": "UIS-PLAN-04",
+        "status": "OFFICIAL_SOURCE_MAPPING_REQUIRED"
+      },
+      {
+        "area": "Camera/sensor integration standards and jurisdiction-specific biometric/location rules",
+        "plan_id": "UIS-PLAN-04",
+        "status": "OFFICIAL_SOURCE_MAPPING_REQUIRED"
+      }
+    ]
   },
   "schema_version": 1,
   "scope": "local_requirement_inventory_and_safe_execution_plan",
