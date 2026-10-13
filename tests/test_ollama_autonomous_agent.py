@@ -101,8 +101,180 @@ class TestAutonomousContinuation:
         assert continue_stage["details"]["retry_limit_respected"] is True
         assert continue_stage["details"]["qaudit_precondition"]["source_manifest_sha256"] == continue_stage["details"]["source_manifest_sha256"]
 
+    def test_ready_checkpoint_does_not_bypass_success_contract(self, tmp_path, monkeypatch):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        monkeypatch.setenv("AUTO_CONTINUE_MAX", "1")
+        agent.refresh_managed_surface_documents = MagicMock(return_value={"status": "ready"})
+        agent.load_checkpoint = MagicMock(return_value={"status": "ready", "completed_steps": []})
+        agent.record_tracker_event = MagicMock()
+        agent.update_resume_checkpoint = MagicMock(return_value=tmp_path / "checkpoint.json")
+
+        with patch.object(OllamaAutonomousAgent, "run_autonomous_loop", return_value={"final_status": "FAILED"}) as run_loop:
+            exit_code = agent.run_continue_cycle()
+
+        assert exit_code == 1
+        assert run_loop.call_count == 1
+        assert agent.update_resume_checkpoint.call_args_list[-1].kwargs["status"] == "continuation_exhausted"
+
 
 class TestAuditInventoryCommand:
+    def test_universal_intelligence_plan_cli_checkpoints_generated_plan(self, tmp_path, monkeypatch, capsys):
+        (tmp_path / "ollamatracks").mkdir()
+        (tmp_path / "ollamatracks" / "mission-task-ledger.json").write_text(
+            json.dumps({"correlation_id": "uis-mission-correlation"}),
+            encoding="utf-8",
+        )
+        source = tmp_path / "QMOIUNIVERSALINTELLIGENCESYSTEM.md"
+        source.write_text("# UIS\n\n1. SAFETY\n- Preserve consent.\n", encoding="utf-8")
+        calls = {}
+
+        def record_checkpoint(root, operation, evidence, *, correlation_id=None):
+            calls.update({"operation": operation, "evidence": evidence, "correlation_id": correlation_id})
+            return {"correlation_id": correlation_id}
+
+        monkeypatch.setattr("ollama_autonomous_agent.record_qaudit_checkpoint", record_checkpoint)
+
+        assert autonomous_agent_main(["universal-intelligence-plan", "--base-path", str(tmp_path)]) == 0
+
+        result = json.loads(capsys.readouterr().out)
+        assert result["plan"]["status"] == "NEEDS_REVIEW"
+        assert result["plan"]["requirement_count"] > 0
+        assert calls["operation"] == "universal-intelligence-plan"
+        assert calls["correlation_id"] == "uis-mission-correlation"
+        assert calls["evidence"]["metrics"]["requirements_with_verified_implementation"] == 0
+        assert result["remote_mutation_performed"] is False
+
+    def test_autoresearch_queues_uis_topics_without_fetching_external_sources(self, tmp_path, monkeypatch):
+        (tmp_path / "QMOIUNIVERSALINTELLIGENCESYSTEM.md").write_text(
+            "# UIS\n\n1. RESEARCH\n- Research authorized sources.\n",
+            encoding="utf-8",
+        )
+        production_path = tmp_path / "ollamatracks" / "production_gap_inventory.json"
+        production_path.parent.mkdir(parents=True)
+        production_path.write_text(json.dumps({
+            "status": "NEEDS_REVIEW",
+            "coverage_complete": False,
+            "scanned_files": 1,
+            "total_candidates": 0,
+            "unreadable_files": [],
+            "oversized_files_not_read": 0,
+        }), encoding="utf-8")
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        calls = {}
+
+        monkeypatch.setattr("ollama_autonomous_agent.build_internal_research_plan", lambda roots: {})
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.audit_repository_surfaces",
+            lambda roots: {"roots": [], "research_topics": ["local-topic"], "research_domains": [], "source_manifest_sha256": "surface-hash"},
+        )
+        monkeypatch.setattr(agent.model_card_generator, "refresh_project_autoproject_coverage", lambda: [])
+        monkeypatch.setattr(
+            agent,
+            "refresh_production_manifests",
+            lambda root: {"inventory": str(production_path)},
+        )
+        monkeypatch.setattr(agent, "refresh_repository_audit_documents", lambda root, report: {})
+
+        def build_research_plan(topics):
+            calls["topics"] = set(topics)
+            return {"requested_topics": sorted(topics), "selected_resources": [], "status": "PLANNED_NOT_VISITED"}
+
+        monkeypatch.setattr("ollama_autonomous_agent.build_external_research_plan", build_research_plan)
+        monkeypatch.setattr("ollama_autonomous_agent.build_validation_research_matrix", lambda visits: {})
+        monkeypatch.setattr(agent, "refresh_research_status_documents", lambda *args: None)
+
+        report = agent.build_autoresearch_report([tmp_path], fetch_external=False)
+
+        assert {"model-hosting", "model-evaluation", "application-security", "accessibility"}.issubset(calls["topics"])
+        assert "local-topic" in calls["topics"]
+        assert report["external"]["visited_count"] == 0
+        assert report["external"]["status"] == "PLANNED_NOT_VISITED"
+        assert report["universal_intelligence_plan"]["status"] == "NEEDS_REVIEW"
+        assert report["external"]["universal_intelligence_unmapped_research_areas"]
+
+    def test_universal_intelligence_plan_preserves_source_and_privacy_gates(self, tmp_path):
+        source = tmp_path / "QMOIUNIVERSALINTELLIGENCESYSTEM.md"
+        source.write_text(
+            "# UIS source\n\nOBJECTIVE: Preserve the authored objective.\n\n"
+            "1. AUDIT EVERYTHING\nInspect active implementations and tests.\n\n"
+            "2. INTELLIGENCE PLATFORM\n- Build evidence-cited research tools.\n\n"
+            "3. PRODUCTION SAFETY\n- Never enable unauthorized tracking.\n",
+            encoding="utf-8",
+        )
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+
+        first = agent.refresh_universal_intelligence_plan()
+        original = source.read_text(encoding="utf-8")
+        authored_prefix = original.split(
+            "<!-- BEGIN QMOI MANAGED: universal-intelligence-execution-plan -->",
+            1,
+        )[0]
+        report = json.loads(
+            (tmp_path / "ollamatracks" / "universal_intelligence_plan.json").read_text(encoding="utf-8")
+        )
+        second = agent.refresh_universal_intelligence_plan()
+        refreshed = source.read_text(encoding="utf-8")
+
+        assert first["status"] == "NEEDS_REVIEW"
+        assert first["section_count"] == 4
+        assert first["requirement_count"] == report["requirement_count"]
+        assert report["requirements_with_verified_implementation"] == 0
+        assert [item["id"] for item in report["implementation_plan"]] == [
+            f"UIS-PLAN-{index:02d}" for index in range(1, 9)
+        ]
+        assert report["implementation_plan"][1]["depends_on"] == ["UIS-PLAN-01"]
+        assert report["implementation_plan"][-1]["status"] == "BLOCKED"
+        assert len(report["capability_matrix"]) == 7
+        assert all(item["status"] == "PENDING_EVIDENCE" for item in report["capability_matrix"])
+        assert all(
+            requirement["status"] == "PENDING_EVIDENCE"
+            for section in report["sections"]
+            for requirement in section["requirements"]
+        )
+        assert report["access_policy"]["sister_operator"] == "NOT_VERIFIED; do not infer identity or grant access from archive content or account names."
+        assert "revocable" in report["access_policy"]["location_data"]
+        assert "No covert locating" in report["access_policy"]["location_data"]
+        assert "Preserve the authored objective." in refreshed
+        assert refreshed.count("<!-- BEGIN QMOI MANAGED: universal-intelligence-execution-plan -->") == 1
+        assert first["source_sha256"] == second["source_sha256"]
+        assert authored_prefix in refreshed
+
+    def test_instruction_inventory_command_refreshes_and_checkpoints(self, tmp_path, monkeypatch, capsys):
+        track_dir = tmp_path / "ollamatracks"
+        track_dir.mkdir()
+        (track_dir / "mission-task-ledger.json").write_text(
+            json.dumps({"correlation_id": "mission-correlation"}),
+            encoding="utf-8",
+        )
+        inventory = {
+            "status": "PASS",
+            "files_discovered": 1,
+            "files_read": 1,
+            "unreadable_or_invalid": [],
+            "files": [{"path": "AGENTS.md", "bytes": 1, "sha256": "a" * 64}],
+            "source_contents_recorded": False,
+        }
+        calls = {}
+
+        monkeypatch.setattr("ollama_autonomous_agent.audit_instruction_files", lambda root: inventory)
+
+        def record_checkpoint(root, operation, evidence, *, correlation_id=None):
+            calls.update({"operation": operation, "evidence": evidence, "correlation_id": correlation_id})
+            return {"correlation_id": correlation_id}
+
+        monkeypatch.setattr("ollama_autonomous_agent.record_qaudit_checkpoint", record_checkpoint)
+
+        assert autonomous_agent_main(["instruction-inventory", "--base-path", str(tmp_path)]) == 0
+
+        result = json.loads(capsys.readouterr().out)
+        persisted = json.loads((track_dir / "instruction_inventory.json").read_text(encoding="utf-8"))
+        assert persisted == inventory
+        assert calls["operation"] == "instruction-inventory"
+        assert calls["correlation_id"] == "mission-correlation"
+        assert calls["evidence"]["metrics"]["files_read"] == 1
+        assert result["checkpoint"]["correlation_id"] == "mission-correlation"
+        assert result["remote_mutation_performed"] is False
+
     def test_bounded_audit_inventory_shard_command_routes_limits(self, tmp_path, monkeypatch, capsys):
         calls = {}
 
@@ -188,9 +360,13 @@ class TestAuditInventoryCommand:
             "ollama_autonomous_agent.audit_repository_surfaces",
             lambda roots: surface_audit,
         )
+        def write_sentence_audit(root, report, *, correlation_id=None):
+            sentence_evidence["correlation_id"] = correlation_id
+            return sentence_evidence
+
         monkeypatch.setattr(
             "ollama_autonomous_agent.write_markdown_sentence_audit",
-            lambda root, report: sentence_evidence,
+            write_sentence_audit,
         )
         monkeypatch.setattr(
             "ollama_autonomous_agent._local_artifact_integrity",
@@ -198,8 +374,11 @@ class TestAuditInventoryCommand:
         )
 
         def record_checkpoint(root, operation, evidence, *, correlation_id=None):
-            calls["correlation_id"] = correlation_id
-            calls["operation"] = operation
+            calls.setdefault("checkpoints", []).append({
+                "operation": operation,
+                "evidence": evidence,
+                "correlation_id": correlation_id,
+            })
             return {"correlation_id": correlation_id}
 
         monkeypatch.setattr(
@@ -214,8 +393,14 @@ class TestAuditInventoryCommand:
         ]) == 1
 
         result = json.loads(capsys.readouterr().out)
-        assert calls["operation"] == "qaudit-markdown-sentences"
-        assert calls["correlation_id"] == sentence_evidence["correlation_id"]
+        assert len(calls["checkpoints"]) == 2
+        assert all(item["operation"] == "qaudit-markdown-sentences" for item in calls["checkpoints"])
+        assert calls["checkpoints"][0]["evidence"]["status"] == "IN_PROGRESS"
+        assert calls["checkpoints"][1]["evidence"]["resolved_blockers"] == [
+            "markdown_sentence_audit_not_yet_terminal"
+        ]
+        assert calls["checkpoints"][0]["correlation_id"] == calls["checkpoints"][1]["correlation_id"]
+        assert calls["checkpoints"][1]["correlation_id"] == sentence_evidence["correlation_id"]
         assert result["correlation_id"] == result["checkpoint"]["correlation_id"]
 
     def test_audit_inventory_refreshes_local_evidence_without_remote_success_claims(
@@ -271,9 +456,22 @@ class TestAuditInventoryCommand:
             calls["instruction_root"] = root
             return {"status": "PASS", "files_discovered": 8, "files_read": 8}
 
+        uis_plan = {
+            "status": "NEEDS_REVIEW",
+            "section_count": 7,
+            "requirement_count": 24,
+            "requirements_with_verified_implementation": 0,
+            "artifact_path": "ollamatracks/universal_intelligence_plan.json",
+        }
+
+        def refresh_uis_plan(self, root=None):
+            calls["uis_root"] = root
+            return uis_plan
+
         monkeypatch.setattr(OllamaAutonomousAgent, "build_autoresearch_report", build_research)
         monkeypatch.setattr(OllamaAutonomousAgent, "refresh_ollama_reference_audit", refresh_ofca)
         monkeypatch.setattr(OllamaAutonomousAgent, "refresh_test_hook_coverage_documents", refresh_feature_coverage)
+        monkeypatch.setattr(OllamaAutonomousAgent, "refresh_universal_intelligence_plan", refresh_uis_plan)
         monkeypatch.setattr("ollama_autonomous_agent.audit_instruction_files", instruction_inventory)
 
         assert autonomous_agent_main(["audit-inventory", "--base-path", str(tmp_path)]) == 0
@@ -285,6 +483,8 @@ class TestAuditInventoryCommand:
         assert calls["ofca_phase_id"] == "audit_inventory_preflight"
         assert calls["feature_root"] == tmp_path.resolve()
         assert calls["instruction_root"] == tmp_path.resolve()
+        assert calls["uis_root"] == tmp_path.resolve()
+        assert result["universal_intelligence_plan"] == uis_plan
         assert result["repository_surface_audit"]["status"] == "NEEDS_REVIEW"
         assert result["ofca"]["status"] == "NEEDS_REMOTE_HISTORY_EVIDENCE"
         assert result["styles_universals"]["status"] == "NEEDS_FEATURE_TEST_HOOK_MAPPING"

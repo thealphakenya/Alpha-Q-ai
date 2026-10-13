@@ -3,7 +3,7 @@
 <!-- BEGIN QMOI MANAGED: materialized-link-inventory -->
 ## Materialized Markdown link inventory
 
-- Link references: `8624`; URL query strings and fragments are omitted from display.
+- Link references: `8673`; URL query strings and fragments are omitted from display.
 - A listed link is not a reachability or permission check; local missing targets remain in `repository_surface_audit.json`.
 
 | Source path | Line | Sanitized target | Target SHA-256 | Kind |
@@ -14,6 +14,7 @@
 | `ALLAUTO.md` | 40 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
 | `ALLAUTO.md` | 40 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
 | `ALLAUTO.md` | 43 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `ALLLANGUAGESCOMPARE.md` | 8 | `./ALLLANGUAGES.md` | `e3b7fd6b06ad8e2e0a5c1f39179451b46161e9dec15763f27ee9c03147ae76ea` | `local` |
 | `API.md` | 70 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `API.md` | 71 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
 | `API.md` | 72 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
@@ -54,9 +55,9 @@
 | `FINANCIALMANAGER.md` | 143 | `MONITORING_GUIDE.md` | `01017f2684e5336fe534cf129636f48a177c5c488c30b17499ea66750281f8cb` | `local` |
 | `FINANCIALMANAGER.md` | 144 | `MONITORING_INDEX.md` | `14c49973beacaa2c394bbfa0a38d8f15d569233e6e2d3883f8b9b2b127881daa` | `local` |
 | `FINANCIALMANAGER.md` | 145 | `MONITORING_SUMMARY.md` | `d090da629e264fcaca6372029a02a5b7ac8623c946223f39002833d57d8dd486` | `local` |
-| `FINANCIALMANAGER.md` | 146 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
-| `FINANCIALMANAGER.md` | 147 | `QMOI_ENHANCEMENT_COMPLETE.md` | `49057844da479dd01af2bbc992e767a36b8c617483da26ec7e3c414872882bf7` | `local` |
-| `FINANCIALMANAGER.md` | 148 | `QMOI_ENHANCEMENT_SUCCESS.md` | `28974361d6df670dd13b601e8c18af7ca26428b6977271d67f66c39feaf3ecaa` | `local` |
+| `FINANCIALMANAGER.md` | 146 | `OLLAMA_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `FINANCIALMANAGER.md` | 147 | `OLLAMA_ENHANCEMENT_COMPLETE.md` | `49057844da479dd01af2bbc992e767a36b8c617483da26ec7e3c414872882bf7` | `local` |
+| `FINANCIALMANAGER.md` | 148 | `OLLAMA_ENHANCEMENT_SUCCESS.md` | `28974361d6df670dd13b601e8c18af7ca26428b6977271d67f66c39feaf3ecaa` | `local` |
 | `FINANCIALMANAGER.md` | 149 | `PHASE_1_4_COMPLETION_SUMMARY.md` | `cf43ee953497b23f395e3e3b51500495de920f1c9640c2e72f858ff7501a75b9` | `local` |
 | `FINANCIALMANAGER.md` | 150 | `QALPHA.md` | `2e8dff7e33312db4c9406136795dad9cc7ec96401af10ca87f38b4cd888d3408` | `local` |
 | `FINANCIALMANAGER.md` | 151 | `QMOIAI.md` | `e04c1c3a4469901e92eeb68ecf46b9e2265ee0c47ad06ab6a64a5cd68a76d952` | `local` |
@@ -76,7 +77,7 @@
 | `FINANCIALMANAGER.md` | 165 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
 | `FINANCIALMANAGER.md` | 166 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
 | `FINANCIALMANAGER.md` | 167 | `oe.md` | `b7a3503a080585c81fb3480ad1d34c59d12b21cb01a7e7525e954ba2885c0315` | `local` |
-| `FINANCIALMANAGER.md` | 168 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
+| `FINANCIALMANAGER.md` | 168 | `ollama.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
 | `FINANCIALMANAGER.md` | 169 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
 | `FINANCIALMANAGER.md` | 170 | `trigger.md` | `9333a2a0afd520643610f68a4c7a78f7dcf5d21db4bef594b1f1ba2d351794da` | `local` |
 | `FINANCIALMANAGER.md` | 386 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
@@ -86,7 +87,7 @@
 | `FINANCIALMANAGER.md` | 390 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
 | `FINANCIALMANAGER.md` | 391 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
 | `FINANCIALMANAGER.md` | 392 | `MONITORING_GUIDE.md` | `01017f2684e5336fe534cf129636f48a177c5c488c30b17499ea66750281f8cb` | `local` |
-| `FINANCIALMANAGER.md` | 393 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `FINANCIALMANAGER.md` | 393 | `OLLAMA_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
 | `FINANCIALMANAGER.md` | 394 | `QMOI_REALTIME_MEMORY_INDEX.md` | `4a68c01465154f98c90419f2ca14554951d7ba4c968120eedd4f72b758c60009` | `local` |
 | `FINANCIALMANAGER.md` | 395 | `WORKFLOWS.md` | `14869d658dcf4b08f09b52f1b32611226b4ff104931421f5449fd011e6f47251` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 28 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
@@ -94,21 +95,21 @@
 | `IMPLEMENTATION_COMPLETE.md` | 47 | `INSTALL.md` | `09b140a43ebfdd8dbec31ce72cafffd15164d2860fd390692a030bcb932b54a0` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 58 | `BUILD.md` | `40f60e1037245d7b8a98a7325d53890a717da9979adeb54a61a795c4ba07f9c9` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 68 | `QTEAM.md` | `3e824d923db74f35ca1a10533ef011860b28b35dea36477d17d85e2ae30489f5` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 77 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 77 | `OLLAMA_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 91 | `QMOI_UI_ARCHITECTURE.md` | `cfcc3c5555fb9486b551644c0b3281509be9c7ad9997f51c700dc5a6845f84b0` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 107 | `scripts/QMOI_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 164 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 522 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 107 | `scripts/ollama_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 164 | `tests/test_ollama_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 522 | `OLLAMA_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 523 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 524 | `QTEAM.md` | `3e824d923db74f35ca1a10533ef011860b28b35dea36477d17d85e2ae30489f5` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 527 | `scripts/QMOI_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 528 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 527 | `scripts/ollama_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 528 | `tests/test_ollama_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 591 | `DOWNLOAD.md` | `1cc1acd2a26c5c9f67d5a60606a44a59755e2bd4c3a7c2487cee39d28f60e753` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 591 | `INSTALL.md` | `09b140a43ebfdd8dbec31ce72cafffd15164d2860fd390692a030bcb932b54a0` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 592 | `BUILD.md` | `40f60e1037245d7b8a98a7325d53890a717da9979adeb54a61a795c4ba07f9c9` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 592 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 593 | `QTEAM.md` | `3e824d923db74f35ca1a10533ef011860b28b35dea36477d17d85e2ae30489f5` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 594 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 594 | `OLLAMA_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 595 | `QMOI_UI_ARCHITECTURE.md` | `cfcc3c5555fb9486b551644c0b3281509be9c7ad9997f51c700dc5a6845f84b0` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 596 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 596 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
@@ -116,8 +117,9 @@
 | `IMPLEMENTATION_COMPLETE.md` | 597 | `QCITYUI.md` | `d3023b9fd73b0c15483a61b97fb64f0bfe71b005029d1baa3bdd155dff76f6e4` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 597 | `QMOISPACEUI.md` | `a1405e56e746de83faebf2cfa24759629636071c0152dd094947a7f8ef8152eb` | `local` |
 | `IMPLEMENTATION_COMPLETE.md` | 597 | `QALPHAUI.md` | `8db1b6463187d2b5be94d6f6a53f73e731cacea64ddb192beff0c674cf687e56` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 600 | `scripts/QMOI_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
-| `IMPLEMENTATION_COMPLETE.md` | 601 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 600 | `scripts/ollama_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
+| `IMPLEMENTATION_COMPLETE.md` | 601 | `tests/test_ollama_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
+| `LIONVARIATIONS.md` | 30 | `./QLIONPROGRAMMINGLANGUAGE.md` | `b05b29ae55980739a8a67f65dcae47354de8a130c93529394a3276a5afe48e01` | `local` |
 | `MERGE.md` | 921 | `SYNC.md` | `3d99e517d949327c5f8ff76084a636433efa693d73b43f35d10bf17f96808e02` | `local` |
 | `MERGE.md` | 922 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
 | `MERGE.md` | 923 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
@@ -127,6 +129,18 @@
 | `MERGE.md` | 2457 | `SYNC.md` | `3d99e517d949327c5f8ff76084a636433efa693d73b43f35d10bf17f96808e02` | `local` |
 | `MERGE.md` | 2458 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
 | `MERGE.md` | 2459 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
+| `MISSION.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `MISSION.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
+| `MISSION.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `MISSIONEW.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `MISSIONEW.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
+| `MISSIONEW.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `MISSIONNEW.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `MISSIONNEW.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
+| `MISSIONNEW.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `MISSIONNEWEST.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `MISSIONNEWEST.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
+| `MISSIONNEWEST.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
 | `MONITORING_INDEX.md` | 62 | `MONITORING_SUMMARY.md` | `d090da629e264fcaca6372029a02a5b7ac8623c946223f39002833d57d8dd486` | `local` |
 | `MONITORING_INDEX.md` | 69 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `MONITORING_INDEX.md` | 76 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
@@ -152,31 +166,37 @@
 | `MONITORING_SUMMARY.md` | 332 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `MONITORING_SUMMARY.md` | 333 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
 | `MONITORING_SUMMARY.md` | 334 | `GITHUB_ACTIONS_EXECUTION_GUIDE.md` | `bd1f5d14f6edffc83fe6ba733d26d2386ef775697ea6311ff65f47c50c8410df` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 92 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 410 | `DOWNLOAD.md` | `1cc1acd2a26c5c9f67d5a60606a44a59755e2bd4c3a7c2487cee39d28f60e753` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 411 | `INSTALL.md` | `09b140a43ebfdd8dbec31ce72cafffd15164d2860fd390692a030bcb932b54a0` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 412 | `BUILD.md` | `40f60e1037245d7b8a98a7325d53890a717da9979adeb54a61a795c4ba07f9c9` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 413 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 416 | `QTEAM.md` | `3e824d923db74f35ca1a10533ef011860b28b35dea36477d17d85e2ae30489f5` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 417 | `QMOI_UI_ARCHITECTURE.md` | `cfcc3c5555fb9486b551644c0b3281509be9c7ad9997f51c700dc5a6845f84b0` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 418 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 419 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 422 | `QMOIAIUI.md` | `d5f83fd894a3b16e0ae0e3b3037967dc749bb4afb5c1979197bf8bc47cdf3b95` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 423 | `QCITYUI.md` | `d3023b9fd73b0c15483a61b97fb64f0bfe71b005029d1baa3bdd155dff76f6e4` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 424 | `QMOISPACEUI.md` | `a1405e56e746de83faebf2cfa24759629636071c0152dd094947a7f8ef8152eb` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 425 | `QALPHAUI.md` | `8db1b6463187d2b5be94d6f6a53f73e731cacea64ddb192beff0c674cf687e56` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 426 | `ALLUI.md` | `eb1bb03e28fb409b2d527f92524c70d24ef6757ae3b760e0fdfd1382a290ea4e` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 427 | `ALLFRONTEND.md` | `75ca236427f6ba02d55b1760042f5d4d3606b1550166b3952c14738eea254020` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 428 | `ALLBACKEND.md` | `a4cc1dc722e9551f16a7d12c14be6645b82a847f4ca40edfab063c42fbfb641d` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 429 | `ALLSERVE.md` | `66a4362f90075d1a5abc616dca5b8d0be7038722549b79a1ca98575212bcd10c` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 432 | `scripts/QMOI_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 433 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 434 | `.github/workflows/QMOItrigger.yml` | `8448a699741b9cfc8f3de55460e873c1f532d61037c29414cfb610c8c762b7fc` | `local` |
-| `QMOI_AUTOMATION_GUIDE.md` | 435 | `.github/workflows/QMOI-autonomous-agent.yml` | `c728b27bbbc121aaf3e734b32e72736dd0c44bb55588f46ab1580c420c143b20` | `local` |
+| `NEWMISSION.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `NEWMISSION.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
+| `NEWMISSION.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 92 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 410 | `DOWNLOAD.md` | `1cc1acd2a26c5c9f67d5a60606a44a59755e2bd4c3a7c2487cee39d28f60e753` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 411 | `INSTALL.md` | `09b140a43ebfdd8dbec31ce72cafffd15164d2860fd390692a030bcb932b54a0` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 412 | `BUILD.md` | `40f60e1037245d7b8a98a7325d53890a717da9979adeb54a61a795c4ba07f9c9` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 413 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 416 | `QTEAM.md` | `3e824d923db74f35ca1a10533ef011860b28b35dea36477d17d85e2ae30489f5` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 417 | `QMOI_UI_ARCHITECTURE.md` | `cfcc3c5555fb9486b551644c0b3281509be9c7ad9997f51c700dc5a6845f84b0` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 418 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 419 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 422 | `QMOIAIUI.md` | `d5f83fd894a3b16e0ae0e3b3037967dc749bb4afb5c1979197bf8bc47cdf3b95` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 423 | `QCITYUI.md` | `d3023b9fd73b0c15483a61b97fb64f0bfe71b005029d1baa3bdd155dff76f6e4` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 424 | `QMOISPACEUI.md` | `a1405e56e746de83faebf2cfa24759629636071c0152dd094947a7f8ef8152eb` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 425 | `QALPHAUI.md` | `8db1b6463187d2b5be94d6f6a53f73e731cacea64ddb192beff0c674cf687e56` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 426 | `ALLUI.md` | `eb1bb03e28fb409b2d527f92524c70d24ef6757ae3b760e0fdfd1382a290ea4e` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 427 | `ALLFRONTEND.md` | `75ca236427f6ba02d55b1760042f5d4d3606b1550166b3952c14738eea254020` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 428 | `ALLBACKEND.md` | `a4cc1dc722e9551f16a7d12c14be6645b82a847f4ca40edfab063c42fbfb641d` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 429 | `ALLSERVE.md` | `66a4362f90075d1a5abc616dca5b8d0be7038722549b79a1ca98575212bcd10c` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 432 | `scripts/ollama_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 433 | `tests/test_ollama_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 434 | `.github/workflows/ollamatrigger.yml` | `8448a699741b9cfc8f3de55460e873c1f532d61037c29414cfb610c8c762b7fc` | `local` |
+| `OLLAMA_AUTOMATION_GUIDE.md` | 435 | `.github/workflows/ollama-autonomous-agent.yml` | `c728b27bbbc121aaf3e734b32e72736dd0c44bb55588f46ab1580c420c143b20` | `local` |
 | `QAUDITS.md` | 5 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `QAUDITS.md` | 7 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
 | `QAUDITS.md` | 91 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
 | `QAUDITS.md` | 120 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
+| `QLIONPROGRAMMINGLANGUAGE.md` | 35 | `./ALLLANGUAGES.md` | `e3b7fd6b06ad8e2e0a5c1f39179451b46161e9dec15763f27ee9c03147ae76ea` | `local` |
+| `QLIONPROGRAMMINGLANGUAGE.md` | 36 | `./ALLLANGUAGESCOMPARE.md` | `a47fb65dfd7b8dda0914483e50ea428b8d7074e751b2923b044533006a154d0b` | `local` |
+| `QLIONPROGRAMMINGLANGUAGE.md` | 80 | `./LIONVARIATIONS.md` | `99d8834c3da7291f1a9fc11689433563ebd7f7420217a93ae3ca73f57e989a52` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `VERCELPAYED.md` | `4e68358d3081c50efb141b7e0008676671fb33bc11516d036061940c6e73fc41` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUMPAYED.md` | `0ea9235e0afe898dd3589a58d06ebdf47758216c1170b712588d4376fc675be5` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUM.md` | `f39d66bf63a5cda11e56c8ab153a9b47673b78f34e9b2469d6097f1ab0e6aba9` | `local` |
@@ -201,12 +221,14 @@
 | `QVERSIONMANAGER.md` | 13 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
 | `QVERSIONMANAGER.md` | 13 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `QVERSIONMANAGER.md` | 13 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
-| `QVERSIONMANAGER.md` | 222 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
-| `QVERSIONMANAGER.md` | 255 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
-| `QVERSIONMANAGER.md` | 271 | `QMOItracks/qaudit_universe.json` | `a16a3d2024195943acdde328294804b4c993c076bb7ea9e79bb0844010fbf744` | `local` |
-| `QVERSIONMANAGER.md` | 271 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
-| `QVERSIONMANAGER.md` | 281 | `scripts/checkpoint_manager.py` | `0c406fbeec19b6e088e4a95c6dd84fd1922355333efb1dc68353af236ac9f619` | `local` |
-| `QVERSIONMANAGER.md` | 281 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `QVERSIONMANAGER.md` | 20 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `QVERSIONMANAGER.md` | 21 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
+| `QVERSIONMANAGER.md` | 251 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
+| `QVERSIONMANAGER.md` | 284 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
+| `QVERSIONMANAGER.md` | 300 | `ollamatracks/qaudit_universe.json` | `a16a3d2024195943acdde328294804b4c993c076bb7ea9e79bb0844010fbf744` | `local` |
+| `QVERSIONMANAGER.md` | 300 | `QMOItracks/style_universal_candidate_tree.md` | `9949f02432d19ed8ca19cb2103f17f87b4ea04102b7478f4728153c02c4f936c` | `local` |
+| `QVERSIONMANAGER.md` | 310 | `scripts/checkpoint_manager.py` | `0c406fbeec19b6e088e4a95c6dd84fd1922355333efb1dc68353af236ac9f619` | `local` |
+| `QVERSIONMANAGER.md` | 310 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
 | `Qtrade.md` | 40 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
 | `Qtrade.md` | 293 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
 | `Qtrade.md` | 294 | `TRADINGREADME.md` | `4676daa204a64892b41af786d7ebfe24c8b59d46f17e45d48b48624249483f4f` | `local` |
@@ -216,7 +238,7 @@
 | `Qtrade.md` | 298 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
 | `Qtrade.md` | 299 | `QVILLAGE.md` | `248510c789e822028329cdc540c23ce19a7243237ac3da968c32bc831ada06ed` | `local` |
 | `Qtrade.md` | 300 | `MODELEVOLUTIONO.md` | `ad4513349e097c4b3ef1ecad70a175a3c98e03eb80861a4aee1dc52ead16e508` | `local` |
-| `Qtrade.md` | 301 | `QMOI_QMOI_Autonomous_Production_Completion_Master_Plan.md` | `469ac984fc113b5afc4c324a9fdfb641e6ef47fe31c16431e06574ce68898831` | `local` |
+| `Qtrade.md` | 301 | `QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md` | `469ac984fc113b5afc4c324a9fdfb641e6ef47fe31c16431e06574ce68898831` | `local` |
 | `Qtrade.md` | 335 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
 | `Qtrade.md` | 358 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
 | `Qtrade.md` | 383 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
@@ -228,7 +250,7 @@
 | `README.md` | 241 | `ALLPLATFORMSDEVICE.md` | `3c91c5bb4ecb109af1de3f2b4cbdac33eab968aaf9f1fceefb061283e63e8276` | `local` |
 | `README.md` | 242 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
 | `README.md` | 243 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
-| `README.md` | 244 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `README.md` | 244 | `OLLAMA_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
 | `README.md` | 245 | `QSTORE.md` | `c032fd5027006602323527dfe8a93eea6f0e266eba33a2997b4f3af90746a0f3` | `local` |
 | `README.md` | 246 | `QSTREAM.md` | `439307e5e8d06e3a986f4025a253bba8bd9ce0d2550e6fef77ef8752d0874d3a` | `local` |
 | `README.md` | 247 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
@@ -282,15 +304,15 @@
 | `STYLES.md` | 128 | `qmoi-enhanced-history-14/STYLES.md` | `d65308a76e8116770d3fe357d978835c0dce2c75a0bb749fe6f105ca79dcd3c4` | `local` |
 | `STYLES.md` | 129 | `qmoi-enhanced-history-14/UNIVERSALS.md` | `c0f47cced70c423e588bd7d40af2c8e65335cd03422b22d6aa37906540a34a72` | `local` |
 | `STYLES.md` | 130 | `qmoi-enhanced-history-14/ALLMDFILESREFS.md` | `6e67cb97d703008b0b3db815cba88e23cf2cb3f21e0b6c5f71acd34ed5ef9275` | `local` |
-| `SYNC.md` | 319 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
-| `SYNC.md` | 320 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
-| `SYNC.md` | 321 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
+| `SYNC.md` | 332 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
+| `SYNC.md` | 333 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
+| `SYNC.md` | 334 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
 | `TRADINGREADME.md` | 94 | `FINANCIALMANAGER.md` | `28deb4af15ab67ea6e1629f2374beaab5d175bedc3e73d455f16787d559ee80b` | `local` |
 | `TRADINGREADME.md` | 95 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `TRADINGREADME.md` | 96 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
 | `TRADINGREADME.md` | 97 | `AUTODEV.md` | `8a0e2f7a9c9ca98e309aedbee77edb142f0275c557e6596f0b57e50b663adf6d` | `local` |
 | `TRADINGREADME.md` | 98 | `MONITORING_GUIDE.md` | `01017f2684e5336fe534cf129636f48a177c5c488c30b17499ea66750281f8cb` | `local` |
-| `TRADINGREADME.md` | 99 | `QMOI_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
+| `TRADINGREADME.md` | 99 | `OLLAMA_AUTOMATION_GUIDE.md` | `86e8a153ec148fb41b7f8fc18a8bccc9ec539f0dec20fe422b4fda6a0e4ce130` | `local` |
 | `TRADINGREADME.md` | 100 | `API.md` | `b161966f7254af9c9c5382e859495c69622843e4602a6bb4208e08134e660121` | `local` |
 | `TRADINGREADME.md` | 101 | `ENDPOINTS.md` | `8b96f87363ede7730558d1b8e0bbfc7c411f25e2f43996b3a1798068d5e7756e` | `local` |
 | `TRADINGREADME.md` | 102 | `ROUTES.md` | `d9c1a784bcd0440c47b27b02220385668751962f1ddcb910dcb55cf3e78cd718` | `local` |
@@ -374,7 +396,7 @@
 | `compare.md` | 43 | `QMOI_MODEL_CARD.md` | `1ae71b4376ff1e63c03e68a8e63530d9db4807a7b4ce1fe3639e2644fb0c823c` | `local` |
 | `compare.md` | 43 | `MODELEVOLUTIONO.md` | `ad4513349e097c4b3ef1ecad70a175a3c98e03eb80861a4aee1dc52ead16e508` | `local` |
 | `compare.md` | 43 | `QMOI_BEST_MODEL_PROOF.md` | `d1051d68fb186303b62a7cced74a8dc8eab03f1c9e311de32daf3405e6af6ab4` | `local` |
-| `compare.md` | 43 | `QMOI_QMOI_Autonomous_Production_Completion_Master_Plan.md` | `469ac984fc113b5afc4c324a9fdfb641e6ef47fe31c16431e06574ce68898831` | `local` |
+| `compare.md` | 43 | `QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md` | `469ac984fc113b5afc4c324a9fdfb641e6ef47fe31c16431e06574ce68898831` | `local` |
 | `compare.md` | 44 | `QVILLAGE.md` | `248510c789e822028329cdc540c23ce19a7243237ac3da968c32bc831ada06ed` | `local` |
 | `compare.md` | 44 | `QCITY.md` | `a8a1693cbe83e800861ad3a7f8170695b7691a27cb7dcbe7c1d6f7a868d4ce0b` | `local` |
 | `compare.md` | 44 | `QMOISPACEUI.md` | `a1405e56e746de83faebf2cfa24759629636071c0152dd094947a7f8ef8152eb` | `local` |
@@ -408,24 +430,51 @@
 | `monitor.md` | 248 | `GITHUB_ACTIONS_EXECUTION_GUIDE.md` | `bd1f5d14f6edffc83fe6ba733d26d2386ef775697ea6311ff65f47c50c8410df` | `local` |
 | `monitor.md` | 249 | `MONITORING_SUMMARY.md` | `d090da629e264fcaca6372029a02a5b7ac8623c946223f39002833d57d8dd486` | `local` |
 | `monitor.md` | 250 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
-| `oe2.md` | 43 | `scripts/realtime_workflow_monitor.py` | `7070d39c4718709120ea29d4cd6c47c86a5ca5ebfbe3a4aa76a9ca73120ab8c2` | `local` |
-| `oe2.md` | 90 | `scripts/realtime_workflow_monitor.py` | `7070d39c4718709120ea29d4cd6c47c86a5ca5ebfbe3a4aa76a9ca73120ab8c2` | `local` |
-| `oe2.md` | 91 | `scripts/QMOI_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
-| `oe2.md` | 92 | `tests/test_enhanced_tracking_and_workflows.py` | `d91192cc02e85b2b92fd5f5a3f6af95b1d0aa5a606eaa32c2643768738ac7e31` | `local` |
-| `oe2.md` | 93 | `tests/test_QMOI_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
-| `oe2.md` | 94 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
+| `oe2.md` | 126 | `scripts/realtime_workflow_monitor.py` | `7070d39c4718709120ea29d4cd6c47c86a5ca5ebfbe3a4aa76a9ca73120ab8c2` | `local` |
+| `oe2.md` | 173 | `scripts/realtime_workflow_monitor.py` | `7070d39c4718709120ea29d4cd6c47c86a5ca5ebfbe3a4aa76a9ca73120ab8c2` | `local` |
+| `oe2.md` | 174 | `scripts/ollama_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
+| `oe2.md` | 175 | `tests/test_enhanced_tracking_and_workflows.py` | `d91192cc02e85b2b92fd5f5a3f6af95b1d0aa5a606eaa32c2643768738ac7e31` | `local` |
+| `oe2.md` | 176 | `tests/test_ollama_autonomous_agent.py` | `e162c64c1f92e3fa4ecfcbfe49dd5cffd6c58e71ac3c37e51db174624b506ceb` | `local` |
+| `oe2.md` | 177 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
 | `trigger.md` | 179 | `monitor.md` | `5248cfb853971a1af59ad59e6f80a4887d80d8d7c103ca9d992397c0afb60d9e` | `local` |
 | `trigger.md` | 179 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `trigger.md` | 179 | `github.md` | `a948bd5614265c5bbcd97e431c5899bab48948bd43992dc9d619ce0e56632683` | `local` |
 | `trigger.md` | 179 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
 | `undoredo.md` | 81 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
 | `undoredo.md` | 81 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
-| `.github/instructions/agent-autonomy.instructions.md` | 65 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/github-api.instructions.md` | 62 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/release.instructions.md` | 55 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/security.instructions.md` | 55 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/workflows.instructions.md` | 59 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/workspace.instructions.md` | 64 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/MISSION.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `.github/instructions/MISSION.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
+| `.github/instructions/MISSION.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 72 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/github-api.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
+| `.github/instructions/github-api.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
+| `.github/instructions/github-api.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/github-api.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/github-api.instructions.md` | 72 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/release.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
+| `.github/instructions/release.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
+| `.github/instructions/release.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/release.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/release.instructions.md` | 64 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/security.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
+| `.github/instructions/security.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
+| `.github/instructions/security.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/security.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/security.instructions.md` | 64 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workflows.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
+| `.github/instructions/workflows.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
+| `.github/instructions/workflows.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/workflows.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workflows.instructions.md` | 68 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workspace.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
+| `.github/instructions/workspace.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
+| `.github/instructions/workspace.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/workspace.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workspace.instructions.md` | 76 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 9 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 10 | `./DOWNLOADQMOIAIAPPALLDEVICES.md` | `3d44031161ffd6826fe255f72f1f9079d1841f51c3976a325a056d7c0e48e0a6` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 17 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
@@ -619,8 +668,8 @@
 | `qmoi-enhanced-history-14/ALLAUTO.md` | 35 | `.github/workflows/link-validation.yml` | `97ed4194a48c4f0c7c9621d7710ad7cf49c0a0bcfc4b142b3ae0c10a0e490f98` | `local` |
 | `qmoi-enhanced-history-14/ALLAUTO.md` | 36 | `.github/workflows/nightly.yml` | `0d5658b415099a82c11c03a06ca4ec765b4003a1f4b2f3f1943980a882cf8aa6` | `local` |
 | `qmoi-enhanced-history-14/ALLAUTO.md` | 37 | `.github/workflows/npm.yml` | `8369a85f6d69dea9f5c38438cfcca793a8ee5aa308219e2d1a38f868b236f09a` | `local` |
-| `qmoi-enhanced-history-14/ALLAUTO.md` | 38 | `.github/workflows/QMOI-autonomous-agent.yml` | `c728b27bbbc121aaf3e734b32e72736dd0c44bb55588f46ab1580c420c143b20` | `local` |
-| `qmoi-enhanced-history-14/ALLAUTO.md` | 39 | `.github/workflows/QMOItrigger.yml` | `8448a699741b9cfc8f3de55460e873c1f532d61037c29414cfb610c8c762b7fc` | `local` |
+| `qmoi-enhanced-history-14/ALLAUTO.md` | 38 | `.github/workflows/ollama-autonomous-agent.yml` | `c728b27bbbc121aaf3e734b32e72736dd0c44bb55588f46ab1580c420c143b20` | `local` |
+| `qmoi-enhanced-history-14/ALLAUTO.md` | 39 | `.github/workflows/ollamatrigger.yml` | `8448a699741b9cfc8f3de55460e873c1f532d61037c29414cfb610c8c762b7fc` | `local` |
 | `qmoi-enhanced-history-14/ALLAUTO.md` | 40 | `.github/workflows/payed-validation.yml` | `077f41ce65fa0e38943814fc2212e589c9e70cc224a6513ab19047a06119b1a0` | `local` |
 | `qmoi-enhanced-history-14/ALLAUTO.md` | 41 | `.github/workflows/publish-q-alpha.yml` | `f9c9a8a563db1c229bd0ef1b0023f48e06234794b999f28ff475a771219ba558` | `local` |
 | `qmoi-enhanced-history-14/ALLAUTO.md` | 42 | `.github/workflows/publish-releases-realtime.yml` | `ca71447cb0b4d668c0e00ed31da033fbef0c84e3349c0cd83068d2078276f079` | `local` |
@@ -686,7 +735,7 @@
 | `qmoi-enhanced-history-14/ALLBACKEND.md` | 42 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
 | `qmoi-enhanced-history-14/ALLBACKEND.md` | 43 | `MONITORING_API_DOCS.md` | `a85082a29d25d77b7c730aacfb43a70950c1debd46dcef595daa9138ecd17e52` | `local` |
 | `qmoi-enhanced-history-14/ALLBACKEND.md` | 44 | `NEXT_STEPS_EXECUTIVE_SUMMARY.md` | `e8f7d3e1c1bfc73584fb840b24fc0c627379908ebd9c591c540e79484ddf01db` | `local` |
-| `qmoi-enhanced-history-14/ALLBACKEND.md` | 45 | `QMOI_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
+| `qmoi-enhanced-history-14/ALLBACKEND.md` | 45 | `OLLAMA_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
 | `qmoi-enhanced-history-14/ALLBACKEND.md` | 46 | `OPTION_A_PRODUCTION_READY.md` | `01482ca927b76e522e88c826f92baf1cc43bf7aef3cb2cec4791388226bc423f` | `local` |
 | `qmoi-enhanced-history-14/ALLBACKEND.md` | 47 | `PERFORMANCE_GUIDE.md` | `5e2aeaf1b1a5d2c843c1348571929a8d7f24f22d90c38101c62fcc4bc9bfc91a` | `local` |
 | `qmoi-enhanced-history-14/ALLBACKEND.md` | 48 | `PHASE4_PRODUCTION_STRATEGY.md` | `49684ea6133c32f03c26bbcf49db290b51fb4a333047c08c427a1e7571908a92` | `local` |
@@ -1032,10 +1081,10 @@
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 193 | `NEXT_STEPS_EXECUTIVE_SUMMARY.md` | `e8f7d3e1c1bfc73584fb840b24fc0c627379908ebd9c591c540e79484ddf01db` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 194 | `NEXT_STEPS_INDEX.md` | `9c666cc9d82ddd2a90a50a4854dc35abd60ac98f900ac0dad9ff4029263b3387` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 195 | `NEXT_STEPS_ROADMAP.md` | `8abebb13ca5bfe0edd98aca4028f5c6e19bb7868f11afb1bc65a37818782718c` | `local` |
-| `qmoi-enhanced-history-14/ALLLINKS.md` | 196 | `QMOI_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
-| `qmoi-enhanced-history-14/ALLLINKS.md` | 197 | `QMOI_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
-| `qmoi-enhanced-history-14/ALLLINKS.md` | 198 | `QMOI_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
-| `qmoi-enhanced-history-14/ALLLINKS.md` | 199 | `QMOI_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
+| `qmoi-enhanced-history-14/ALLLINKS.md` | 196 | `OLLAMA_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
+| `qmoi-enhanced-history-14/ALLLINKS.md` | 197 | `OLLAMA_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
+| `qmoi-enhanced-history-14/ALLLINKS.md` | 198 | `OLLAMA_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
+| `qmoi-enhanced-history-14/ALLLINKS.md` | 199 | `OLLAMA_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 200 | `OPTION_A_PRODUCTION_READY.md` | `01482ca927b76e522e88c826f92baf1cc43bf7aef3cb2cec4791388226bc423f` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 201 | `PAGES.md` | `9367118ee78abe6242a95880ce520a88e29711901916740c8c85963ac06fb4c3` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 202 | `PAYEDGITLAB.md` | `9f3cef4336a8fa22c0e38e7e7c4d2d0d2ee7ec5a7708d46bb879e4bad5b36420` | `local` |
@@ -1747,7 +1796,7 @@
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 908 | `mobile/README.md` | `ef08ded819dd82f764a3252d15e2afff9314afcee68d109a86b6878e436a8ca9` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 909 | `models/latest/README.md` | `298b45e2916e51717e93aa082afd50ec29cb77fcd1fb63a76009824332cfd243` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 910 | `note.md` | `1188c3be78790ea66821b418d8c34e47cb3da9e6367735c64d9b9a9edc010508` | `local` |
-| `qmoi-enhanced-history-14/ALLLINKS.md` | 911 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
+| `qmoi-enhanced-history-14/ALLLINKS.md` | 911 | `ollama.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 912 | `placeholder_scan_summary.md` | `c5567adc0edb8ef7eba7a0493772b1834f4987cec805c70fc7853c53af1769a9` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 913 | `production.md` | `2e3bdb96d0724399f7fe714de5836a3b8f248e4f522ebf68bbf2d560fcb021fa` | `local` |
 | `qmoi-enhanced-history-14/ALLLINKS.md` | 914 | `productionenhanced.md` | `5b33a2bfe48ada25bd62d9dbcd593fb7cf7d1738fb43b3b1ee978858fc9bdcd8` | `local` |
@@ -3090,10 +3139,10 @@
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 193 | `NEXT_STEPS_EXECUTIVE_SUMMARY.md` | `e8f7d3e1c1bfc73584fb840b24fc0c627379908ebd9c591c540e79484ddf01db` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 194 | `NEXT_STEPS_INDEX.md` | `9c666cc9d82ddd2a90a50a4854dc35abd60ac98f900ac0dad9ff4029263b3387` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 195 | `NEXT_STEPS_ROADMAP.md` | `8abebb13ca5bfe0edd98aca4028f5c6e19bb7868f11afb1bc65a37818782718c` | `local` |
-| `qmoi-enhanced-history-14/ALLMDFILES.md` | 196 | `QMOI_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
-| `qmoi-enhanced-history-14/ALLMDFILES.md` | 197 | `QMOI_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
-| `qmoi-enhanced-history-14/ALLMDFILES.md` | 198 | `QMOI_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
-| `qmoi-enhanced-history-14/ALLMDFILES.md` | 199 | `QMOI_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
+| `qmoi-enhanced-history-14/ALLMDFILES.md` | 196 | `OLLAMA_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
+| `qmoi-enhanced-history-14/ALLMDFILES.md` | 197 | `OLLAMA_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
+| `qmoi-enhanced-history-14/ALLMDFILES.md` | 198 | `OLLAMA_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
+| `qmoi-enhanced-history-14/ALLMDFILES.md` | 199 | `OLLAMA_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 200 | `OPTION_A_PRODUCTION_READY.md` | `01482ca927b76e522e88c826f92baf1cc43bf7aef3cb2cec4791388226bc423f` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 201 | `PAGES.md` | `9367118ee78abe6242a95880ce520a88e29711901916740c8c85963ac06fb4c3` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 202 | `PAYEDGITLAB.md` | `9f3cef4336a8fa22c0e38e7e7c4d2d0d2ee7ec5a7708d46bb879e4bad5b36420` | `local` |
@@ -3805,7 +3854,7 @@
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 908 | `mobile/README.md` | `ef08ded819dd82f764a3252d15e2afff9314afcee68d109a86b6878e436a8ca9` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 909 | `models/latest/README.md` | `298b45e2916e51717e93aa082afd50ec29cb77fcd1fb63a76009824332cfd243` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 910 | `note.md` | `1188c3be78790ea66821b418d8c34e47cb3da9e6367735c64d9b9a9edc010508` | `local` |
-| `qmoi-enhanced-history-14/ALLMDFILES.md` | 911 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
+| `qmoi-enhanced-history-14/ALLMDFILES.md` | 911 | `ollama.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 912 | `placeholder_scan_summary.md` | `c5567adc0edb8ef7eba7a0493772b1834f4987cec805c70fc7853c53af1769a9` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 913 | `production.md` | `2e3bdb96d0724399f7fe714de5836a3b8f248e4f522ebf68bbf2d560fcb021fa` | `local` |
 | `qmoi-enhanced-history-14/ALLMDFILES.md` | 914 | `productionenhanced.md` | `5b33a2bfe48ada25bd62d9dbcd593fb7cf7d1738fb43b3b1ee978858fc9bdcd8` | `local` |
@@ -5114,10 +5163,10 @@
 | `qmoi-enhanced-history-14/ALLUI.md` | 173 | `NEXT_STEPS_EXECUTIVE_SUMMARY.md` | `e8f7d3e1c1bfc73584fb840b24fc0c627379908ebd9c591c540e79484ddf01db` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 174 | `NEXT_STEPS_INDEX.md` | `9c666cc9d82ddd2a90a50a4854dc35abd60ac98f900ac0dad9ff4029263b3387` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 175 | `NEXT_STEPS_ROADMAP.md` | `8abebb13ca5bfe0edd98aca4028f5c6e19bb7868f11afb1bc65a37818782718c` | `local` |
-| `qmoi-enhanced-history-14/ALLUI.md` | 176 | `QMOI_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
-| `qmoi-enhanced-history-14/ALLUI.md` | 177 | `QMOI_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
-| `qmoi-enhanced-history-14/ALLUI.md` | 178 | `QMOI_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
-| `qmoi-enhanced-history-14/ALLUI.md` | 179 | `QMOI_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
+| `qmoi-enhanced-history-14/ALLUI.md` | 176 | `OLLAMA_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
+| `qmoi-enhanced-history-14/ALLUI.md` | 177 | `OLLAMA_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
+| `qmoi-enhanced-history-14/ALLUI.md` | 178 | `OLLAMA_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
+| `qmoi-enhanced-history-14/ALLUI.md` | 179 | `OLLAMA_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 180 | `OPTION_A_PRODUCTION_READY.md` | `01482ca927b76e522e88c826f92baf1cc43bf7aef3cb2cec4791388226bc423f` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 181 | `PAGES.md` | `9367118ee78abe6242a95880ce520a88e29711901916740c8c85963ac06fb4c3` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 182 | `PERFORMANCE_GUIDE.md` | `5e2aeaf1b1a5d2c843c1348571929a8d7f24f22d90c38101c62fcc4bc9bfc91a` | `local` |
@@ -5726,7 +5775,7 @@
 | `qmoi-enhanced-history-14/ALLUI.md` | 785 | `mobile/README.md` | `ef08ded819dd82f764a3252d15e2afff9314afcee68d109a86b6878e436a8ca9` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 786 | `models/latest/README.md` | `298b45e2916e51717e93aa082afd50ec29cb77fcd1fb63a76009824332cfd243` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 787 | `note.md` | `1188c3be78790ea66821b418d8c34e47cb3da9e6367735c64d9b9a9edc010508` | `local` |
-| `qmoi-enhanced-history-14/ALLUI.md` | 788 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
+| `qmoi-enhanced-history-14/ALLUI.md` | 788 | `ollama.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 789 | `production.md` | `2e3bdb96d0724399f7fe714de5836a3b8f248e4f522ebf68bbf2d560fcb021fa` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 790 | `productionenhanced.md` | `5b33a2bfe48ada25bd62d9dbcd593fb7cf7d1738fb43b3b1ee978858fc9bdcd8` | `local` |
 | `qmoi-enhanced-history-14/ALLUI.md` | 791 | `pwa_apps/README.md` | `ec6b54d6e7621652deb283b728a76c70ae583f84dbd015837e6a36657c2794be` | `local` |
@@ -6555,10 +6604,10 @@
 | `qmoi-enhanced-history-14/DOCS.md` | 275 | `NEXT_STEPS_EXECUTIVE_SUMMARY.md` | `e8f7d3e1c1bfc73584fb840b24fc0c627379908ebd9c591c540e79484ddf01db` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 276 | `NEXT_STEPS_INDEX.md` | `9c666cc9d82ddd2a90a50a4854dc35abd60ac98f900ac0dad9ff4029263b3387` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 277 | `NEXT_STEPS_ROADMAP.md` | `8abebb13ca5bfe0edd98aca4028f5c6e19bb7868f11afb1bc65a37818782718c` | `local` |
-| `qmoi-enhanced-history-14/DOCS.md` | 278 | `QMOI_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
-| `qmoi-enhanced-history-14/DOCS.md` | 279 | `QMOI_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
-| `qmoi-enhanced-history-14/DOCS.md` | 280 | `QMOI_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
-| `qmoi-enhanced-history-14/DOCS.md` | 281 | `QMOI_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
+| `qmoi-enhanced-history-14/DOCS.md` | 278 | `OLLAMA_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
+| `qmoi-enhanced-history-14/DOCS.md` | 279 | `OLLAMA_COMPLETION_REPORT.md` | `c4018e3d40e53854b283150882207f6d4b419c7b2a792d3e3980546d3309b49c` | `local` |
+| `qmoi-enhanced-history-14/DOCS.md` | 280 | `OLLAMA_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
+| `qmoi-enhanced-history-14/DOCS.md` | 281 | `OLLAMA_PENDING_REPORT.md` | `fe0437312665d09faf06bd45d3fec1108764a643c4358de580f01c92d730b144` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 282 | `OPTION_A_PRODUCTION_READY.md` | `01482ca927b76e522e88c826f92baf1cc43bf7aef3cb2cec4791388226bc423f` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 283 | `PAGES.md` | `9367118ee78abe6242a95880ce520a88e29711901916740c8c85963ac06fb4c3` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 284 | `PAYEDGITLAB.md` | `9f3cef4336a8fa22c0e38e7e7c4d2d0d2ee7ec5a7708d46bb879e4bad5b36420` | `local` |
@@ -6943,7 +6992,7 @@
 | `qmoi-enhanced-history-14/DOCS.md` | 663 | `error-fix-summary.md` | `625ca5ae0fde8e4b677817aa8058dd132ab39c6443671d8dad8ab3bae471779b` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 664 | `link_report.md` | `c467c9cba038d1372ed579965bee59341a017bce57a894d760f9bd9e4d4e3f83` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 665 | `note.md` | `1188c3be78790ea66821b418d8c34e47cb3da9e6367735c64d9b9a9edc010508` | `local` |
-| `qmoi-enhanced-history-14/DOCS.md` | 666 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
+| `qmoi-enhanced-history-14/DOCS.md` | 666 | `ollama.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 667 | `placeholder_scan_summary.md` | `c5567adc0edb8ef7eba7a0493772b1834f4987cec805c70fc7853c53af1769a9` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 668 | `production.md` | `2e3bdb96d0724399f7fe714de5836a3b8f248e4f522ebf68bbf2d560fcb021fa` | `local` |
 | `qmoi-enhanced-history-14/DOCS.md` | 669 | `productionenhanced.md` | `5b33a2bfe48ada25bd62d9dbcd593fb7cf7d1738fb43b3b1ee978858fc9bdcd8` | `local` |
@@ -7133,8 +7182,8 @@
 | `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 101 | `NEW_USER_SYSTEM_IMPLEMENTATION.md` | `7f54b3cfd28ab9a47fe38747e08643a9c7e64a9c9063c02149b4bbaec18a23ec` | `local` |
 | `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 102 | `NEXT_STEPS_EXECUTIVE_SUMMARY.md` | `e8f7d3e1c1bfc73584fb840b24fc0c627379908ebd9c591c540e79484ddf01db` | `local` |
 | `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 103 | `NEXT_STEPS_INDEX.md` | `9c666cc9d82ddd2a90a50a4854dc35abd60ac98f900ac0dad9ff4029263b3387` | `local` |
-| `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 104 | `QMOI_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
-| `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 105 | `QMOI_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
+| `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 104 | `OLLAMA_ACTIVITY_FEED.md` | `443420c7c8ba19b67795857a04f5f299edcf30933fd33c837a50eeb80f81b52d` | `local` |
+| `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 105 | `OLLAMA_DEBUG_LOG.md` | `ea112a1c3c194bdb68bbf4cd3f8c49a56d52ee1534bf4cc0827db4eb44659a4a` | `local` |
 | `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 106 | `OPTION_A_PRODUCTION_READY.md` | `01482ca927b76e522e88c826f92baf1cc43bf7aef3cb2cec4791388226bc423f` | `local` |
 | `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 107 | `PAYMENTS.md` | `86f0840b70ba29d2ca841b8996495a8f45dec5d75580f91076cdf98cbd310f71` | `local` |
 | `qmoi-enhanced-history-14/FINANCIALMANAGER.md` | 108 | `PERFORMANCE_GUIDE.md` | `5e2aeaf1b1a5d2c843c1348571929a8d7f24f22d90c38101c62fcc4bc9bfc91a` | `local` |
@@ -8105,10 +8154,10 @@
 | `qmoi-enhanced-history-14/README (1).md` | 863 | `ALLQMOIAIAPPSREALEASESVERSIONS.md` | `334a8c7d77b24eeeb9ff78c47f7f7db03018c3689024fcc3981fa57344b78162` | `local` |
 | `qmoi-enhanced-history-14/README (1).md` | 1099 | `ALLQMOIAIAPPSREALEASESVERSIONS.md` | `334a8c7d77b24eeeb9ff78c47f7f7db03018c3689024fcc3981fa57344b78162` | `local` |
 | `qmoi-enhanced-history-14/README (1).md` | 1101 | `DOWNLOADQMOIAIAPPALLDEVICES.md` | `6d8e55faef051f3fb27ff26d7170a2aee339a674a5a449b174846ea72b857d4e` | `local` |
-| `qmoi-enhanced-history-14/README.md` | 43 | `scripts/QMOI_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
+| `qmoi-enhanced-history-14/README.md` | 43 | `scripts/ollama_autonomous_agent.py` | `81bd8495ee78c5547906af64066eb8f45c02074dc91f9b62bde669c1bc4b5cb8` | `local` |
 | `qmoi-enhanced-history-14/README.md` | 43 | `resumefromhere.txt` | `d95690582ffb01166a026ae3a92a967d773f8116b230586d837fcaf22cafc604` | `local` |
 | `qmoi-enhanced-history-14/README.md` | 43 | `Trade.md` | `109afa73f33b27654a3c4cc4860147485957afc0dbb4753ff6d256aa3c2e1434` | `local` |
-| `qmoi-enhanced-history-14/README.md` | 43 | `QMOI.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
+| `qmoi-enhanced-history-14/README.md` | 43 | `ollama.md` | `eb2d64e9f82222c47c4edbb2d4fd17f964427fcdd2aeabd1e007a0aec4d8677e` | `local` |
 | `qmoi-enhanced-history-14/README.md` | 43 | `QMOIMODEL.md` | `7aae42dc552ad7741b5f2370d9ddc5f062f50d40bb41d0399cb5361329b7709f` | `local` |
 | `qmoi-enhanced-history-14/README.md` | 43 | `QMOIMODELTESTS.md` | `02164dc991e34014f8652309f8b8d8a9fd63802ce306874a013e412a437219c8` | `local` |
 | `qmoi-enhanced-history-14/README.md` | 43 | `ALLTESTSAUOTOTESTS.md` | `314b0e57944b6ac3eda123dd5ef0b76e752e66cad2d5c7b49e7c9aa089366490` | `local` |
@@ -8637,19 +8686,19 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10603`; directories: `1280`; Markdown: `2421`.
-- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2157, build_download_install=2113, disability_accessibility=268, orchestration=2065, qteam_accountability=2053, release_tag_publish=2092, tree_inventory=2004`.
+- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
+- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2226`; needs review: `187`; metric candidate lines: `52756`; percentage occurrences: `22237`.
-- Markdown word count: `3562982`; heuristic sentence count: `674722`; sentence records indexed: `674722`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29846` metric claims; `10693` completion claims; `29749` metric and `10564` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9053` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
 - Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
-- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40146` lines in `3689` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.

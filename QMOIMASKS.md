@@ -420,10 +420,14 @@ The orchestrator should treat masks and VPN as operational capabilities, not as 
 ## Agent-managed OFCA status
 
 - Audit name: `OFCA`; local scan status: `INCOMPLETE`.
-- Materialized files scanned: `10586`; mention-bearing files: `4310`.
-- Local refs: `39`; local commits: `2695`; mention-change commits: `2067`.
-- Source manifest SHA-256: `628ce1b6b0a3384dbdbcc2041b07bc363cd51d9db84c8d1112324fbc5ca77e4d`; full remote-history coverage: `False`.
-- QVillage/QVS materialized references: `393` files, `212` Markdown files; remote/history completeness: `not_verified`.
+- Materialized files scanned: `10604`; mention-bearing files: `4396`.
+- Ollam path/content candidates: `4396` paths and `41` named directories; scan duration: `148.558` seconds; start `2026-10-13T15:59:16.970190Z`, finish `2026-10-13T16:01:45.527829Z`.
+- Phase preflight `audit_inventory_preflight`: 2 OFCA full scans plus 1 QAUDITS-universe scan; every-phase/task wiring: `NOT_VERIFIED`.
+- Local refs: `39`; local commits: `2770`; mention-change commits: `2138`.
+- Source manifest SHA-256: `d015953abdf0f2b33c43b31ffa983c714b3d100c4601e173d803c1685add14b6`; full remote-history coverage: `False`.
+- EvolutionO phases: `0/5` planned phases complete; plan SHA-256 `6a7b7ef3567615b29904829f34b5f94917e7f7b80af9b360dbdfe54f106c2e99`; metrics SHA-256 `ba96fb0b62298de56bc887ffe47aaf350e0a09855ff90c5b71bc9fd0c15ee190`; remote verified: `False`.
+- Retirement remains blocked until pre-retirement agent success, QMOI capability parity, qmoi/qreplaceo archival, all-branch clean-tree evidence, and terminal OFCA metrics are independently verified.
+- QVillage/QVS materialized references: `407` files, `224` Markdown files; remote/history completeness: `not_verified`.
 - `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
 - Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
 <!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->
@@ -739,19 +743,19 @@ The orchestrator should treat masks and VPN as operational capabilities, not as 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10603`; directories: `1280`; Markdown: `2421`.
-- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2157, build_download_install=2113, disability_accessibility=268, orchestration=2065, qteam_accountability=2053, release_tag_publish=2092, tree_inventory=2004`.
+- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
+- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2226`; needs review: `187`; metric candidate lines: `52756`; percentage occurrences: `22237`.
-- Markdown word count: `3562982`; heuristic sentence count: `674722`; sentence records indexed: `674722`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29846` metric claims; `10693` completion claims; `29749` metric and `10564` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9053` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
 - Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
-- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40146` lines in `3689` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.

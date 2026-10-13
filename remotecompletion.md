@@ -2118,10 +2118,14 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 ## Agent-managed OFCA status
 
 - Audit name: `OFCA`; local scan status: `INCOMPLETE`.
-- Materialized files scanned: `10586`; mention-bearing files: `4310`.
-- Local refs: `39`; local commits: `2695`; mention-change commits: `2067`.
-- Source manifest SHA-256: `628ce1b6b0a3384dbdbcc2041b07bc363cd51d9db84c8d1112324fbc5ca77e4d`; full remote-history coverage: `False`.
-- QVillage/QVS materialized references: `393` files, `212` Markdown files; remote/history completeness: `not_verified`.
+- Materialized files scanned: `10604`; mention-bearing files: `4396`.
+- Ollam path/content candidates: `4396` paths and `41` named directories; scan duration: `148.558` seconds; start `2026-10-13T15:59:16.970190Z`, finish `2026-10-13T16:01:45.527829Z`.
+- Phase preflight `audit_inventory_preflight`: 2 OFCA full scans plus 1 QAUDITS-universe scan; every-phase/task wiring: `NOT_VERIFIED`.
+- Local refs: `39`; local commits: `2770`; mention-change commits: `2138`.
+- Source manifest SHA-256: `d015953abdf0f2b33c43b31ffa983c714b3d100c4601e173d803c1685add14b6`; full remote-history coverage: `False`.
+- EvolutionO phases: `0/5` planned phases complete; plan SHA-256 `6a7b7ef3567615b29904829f34b5f94917e7f7b80af9b360dbdfe54f106c2e99`; metrics SHA-256 `ba96fb0b62298de56bc887ffe47aaf350e0a09855ff90c5b71bc9fd0c15ee190`; remote verified: `False`.
+- Retirement remains blocked until pre-retirement agent success, QMOI capability parity, qmoi/qreplaceo archival, all-branch clean-tree evidence, and terminal OFCA metrics are independently verified.
+- QVillage/QVS materialized references: `407` files, `224` Markdown files; remote/history completeness: `not_verified`.
 - `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
 - Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
 <!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->
@@ -2129,19 +2133,19 @@ Each preflight item is marked from the current local/remote evidence. `BLOCKED_A
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10603`; directories: `1280`; Markdown: `2421`.
-- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2157, build_download_install=2113, disability_accessibility=268, orchestration=2065, qteam_accountability=2053, release_tag_publish=2092, tree_inventory=2004`.
+- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
+- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2226`; needs review: `187`; metric candidate lines: `52756`; percentage occurrences: `22237`.
-- Markdown word count: `3562982`; heuristic sentence count: `674722`; sentence records indexed: `674722`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29846` metric claims; `10693` completion claims; `29749` metric and `10564` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9053` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
 - Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
-- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40146` lines in `3689` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
@@ -4194,3 +4198,1121 @@ Correlation ID: `f9c77c4e-6b72-4c68-bcce-d7af60f6f7b7`; repository `thealphakeny
 - Remote verified: `False`; remote mutation performed: `False`.
 - Blockers: `["full repository source scan is not semantic or remote verification","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
 - Next action: Complete the bounded local QAUDITS scan, retain its source-manifest hash and omissions, and finalize with the same correlation ID.
+
+## Paired QAUDITS checkpoint — 2026-10-13T15:47:51.324014Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-source-hash-refresh`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/mission-task-ledger.json`; artifact SHA-256: `dc1660f3ac903eba6cbc71cf706282f2a490675fa4d20ff70eca4d2e0593ccb4`.
+- Additional artifact references: `{"mission_task_ledger":{"bytes":22975,"path":"ollamatracks/mission-task-ledger.json","sha256":"dc1660f3ac903eba6cbc71cf706282f2a490675fa4d20ff70eca4d2e0593ccb4"}}`.
+- Metrics: `{"active_phase_id":null,"active_task_id":null,"active_task_status":null,"checkpoint_utc":"2026-10-13T15:47:51.323842+00:00","deadline_utc":"2026-10-13T15:50:19.075+00:00","elapsed_seconds":7052.249,"ledger_id":"newmission-120-minute-2026-10-13","ledger_sha256":"dc1660f3ac903eba6cbc71cf706282f2a490675fa4d20ff70eca4d2e0593ccb4","ledger_version":"1.0","mission_start_utc":"2026-10-13T13:50:19.075+00:00","mission_status_counts":{"blocked":1,"failed":0,"in_progress":7,"partially_complete":3,"pending":5,"verified_complete":0},"monotonic_duration_available":false,"remaining_seconds":147.751,"remote_verified":false,"task_elapsed_seconds":null}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `0796782ab40c8e2d69cd188c663fa1bb262373697eb57cf49e7a9785b2d59e82`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["Remote target ref and write authority are not verified; worktree contains existing user changes.","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume the highest-priority dependency-ready mission task.
+
+## Paired QAUDITS checkpoint — 2026-10-13T15:51:45.379354Z
+
+- Correlation ID: `0d95645d-8876-4543-b714-f1619d49ee46`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"external_research_enabled":false,"phase":"inventory_start","remote_mutation_performed":false}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `0796782ab40c8e2d69cd188c663fa1bb262373697eb57cf49e7a9785b2d59e82`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_run_not_yet_terminal","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume from this correlated inventory-start checkpoint; do not treat partially refreshed documents or artifacts as final coverage.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:09:34.771011Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `ollama-continuation-success-gate-regression`; status: `LOCAL_TESTED_AUDIT_INCOMPLETE`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{"implementation":{"path":"scripts/ollama_autonomous_agent.py"},"interrupted_audit":{"path":"ollamatracks/repository_surface_audit.json"},"regression_test":{"path":"tests/test_ollama_autonomous_agent.py"}}`.
+- Metrics: `{"focused_tests":"3 passed, 125 deselected","instruction_mission_mirror_matches_root":false,"inventory_process_stopped_after_no_measurable_file_progress":true,"mission_root_mirrors_match_each_other":true,"standalone_instruction_inventory_fresh":false,"target_branch_matches_local":false}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `0796782ab40c8e2d69cd188c663fa1bb262373697eb57cf49e7a9785b2d59e82`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_run_interrupted_before_terminal_checkpoint","github_instructions_mission_mirror_differs_from_root_mission","required_mission_branch_differs_from_checked_out_branch","standalone_instruction_inventory_stale","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Restore byte parity of the generated mission mirror, refresh standalone instruction inventory, rerun a bounded audit shard, and continue only on an authoritatively confirmed mission branch.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:12:57.136599Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `instruction-inventory`; status: `PASS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/instruction_inventory.json`; artifact SHA-256: `2b28bbd41c7427e30094ddec39dcddf0f8ffeb616b95d12242d33e45f6d3482a`.
+- Additional artifact references: `{}`.
+- Metrics: `{"files_discovered":9,"files_read":9,"source_contents_recorded":false,"unreadable_or_invalid_count":0}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Continue the next dependency-ready mission task; remote completion remains separately gated.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:14:48.766237Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-source-hash-refresh`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/mission-task-ledger.json`; artifact SHA-256: `f65467e58a52f70294bfaa47b6fb22c90b1ab3d81cad07e7aee31b231077ceaf`.
+- Additional artifact references: `{"mission_task_ledger":{"bytes":23476,"path":"ollamatracks/mission-task-ledger.json","sha256":"f65467e58a52f70294bfaa47b6fb22c90b1ab3d81cad07e7aee31b231077ceaf"}}`.
+- Metrics: `{"active_phase_id":null,"active_task_id":null,"active_task_status":null,"checkpoint_utc":"2026-10-13T16:14:48.766078+00:00","deadline_utc":"2026-10-13T15:50:19.075+00:00","elapsed_seconds":8669.691,"ledger_id":"newmission-120-minute-2026-10-13","ledger_sha256":"f65467e58a52f70294bfaa47b6fb22c90b1ab3d81cad07e7aee31b231077ceaf","ledger_version":"1.0","mission_start_utc":"2026-10-13T13:50:19.075+00:00","mission_status_counts":{"blocked":1,"failed":0,"in_progress":7,"partially_complete":3,"pending":5,"verified_complete":0},"monotonic_duration_available":false,"remaining_seconds":0.0,"remote_verified":false,"task_elapsed_seconds":null}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["Remote target ref and write authority are not verified; worktree contains existing user changes.","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume the highest-priority dependency-ready mission task.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:15:31.576155Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-continuation-automation-local-validation`; status: `LOCAL_VALIDATION_PASS_WITH_INCOMPLETE_MISSION`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{"continuation_implementation":{"path":"scripts/ollama_autonomous_agent.py"},"continuation_regression":{"path":"tests/test_ollama_autonomous_agent.py"},"instruction_inventory":{"path":"ollamatracks/instruction_inventory.json"},"interrupted_surface_scan":{"path":"ollamatracks/repository_surface_audit.json"},"mission_ledger":{"path":"ollamatracks/mission-task-ledger.json"}}`.
+- Metrics: `{"continuation_success_gate_tests":"3 passed","full_audit_terminal":false,"instruction_files_discovered_and_read":"9/9","instruction_inventory_command_test":"1 passed","mission_mirror_parity_test":"1 passed","mission_mirrors_byte_identical":true,"mission_target_branch_matches_local":false,"python_compile":"PASS","remote_verified":false,"workflow_files_validated":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_run_interrupted_before_terminal_checkpoint","branch_protection_read_denied_http_403","required_mission_branch_differs_from_checked_out_branch","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume the full audit with bounded shards; resolve the authoritative target branch with the repository owner; then continue dependency-ready mission tasks and refresh paired evidence after each verified unit.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:16:23.814048Z
+
+- Correlation ID: `026012f7-3edc-43cf-9bee-79db21d175f6`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":1,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:16:24.585123Z
+
+- Correlation ID: `026012f7-3edc-43cf-9bee-79db21d175f6`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `573c7b2ee1e9abc9edd11b8bcd23e1ffeaabd1874b84110d89700ec4f5f43db8`.
+- Additional artifact references: `{"completed_shards":[1],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":94389020,"completed_file_count":100,"completed_shard_count":1,"duration_seconds":0.656265,"hash_error_count":0,"next_shard_number":2,"remaining_shard_count":104,"remaining_shard_ranges":[[2,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (2 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:16:44.217768Z
+
+- Correlation ID: `f4963edb-4a5e-4c88-a90a-bd5a57fae8e8`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:16:44.998751Z
+
+- Correlation ID: `f4963edb-4a5e-4c88-a90a-bd5a57fae8e8`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `a96b501db2930203fc391321a6819c7b2df1dba3e4328009e216e2654907fd7e`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":14756179,"completed_file_count":1100,"completed_shard_count":11,"duration_seconds":0.654875,"hash_error_count":0,"next_shard_number":12,"remaining_shard_count":94,"remaining_shard_ranges":[[12,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (12 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:08.309864Z
+
+- Correlation ID: `d26a48ef-683f-419e-b817-2d7273214acc`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:09.051581Z
+
+- Correlation ID: `d26a48ef-683f-419e-b817-2d7273214acc`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `05aa49f7b781ebba2a2d247e1d287bc0af5d4d823694d7c9df694dd4a644ada0`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":45567323,"completed_file_count":2100,"completed_shard_count":21,"duration_seconds":0.637573,"hash_error_count":0,"next_shard_number":22,"remaining_shard_count":84,"remaining_shard_ranges":[[22,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (22 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:09.506603Z
+
+- Correlation ID: `ba4d7c6b-6fa7-4a2f-9424-657f203f81ac`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:10.250201Z
+
+- Correlation ID: `ba4d7c6b-6fa7-4a2f-9424-657f203f81ac`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `ae5f3b90c0bd8bbf11c8e22b06186b5c5585bb3dcdbb062dd9f021335b3f7027`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":677737,"completed_file_count":3100,"completed_shard_count":31,"duration_seconds":0.626686,"hash_error_count":0,"next_shard_number":32,"remaining_shard_count":74,"remaining_shard_ranges":[[32,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (32 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:10.678657Z
+
+- Correlation ID: `02475f09-a468-4d5f-bf89-6f563075e743`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:11.598314Z
+
+- Correlation ID: `02475f09-a468-4d5f-bf89-6f563075e743`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `3e92199b0660bd5064c4b732080c53b7f14d7dba056d03ba5c7521a3f201aab5`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":249250977,"completed_file_count":4100,"completed_shard_count":41,"duration_seconds":0.810219,"hash_error_count":0,"next_shard_number":42,"remaining_shard_count":64,"remaining_shard_ranges":[[42,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (42 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:12.025426Z
+
+- Correlation ID: `c34eda35-63f6-48c0-a776-f1c81a556972`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:12.758655Z
+
+- Correlation ID: `c34eda35-63f6-48c0-a776-f1c81a556972`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `cda6eaa3226764907db04ef557772452c110c8b8bce872bf6aa854e0e16a22c3`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":29759021,"completed_file_count":5100,"completed_shard_count":51,"duration_seconds":0.626896,"hash_error_count":0,"next_shard_number":52,"remaining_shard_count":54,"remaining_shard_ranges":[[52,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (52 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:13.190912Z
+
+- Correlation ID: `5d818da2-b841-4aee-8d47-f918ea6be61d`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:13.959447Z
+
+- Correlation ID: `5d818da2-b841-4aee-8d47-f918ea6be61d`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `c0feb1cac9984ca294dd41a6f78c2d7fdfed44c5b3f3eb475a9a0d1fb3a3e6da`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":37643222,"completed_file_count":6100,"completed_shard_count":61,"duration_seconds":0.650259,"hash_error_count":0,"next_shard_number":62,"remaining_shard_count":44,"remaining_shard_ranges":[[62,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (62 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:14.386422Z
+
+- Correlation ID: `3858183f-c913-414c-bf75-21cdc0a4d45a`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:15.390174Z
+
+- Correlation ID: `3858183f-c913-414c-bf75-21cdc0a4d45a`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `4471e1886bd9848c1d663fccd93368a546e4c8978659d3f1dac3dff4d0e852fa`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":283869991,"completed_file_count":7100,"completed_shard_count":71,"duration_seconds":0.895294,"hash_error_count":0,"next_shard_number":72,"remaining_shard_count":34,"remaining_shard_ranges":[[72,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (72 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:15.833733Z
+
+- Correlation ID: `98dabdc4-2fc5-44a7-94a9-372cdf5a7040`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:16.587071Z
+
+- Correlation ID: `98dabdc4-2fc5-44a7-94a9-372cdf5a7040`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `d89569e5758990c2c680072390b9d5fde449a55ab9cac64a9e6f54c421ecd152`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":44597743,"completed_file_count":8100,"completed_shard_count":81,"duration_seconds":0.645031,"hash_error_count":0,"next_shard_number":82,"remaining_shard_count":24,"remaining_shard_ranges":[[82,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (82 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:17.052636Z
+
+- Correlation ID: `9709c267-4ea8-497d-ad63-ef0cf3252e1f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:17.805318Z
+
+- Correlation ID: `9709c267-4ea8-497d-ad63-ef0cf3252e1f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `38dc09c80660f94875a20d61e8fef17ef1d2cb350d5889cb6e0e3c030c1959ee`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":23510706,"completed_file_count":9100,"completed_shard_count":91,"duration_seconds":0.640843,"hash_error_count":0,"next_shard_number":92,"remaining_shard_count":14,"remaining_shard_ranges":[[92,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (92 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:18.239024Z
+
+- Correlation ID: `e7d3ecb8-6bea-467f-bfec-183a87cc26db`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:19.008880Z
+
+- Correlation ID: `e7d3ecb8-6bea-467f-bfec-183a87cc26db`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `73439a48d454a48a54d8d3b18c93e0e29c02b15a6206bc0ae87eedc2092f5bfc`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":4850193,"completed_file_count":10100,"completed_shard_count":101,"duration_seconds":0.658316,"hash_error_count":0,"next_shard_number":102,"remaining_shard_count":4,"remaining_shard_ranges":[[102,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (102 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:19.471264Z
+
+- Correlation ID: `cf9ea981-b83f-494c-99b1-d629fe26ab9e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:17:20.360279Z
+
+- Correlation ID: `cf9ea981-b83f-494c-99b1-d629fe26ab9e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `a1def2d12243a8ca8a62e4ec91f860f264eda8c965106234a611ecf463c257c5`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105],"shard_directory":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d"}`.
+- Metrics: `{"bytes_hashed_this_call":234227309,"completed_file_count":10448,"completed_shard_count":105,"duration_seconds":0.768523,"hash_error_count":0,"next_shard_number":null,"remaining_shard_count":0,"remaining_shard_ranges":[],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: All local path/hash shards are present; run semantic, feature/test, security, QLion, and remote exact-SHA gates before any completion claim.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:19:27.443896Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-resumable-path-hash-shards-complete`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `50b1e01cc0c33eb3f04dd18d9428fa7b884c8b1168724c4d15ecd09d3c3b84b5`; artifact: `ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json`; artifact SHA-256: `a1def2d12243a8ca8a62e4ec91f860f264eda8c965106234a611ecf463c257c5`.
+- Additional artifact references: `{"continuation_tests":"tests/test_ollama_autonomous_agent.py","instruction_inventory":"ollamatracks/instruction_inventory.json","path_hash_shard_run":{"completed_shards":105,"path":"ollamatracks/qaudit_shards/50b1e01cc0c33eb3f04d/shard_run.json","total_shards":105},"shard_tests":"tests/test_qaudit_shard_runner.py"}`.
+- Metrics: `{"completed_file_count":10448,"focused_agent_tests":"8 passed; QSeed routing test excluded because cryptography is not installed","full_audit_terminal":false,"hash_error_count":0,"instruction_files_read":"9/9","materialized_file_count":10448,"remote_verified":false,"semantic_review_complete":false,"shard_count":"105/105","shard_runner_tests":"1 passed","skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","workflow_files_validated":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["18_paths_skipped_by_declared_shard_exclusions_or_symlink_policy","branch_protection_read_denied_http_403","full_audit_inventory_run_interrupted_before_terminal_checkpoint","required_mission_branch_differs_from_checked_out_branch","semantic_feature_security_and_production_review_not_complete","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Continue with bounded semantic and feature/test coverage; review skipped paths and the partial documentation refresh; resolve the authoritative mission branch before protected or remote work.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:40.264471Z
+
+- Correlation ID: `3a853d36-d299-4e62-aad4-86eae7166c23`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:41.091184Z
+
+- Correlation ID: `3a853d36-d299-4e62-aad4-86eae7166c23`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `064b53f8f3f2382a9ddd964976617f0a10649d09925d1ec0b9ad8245eb66cd7b`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":107681174,"completed_file_count":1000,"completed_shard_count":10,"duration_seconds":0.718101,"hash_error_count":0,"next_shard_number":11,"remaining_shard_count":95,"remaining_shard_ranges":[[11,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (11 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:41.550767Z
+
+- Correlation ID: `1cfc2687-6dc1-4df7-86f7-55a3d883e2b2`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:42.320416Z
+
+- Correlation ID: `1cfc2687-6dc1-4df7-86f7-55a3d883e2b2`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `39c6f8e00441412835e3027557f874836b51542c3b3d8845d876163678da158e`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":46966512,"completed_file_count":2000,"completed_shard_count":20,"duration_seconds":0.659593,"hash_error_count":0,"next_shard_number":21,"remaining_shard_count":85,"remaining_shard_ranges":[[21,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (21 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:42.764901Z
+
+- Correlation ID: `13e0e177-e8b3-4b22-a1e0-998ff0c8e775`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:43.537279Z
+
+- Correlation ID: `13e0e177-e8b3-4b22-a1e0-998ff0c8e775`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `fe66a605124445b8181e3e9faf3ad2779560beccf5c1ecbb7bae1770e8f38296`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":674538,"completed_file_count":3000,"completed_shard_count":30,"duration_seconds":0.664782,"hash_error_count":0,"next_shard_number":31,"remaining_shard_count":75,"remaining_shard_ranges":[[31,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (31 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:43.984268Z
+
+- Correlation ID: `1d89b882-0fab-4e4b-b4c0-e2f0e5809640`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:44.874936Z
+
+- Correlation ID: `1d89b882-0fab-4e4b-b4c0-e2f0e5809640`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `85cb9d7257224ed6d7a0eff1270a846f7e2e13e9511612b66c43f62e11c6dc83`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":201097388,"completed_file_count":4000,"completed_shard_count":40,"duration_seconds":0.777363,"hash_error_count":0,"next_shard_number":41,"remaining_shard_count":65,"remaining_shard_ranges":[[41,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (41 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:45.273211Z
+
+- Correlation ID: `1e0fdca4-e8b4-485f-b108-cf2f1b8b3ad2`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:46.091407Z
+
+- Correlation ID: `1e0fdca4-e8b4-485f-b108-cf2f1b8b3ad2`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `2fc60c4e6044fd0c80e31e353b628eeb0e75bb54289df2a4bc13978d90a80296`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":77053757,"completed_file_count":5000,"completed_shard_count":50,"duration_seconds":0.710569,"hash_error_count":0,"next_shard_number":51,"remaining_shard_count":55,"remaining_shard_ranges":[[51,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (51 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:46.584567Z
+
+- Correlation ID: `42baf4bd-8d78-4d7c-8777-a97424ecf938`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:47.453909Z
+
+- Correlation ID: `42baf4bd-8d78-4d7c-8777-a97424ecf938`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `7bd18e7eb4c202754675bb3b40e3bfb4d57762b10d00ae844f73c86ece4fc846`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":38200593,"completed_file_count":6000,"completed_shard_count":60,"duration_seconds":0.758034,"hash_error_count":0,"next_shard_number":61,"remaining_shard_count":45,"remaining_shard_ranges":[[61,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (61 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:47.944769Z
+
+- Correlation ID: `1dfdcc80-1eba-4e69-9b01-0374af5ca231`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:48.987140Z
+
+- Correlation ID: `1dfdcc80-1eba-4e69-9b01-0374af5ca231`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `0ba8e29cf81a4c1b0d6afaf2ff7418645c69b8aa6aaeef5d603aec77a39a144e`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":276867499,"completed_file_count":7000,"completed_shard_count":70,"duration_seconds":0.926639,"hash_error_count":0,"next_shard_number":71,"remaining_shard_count":35,"remaining_shard_ranges":[[71,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (71 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:49.413091Z
+
+- Correlation ID: `30fafa5d-e780-405f-83a7-c9a30b1d009e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:50.225201Z
+
+- Correlation ID: `30fafa5d-e780-405f-83a7-c9a30b1d009e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `64f4c398983080350b13c079a25727009cdf2f696c486509404b0162294a462e`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":30455139,"completed_file_count":8000,"completed_shard_count":80,"duration_seconds":0.694802,"hash_error_count":0,"next_shard_number":81,"remaining_shard_count":25,"remaining_shard_ranges":[[81,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (81 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:50.710133Z
+
+- Correlation ID: `36a8f641-9c37-4282-a11e-d2b0e1731b0d`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:51.491462Z
+
+- Correlation ID: `36a8f641-9c37-4282-a11e-d2b0e1731b0d`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `b0dc50abf866fd31c90f20bf84975d50b41b7a3c718989a90f0e880c0cc57744`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":36522041,"completed_file_count":9000,"completed_shard_count":90,"duration_seconds":0.673765,"hash_error_count":0,"next_shard_number":91,"remaining_shard_count":15,"remaining_shard_ranges":[[91,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (91 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:51.935541Z
+
+- Correlation ID: `d194f943-788f-4fb7-9702-cec39096645f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:52.712993Z
+
+- Correlation ID: `d194f943-788f-4fb7-9702-cec39096645f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `a2d2653f90432274eb4a8a5345aea7d2c13e6433d3bcf4a1832fa983c862445a`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":12850972,"completed_file_count":10000,"completed_shard_count":100,"duration_seconds":0.666383,"hash_error_count":0,"next_shard_number":101,"remaining_shard_count":5,"remaining_shard_ranges":[[101,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (101 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:53.133677Z
+
+- Correlation ID: `910f160a-2287-4d1d-b1d1-af69017adb07`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:22:54.035456Z
+
+- Correlation ID: `910f160a-2287-4d1d-b1d1-af69017adb07`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `50b4e67509938bbd9e520b52b78861c455aa8a2eafd688fac92c42870b8e2418`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105],"shard_directory":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44"}`.
+- Metrics: `{"bytes_hashed_this_call":234731161,"completed_file_count":10448,"completed_shard_count":105,"duration_seconds":0.792341,"hash_error_count":0,"next_shard_number":null,"remaining_shard_count":0,"remaining_shard_ranges":[],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: All local path/hash shards are present; run semantic, feature/test, security, QLion, and remote exact-SHA gates before any completion claim.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:23:15.613014Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-final-source-manifest-shards-complete`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `dee672fe66d7f3ba9b4422403f205cebb2566d4a9f491eb865026aeb5195dda7`; artifact: `ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json`; artifact SHA-256: `50b4e67509938bbd9e520b52b78861c455aa8a2eafd688fac92c42870b8e2418`.
+- Additional artifact references: `{"continuation_implementation":"scripts/ollama_autonomous_agent.py","continuation_tests":"tests/test_ollama_autonomous_agent.py","instruction_inventory":"ollamatracks/instruction_inventory.json","path_hash_shard_run":{"completed_shards":105,"hash_errors":0,"path":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json","skipped_paths":18,"total_shards":105}}`.
+- Metrics: `{"bounded_shard_tests":"1 passed","combined_continuation_inventory_sentence_checkpoint_tests":"4 passed","completed_file_count":10448,"focused_continuation_inventory_tests":"8 passed","full_audit_terminal":false,"hash_error_count":0,"instruction_files_read":"9/9","materialized_file_count":10448,"mission_mirrors_byte_identical":true,"remote_verified":false,"semantic_review_complete":false,"shard_count":"105/105","skipped_path_count":18,"workflow_files_validated":17}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["18_paths_skipped_by_declared_shard_exclusions_or_symlink_policy","branch_protection_read_denied_http_403","full_audit_inventory_run_interrupted_before_terminal_checkpoint","qseed_routing_test_unavailable_cryptography_dependency_missing","required_mission_branch_differs_from_checked_out_branch","semantic_markdown_requirement_feature_and_security_review_incomplete","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Run the bounded semantic audit only after a checkpointed resource budget is established; review all skipped inputs; resolve the authoritative mission branch; continue remaining safe mission tasks and keep protected/remote tasks blocked until exact evidence exists.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:26:36.752794Z
+
+- Correlation ID: `be377c96-db23-451a-a865-a16ff9668e3e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"phase":"surface_audit_start"}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["markdown_sentence_audit_not_yet_terminal","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this sentence audit from its correlated start checkpoint if interrupted.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:27:55.050176Z
+
+- Correlation ID: `be377c96-db23-451a-a865-a16ff9668e3e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `864782e64c5fdc231955e92c97bef863a33e20e12d507460572594ccf553f511`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `344c887f8e355f42190251c61ae69aa5a4a53ebc01d243fa49d81983b81568f7`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1876084,"path":"ollamatracks/financial_claim_inventory.json","sha256":"eb72aef4123056fc2c2b3c759a2df9ba520edb210cd38810793db5e32406ffb5","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":54162312,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"344c887f8e355f42190251c61ae69aa5a4a53ebc01d243fa49d81983b81568f7"}}`.
+- Metrics: `{"completion_claim_candidate_count":10990,"financial_candidate_file_counts_by_category":{"amount_currency":530,"country_and_jurisdiction":269,"deals_and_contracts":220,"employment_and_payroll":282,"financial_security_and_authorization":454,"payments_and_transfers":346,"project_budget_and_expenses":98,"revenue_income_money_making":491,"wallets_and_banking":482},"financial_candidate_line_count":26494,"financial_candidate_line_counts_by_category":{"amount_currency":5295,"country_and_jurisdiction":919,"deals_and_contracts":1407,"employment_and_payroll":2323,"financial_security_and_authorization":1991,"payments_and_transfers":2570,"project_budget_and_expenses":270,"revenue_income_money_making":10715,"wallets_and_banking":4141},"financial_file_count":1077,"financial_inventory_captured_at":"2026-10-13T16:03:06.714029Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2422,"metric_claim_candidate_count":29991,"scan_duration_seconds":63.358,"sentence_count_heuristic":681457,"sentence_records_indexed":681457,"sentence_records_omitted_by_bound":0,"unreferenced_completion_claim_candidate_count":10861,"unreferenced_metric_claim_candidate_count":29894,"word_count":3732060}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","skipped_sources:40","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:28:46.725398Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-markdown-sentence-audit-result`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `864782e64c5fdc231955e92c97bef863a33e20e12d507460572594ccf553f511`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `344c887f8e355f42190251c61ae69aa5a4a53ebc01d243fa49d81983b81568f7`.
+- Additional artifact references: `{"instruction_inventory":"ollamatracks/instruction_inventory.json","path_hash_manifest":"ollamatracks/qaudit_shards/dee672fe66d7f3ba9b44/shard_run.json","sentence_audit_correlation_id":"be377c96-db23-451a-a865-a16ff9668e3e"}`.
+- Metrics: `{"completion_claim_candidates":10990,"financial_candidate_files":1077,"financial_candidate_lines":26494,"financial_coverage_verified":false,"heuristic_sentences":681457,"instruction_files_read":"9/9","markdown_files":2422,"metric_claim_candidates":29991,"path_hash_errors":0,"path_hash_files":"10448/10448","remote_verified":false,"scan_duration_seconds":63.358,"semantic_truth_verified":false,"sentence_records_indexed":681457,"sentence_records_omitted_by_bound":0,"skipped_sources":40,"unreadable_files":27,"unreferenced_completion_candidates":10861,"unreferenced_metric_candidates":29894,"word_count":3732060}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `95ad8d055c137af871640ff1bf612bc72482549dfafdae5c7af424b2c495baa6`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["branch_protection_read_denied_http_403","financial_candidates_are_not_verified_coverage_or_action_authority","full_audit_inventory_run_interrupted_before_terminal_checkpoint","metric_and_completion_claims_require_semantic_source_test_review","required_mission_branch_differs_from_checked_out_branch","sentence_audit_skipped_sources:40","sentence_audit_unreadable_files:27","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Classify the 27 unreadable and 40 skipped inputs, map claims to owners/implementations/tests, and continue only with bounded local tasks while protected work remains blocked.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:32:18.806306Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `instruction-inventory`; status: `PASS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/instruction_inventory.json`; artifact SHA-256: `ad09b29767bccc493462e44e4a3a3c48ed032501fa77c6d468039ec5ff81fd09`.
+- Additional artifact references: `{}`.
+- Metrics: `{"files_discovered":9,"files_read":9,"source_contents_recorded":false,"unreadable_or_invalid_count":0}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Continue the next dependency-ready mission task; remote completion remains separately gated.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:34:05.720904Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-source-hash-refresh`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `ollamatracks/mission-task-ledger.json`; artifact SHA-256: `3cf5d9f98df73a186e10471dde7608cc6109da9e59c828b6a57e2db7839f1a89`.
+- Additional artifact references: `{"mission_task_ledger":{"bytes":23977,"path":"ollamatracks/mission-task-ledger.json","sha256":"3cf5d9f98df73a186e10471dde7608cc6109da9e59c828b6a57e2db7839f1a89"}}`.
+- Metrics: `{"active_phase_id":null,"active_task_id":null,"active_task_status":null,"checkpoint_utc":"2026-10-13T16:34:05.720656+00:00","deadline_utc":"2026-10-13T15:50:19.075+00:00","elapsed_seconds":9826.646,"ledger_id":"newmission-120-minute-2026-10-13","ledger_sha256":"3cf5d9f98df73a186e10471dde7608cc6109da9e59c828b6a57e2db7839f1a89","ledger_version":"1.0","mission_start_utc":"2026-10-13T13:50:19.075+00:00","mission_status_counts":{"blocked":1,"failed":0,"in_progress":7,"partially_complete":3,"pending":5,"verified_complete":0},"monotonic_duration_available":false,"remaining_seconds":0.0,"remote_verified":false,"task_elapsed_seconds":null}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["Remote target ref and write authority are not verified; worktree contains existing user changes.","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume the highest-priority dependency-ready mission task.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:34:19.303485Z
+
+- Correlation ID: `55600e33-20f1-478d-8501-2594eb8c78db`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"phase":"surface_audit_start"}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["markdown_sentence_audit_not_yet_terminal","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this sentence audit from its correlated start checkpoint if interrupted.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:35:36.950990Z
+
+- Correlation ID: `55600e33-20f1-478d-8501-2594eb8c78db`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `qaudit-markdown-sentences`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `5291b88bb16b0d1f2b758f6810b37f4355f70525f41b767394b78730f168e785`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `001006c0388dd96d8e77836453960397517615947b166797c1d43e13b2ec656e`.
+- Additional artifact references: `{"financial_claim_inventory":{"bytes":1876084,"path":"ollamatracks/financial_claim_inventory.json","sha256":"eb72aef4123056fc2c2b3c759a2df9ba520edb210cd38810793db5e32406ffb5","status":"verified_local_hash"},"markdown_sentence_audit":{"bytes":54162133,"path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"001006c0388dd96d8e77836453960397517615947b166797c1d43e13b2ec656e"}}`.
+- Metrics: `{"completion_claim_candidate_count":10990,"financial_candidate_file_counts_by_category":{"amount_currency":530,"country_and_jurisdiction":269,"deals_and_contracts":220,"employment_and_payroll":282,"financial_security_and_authorization":454,"payments_and_transfers":346,"project_budget_and_expenses":98,"revenue_income_money_making":491,"wallets_and_banking":482},"financial_candidate_line_count":26494,"financial_candidate_line_counts_by_category":{"amount_currency":5295,"country_and_jurisdiction":919,"deals_and_contracts":1407,"employment_and_payroll":2323,"financial_security_and_authorization":1991,"payments_and_transfers":2570,"project_budget_and_expenses":270,"revenue_income_money_making":10715,"wallets_and_banking":4141},"financial_file_count":1077,"financial_inventory_captured_at":"2026-10-13T16:03:06.714029Z","financial_inventory_coverage_verified":false,"financial_inventory_status":"candidate_discovery_only","markdown_file_count":2422,"metric_claim_candidate_count":29991,"scan_duration_seconds":62.546,"sentence_count_heuristic":681457,"sentence_records_indexed":681457,"sentence_records_omitted_by_bound":0,"unreferenced_completion_claim_candidate_count":10861,"unreferenced_metric_claim_candidate_count":29894,"word_count":3732024}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["remote_refs_prs_intermediate_trees_and_release_state_not_verified","skipped_sources:40","surface_audit_status:NEEDS_REVIEW","target_owned_terminal_remote_sha_proof_unavailable","unreadable_files:27","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resolve local audit blockers and obtain target-owned terminal exact-ref/SHA/tree evidence before protected completion.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:06.799516Z
+
+- Correlation ID: `a75c796f-4b38-4b27-b241-6e01df3a273f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:07.619802Z
+
+- Correlation ID: `a75c796f-4b38-4b27-b241-6e01df3a273f`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `2188c5b5f3986bbb3ed6c70850dd9d01ab9141f1f77df06b1bef6902daecef0a`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":107681116,"completed_file_count":1000,"completed_shard_count":10,"duration_seconds":0.70509,"hash_error_count":0,"next_shard_number":11,"remaining_shard_count":95,"remaining_shard_ranges":[[11,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (11 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:08.044571Z
+
+- Correlation ID: `6fd80372-a78a-46b5-9bb6-749e3eb11079`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:08.798051Z
+
+- Correlation ID: `6fd80372-a78a-46b5-9bb6-749e3eb11079`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `b86ed9dcb9d7ed0d1f73513fa8fa829d2690fd5afb71c5ec2cd855d6f7030f58`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":46966222,"completed_file_count":2000,"completed_shard_count":20,"duration_seconds":0.636963,"hash_error_count":0,"next_shard_number":21,"remaining_shard_count":85,"remaining_shard_ranges":[[21,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (21 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:09.247476Z
+
+- Correlation ID: `52e2154e-24bb-4b50-9049-a03c69492396`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:09.983262Z
+
+- Correlation ID: `52e2154e-24bb-4b50-9049-a03c69492396`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `bf47b9f207628c2153da85aed22edc46ca59c6d01474296609121c2ed6bb7d8d`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":674538,"completed_file_count":3000,"completed_shard_count":30,"duration_seconds":0.623219,"hash_error_count":0,"next_shard_number":31,"remaining_shard_count":75,"remaining_shard_ranges":[[31,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (31 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:10.440939Z
+
+- Correlation ID: `2348cd9d-6c45-4551-b2c7-8aad0595d62c`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:11.348077Z
+
+- Correlation ID: `2348cd9d-6c45-4551-b2c7-8aad0595d62c`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `42a07d134e8d168d6be4a3516dd4142488ec448ad357204a5518bb581ced5b01`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":201721499,"completed_file_count":4000,"completed_shard_count":40,"duration_seconds":0.796862,"hash_error_count":0,"next_shard_number":41,"remaining_shard_count":65,"remaining_shard_ranges":[[41,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (41 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:11.780515Z
+
+- Correlation ID: `b0d21bfa-44b4-4f6f-851b-c8955e4854a9`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:12.652145Z
+
+- Correlation ID: `b0d21bfa-44b4-4f6f-851b-c8955e4854a9`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `ab38cda91fb459d21503e65b0f23262d834909ee27e0077bf6139b7d6296fbad`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":77053757,"completed_file_count":5000,"completed_shard_count":50,"duration_seconds":0.762387,"hash_error_count":0,"next_shard_number":51,"remaining_shard_count":55,"remaining_shard_ranges":[[51,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (51 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:13.136472Z
+
+- Correlation ID: `cf874292-9573-43b1-8ec2-0897c1e386ea`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:13.906900Z
+
+- Correlation ID: `cf874292-9573-43b1-8ec2-0897c1e386ea`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `fe4a13b2f3a8760032c66bbb04656103be472e46f60ae17455975e9e625778ea`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":38200593,"completed_file_count":6000,"completed_shard_count":60,"duration_seconds":0.66193,"hash_error_count":0,"next_shard_number":61,"remaining_shard_count":45,"remaining_shard_ranges":[[61,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (61 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:14.346722Z
+
+- Correlation ID: `ca119b5d-0afb-4408-9bda-afff4a05dc3b`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:15.265270Z
+
+- Correlation ID: `ca119b5d-0afb-4408-9bda-afff4a05dc3b`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `4730f91ced5abe7db51eb5574789ff81e72980a6fe0a6b880770d1bf95ae8f79`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":276867499,"completed_file_count":7000,"completed_shard_count":70,"duration_seconds":0.80943,"hash_error_count":0,"next_shard_number":71,"remaining_shard_count":35,"remaining_shard_ranges":[[71,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (71 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:15.711459Z
+
+- Correlation ID: `a939c207-7f50-422d-93b0-e28ee9a914f0`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:16.494077Z
+
+- Correlation ID: `a939c207-7f50-422d-93b0-e28ee9a914f0`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `aa167159bca88518a50cee63e02340abcc90cce18b3e31374f9a00f5b2438d60`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":30455139,"completed_file_count":8000,"completed_shard_count":80,"duration_seconds":0.669891,"hash_error_count":0,"next_shard_number":81,"remaining_shard_count":25,"remaining_shard_ranges":[[81,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (81 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:16.927416Z
+
+- Correlation ID: `116a5dcd-f263-49d2-b6c7-98a0017d38a5`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:17.722720Z
+
+- Correlation ID: `116a5dcd-f263-49d2-b6c7-98a0017d38a5`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `157ca2796dcc83514fbffb448931633d2780864053029dd8b49cbbe58c92b460`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":36522041,"completed_file_count":9000,"completed_shard_count":90,"duration_seconds":0.689583,"hash_error_count":0,"next_shard_number":91,"remaining_shard_count":15,"remaining_shard_ranges":[[91,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (91 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:18.161485Z
+
+- Correlation ID: `dc2ea70d-c35c-4e28-b8f6-04d234f7a398`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:18.921567Z
+
+- Correlation ID: `dc2ea70d-c35c-4e28-b8f6-04d234f7a398`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `e2cdf758285dda224d3fe3d3b6e2f30aad92f41ee259320eac8aa44cac2920fb`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":12850972,"completed_file_count":10000,"completed_shard_count":100,"duration_seconds":0.655747,"hash_error_count":0,"next_shard_number":101,"remaining_shard_count":5,"remaining_shard_ranges":[[101,105]],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["audit_inventory_shards_remaining","semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Invoke audit-inventory-shard again for the next missing shard (101 of 105).
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:19.359265Z
+
+- Correlation ID: `eb24fe57-2b2b-4eef-8504-4127e61520fc`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `IN_PROGRESS`; verification: `local_artifact_integrity_only`.
+- Source manifest: `unavailable`; artifact: `unavailable`; artifact SHA-256: `unavailable`.
+- Additional artifact references: `{}`.
+- Metrics: `{"max_shards":10,"phase":"shard_start","shard_size":100}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["bounded_shard_run_not_terminal","remote_completion_not_verified","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Resume this deterministic shard run from its source-manifest-bound completed shard list.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:39:20.209316Z
+
+- Correlation ID: `eb24fe57-2b2b-4eef-8504-4127e61520fc`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `audit-inventory-shard`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json`; artifact SHA-256: `e14ec29dd211709265230e159127a92bc41e4587e23db0a81bb12f72f0b5b59c`.
+- Additional artifact references: `{"completed_shards":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105],"shard_directory":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542"}`.
+- Metrics: `{"bytes_hashed_this_call":234731161,"completed_file_count":10448,"completed_shard_count":105,"duration_seconds":0.742617,"hash_error_count":0,"next_shard_number":null,"remaining_shard_count":0,"remaining_shard_ranges":[],"remote_verified":false,"semantic_review_complete":false,"skipped_path_count":18,"source_scope":"materialized_local_path_hash_shards_only","total_file_count":10448,"total_shard_count":105}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["semantic_feature_test_security_and_remote_gates_not_run","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: All local path/hash shards are present; run semantic, feature/test, security, QLion, and remote exact-SHA gates before any completion claim.
+
+## Paired QAUDITS checkpoint — 2026-10-13T16:40:29.549142Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `mission-final-mirror-audit-metrics`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208`; artifact: `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz`; artifact SHA-256: `001006c0388dd96d8e77836453960397517615947b166797c1d43e13b2ec656e`.
+- Additional artifact references: `{"instruction_inventory":"ollamatracks/instruction_inventory.json","path_hash_shards":{"path":"ollamatracks/qaudit_shards/f83ea6b7533b3cb3d542/shard_run.json","sha256":"e14ec29dd211709265230e159127a92bc41e4587e23db0a81bb12f72f0b5b59c","source_manifest_sha256":"f83ea6b7533b3cb3d542a6b0d1fbca2359a45dc36919cbc3b3dc3e512144f208"},"sentence_audit":{"correlation_id":"55600e33-20f1-478d-8501-2594eb8c78db","path":"ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz","sha256":"001006c0388dd96d8e77836453960397517615947b166797c1d43e13b2ec656e"}}`.
+- Metrics: `{"completion_claim_candidates":10990,"heuristic_sentences":681457,"instruction_files_read":"9/9","markdown_files":2422,"metric_claim_candidates":29991,"mission_mirror_link_errors":0,"mission_mirrors_byte_identical":true,"path_hash_errors":0,"path_hash_files":"10448/10448","path_hash_shards":"105/105","path_hash_skipped":18,"remote_verified":false,"semantic_truth_verified":false,"sentence_records_indexed":681457,"sentence_records_omitted_by_bound":0,"sentence_scan_seconds":62.546,"skipped_sources":40,"unreadable_files":27,"word_count":3732024}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["branch_protection_read_denied_http_403","full_audit_inventory_run_interrupted_before_terminal_checkpoint","path_hash_shard_skips_require_scope_review:18","required_mission_branch_differs_from_checked_out_branch","sentence_audit_skipped_sources:40","sentence_audit_unreadable_files:27","sentence_claims_require_source_owner_and_test_mapping","target_owned_terminal_remote_sha_proof_unavailable","worktree_dirty_or_status_unavailable"]`.
+- Next action: Classify unreadable and skipped inputs; review the interrupted generated-document refresh; continue with bounded semantic/test mapping while branch authorization and remote proof remain blocked.
+
+## Paired QAUDITS checkpoint — 2026-10-13T17:01:32.615272Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `universal-intelligence-plan`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e`; artifact: `ollamatracks/universal_intelligence_plan.json`; artifact SHA-256: `21213647a9df4e524e9c4bb7fb7252bc815108ee3ec2f2c8fe575dc2b44a480a`.
+- Additional artifact references: `{}`.
+- Metrics: `{"location_consent_enforced_in_plan":true,"remote_verified":false,"requirements_with_verified_implementation":0,"sister_role_verified":false,"uis_requirement_count":22,"uis_section_count":8}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["target_owned_terminal_remote_sha_proof_unavailable","uis_requirements_pending_implementation_evidence","worktree_dirty_or_status_unavailable"]`.
+- Next action: Map each pending UIS requirement to an owner, implementation, access class, test, workflow, and verification artifact.
+
+## Paired QAUDITS checkpoint — 2026-10-13T17:03:41.608726Z
+
+- Correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`; repository: `thealphakenya/Alpha-Q-ai`; ref: `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`.
+- Local HEAD: `7c40ff79dd1f046cf03b5253a7e273f6f483594b`; local tree: `b70359989eb06a21e1696c4a0965b9094629727a`; dirty: `True`.
+- Operation: `universal-intelligence-plan`; status: `NEEDS_REVIEW`; verification: `local_artifact_integrity_only`.
+- Source manifest: `9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e`; artifact: `ollamatracks/universal_intelligence_plan.json`; artifact SHA-256: `9731aa386841adb489db2207310cc36e90ba20ef1292b3646a03a339e658b82f`.
+- Additional artifact references: `{}`.
+- Metrics: `{"location_consent_enforced_in_plan":true,"remote_verified":false,"requirements_with_verified_implementation":0,"sister_role_verified":false,"uis_requirement_count":22,"uis_section_count":8}`.
+- Instruction files: `9` inventoried; metadata SHA-256: `334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blockers: `["target_owned_terminal_remote_sha_proof_unavailable","uis_requirements_pending_implementation_evidence","worktree_dirty_or_status_unavailable"]`.
+- Next action: Map each pending UIS requirement to an owner, implementation, access class, test, workflow, and verification artifact.

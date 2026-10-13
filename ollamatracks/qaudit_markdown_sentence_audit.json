@@ -1,23 +1,23 @@
 {
-  "artifact_bytes": 53538619,
+  "artifact_bytes": 54162133,
   "artifact_path": "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz",
-  "artifact_sha256": "9aae6f902209f9adc7610dbd5687aac83dcb52a3c477ba4bc52256ba000dba08",
+  "artifact_sha256": "001006c0388dd96d8e77836453960397517615947b166797c1d43e13b2ec656e",
   "blockers": [
     "surface_audit_status:NEEDS_REVIEW",
     "unreadable_files:27",
-    "skipped_sources:39",
+    "skipped_sources:40",
     "remote_refs_prs_intermediate_trees_and_release_state_not_verified"
   ],
-  "correlation_id": "d68fddce-5b9c-4929-95be-abdf9ba336cf",
-  "generated_at": "2026-10-07T04:22:57.895089Z",
+  "correlation_id": "55600e33-20f1-478d-8501-2594eb8c78db",
+  "generated_at": "2026-10-13T16:35:21.958262Z",
   "local_git_context": [
     {
-      "head_sha": "c5ed64110cb5e7cbd4e55b3d87126e696717cca4",
+      "head_sha": "7c40ff79dd1f046cf03b5253a7e273f6f483594b",
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_verified": false,
       "repository": "Alpha-Q-ai",
       "root": "/workspaces/Alpha-Q-ai",
-      "tree_sha": "25a31fd380e3c72d03d61fca7442d3d8b3406e12",
+      "tree_sha": "b70359989eb06a21e1696c4a0965b9094629727a",
       "verification_level": "local_git_observation_only"
     }
   ],
@@ -35,6 +35,7 @@
     "ollamatracks/qaudit_markdown_sentence_audit.json",
     "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz",
     "ollamatracks/qaudit_universe.json",
+    "ollamatracks/qaudits_evolution_plan.json",
     "ollamatracks/repository_surface_audit.json",
     "ollamatracks/restore_point_memory.json",
     "ollamatracks/style_universal_replacement_inventory.json",
@@ -45,8 +46,6 @@
     "remotecompletion.md"
   ],
   "self_referential_exclusions": [
-    "QMOItracks/style_universal_candidate_tree.md",
-    "oe2.txt",
     "ollamatracks/feature_test_hook_coverage.json",
     "ollamatracks/legacy_sync_artifact_inventory.json",
     "ollamatracks/ollama_reference_audit.json",
@@ -54,31 +53,34 @@
     "ollamatracks/qaudit_markdown_sentence_audit.json",
     "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz",
     "ollamatracks/qaudit_universe.json",
+    "ollamatracks/qaudits_evolution_plan.json",
     "ollamatracks/repository_surface_audit.json",
     "ollamatracks/restore_point_memory.json",
     "ollamatracks/style_universal_replacement_inventory.json",
     "ollamatracks/system_accountability_audit.json",
     "ollamatracks/telemetry.jsonl",
+    "oe2.txt",
     "remote-completion.json",
     "remote-evidence-ledger.jsonl",
-    "remotecompletion.md"
+    "remotecompletion.md",
+    "QMOItracks/style_universal_candidate_tree.md"
   ],
-  "skipped_source_count": 39,
-  "source_manifest_sha256": "fde273ae64149aba4b717789b4efd79e87882d632a29f265edf2a052390d8ace",
+  "skipped_source_count": 40,
+  "source_manifest_sha256": "5291b88bb16b0d1f2b758f6810b37f4355f70525f41b767394b78730f168e785",
   "source_scope": "materialized repository roots and local refs only",
   "source_text_recorded": false,
   "status": "NEEDS_REVIEW",
   "totals": {
-    "completion_claim_candidate_count": 10658,
-    "markdown_file_count": 2408,
-    "metric_claim_candidate_count": 29834,
-    "scan_duration_seconds": 61.711,
-    "sentence_count_heuristic": 673666,
-    "sentence_records_indexed": 673666,
+    "completion_claim_candidate_count": 10990,
+    "markdown_file_count": 2422,
+    "metric_claim_candidate_count": 29991,
+    "scan_duration_seconds": 62.546,
+    "sentence_count_heuristic": 681457,
+    "sentence_records_indexed": 681457,
     "sentence_records_omitted_by_bound": 0,
-    "unreferenced_completion_claim_candidate_count": 10529,
-    "unreferenced_metric_claim_candidate_count": 29737,
-    "word_count": 3550481
+    "unreferenced_completion_claim_candidate_count": 10861,
+    "unreferenced_metric_claim_candidate_count": 29894,
+    "word_count": 3732024
   },
   "unreadable_file_count": 27
 }

@@ -3,19 +3,19 @@
   "candidate_path_index_complete": false,
   "canonical_policy_documents": [
     {
-      "bytes": 88490,
+      "bytes": 88902,
       "path": "STYLES.md",
-      "sha256": "4df876e52f4a2c4827d543097323951100279faf5ccf921a4ef7c04014aab3b6"
+      "sha256": "2fea35e9f6af3f7bb89b07e9eb5736f9aca4d0951a453b87feef2c51a9e797e4"
     },
     {
-      "bytes": 10760,
+      "bytes": 10179,
       "path": "UNIVERSAL.md",
-      "sha256": "8ee87e463414417dc52d0f6c65e42939295d7fa5ab21bc6ac3e2e61e5101397a"
+      "sha256": "78c788ea6de51eaa6ebf322147c70fd3bf2931381c942c3d9b64d1445cfb4364"
     },
     {
-      "bytes": 27207,
+      "bytes": 27619,
       "path": "UNIVERSALS.md",
-      "sha256": "08c15e748f737cb94f883dbabcb4c4fb89b125e2dc8c394b743d42963b79cf1c"
+      "sha256": "8dcbedb020357c2d6efca97ca3437384932691cf135233ad8553950205816e54"
     }
   ],
   "canonical_policy_paths": [
@@ -15324,6 +15324,7 @@
         "scripts/cross_repo_sync.py",
         "scripts/github_auth.py",
         "scripts/github_auto_setup.py",
+        "scripts/language_strategy.py",
         "scripts/live_activity_stream.py",
         "scripts/live_github_verifier.py",
         "scripts/ollama_autonomous_agent.py",
@@ -15345,7 +15346,7 @@
       "lineage_status": "candidate_not_verified_as_replaced",
       "path": "scripts",
       "status": "review_required",
-      "styles": 6,
+      "styles": 7,
       "universals": 22
     },
     {
@@ -15399,7 +15400,7 @@
       "universals": 779
     },
     ".py": {
-      "styles": 181,
+      "styles": 182,
       "universals": 673
     },
     ".ts": {
@@ -15413,8 +15414,8 @@
   },
   "files": [
     {
-      "bytes": 7477,
-      "candidate_id": "94898193e62504f39622",
+      "bytes": 8391,
+      "candidate_id": "9a9721f8084befe27773",
       "directory_paths": [
         ".github"
       ],
@@ -15427,13 +15428,13 @@
       "path": ".github/copilot-instructions.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "0dd6b616904d22c807c38aef5ab5a10dfd90d73eef4655dc9fc9e2394dfe2fc8",
+      "sha256": "d387cf7e8a69f0e0d91efc5150483fd96e048ed7ce690e4f341db3906dbee651",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 11674,
-      "candidate_id": "3b4abc18a5a9c570b816",
+      "bytes": 35361,
+      "candidate_id": "1e0b57d05c5adb2e0af0",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15447,13 +15448,13 @@
       "path": ".github/instructions/MISSION.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "bf42e798369f2bb2d6bd466ca1b8b3495439a16ef56d38d556b7ad38569af9d7",
+      "sha256": "cd2a6d2329258c4988046143ee71f47aa7e42b5c413fdf23420df7eff7bd23ea",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 9026,
-      "candidate_id": "d4d8677b9ee7505f040d",
+      "bytes": 11894,
+      "candidate_id": "9f780600ba63c06b7a81",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15467,13 +15468,13 @@
       "path": ".github/instructions/agent-autonomy.instructions.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "0ca5b297f9fd1530659c92c45c19c5d50e8c59741677ac1da9734dbe2dcf1c72",
+      "sha256": "23d692ce2d828b3b74584dae78f92093e055a3d0e1139074c9b54ca52636cffd",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5948,
-      "candidate_id": "be04dd973775c7aea627",
+      "bytes": 7544,
+      "candidate_id": "099fe90c155a9982345e",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15487,13 +15488,13 @@
       "path": ".github/instructions/github-api.instructions.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "186ae08bcdb58004c1201a26c25afb26c1b4d79976bdbe35daff70b21adaa277",
+      "sha256": "a151f9cc57920dc748c82e2b0bf37744e26d8b734c0d5f310f7a6738263bf183",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5335,
-      "candidate_id": "547797f3ed1b09c7adbf",
+      "bytes": 6694,
+      "candidate_id": "ec29b9951087b6542765",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15507,13 +15508,13 @@
       "path": ".github/instructions/release.instructions.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "7c524751a4776a9d5945170f7391766cfe90ef6120c5a5e24dfa06a7d26413fb",
+      "sha256": "f119be8167514b7bfab32090cda42f1a0b4ffa186618aedd394de75b15bfb483",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6613,
-      "candidate_id": "403d50212b8f37b41c1c",
+      "bytes": 7811,
+      "candidate_id": "0189fdf697daebdbfc82",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15527,13 +15528,13 @@
       "path": ".github/instructions/security.instructions.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "7e7f5ddf45d4e03292473b80a66676459f1210fc5c2dd359f605032b50fd0688",
+      "sha256": "1eb0cad43f0c41aa3de1c7215ad6f9e79255dea1c66ee37e6de3c98a10eec864",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6752,
-      "candidate_id": "76ae9aa6c08a2d4ee833",
+      "bytes": 8027,
+      "candidate_id": "6c25f8ddb0f56c4e7a53",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15547,13 +15548,13 @@
       "path": ".github/instructions/workflows.instructions.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c5dca08cdab72a4eead2610664f4ded64051a21fbe3488965b6f4d010c0d32da",
+      "sha256": "4ea0007dd07c033b690de6370bbcc557e2e673bc5e030b292d412dcf65e37440",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6839,
-      "candidate_id": "54ce8e65e3fccc2de7e7",
+      "bytes": 8943,
+      "candidate_id": "6172cea3aad7c66cb203",
       "directory_paths": [
         ".github",
         ".github/instructions"
@@ -15567,13 +15568,13 @@
       "path": ".github/instructions/workspace.instructions.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c89ecc9ae7000d85d667077b7a89a41e05c41a317add94790d86a56c1fac6630",
+      "sha256": "277d4379e16498d87e96079b4098ffa81930e8150ca250c5c95188b063b7eec8",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 12860,
-      "candidate_id": "a4bd4c4b2b4a2f6dcf3f",
+      "bytes": 12836,
+      "candidate_id": "2edf3279286e034552fb",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15584,13 +15585,13 @@
       "path": "ACCOUNTABILITY.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "27a6eff4e53650562e60662dac753be8621c4a4992b474b33f3036d17ccfff97",
+      "sha256": "115586104eb7807c8b0e84a7062e98f06678d21a014ecccfd5b9e1faace24b53",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 18423,
-      "candidate_id": "4242334bfc2132723370",
+      "bytes": 18399,
+      "candidate_id": "afdc37350e61a393ff04",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15601,13 +15602,13 @@
       "path": "ADVANCEMENT.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "9ee48ac82a32d9e8ee7cd60e705fbd74cb9417ddf3fc030824d7f52b08bb4685",
+      "sha256": "30a44648467d70f4c341fd2b689de1c5a25669720fa24a552fb6fdd9d08e319f",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6761,
-      "candidate_id": "df61194567176824896b",
+      "bytes": 7047,
+      "candidate_id": "0423cee3d234501cbb92",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15618,13 +15619,13 @@
       "path": "AGENTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "9b1c21acb83478dc64623acd5455877e1ff94ea27784fdd300e9084a39cac911",
+      "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 8784,
-      "candidate_id": "ce86676967e4c222873c",
+      "bytes": 8760,
+      "candidate_id": "6c744cbc0242ba7ba980",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15635,13 +15636,13 @@
       "path": "ALLAUTO.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8d4947ea520e84c158166bb1a614dcc9784f7b69e83c6c5177403c77a6297307",
+      "sha256": "7befe32235c6a9331002cfdc899b0daa59f69495673ccfbe225288bda51fcfad",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 4637,
-      "candidate_id": "fae61f851164e1933e1b",
+      "bytes": 4613,
+      "candidate_id": "6310ab38a6a15700a333",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -15653,13 +15654,13 @@
       "path": "ALLFRONTEND.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "9533e1d2edd9a3038300a9e2529739487be04678e302b8a7e5671eeec046082f",
+      "sha256": "7144411e9b9981c012f1c12c86082fe468f28bed2a647e77e4275225bbfa77a7",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 7282,
-      "candidate_id": "ee60fc2c79be379c0d46",
+      "bytes": 7258,
+      "candidate_id": "946e98e9e96ab370de11",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15670,13 +15671,30 @@
       "path": "ALLHOOKSWEBHOOKS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "d20dbf6292f920894823635fc9d6d92466a8581abefd3761bf9e122c7a30d506",
+      "sha256": "964631ece53ad88000cbbf5ee5565aaca9ca53630758960c11617ca81386430b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 25765,
-      "candidate_id": "d3e3e5d36c7cee828c14",
+      "bytes": 11773,
+      "candidate_id": "753d2315b46edbc9787c",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "ALLLANGUAGES.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "49fae3b367e931a458ea078aa9354f5432e86619fc7b04d8f9ae27c7b7832bf2",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 25741,
+      "candidate_id": "14f18123980568ba42cb",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -15688,13 +15706,13 @@
       "path": "ALLPLATFORMSDEVICE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "d7ac7a47eef76263e436343f9695d806f83960f5186547d05c1baf99a8d1dfe3",
+      "sha256": "70300fbd0c0dbd5c40a4237bc2f90a79633b59271ae6850643dc29154232cbfa",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 4496,
-      "candidate_id": "5210184a125aa58d2dca",
+      "bytes": 4472,
+      "candidate_id": "5a7606969f5b3209ced4",
       "directory_paths": [],
       "domains": [
         "styles"
@@ -15705,13 +15723,13 @@
       "path": "ALLPORTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "874cb39980f7d985e1edb70f3ebb254c03e7232e622f440cfc48111b5416f2c0",
+      "sha256": "b5fc694d5e1d642c3169b70dadde09d9bf36242ffdd7247e33bd00a8c0b4cbd3",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 180495,
-      "candidate_id": "290c62c85591d84d12c4",
+      "bytes": 180471,
+      "candidate_id": "105977a57a0469d742d6",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15722,13 +15740,13 @@
       "path": "ALLTESTSAUTOTESTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b353045397bd72e71d525bb93ae8db301eca8bd21a3b101f3b8c82ca96b851a6",
+      "sha256": "a12ed3d7e25fa92fa96663da7092278c0b3065d7a5817e258ce7f65d7d4e6d26",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 12024,
-      "candidate_id": "d45655849b9ae7c230d3",
+      "bytes": 12000,
+      "candidate_id": "49c1496e3fde064b79c4",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15739,13 +15757,13 @@
       "path": "ALLVALIDATIONS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "0e06babbcadc5446de9f1e70dfbc418e3c35375ce94780b6ee06684ed5f31023",
+      "sha256": "5806e6e1d0d994b4e645df65021f78a437a31df5c16537209129762a73ef4e05",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 7000,
-      "candidate_id": "230448cfa2a65d96a4d8",
+      "bytes": 6976,
+      "candidate_id": "68afe775bfd284a445f4",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15756,13 +15774,13 @@
       "path": "ALPHA_Q_AI_MERGE_SETUP.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "46c7674a74d87450ccb79f9885f8b6c3db8e4053edaaaea4947ff6b88c70d16b",
+      "sha256": "4dabbd5be3e3b8d17ecf41f0e6466dca0f72937aee48b3e818f48ae6c0b5ef38",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6525,
-      "candidate_id": "d6d8a2a4bfe5eb8011b0",
+      "bytes": 6501,
+      "candidate_id": "15a1a46b0fe1b300373d",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15773,13 +15791,13 @@
       "path": "API.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "d283227d331c53f73f54866170c09c7fac97d44877b2cad5cbb83e1c0003c265",
+      "sha256": "caec5e9980e2f4798a8d2e13f756686ecfb3a9c101d8690b00b3e2a3c8bcb40a",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6855,
-      "candidate_id": "fdd5ce22008ea38599a8",
+      "bytes": 6831,
+      "candidate_id": "7d54b06e6274099e79ca",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -15790,7 +15808,7 @@
       "path": "AUTODEV.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "2951b9de3fd5d1f1706c5b712906d7eba6b4cfde82cbd29f28ce67ea50e2938c",
+      "sha256": "0a7558abf0ac36de24496888f9e971109c390898955a543d374b44b686105334",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -33587,8 +33605,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6535,
-      "candidate_id": "efc8d7c3b88a4a33dfac",
+      "bytes": 6511,
+      "candidate_id": "135bfaa5e4fab87169ac",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33600,13 +33618,13 @@
       "path": "CLONE_PLATFORM_UI.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "6423d5daa692cc4a1722b0110fee183614c08e5bc6703fae5c22988e0187ce40",
+      "sha256": "f27f7c05286464886e1b7e92b06f1bfca366359db0077ec08bdb3faeb85e48f0",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 304186,
-      "candidate_id": "74c7671a3d62a6474f55",
+      "bytes": 304164,
+      "candidate_id": "12e6582851fd2255a450",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33618,13 +33636,13 @@
       "path": "COMPONENTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "404884d328c18008ad15376a95dc0593cb2be6043497f6135896ec55a5895fed",
+      "sha256": "36df9dd1d99ce2c644dccfcff3a6ff8f09df0e53109e511962d324396943e842",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 13337,
-      "candidate_id": "d56f783fa9ddc9cf6b7d",
+      "bytes": 13313,
+      "candidate_id": "77760f11d227bc28a5c7",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33635,13 +33653,13 @@
       "path": "CREDENTIALS_ROTATION_PLAYBOOK.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "a660f08dbb74e624cb06e438459b4b6dca7add193d402429950a43dbee950e06",
+      "sha256": "a7380c5a7c976e1e265dc3e2e01fced83765ed16349d881d55153acfa14b6500",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 11510,
-      "candidate_id": "02ffbcbf32f550197133",
+      "bytes": 11486,
+      "candidate_id": "2223adf4c90871c5bc2f",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33652,13 +33670,13 @@
       "path": "CREDENTIAL_READINESS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "1c593f58867393270467bfb50adb5d2274375737409261d82624716465b6e2ae",
+      "sha256": "bcaf04d708f505425a371d16aa7f453b04d8bebd4c4db802948af0491c37fb4c",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5913,
-      "candidate_id": "3c2b231e17f9870ebcf3",
+      "bytes": 5889,
+      "candidate_id": "aa2b17e1b65913f637e0",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33669,13 +33687,13 @@
       "path": "CROSS_REPO_PERMISSION_MATRIX.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "369e98efc33677e13ce5d6dc7be65e94261c4a4666812884514d83c796fea9e6",
+      "sha256": "32da82815eaf22607a1f648d67a6aeec822ec92962c6ee7abe980b33acc53881",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5249,
-      "candidate_id": "045c8b598ebcf1973744",
+      "bytes": 5225,
+      "candidate_id": "16081cd4bbbedd55d939",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33686,7 +33704,7 @@
       "path": "ENDPOINTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8be64c4a875f6ee3b03f9739e7f4ae2f72d2bd9d8c86381cab32678818716751",
+      "sha256": "e53e5b01f7649a6eaaf5b3fec012fddb6e3113bc0fb2f17b3d57d62a14c9c77c",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -33708,8 +33726,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 11286,
-      "candidate_id": "a710eb5072a7c67fced9",
+      "bytes": 13925,
+      "candidate_id": "aefe249d7cd576e4259c",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33720,13 +33738,13 @@
       "path": "EXTERIORRESEARCH.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "d1667b3552c02962176c82dfdf3f5216e78101769528a1bf48e988b2ac85680c",
+      "sha256": "8442ffed6de59812327cec01c359706255ec6f4eeec00f9388660f07bfee9e04",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5457,
-      "candidate_id": "646d08ec3b03137e86ed",
+      "bytes": 8096,
+      "candidate_id": "973dd53563bc6a13d1bb",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33737,13 +33755,13 @@
       "path": "EXTERNALRESEARCH.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "2d6e9c527e07291b7d6ff8f33fadd7154fe88391732b86695027cc9a05f51ad4",
+      "sha256": "8ebbdeef98d7a9273bde6aa18889b0aa764f5aba1991d76d05d3dec3f6e3fad9",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 17834,
-      "candidate_id": "1ac184788f29916bb295",
+      "bytes": 17810,
+      "candidate_id": "b6f19d92d54d47b534db",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33754,7 +33772,7 @@
       "path": "FINAL_SESSION_COMPLETION_REPORT.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "653b0fc93c6c465c02118c49cfb350292e3a92c4fbf8fc2c929e5d189fb7b148",
+      "sha256": "36f8f72500a2c58900b0517ae0add912bc3e5e70bd77d7251b98c55ed360ae8e",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -33776,8 +33794,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 28392,
-      "candidate_id": "9c9cb4ed9bb80dc0a8c9",
+      "bytes": 28368,
+      "candidate_id": "ca3939c8cb8139e60626",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33788,13 +33806,13 @@
       "path": "FINANCIALMANAGER.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "352c1c94d5f37c6a2c557d6cda85a6047d80a15bc64f99e9ff1a718af3f49c4e",
+      "sha256": "f319f15c058dd1fbbe9543ac51f3b683bef5b405e7f22e7af2f4fbdd1b171a74",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 23246,
-      "candidate_id": "7aa16adac08b0f622df1",
+      "bytes": 23222,
+      "candidate_id": "27e7868c41470cff0f97",
       "directory_paths": [],
       "domains": [
         "styles"
@@ -33805,13 +33823,13 @@
       "path": "IMPLEMENTATION_COMPLETE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "ddee488fb5c21a87ca5c1857eab6048880f7cc8c11d6a690c7d68b7520c10d10",
+      "sha256": "6c30c213c049bdd59b17b7fdf52c7d999709d84cc6628b95144f5c5e40f71714",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 19759,
-      "candidate_id": "f2b19c8f969ef4447780",
+      "bytes": 19735,
+      "candidate_id": "c75ed43560066bb7d9db",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33823,13 +33841,13 @@
       "path": "INSTALL.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "7089eb5c3819075eeb581eece0985a777f44e1896cfbd182b4c96455de6c02bd",
+      "sha256": "deddeb45acb7181b682810fdfa97186ca12a9cd670290ec5be65b73fc019cd53",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 9186,
-      "candidate_id": "77ba1efd0a12cb8834f7",
+      "bytes": 9166,
+      "candidate_id": "ac758a2cdb3505e8328d",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33840,13 +33858,30 @@
       "path": "INTERNALRESEARCH.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "15ae76a381333717902e9da62f64fdadfb52e5b791a7d7f054798a824edd5635",
+      "sha256": "adf85de47af71747843e3aebfaae36b2694042d4647fc8bac7d1fa9f2fb9ab28",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5483,
-      "candidate_id": "0621f89214a7a628ddfc",
+      "bytes": 6909,
+      "candidate_id": "190723b6a8c53615b181",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "LIONVARIATIONS.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "f447cc0e448bea7a31c54075ff7323b013fba347303f4aa6869f8be2c6518cf3",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 5459,
+      "candidate_id": "c776a6d2c7d9ce827c5f",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33858,13 +33893,13 @@
       "path": "MASTEROWNS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b1f5dd759913cec2ca77d64c5cf90f81de59675fef6064024f376a10460c42cd",
+      "sha256": "687e33f61bb014f863743013b837cff60de75626cc4706ad9cfd2564f722c4b2",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 119372,
-      "candidate_id": "bdf8e2fc13e83a2c8827",
+      "bytes": 119348,
+      "candidate_id": "3b17b91faae3688bef79",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33876,13 +33911,13 @@
       "path": "MERGE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c7cdf37847fb63d914e976229ff35936d5b8377ac52b77761fca4c0648002d66",
+      "sha256": "5199369671c8211e53912bd8508ee134ebfd5ef64a07df8363e8dff1a3df5696",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 14596,
-      "candidate_id": "1e385958f2cc815c7be8",
+      "bytes": 38260,
+      "candidate_id": "a5beec95fa542d87cba2",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33893,13 +33928,64 @@
       "path": "MISSION.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "ba0686103f72fc06709cd71856f620d9f414c53e95ea43d6b94d5199ef063063",
+      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5816,
-      "candidate_id": "b3fd11eb7ab8169b6277",
+      "bytes": 38260,
+      "candidate_id": "49e0f0ace092b021a85f",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "MISSIONEW.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 38260,
+      "candidate_id": "a6213ed4173e1e8d2a8d",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "MISSIONNEW.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 38260,
+      "candidate_id": "d9551af5fe174ebd408c",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "MISSIONNEWEST.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 5792,
+      "candidate_id": "b9b7103fa09d5c494c5e",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33910,13 +33996,13 @@
       "path": "MODELEVOLUTIONO.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "a142289ed5474dc2cab00856d66f5668f46ec8d05e857cc3392f8be27dc54d55",
+      "sha256": "5fa78b0d0fb12ae9ba57b754007c4070b58638097e253379c1daa6f5b8cfc9c3",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 13556,
-      "candidate_id": "dcb6ed62822d5a639321",
+      "bytes": 13532,
+      "candidate_id": "31d86933869de79dfe23",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33927,13 +34013,13 @@
       "path": "MODEL_CARD.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "f41aeebb934aab224f5b3eac94d7af4563252b539eca70c3462b605ff8118949",
+      "sha256": "3203fc7398daeeb0769b0be3720584121d6e59fe0588866fc23a25487da6e81e",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 17280,
-      "candidate_id": "6a3ba7caf9c6770f6224",
+      "bytes": 17256,
+      "candidate_id": "ff20e7a28e4dc52821c3",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33945,13 +34031,13 @@
       "path": "MONITORING_GUIDE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "7bb989122650897a134e39914aabde034840d449ca98b0e9f1d0a5adecf4b7c1",
+      "sha256": "521a421b48dd02b2e8776fc9fb45732762cb31f27a52437d1c89d69a523d679a",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 14536,
-      "candidate_id": "d77adbfc54e01e71c889",
+      "bytes": 14512,
+      "candidate_id": "9925b35d9ebc82d137e1",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33962,13 +34048,30 @@
       "path": "MONITORING_SUMMARY.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "fd422018707e7a9d285fa8b3edcf82cdc59461a81011b28d549cde5c9f52b5ff",
+      "sha256": "69fba043026cd44a3158d90733a1a3f7ccfbb8a8664ef3cdf779d77dee5a4e5d",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 8258,
-      "candidate_id": "e6a8f6fa3c119f4cf3cf",
+      "bytes": 38260,
+      "candidate_id": "ddd91cab09f33fdfbaa6",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "NEWMISSION.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 13587,
+      "candidate_id": "6866c8948d4da87f8028",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -33979,13 +34082,13 @@
       "path": "OFCA.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "5c326ceb37287d0409bdb76a2fc40f096e4645e6ed2a880c955502a8bf5a2e61",
+      "sha256": "3080f0d4f94abb367fbea08d3138318aa5ac7775ef0de79b8dc43052e1f0211d",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 28519,
-      "candidate_id": "b5a5cec5c7b1ed49cf45",
+      "bytes": 28503,
+      "candidate_id": "5c467ee4efeb5db9ac75",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -33997,13 +34100,13 @@
       "path": "OLLAMA_AUTOMATION_GUIDE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "a0d60f20621fb73f07f7953fb23b22e44f9db7201b90c3d9b20941b385aebe1f",
+      "sha256": "c2943c15626f56a888f00cabef8ec27224ecd268dd2e3c519c1fa637e681f12e",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 15932,
-      "candidate_id": "ea17818d2cc11b6628b1",
+      "bytes": 15908,
+      "candidate_id": "1c3d6f017842ce888ac3",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34015,13 +34118,13 @@
       "path": "OLLAMA_ENHANCEMENT_COMPLETE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "19c2fc39dd7562e10e0de2bb4fc2e986e3a6896511df8bc6c16c2a6c87eb0e0e",
+      "sha256": "dc4b7cc89e4a26082320ea911c237b13c90d703d12c45cbb55eefc874c5d136a",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 17993,
-      "candidate_id": "2449db1c43d5ebbb9d4f",
+      "bytes": 17969,
+      "candidate_id": "fe8ba2efe3a7e0927630",
       "directory_paths": [],
       "domains": [
         "styles"
@@ -34032,13 +34135,13 @@
       "path": "OLLAMA_ENHANCEMENT_SUCCESS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "7d467cf9617e6ab2748b06b4e6408cf6bea7c36c504bab1f3295315faa257629",
+      "sha256": "e845848d4a87017bbb0a652175f49af62644cfb4313c7bf16c157b816ec1859c",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 14684,
-      "candidate_id": "8ff2c88c545d645d38a2",
+      "bytes": 14660,
+      "candidate_id": "3c4d3fbb03f894488b5a",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34049,13 +34152,13 @@
       "path": "PHASE_1_4_COMPLETION_SUMMARY.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "224d164d2fbe613a225c3ab5585b7924861275a19151adb810a1b98017853498",
+      "sha256": "0abac4bc2b3c41b106086fcc08c20718d5a8ee86343118084a879ddd4920ae64",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 36361,
-      "candidate_id": "26447ee232d185e565fc",
+      "bytes": 36337,
+      "candidate_id": "2608784abaf5a1b68576",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34067,7 +34170,7 @@
       "path": "PLATFORM_REQUIREMENTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "52031608521aa0560cb165d400f5e7b7eae24901bebe23c74c6f5cb76fe081f5",
+      "sha256": "48362b66195d42b8f50cd9996c301495eb9d6f3b657d991092f4655d9294a416",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34089,8 +34192,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 128528,
-      "candidate_id": "2fe6bea7eb441e04501c",
+      "bytes": 132050,
+      "candidate_id": "0c4c3dd39294f70783eb",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34102,13 +34205,30 @@
       "path": "QAUDITS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "9d28d451ad181c39f6e5f5e8e02322bb30ec65926f4104759f71c08384533891",
+      "sha256": "fbd54b5f100feec837d630ec57e3f212a0c9faad904e9d8baa43e7291dfdf16e",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 8009,
-      "candidate_id": "5d6bf0486cb54bbdc766",
+      "bytes": 8339,
+      "candidate_id": "f93c4ae125b0592b3a13",
+      "directory_paths": [],
+      "domains": [
+        "universals"
+      ],
+      "extension": ".md",
+      "hook_applicability_review_required": true,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "QLIONPROGRAMMINGLANGUAGE.md",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "7c6b721978824333084194fc78289c3e978cbd70c540323a7d006d304345e9ab",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
+      "bytes": 7985,
+      "candidate_id": "ec728c951ea02e6e0877",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34119,7 +34239,7 @@
       "path": "QMASTEREXAMS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c98fd202f0a24ec51c81b6dbc988981313af0234a41889e357c91222e9653d30",
+      "sha256": "1f73cbe3226502e4c80e3d8dfb480e2122943cf9267777a5b63edeb36b37dca5",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34141,8 +34261,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 7809,
-      "candidate_id": "fdc9069b03d76a699dfc",
+      "bytes": 7785,
+      "candidate_id": "874f13dbb60b525b7e01",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34153,13 +34273,13 @@
       "path": "QMOICLONEVERCEL.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "fa7e480d53d1290ae7d96271d0d3ebded3dfdf04c1fedab6199dc61faf85c133",
+      "sha256": "260c6a06e793e3c3d982b3ae4455ab6953d26366000f978ee68c49d1933f97d4",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 102684,
-      "candidate_id": "7a8ec63a99d07e52c872",
+      "bytes": 115924,
+      "candidate_id": "96cad807aaefcda53787",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34170,13 +34290,13 @@
       "path": "QMOIMASKS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "13eb443aa9e2937aee3f683d8b8f848c46e1f8ef4ba9c49e89721aa94f655549",
+      "sha256": "1b7b69655a672e5cd984126bc2cda3769dde7e8981c6183b53360b6cad930c6a",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 11247,
-      "candidate_id": "78bfc0213dca66bf3ec4",
+      "bytes": 11985,
+      "candidate_id": "6aaac8b0093abb979563",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34188,13 +34308,13 @@
       "path": "QMOIORCHESTRATOR.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "5e075bb38dd7c056d4f46975fc6b315690bb006a7eaac836b95c489e68bcbffe",
+      "sha256": "e2c26f9d51ca2c7123d9b6d49f63d51508056dd883f23f26973caf30295b504d",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 3387,
-      "candidate_id": "da671d82b1cde20626c7",
+      "bytes": 3363,
+      "candidate_id": "3289b2a8afae3e8bbc92",
       "directory_paths": [],
       "domains": [
         "styles"
@@ -34205,13 +34325,13 @@
       "path": "QMOISPACEUI.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "27b4c07f57bd39741bb5295c0a193e705771ea5c8fe6c9a7ad89d9398a5625bf",
+      "sha256": "f7110c56b638ce7adb3b77248e7c97e3c2db4e16abc6ad54d7f12e3d1032e37e",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 15561,
-      "candidate_id": "e1fb566c4c8f11d700c8",
+      "bytes": 15583,
+      "candidate_id": "a0d7970c709addf79462",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34222,13 +34342,13 @@
       "path": "QMOI_MODEL_CARD.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "f4af32e934b47d0dec31b6df9049fa5f7a47766d2d5cde819b0482d8f2090dff",
+      "sha256": "7d9d9bc6c72fe95ae9ca73b104e615cbf844bf64fd6ffee69a4c1fe25b23cec7",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 88908,
-      "candidate_id": "c8c9d5f27c437afd992b",
+      "bytes": 88884,
+      "candidate_id": "4ba7ce6e1bd032a4cde2",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34239,13 +34359,13 @@
       "path": "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b729090362bb4f122fbb74c390b15f9ff1a5dd2e715aaeb1ab3e2647ede42b63",
+      "sha256": "451c93ec35aaa33b1f6abbbdd2454e56215d1a31c5da39e67e4538fbb56af470",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 8441,
-      "candidate_id": "836f5ffe9a6726ef6c9c",
+      "bytes": 8417,
+      "candidate_id": "f84ad225406097c9c8f9",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34256,13 +34376,13 @@
       "path": "QSEED.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "484f6b9d975d5de4635195e7afe04a4d23f074521ed7fcdd6a9f41e4728e674f",
+      "sha256": "20a4011af04c6052fceb385a3c3e8566e6dc17dcbc65bd9bd87535f4dab13b8f",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 12807,
-      "candidate_id": "f841c0e77388c7a39da6",
+      "bytes": 12783,
+      "candidate_id": "47905625d389649f6b84",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34274,13 +34394,13 @@
       "path": "QSTORE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b6c3d90a852ac4b73a2cffe5dc244cbdd961a0df8674f15629dfa7a4789193ef",
+      "sha256": "bb53658a23f1f66d7cc4429065c8759b2f6ba444fb6ef16673570b24084a9b1d",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 65102,
-      "candidate_id": "c7c0e1175f1cb97a731f",
+      "bytes": 65078,
+      "candidate_id": "ba28b3dccd5ce08052f5",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34292,13 +34412,13 @@
       "path": "QSTREAM.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b842f47fbb92fdf84560b2958d15e69a9427fdf216d3f8c96ea98a3636ab0744",
+      "sha256": "7e748288a87b2e9608b2b344282aa47a4e798bdbd54ee65d00874f0778c256ab",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 21989,
-      "candidate_id": "dcb288a617681f45d638",
+      "bytes": 21965,
+      "candidate_id": "483b7bdb424695b55911",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34310,13 +34430,13 @@
       "path": "QTEAM.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "feaa68d2bb32f5187e8ebdc649c02189bae0233ab41b3b76a227472e00806b42",
+      "sha256": "6a59e92ae09ec8938f9e1df4176ad07949c5c3cc26be42d39ea3e45385d8e542",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6509,
-      "candidate_id": "63ddea118fb0b5635f25",
+      "bytes": 6485,
+      "candidate_id": "b5a9614141ee880cba1e",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34327,13 +34447,13 @@
       "path": "QUANTUM.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "83263d63844a27baf30a00153ea45ba5c58e8dbbb6b9382a409b8d76e22bec57",
+      "sha256": "9203d069a690a868efcdb1e431feb3f197f531855ed83cbfb2de2062f7149bdb",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 6248,
-      "candidate_id": "aa04a775ee1ccc2bf624",
+      "bytes": 6224,
+      "candidate_id": "5e553e67f7a02aa6ce45",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34344,13 +34464,13 @@
       "path": "QUANTUMPAYED.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "1ce2ef51599bbb5d6d0596902a5ebca98589908a87591d1360cb70e5e29ba62c",
+      "sha256": "e6c0f234c124f0cb60b3fc2099c1307b7eb6b0e52c06f1fe66057cc8471092b2",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 129857,
-      "candidate_id": "663303f143d08707a95b",
+      "bytes": 133352,
+      "candidate_id": "db901cd2f97fc6e81f1d",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34361,13 +34481,13 @@
       "path": "QVERSIONMANAGER.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "19fab8a873e43cc5039de83a1ccfeb8f00e862db6144991a815c6e4d43d02e23",
+      "sha256": "2556c5ae034e5e566659f2a8f49dcc42baf4a489062f4392477a935cbb51e2c0",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 36722,
-      "candidate_id": "e34d64f7c209977d8176",
+      "bytes": 36698,
+      "candidate_id": "c627d80fa13fc0b97271",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34378,13 +34498,13 @@
       "path": "Qtrade.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "4cc2a1eed69f5c87eda392ad7c5fca38f8953d3adfbec663d9f76a62d58110fc",
+      "sha256": "5909a673815783368d4c391305b273e1e3194589796f7fd1df98ce128b291c1b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 15246,
-      "candidate_id": "c156687fa8919f6c79fd",
+      "bytes": 15222,
+      "candidate_id": "ed98f1a96314ed116203",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34396,13 +34516,13 @@
       "path": "README.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "e0116aba9798a8776f77d69d7721730dec9e2fc220bba7f29e32ec6e2124f655",
+      "sha256": "1fec0ae404a067c05b71faa470bef3bd3f06e70c2888b6a4278756e04c52975c",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 15646,
-      "candidate_id": "e35be1932f6ecfc81230",
+      "bytes": 15622,
+      "candidate_id": "560119413295059df83d",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34413,13 +34533,13 @@
       "path": "REAL_TIME_MONITORING_GUIDE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "0815480fc406183475df25fde05beab4d4d620af485eb2539ec1aed4c306ce89",
+      "sha256": "07ae6d1edc594169040723f09304251910d9cb231221f96d243548eea2dcfc8e",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 14366,
-      "candidate_id": "db12e0adf8f64bf8fc9d",
+      "bytes": 14342,
+      "candidate_id": "18b4de9966763a83b308",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34430,13 +34550,13 @@
       "path": "REAL_TIME_MONITORING_README.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8258bb96ea20b44e57a28c172d740e2738f9926663949ac18e769bcb143798ad",
+      "sha256": "a02dce280bad004c51c5b1a49e738a49e50391d0138b68cf19f893f6e1715cae",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 4445,
-      "candidate_id": "f1d53b28e73088236810",
+      "bytes": 4423,
+      "candidate_id": "dd5400af143f6094d0d8",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34447,13 +34567,13 @@
       "path": "RELEASES.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "64eaa6b93aefba7cc280907b7adb5a9b90f9a62291df80d253dd6eda1b7d7451",
+      "sha256": "4bedbfeca13a7c463b7b8d7374c08335f76a4383669f3ea2415893cc482309c6",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 7317,
-      "candidate_id": "97566fdf2faef3e54f27",
+      "bytes": 7293,
+      "candidate_id": "db8f6dec775a1eb1be02",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34464,13 +34584,13 @@
       "path": "REMOTE_EXECUTION_ARCHITECTURE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c4ec78a3c3a3ff8c9d288e3c28ce6e2727427b68375266164f59a851a20ca733",
+      "sha256": "b6722df06fec4623c77a735c56440b6c95985c27ae711e2f9c1486c19017e3b2",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 16523,
-      "candidate_id": "f7c55d30ad45151c9070",
+      "bytes": 16499,
+      "candidate_id": "0bae0bd09d19382cc1dc",
       "directory_paths": [],
       "domains": [
         "styles"
@@ -34481,13 +34601,13 @@
       "path": "RESILIENCE_AUTO_HEALING.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "1c1852f2b2b27970b96c6e1e01c86e51d42c41e5657cc0785773aa94cf968ffc",
+      "sha256": "a6a6e9ea8f7487feb55332c38c6c6b6fb7904174240dcafc3e115e9e3f989e4b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 4594,
-      "candidate_id": "536369a61d2b371e5e1b",
+      "bytes": 4570,
+      "candidate_id": "a4b5d6a3b54f01d4c2be",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34498,13 +34618,13 @@
       "path": "ROUTES.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b0da66c20da2566ecb3dc2dc250410e236a31ab2d10c9cf0c24069ecc85f77f3",
+      "sha256": "e7e787f38c99af11a2fb99cde4d2d424186b114946e9852f4f7b3d7484fc7c91",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 15458,
-      "candidate_id": "0c60c8b24118318f4dce",
+      "bytes": 15434,
+      "candidate_id": "cdcb37e33feefacd9346",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34515,7 +34635,7 @@
       "path": "SESSION_COMPLETION_REPORT.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "47dd1af39e4f158f46e3a8d27c299054c57f26f275a3305720f27133abe4f973",
+      "sha256": "1d4fa1b37b3d5fe14315384a3aed54e2168b28bce313fc95165c09de8e6d9f37",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34537,8 +34657,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 88490,
-      "candidate_id": "90f2fc4812534d613e4b",
+      "bytes": 88902,
+      "candidate_id": "75af94dfc829a7b086de",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34550,13 +34670,13 @@
       "path": "STYLES.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "4df876e52f4a2c4827d543097323951100279faf5ccf921a4ef7c04014aab3b6",
+      "sha256": "2fea35e9f6af3f7bb89b07e9eb5736f9aca4d0951a453b87feef2c51a9e797e4",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 18453,
-      "candidate_id": "b15182c191641844ec9a",
+      "bytes": 21100,
+      "candidate_id": "ae743f66b5be2b55f58b",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34567,13 +34687,13 @@
       "path": "SYNC.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "2612b68e8b7708e3e7c58b57a6a04deb4a1a2c4aade7d19cb09b74e390398ac9",
+      "sha256": "30ae8be11f9a9be7cae5f6e8648940c722ebba018a26d31125e16ff2c7ec822b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 16322,
-      "candidate_id": "cb37b5fb44047dd8d4d7",
+      "bytes": 16298,
+      "candidate_id": "34e46059a81654251455",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34584,13 +34704,13 @@
       "path": "TEST_ENHANCEMENTS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c7fefb5638236ca3def304256518324b241149e37de0cdb9cd4498937ae98702",
+      "sha256": "e1114860538ca7fca22dcb50e152062936f5e272cc3b5f2b55d1adb53b2d5413",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 10053,
-      "candidate_id": "8280632eea5cfb56e8c9",
+      "bytes": 10029,
+      "candidate_id": "d8733b275aa1a8f9f20b",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34601,13 +34721,13 @@
       "path": "TRADINGREADME.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "1633f719bb8927725e574b5e94e71e6004300f2b6aa82fcfb653eaf2007a95b6",
+      "sha256": "421346c6ba27a991b4f21c0263de0fa54574503f98eda1c4612e0112e610df62",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 15804,
-      "candidate_id": "9bb51020b7c1094b9597",
+      "bytes": 16216,
+      "candidate_id": "f876c260d0d1826b32e8",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34618,13 +34738,13 @@
       "path": "TRANSION.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "0d7a6e77aa9f6d266cd5d41544f8cd64b377bd400f4718a8374aaf594e2a2631",
+      "sha256": "12b87396b470cbf660d4f1fcbf44ab8fea5774f70ec4b31480790c321368be18",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5669,
-      "candidate_id": "354deafaae95ed74bcc6",
+      "bytes": 6081,
+      "candidate_id": "91015a688c122e39770c",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34635,13 +34755,13 @@
       "path": "TRANSITION.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c9f09dee79689a9fc33ebcfd4b9de807e46e6e9b3deab7e43ccab9b4313e4eb0",
+      "sha256": "4de7a7469510712b73442c050acfd59512903b868337ae70ca9ab2047d01ada8",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 20705,
-      "candidate_id": "f50406b859427d3e5bef",
+      "bytes": 20681,
+      "candidate_id": "2b3de1d82c5af3dc626f",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34652,13 +34772,13 @@
       "path": "TREE_FULL_STRUCTURE.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "16c781b9ffdf254123a3a337da78051817e945a134c6d58376214ec8a692acd0",
+      "sha256": "ec357c2d55ed612d0267417bb26c51310cc188d38dfdc4d879cf210697a2f938",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 10760,
-      "candidate_id": "0af7d3d06698de911278",
+      "bytes": 10179,
+      "candidate_id": "4dfe70931dc4dc411173",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34670,13 +34790,13 @@
       "path": "UNIVERSAL.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "8ee87e463414417dc52d0f6c65e42939295d7fa5ab21bc6ac3e2e61e5101397a",
+      "sha256": "78c788ea6de51eaa6ebf322147c70fd3bf2931381c942c3d9b64d1445cfb4364",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 27207,
-      "candidate_id": "104bbeb7143dc1790dfe",
+      "bytes": 27619,
+      "candidate_id": "c87fe38a4fef72d46cbe",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34688,13 +34808,13 @@
       "path": "UNIVERSALS.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "08c15e748f737cb94f883dbabcb4c4fb89b125e2dc8c394b743d42963b79cf1c",
+      "sha256": "8dcbedb020357c2d6efca97ca3437384932691cf135233ad8553950205816e54",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 9152,
-      "candidate_id": "51f51ed649605c9729e2",
+      "bytes": 9128,
+      "candidate_id": "0028d5949806f156a4e1",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34705,13 +34825,13 @@
       "path": "VERCELPAYED.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "995cc5de9b0f1242900c78c414e7d5de85bff73f30483113ad00ec4582c23a3b",
+      "sha256": "49bba6c196d41cf9b274256ee1a1f3c8520bff131c89103d856914d7519269ff",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 31579,
-      "candidate_id": "6b1acb2ed4542a0a6236",
+      "bytes": 31555,
+      "candidate_id": "c75bcd63150c0c64a66b",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34722,13 +34842,13 @@
       "path": "WORKFLOWSO.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "fa77b98f0bf50d454801acb42e722a5c1aed7a557c19d6f2aa939323e35d6728",
+      "sha256": "23da0f7a14c1155fc5f63bb3afa13d6c9ddd10d801ab9dc2fef41999b7788300",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 64066,
-      "candidate_id": "81eed61012fd72bf188c",
+      "bytes": 64042,
+      "candidate_id": "1b869136bd8e42b0093a",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34740,13 +34860,13 @@
       "path": "bankandbankaccounts.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "6d843c159368211a244a1b57957d3c86de12bd0faa486998c2c64298ef97f51c",
+      "sha256": "29b08d01cd63505202d8457a5046069ac0c056401253c5213a92a14c7f6069bb",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 22927,
-      "candidate_id": "e69ee83ea88f162b52b5",
+      "bytes": 22903,
+      "candidate_id": "9f7e0227a7d7defd0970",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34757,13 +34877,13 @@
       "path": "compare.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b8bc9984b37c0f19fcdc2bbc4a4a1cf4f3eef60024359283bd0e71276fa7126f",
+      "sha256": "3206b1a50b632866b1e8f753497e45feab73abec4c33fa6abb855f313a20e37b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 57409,
-      "candidate_id": "25087a2103351736d472",
+      "bytes": 57385,
+      "candidate_id": "803e16c12109f12dcfd9",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34774,13 +34894,13 @@
       "path": "github.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "d3145a6161a1e55d443cf48c4ad2e91fc38e374d50af8620b0b73b13aea2ba4e",
+      "sha256": "574f469065245f37270955cf475f0b10510e03e912348638fd7ef496b628ff73",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 104611,
-      "candidate_id": "d247ccb72addb22083c2",
+      "bytes": 104587,
+      "candidate_id": "f11ae55bcbada3120319",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34791,13 +34911,13 @@
       "path": "githubapp.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "b0732674418cc8ef39ccfed1eb6739e89cb4741df9e52627a24514e81edff697",
+      "sha256": "f6d2e202a0c8f8baa9acb9bfd6de9926ee8dfcf84ff649edf2d1139f0e5f088b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 5997,
-      "candidate_id": "3537fb1aa7afbf1fa8d6",
+      "bytes": 5973,
+      "candidate_id": "5ed6b8aa164776cf510a",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34808,13 +34928,13 @@
       "path": "liveactivitystream.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "129eca04d0059d4e5e7cabf50ef4d021322663d2cfefbd3dfb391af6a62bd0a4",
+      "sha256": "8368fced2187c90f8c30a38243d49041b16e56df5c5a107dfefdf7d068fbe060",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 20374,
-      "candidate_id": "b362c8b25faedbde146d",
+      "bytes": 20350,
+      "candidate_id": "30a8b6595f5385f6af3a",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34825,13 +34945,13 @@
       "path": "monitor.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "596ab294328e3bdcdf561a271cd8d2b4b9bd8683c05d0f4c3f4ba994ea2a9201",
+      "sha256": "f703703adce1aecf9e36ea6ab8c46d06d248f916e6d4c0a5ac4d7732516d830b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 55240,
-      "candidate_id": "9461e36f58c24646deee",
+      "bytes": 55216,
+      "candidate_id": "eec1503b3c13cfde68df",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34842,13 +34962,13 @@
       "path": "oe.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "4568a1335da86a04371e09da4b2466dbe8a8cef11d08aa217c8f57b71f2e6cb8",
+      "sha256": "720c097c203c966fb2eaf715d7d515a58f25d90c2e4bceb936f65af813e1644b",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 8621,
-      "candidate_id": "a43c6e19d7a30a7de9f2",
+      "bytes": 19353,
+      "candidate_id": "78d0631105a098c433ab",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34859,13 +34979,13 @@
       "path": "oe2.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "6bcbe8939de81199a392194ed730e7dd2bab0a9dcb5c9a1bcdcc870aeb9c22c6",
+      "sha256": "d6e09e51ef6053fc5cae5ce79824fb76c2cd2278fc5ef4d9a7b54b0c15d895ae",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 12262,
-      "candidate_id": "6a739359306b57e26df0",
+      "bytes": 12246,
+      "candidate_id": "ea07011f95a0bd0457f1",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34876,7 +34996,7 @@
       "path": "ollama.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c1e00b604a91c7c03fa7d831d025a280ff6d57baf208296b24d09babf00fe9ba",
+      "sha256": "62f23507bf56cdb1caacefbbc2b9e8df53ad9c2a5f1a3f1d073ebdd8298e2b71",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -34900,8 +35020,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 24504,
-      "candidate_id": "251a50e68ef9e2795b31",
+      "bytes": 24480,
+      "candidate_id": "5e669294e27817797e79",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34912,13 +35032,13 @@
       "path": "or.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "70353b5e7d4eeaf28186f3d86ce2b4ee7e38201666391013457b4da07e4f518e",
+      "sha256": "9e545151cfc50a7b8f29258baf1c622c18220be48e05daaf2290094fbb22b735",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 781421,
-      "candidate_id": "44e635a80177bdafb311",
+      "bytes": 781447,
+      "candidate_id": "7644508d06b8178e9fde",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34930,13 +35050,13 @@
       "path": "production.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "66ea5757befcf000c443d9dad52b218fd695f54a726f446cbdf4d4ee569dd955",
+      "sha256": "7a3ebe7e9527417f0e51f372be86d3fde4efb5b33702c4e9b46f8ab6964f13ad",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 657312,
-      "candidate_id": "2db62273091f18672b0a",
+      "bytes": 657338,
+      "candidate_id": "2f0c30cd1547893a151f",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34948,13 +35068,13 @@
       "path": "productionenhanced.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "0c6d10bc119f7e73ec0ee253cc1f5f97e6884e59a3e693c622d05414d2554d71",
+      "sha256": "b7f2c440535aadbd24f02a2a114baeceff97bc4489caad7bfd9e088a53f4b2e4",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 7336,
-      "candidate_id": "d0e2e3177460f777947e",
+      "bytes": 7312,
+      "candidate_id": "bf404fc9dabd540b901a",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -34965,13 +35085,13 @@
       "path": "projectandautoprojects.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "6fd914566ead4f294471531a8b808bac1aa37d1c988998df06efc7f35b431d20",
+      "sha256": "00fa60c814a806ebc3c2f2f6627af0f2a1e26e24f072138ec4640889911869a8",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 54805,
-      "candidate_id": "408128ae9932dd902bc7",
+      "bytes": 54827,
+      "candidate_id": "ec3eae9c44c16c7a2684",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -34983,13 +35103,13 @@
       "path": "projectsandautoprojects.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "ee5da9ab16a36aed058b5c7ce23cd96294cbfdbb54ac7e3d1097d6def0f57e68",
+      "sha256": "3c8d74b5117a23f06a6728b2c2f4facbd3e50277c3e1c0dbb70f7f11e92f54c5",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 54805,
-      "candidate_id": "69116a516ecba9af002f",
+      "bytes": 54827,
+      "candidate_id": "0a4e940b016a75c0d9ba",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -35001,13 +35121,13 @@
       "path": "projectsandautoprojectsenhanced.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "ee5da9ab16a36aed058b5c7ce23cd96294cbfdbb54ac7e3d1097d6def0f57e68",
+      "sha256": "3c8d74b5117a23f06a6728b2c2f4facbd3e50277c3e1c0dbb70f7f11e92f54c5",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 7336,
-      "candidate_id": "109c8715905b41f91295",
+      "bytes": 7312,
+      "candidate_id": "15a967ea235d85bc9988",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -35018,13 +35138,13 @@
       "path": "projectsndautoprojects.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "6fd914566ead4f294471531a8b808bac1aa37d1c988998df06efc7f35b431d20",
+      "sha256": "00fa60c814a806ebc3c2f2f6627af0f2a1e26e24f072138ec4640889911869a8",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 45892,
-      "candidate_id": "473ee09c4d5e73023c42",
+      "bytes": 45868,
+      "candidate_id": "9a9e9389345d2f0ae136",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -35036,7 +35156,7 @@
       "path": "qauditsstylesanduniversals.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "404ea677425f2429e874c6c34b8eabf26c956f64ea875a5317409d65a8596214",
+      "sha256": "02c6dedacbbeab48da6dd6cd31b39360cbb915eaca9519f26c9474ebcf433282",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -78832,8 +78952,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 81067,
-      "candidate_id": "446558e6900cf2046eb5",
+      "bytes": 81043,
+      "candidate_id": "ec1b22282e6ae69fa8c4",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -78845,13 +78965,13 @@
       "path": "remote-multi-platform-build-farm.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "558e3fb672abaccfd12c1de2227c9688dc74f23d9a63361b31e6ea2edb988bb9",
+      "sha256": "edcbb3296edfbd32b8002a611ef5bf901141411abd8567f3a62db097c7a3df60",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 439260,
-      "candidate_id": "31e40283bd4a3cc3b2dd",
+      "bytes": 578593,
+      "candidate_id": "4cd116fafe80adac8589",
       "directory_paths": [],
       "domains": [
         "styles",
@@ -78863,13 +78983,13 @@
       "path": "remotecompletion.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "4e5a0eb411f83f3158374c15cb33d97fef93bf3d0c115026b9e1da28cc540947",
+      "sha256": "4da6366827f85b5a57173762a1abff7c2ce7a2abb11dbbb261286df8fc74d72f",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 42163,
-      "candidate_id": "991268d1604730a2c36b",
+      "bytes": 42139,
+      "candidate_id": "78773be9764bd21510bf",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -78880,13 +79000,13 @@
       "path": "remotehardening.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "e58610cef903472ee703b7563f523b3bf69f13b9432dcb62b9ab033cec555be6",
+      "sha256": "d2e6b6e588217e1b309883ab7d8477a71ff971dd02f1f74fa99b33135f7d57a7",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 47753,
-      "candidate_id": "6cc23007d00ec41abcf1",
+      "bytes": 48585,
+      "candidate_id": "0be67fbcc6cad6fd0726",
       "directory_paths": [
         "scripts"
       ],
@@ -78899,7 +79019,7 @@
       "path": "scripts/autonomous_completion_engine.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "16e8e0e5899f467536f71061a16985e06228aecea9f30e0ea9c7561259f72e1b",
+      "sha256": "0808df72dc9b41d083c20090c6525dea9404faf9f78d1781f4b638a6abfcc32a",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -78999,6 +79119,25 @@
       "tests_required_before_replacement": true
     },
     {
+      "bytes": 12375,
+      "candidate_id": "dcd66e91c2c38d82b0c8",
+      "directory_paths": [
+        "scripts"
+      ],
+      "domains": [
+        "styles"
+      ],
+      "extension": ".py",
+      "hook_applicability_review_required": false,
+      "lineage_status": "candidate_not_verified_as_replaced",
+      "path": "scripts/language_strategy.py",
+      "replacement_authorized": false,
+      "scope": "active_checkout",
+      "sha256": "33576839a6900e6ff0e6eadce858194ec3c39b6596b597a3cbccc63fb115b226",
+      "status": "review_required",
+      "tests_required_before_replacement": true
+    },
+    {
       "bytes": 13740,
       "candidate_id": "52ef4d731790a8ec0270",
       "directory_paths": [
@@ -79037,8 +79176,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 608705,
-      "candidate_id": "c39a0b3e196a1173fab7",
+      "bytes": 626844,
+      "candidate_id": "31983c8428ac17330c32",
       "directory_paths": [
         "scripts"
       ],
@@ -79052,13 +79191,13 @@
       "path": "scripts/ollama_autonomous_agent.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "9b3bb14223f285955b214acef59ab3b4497f579b9e1c549f2a200cb805c13e4a",
+      "sha256": "506c3324d456b0ed687d5f652770b7bceb997e697ed2666397410b7dd6b43850",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 73312,
-      "candidate_id": "2f5e607c54525b170681",
+      "bytes": 81788,
+      "candidate_id": "ecef0fe2dfe8d8846fb0",
       "directory_paths": [
         "scripts"
       ],
@@ -79071,7 +79210,7 @@
       "path": "scripts/ollama_research.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "60d239f15461fe8dbff810b986f7ab470134d7562554abeba24fb5d60fb5be0d",
+      "sha256": "51fd8070b26f1ad8bf67503d81133b74955d124cd2cbeda2dbdfe66670563d42",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79095,8 +79234,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 81351,
-      "candidate_id": "14de53e3346418e0ccbc",
+      "bytes": 93544,
+      "candidate_id": "6207ed2bd97c4cb2c7e6",
       "directory_paths": [
         "scripts"
       ],
@@ -79109,13 +79248,13 @@
       "path": "scripts/q_version_manager.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c6f11af8544f8f383fc7c693ee6f5d586b2f4561dfb8e0420d1060f44960715f",
+      "sha256": "882bb0f13a1a7a274d8d51a15ac977462b91598b1ff18d3a3f73e210ff01e827",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 26485,
-      "candidate_id": "a5defd52abe476b28445",
+      "bytes": 26906,
+      "candidate_id": "5f5188c7492b8e54d71f",
       "directory_paths": [
         "scripts"
       ],
@@ -79128,7 +79267,7 @@
       "path": "scripts/qaudit_model_review.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "ef69e8f3d4d75b854cf271488c9164af35bea2bb925cad4d4311043a1caacd38",
+      "sha256": "b2e2a90a8abbafc3bf830a3d9381a011dc77e9e46c28f8f982e5cec07f0cc3e1",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79152,8 +79291,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 69681,
-      "candidate_id": "114f4b419b71c9f9c5ef",
+      "bytes": 71275,
+      "candidate_id": "c86e1e1027cf546c2965",
       "directory_paths": [
         "scripts"
       ],
@@ -79167,7 +79306,7 @@
       "path": "scripts/qaudit_universe.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "c0e153caf7a305ba8c668a7a6865f08012dfd9d5314d93bcae58471d70e14f26",
+      "sha256": "408073015c29702918ddff8e7a375c8b427db9a8a833cb68237167777f8ed70f",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79231,7 +79370,7 @@
     },
     {
       "bytes": 16724,
-      "candidate_id": "4b5eb8d50385c18f16df",
+      "candidate_id": "22e5bf55add9adddfbce",
       "directory_paths": [
         "scripts"
       ],
@@ -79244,7 +79383,7 @@
       "path": "scripts/qseed_vault.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "a890d5f56b0fc4183f43501a1d6b22f33f9668953453f867d040479aed2ad8a7",
+      "sha256": "cd5fdff2b5cc0dd18b87e2ac93709393aa1e8e16f591bca9d3e1f745cfd7db65",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79347,8 +79486,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 108108,
-      "candidate_id": "9c2ec20a778498746e33",
+      "bytes": 116368,
+      "candidate_id": "1a1fbe08e60b1dd4284d",
       "directory_paths": [
         "tests"
       ],
@@ -79361,7 +79500,7 @@
       "path": "tests/test_control_plane.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "aa146012c898daec9d583287ceea3327e5bae84b9ee810e524db12bf0cedb1a2",
+      "sha256": "267bf6ed7eb63afd0267e1737120216d6658ce6c1df2229a57379c4c5691f0ed",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79404,8 +79543,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 134545,
-      "candidate_id": "558aecd015867037559c",
+      "bytes": 139157,
+      "candidate_id": "763e3f3dfba7a2a967e2",
       "directory_paths": [
         "tests"
       ],
@@ -79418,7 +79557,7 @@
       "path": "tests/test_ollama_autonomous_agent.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "1a5548057fcdf20518d98d4e5059d95d0eab14539fd8b541eedbae0f6cb5a3df",
+      "sha256": "0d2db25982aa13d8ea61998734cca53555623b30b71f5776d62c804e16a5a091",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79461,8 +79600,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 13578,
-      "candidate_id": "3884dbca9d89924ce8b5",
+      "bytes": 14582,
+      "candidate_id": "b70b362b7506caaf4bbb",
       "directory_paths": [
         "tests"
       ],
@@ -79476,7 +79615,7 @@
       "path": "tests/test_qaudit_universe.py",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "38c81db17a1eeb8ddcaef257665b0d87f619035a1ec56db975bebed37327789e",
+      "sha256": "50a87f31d326aa90d6862f8478a8c50a30a287080ad96130389a31fd2d702d2c",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
@@ -79500,8 +79639,8 @@
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 10115,
-      "candidate_id": "e09f3aed951884b35545",
+      "bytes": 10091,
+      "candidate_id": "26545ac3c9d03981e6bf",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -79512,13 +79651,13 @@
       "path": "trigger.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "e1e6598e4ee573aadda0f906e37e31eb34a46e3356060c6dbdb71782ae45aed3",
+      "sha256": "90cfac9f3039092ab298655c1dd3d16cffb68c73b500a58b7766930357993871",
       "status": "review_required",
       "tests_required_before_replacement": true
     },
     {
-      "bytes": 11214,
-      "candidate_id": "6176ac6c95904516e6aa",
+      "bytes": 11190,
+      "candidate_id": "112d1645e8108d8b4ff1",
       "directory_paths": [],
       "domains": [
         "universals"
@@ -79529,16 +79668,16 @@
       "path": "undoredo.md",
       "replacement_authorized": false,
       "scope": "active_checkout",
-      "sha256": "83d20433a2670757c7e06f00237f4748142baf856b09006fa7be621480aa89b3",
+      "sha256": "1b1c92bd46ad3e0517830e786c1014be56664063a33e1213e390521d410e3154",
       "status": "review_required",
       "tests_required_before_replacement": true
     }
   ],
-  "files_scanned": 7309,
+  "files_scanned": 7322,
   "materialized_scan_complete": false,
   "replacement_lineage_complete": false,
   "replacement_lineage_policy": "A candidate is not replaced until a reviewer supplies a record matching the schema; no path deletion or automatic replacement is authorized.",
-  "replacement_manifest_sha256": "1d890af132a0c5ac8212aba8a5424160e6df4326198f6784a5bbae83f1f4f29c",
+  "replacement_manifest_sha256": "747a613af1469b51284ccc7950c285c387ecf6066c02699dc904a6305b604c98",
   "replacement_record_schema": [
     "replacement_id",
     "source_paths",
@@ -79561,7 +79700,7 @@
   "scope": "materialized tracked and non-ignored paths only",
   "scope_candidate_counts": {
     "active_checkout": {
-      "styles": 9,
+      "styles": 10,
       "universals": 47
     },
     "historical_archive": {
@@ -79574,6 +79713,10 @@
     }
   },
   "skipped_sources": [
+    {
+      "path": "ALLFEATURES.md",
+      "reason": "oversized_file_not_read"
+    },
     {
       "path": "ALLLINKS.md",
       "reason": "oversized_file_not_read"
@@ -79637,8 +79780,8 @@
   ],
   "source_contents_recorded": false,
   "status": "CANDIDATE_ONLY",
-  "style_candidate_count": 1676,
-  "universal_candidate_count": 1860,
+  "style_candidate_count": 1677,
+  "universal_candidate_count": 1867,
   "verified_replaced_directory_count": 0,
   "verified_replaced_file_count": 0
 }

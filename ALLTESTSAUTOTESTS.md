@@ -5,10 +5,10 @@
 
 Scope: current checkout's tracked and non-ignored files only. Historical refs, peer repositories, and unfetched PR trees require separate audit artifacts.
 
-- Active-checkout test files discovered: `24`.
+- Active-checkout test files discovered: `27`.
 - Snapshot test files discovered (not active coverage): `25`.
 - Historical/archive test files discovered (not active coverage): `525`.
-- Total test-like paths discovered across these scopes: `574`.
+- Total test-like paths discovered across these scopes: `577`.
 - UI feature registry rows: `24`; registry entries are requirements, not proof of implementation or test coverage.
 - Coverage state: `discovered_unmapped` until a feature ID maps to implementation files, positive/negative tests, and an exact-SHA run result.
 - Completion state: `tested_local` and `tested_remote` are separate; remote status requires a terminal target-owned run for the exact source SHA.
@@ -286,7 +286,7 @@ Scope: current checkout's tracked and non-ignored files only. Historical refs, p
 | `qmoi-enhanced-history-14/tests/test_notification_service.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
 | `qmoi-enhanced-history-14/tests/test_notify_enhancement.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
 | `qmoi-enhanced-history-14/tests/test_notify_on_whatsapp.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
-| `qmoi-enhanced-history-14/tests/test_QMOI_autonomous_agent.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
+| `qmoi-enhanced-history-14/tests/test_ollama_autonomous_agent.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
 | `qmoi-enhanced-history-14/tests/test_one_command_automation.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
 | `qmoi-enhanced-history-14/tests/test_optimize_cloud_costs.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
 | `qmoi-enhanced-history-14/tests/test_optimize_cpu.py` | `historical_archive` | `unmapped` | `historical_reference_not_active_coverage` |
@@ -574,12 +574,14 @@ Scope: current checkout's tracked and non-ignored files only. Historical refs, p
 | `tests/test_control_plane.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_cross_repo_sync.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_enhanced_tracking_and_workflows.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_language_strategy.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_lion_universe.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_live_github_verifier.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_merge_inventory.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
-| `tests/test_QMOI_autonomous_agent.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
-| `tests/test_QMOI_enhanced_features.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
-| `tests/test_QMOI_runtime.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_mission_task_ledger.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_ollama_autonomous_agent.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_ollama_enhanced_features.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_ollama_runtime.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_production_trading_autopilot.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qaudit_all_features.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qaudit_model_review.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
@@ -591,6 +593,7 @@ Scope: current checkout's tracked and non-ignored files only. Historical refs, p
 | `tests/test_qmoi_release_autofix.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_qseed_vault.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 | `tests/test_runbook_audit.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
+| `tests/test_validate_workflows.py` | `active_checkout` | `unmapped` | `discovered_not_coverage_proof` |
 
 ### App/platform contract inventory
 
@@ -629,14 +632,14 @@ Materialized source paths are candidates, not proof of implementation, authoriza
 - Candidate role counts: `{"backend_api_or_adapter": 175, "documentation": 43, "frontend_ui": 81, "runtime_or_integration_candidate": 226, "test": 40}`.
 - Venue mentions: `{"binance": 27, "bitget": 62, "bybit": 2, "cashon": 101, "coinbase": 10, "kraken": 10, "megavault": 34, "okx": 2, "paypal": 39}`.
 - Local refs discovered: `39`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.
-- Machine-readable path, size, hash, source scope, role, and venue evidence: `QMOItracks/trading_surface_inventory.json`.
+- Machine-readable path, size, hash, source scope, role, and venue evidence: `ollamatracks/trading_surface_inventory.json`.
 - Coverage state: `discovered_unmapped`; platform execution, credential validity, balances, provider webhook registration, and live-order readiness are not verified by path discovery.
 ### Credential references and provider verification
 
 This inventory scans source references only. It does not read environment values, `.env` files, private keys, credential vaults, provider accounts, or balances.
 
 - Credential variable/reference names: `1129`; provider groups: `{"binance": 16, "bitget": 118, "cashon": 9, "github": 100, "huggingface": 10, "megavault": 11, "paypal": 22, "pesapal": 10, "stripe": 3, "unmapped_provider": 830}`.
-- Consumer path and line-number metadata: `QMOItracks/credential_reference_inventory.json`; values stored/emitted: `false`.
+- Consumer path and line-number metadata: `ollamatracks/credential_reference_inventory.json`; values stored/emitted: `false`.
 - Credential manager supports encrypted metadata storage generically; only Bitget has a provider-specific read-only verifier in the active manager. Latest Bitget evidence is not a successful verification; other provider credentials remain unverified.
 - Runtime presence, credential validity, scope, expiry, account ownership, balances, and live-trading permission are not inferred from a variable name.
 
@@ -746,8 +749,8 @@ This inventory scans source references only. It does not read environment values
 | `Qtrade.md` | `active_checkout` | `documentation` | `unspecified` | `discovered_unmapped` |
 | `TRADINGREADME.md` | `active_checkout` | `documentation` | `unspecified` | `discovered_unmapped` |
 | `bankandbankaccounts.md` | `active_checkout` | `documentation` | `unspecified` | `discovered_unmapped` |
-| `QMOItracks/bank_automation_status.json` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
-| `QMOItracks/trading_surface_inventory.json` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
+| `ollamatracks/bank_automation_status.json` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
+| `ollamatracks/trading_surface_inventory.json` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `projectsandautoprojects.md` | `active_checkout` | `documentation` | `unspecified` | `discovered_unmapped` |
 | `projectsandautoprojectsenhanced.md` | `active_checkout` | `documentation` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/.github/workflows/wallet-tests.yml` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
@@ -1007,7 +1010,7 @@ This inventory scans source references only. It does not read environment values
 | `qmoi-enhanced-history-14/scripts/monitoring/start_all_monitors.py` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/scripts/monitoring/system_status_monitor.py` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/scripts/network/network_connectivity_manager.py` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
-| `qmoi-enhanced-history-14/scripts/QMOI_autonomous_agent.py` | `historical_archive` | `runtime_or_integration_candidate` | `binance, bitget, cashon, paypal` | `discovered_unmapped` |
+| `qmoi-enhanced-history-14/scripts/ollama_autonomous_agent.py` | `historical_archive` | `runtime_or_integration_candidate` | `binance, bitget, cashon, paypal` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/scripts/parallel_executor.py` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/scripts/qcity_manager.py` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/scripts/qmoi-enhanced-auto-projects.js` | `historical_archive` | `runtime_or_integration_candidate` | `cashon, paypal` | `discovered_unmapped` |
@@ -1135,7 +1138,7 @@ This inventory scans source references only. It does not read environment values
 | `qmoi-enhanced-history-14/tests/test_enhanced_trading_system.py` | `historical_archive` | `test` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/tests/test_enhanced_wallet_report.py` | `historical_archive` | `test` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/tests/test_integration.py` | `historical_archive` | `test` | `bitget` | `discovered_unmapped` |
-| `qmoi-enhanced-history-14/tests/test_QMOI_autonomous_agent.py` | `historical_archive` | `test` | `binance, bitget, paypal` | `discovered_unmapped` |
+| `qmoi-enhanced-history-14/tests/test_ollama_autonomous_agent.py` | `historical_archive` | `test` | `binance, bitget, paypal` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/tests/test_qmoi_master_wallet_cli.py` | `historical_archive` | `test` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/tests/test_qmoi_wallet_manager.py` | `historical_archive` | `test` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/tests/test_qmoi_wallet_monitor.py` | `historical_archive` | `test` | `unspecified` | `discovered_unmapped` |
@@ -1183,15 +1186,15 @@ This inventory scans source references only. It does not read environment values
 | `qmoi-enhanced-history-14/tracks/payments_1785025918.json` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `qmoi-enhanced-history-14/types/trading.ts` | `historical_archive` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/autonomous_completion_engine.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
-| `scripts/QMOI_autonomous_agent.py` | `active_checkout` | `runtime_or_integration_candidate` | `binance, bitget, bybit, cashon, coinbase, kraken, megavault, okx, paypal` | `discovered_unmapped` |
-| `scripts/QMOI_research.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
+| `scripts/ollama_autonomous_agent.py` | `active_checkout` | `runtime_or_integration_candidate` | `binance, bitget, bybit, cashon, coinbase, kraken, megavault, okx, paypal` | `discovered_unmapped` |
+| `scripts/ollama_research.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/q_version_manager.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/qaudit_universe.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/qmoi_credentials.py` | `active_checkout` | `runtime_or_integration_candidate` | `bitget` | `discovered_unmapped` |
 | `scripts/realtime_workflow_monitor.py` | `active_checkout` | `runtime_or_integration_candidate` | `unspecified` | `discovered_unmapped` |
 | `scripts/trading/production_trading_autopilot.py` | `active_checkout` | `runtime_or_integration_candidate` | `binance, bitget, cashon` | `discovered_unmapped` |
 | `tests/test_control_plane.py` | `active_checkout` | `test` | `unspecified` | `discovered_unmapped` |
-| `tests/test_QMOI_autonomous_agent.py` | `active_checkout` | `test` | `binance, bitget, cashon, megavault` | `discovered_unmapped` |
+| `tests/test_ollama_autonomous_agent.py` | `active_checkout` | `test` | `binance, bitget, cashon, megavault` | `discovered_unmapped` |
 | `tests/test_production_trading_autopilot.py` | `active_checkout` | `test` | `binance, bitget, bybit, cashon, kraken, okx` | `discovered_unmapped` |
 | `tests/test_qmoi_credentials.py` | `active_checkout` | `test` | `bitget` | `discovered_unmapped` |
 
@@ -1200,7 +1203,7 @@ This inventory scans source references only. It does not read environment values
 This inventory scans source references only. It does not read environment values, `.env` files, private keys, credential vaults, provider accounts, or balances.
 
 - Credential variable/reference names: `1129`; provider groups: `{"binance": 16, "bitget": 118, "cashon": 9, "github": 100, "huggingface": 10, "megavault": 11, "paypal": 22, "pesapal": 10, "stripe": 3, "unmapped_provider": 830}`.
-- Consumer path and line-number metadata: `QMOItracks/credential_reference_inventory.json`; values stored/emitted: `false`.
+- Consumer path and line-number metadata: `ollamatracks/credential_reference_inventory.json`; values stored/emitted: `false`.
 - Credential manager supports encrypted metadata storage generically; only Bitget has a provider-specific read-only verifier in the active manager. Latest Bitget evidence is not a successful verification; other provider credentials remain unverified.
 - Runtime presence, credential validity, scope, expiry, account ownership, balances, and live-trading permission are not inferred from a variable name.
 
@@ -1208,28 +1211,28 @@ This inventory scans source references only. It does not read environment values
 
 Every UI/API/backend feature must have a stable feature ID, owning repository/ref, implementation paths, route/API and authorization boundary where applicable, accessibility/state expectations, positive and negative/boundary tests, hook/webhook tests when event-driven, artifact/result hashes, and a terminal exact-SHA validation record. Missing links stay `unmapped`, `blocked`, or `needs_review`; never infer coverage from a nearby test filename.
 
-### Styles and universals test/hook mapping: `QMOItracks/feature_test_hook_coverage.json`
+### Styles and universals test/hook mapping: `ollamatracks/feature_test_hook_coverage.json`
 
 Registered feature count: `404`; test mappings: `0`; reviewed hook applicability: `0/404`; status: `NEEDS_FEATURE_TEST_HOOK_MAPPING`.
-Styles/universals replacement plan: `QMOItracks/style_universal_replacement_inventory.json`; `1676` style files, `1860` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
+Styles/universals replacement plan: `ollamatracks/style_universal_replacement_inventory.json`; `1677` style files, `1867` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
 <!-- END QMOI MANAGED: active-test-feature-coverage -->
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10603`; directories: `1280`; Markdown: `2421`.
-- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `553`.
-- Managed-document family candidates: `app_platform=2157, build_download_install=2113, disability_accessibility=268, orchestration=2065, qteam_accountability=2053, release_tag_publish=2092, tree_inventory=2004`.
+- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
+- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2226`; needs review: `187`; metric candidate lines: `52756`; percentage occurrences: `22237`.
-- Markdown word count: `3562982`; heuristic sentence count: `674722`; sentence records indexed: `674722`; sentence records beyond the bound: `0`.
-- Sentence review candidates: `29846` metric claims; `10693` completion claims; `29749` metric and `10564` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
-- Word-integrity candidates: `9053` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
 - Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
-- Surface manifest and source hashes: `QMOItracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40146` lines in `3689` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
 - Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.

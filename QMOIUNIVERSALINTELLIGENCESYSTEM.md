@@ -1,0 +1,57 @@
+QMOI MASTER MISSION: UNIVERSAL INTELLIGENCE SYSTEM (UIS)
+
+Work on the designated remote-completion branch and preserve all existing work.
+
+OBJECTIVE:
+Transform QMOI into a fully functional, modular, production-ready Universal Intelligence System inspired by advanced fictional intelligence systems, Palantir-style intelligence analysis, personal AI assistants, OSINT platforms, computer vision, and autonomous AI agents.
+
+1. AUDIT EVERYTHING
+Inspect the entire repositories, branches, architecture, QMOI model, APIs, interfaces, databases, documentation, tests, workflows, automations, and existing implementations. Identify every missing, incomplete, duplicated, mocked, disconnected, or broken feature before implementation. Reuse and enhance existing functionality instead of unnecessarily rebuilding it.
+
+2. IMPLEMENT THE COMPLETE INTELLIGENCE PLATFORM
+Implement and integrate:
+- AI copilot with natural-language and voice interaction, contextual memory, multimodal reasoning, planning, and tool orchestration.
+- Computer vision for image/video understanding, object detection, vehicle and building recognition, OCR, and authorized facial matching with appropriate safeguards.
+- OSINT and investigative research using authorized public sources, web search, document analysis, evidence citations, timelines, entity resolution, and relationship graphs.
+- Geospatial intelligence, interactive maps, satellite/aerial imagery analysis, geocoding, route analysis, and location-based event visualization.
+- Authorized live-camera and sensor integrations, event detection, alerting, and real-time situational awareness.
+- Investigation workspaces for people, organizations, vehicles, locations, incidents, evidence, reports, and case histories.
+- Cybersecurity analysis, anomaly detection, defensive threat intelligence, audit logging, and security monitoring.
+- Autonomous agents, task queues, scheduling, event-driven workflows, background processing, error recovery, checkpoints, resumable execution, and verified cross-repository synchronization.
+- Unified dashboards, searchable intelligence, APIs, notifications, permissions, analytics, exports, and accessible interfaces across supported devices.
+
+3. ENHANCE THE QMOI MODEL ITSELF
+Inspect and improve QMOI's model architecture, system instructions, reasoning and planning, tool-use capabilities, retrieval-augmented generation (RAG), embeddings, vector search, long-term memory, multimodal inputs, structured outputs, confidence estimation, source attribution, model routing, context management, evaluation, and safe autonomous execution.
+
+Distinguish model weights and training from capabilities supplied by external tools, services, APIs, and data. Add or fine-tune models only where justified by evaluation, available compute, licensing, and measurable improvements. Preserve offline/local inference options and resource-efficient model routing.
+
+4. ADVANCED AUTOMATION
+Create a unified, observable orchestration system that automatically discovers tasks, prioritizes work, executes independent tasks in parallel, validates outputs, retries recoverable failures, checkpoints progress, resumes interrupted jobs, records timestamps and evidence, and continues until completion criteria are met or a clearly documented blocker is reached.
+
+5. PRODUCTION REQUIREMENTS
+No fake integrations, mock-only implementations, placeholder success messages, invented data, or unverified completion claims. Use real integrations where credentials and infrastructure are available; otherwise provide functional adapters, explicit setup instructions, and honest capability statuses. Enforce least-privilege access, consent and authorization, privacy protections, retention controls, human approval for sensitive actions, and comprehensive audit trails. Never enable unauthorized tracking, access, interception, or surveillance.
+
+6. EXECUTION AND VERIFICATION
+First create a prioritized dependency-aware implementation plan, then execute it immediately. Work in parallel where safe. Add migrations, configuration, documentation, tests, integration checks, security scans, performance benchmarks, and failure-recovery tests. Run existing and new tests, inspect actual diffs, fix regressions, and verify every feature against measurable acceptance criteria.
+
+7. REMOTE COMPLETION
+Commit and push only validated changes to the designated branch. Verify remote commits, CI results, workflow artifacts, deployment status where configured, and synchronization with both repositories. Maintain a timestamped progress ledger containing completed work, test evidence, remaining tasks, blockers, and the exact next action. Resume automatically from checkpoints without repeating completed work or losing changes.
+
+Start now. Do not stop after producing a plan or a report. Implement the highest-priority work, continue through all remaining tasks, and report only verified results. Never claim total completion while outstanding requirements or unverified integrations remain.
+
+<!-- BEGIN QMOI MANAGED: universal-intelligence-execution-plan -->
+## Agent-managed Universal Intelligence execution plan
+
+- Refreshed by the bounded agent lifecycle at: `2026-10-13T17:03:41.607167Z`.
+- Authored-source SHA-256 (managed block excluded): `9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e`.
+- Scope: `8` workstreams, `22` source-line requirements; `22` remain `PENDING_EVIDENCE`.
+- Dependency plan: `UIS-PLAN-01` inventory → `UIS-PLAN-02` identity/privacy → `UIS-PLAN-03` orchestration → authorized modules/model/interfaces → verification → authority-gated delivery.
+- Capability matrix: copilot/voice/multimodal, vision/OCR, cited OSINT, geospatial, authorized sensors, cases/defensive security, RAG/model, and accessible dashboards remain individually pending evidence.
+- Every autonomous/continuation cycle refreshes this plan; refresh is not proof of implementation or external research.
+- Research remains `PLANNED_NOT_VISITED` unless an authorized, allowlisted source visit produces timestamped, hashed evidence.
+- Evolution is bounded and proposal-led; tests, rollback evidence, and human approval are required for high-impact changes.
+- Master-only administration requires server-side role verification, MFA/step-up, audit context, and required human confirmation.
+- Sister role: `NOT_VERIFIED`; the agent must not infer identity or grant access from names, archives, or credentials in historical content.
+- Location: explicit, visible, time-limited, revocable subject opt-in only; no covert, device-less, offline, or consent-bypassing location discovery.
+- Status: `NEEDS_REVIEW`; no UIS feature is marked implemented or verified by this plan.
+<!-- END QMOI MANAGED: universal-intelligence-execution-plan -->

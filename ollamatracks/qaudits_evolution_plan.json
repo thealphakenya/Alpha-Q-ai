@@ -3,18 +3,39 @@
     "Plan entries are not execution results or production implementations.",
     "Remote completion requires authorized target-owned terminal exact-SHA and tree evidence."
   ],
-  "plan_sha256": "fd1ddf6f07508eba214c03c25c5873e5590d5f31274afe0d40e996e5e806c754",
+  "evolutiono_transition": {
+    "archive_branch": "qmoi",
+    "archive_optional_for_core_runtime": true,
+    "archive_path_prefix": "qreplaceo/",
+    "automatic_mutation_enabled": false,
+    "completed_stage_count": 0,
+    "ofca_target_document": "OFCA.md",
+    "plan_sha256": "6a7b7ef3567615b29904829f34b5f94917e7f7b80af9b360dbdfe54f106c2e99",
+    "planned_stage_count": 5,
+    "remote_verified": false,
+    "stage_domains": [
+      "evolutiono_pre_retirement",
+      "qmoi_capability_parity",
+      "qreplaceo_archive",
+      "evolutiono_clean_branch_audit",
+      "evolutiono_ofca_metrics"
+    ],
+    "status": "PLANNED"
+  },
+  "plan_sha256": "6a7b7ef3567615b29904829f34b5f94917e7f7b80af9b360dbdfe54f106c2e99",
   "qstats": {
-    "available_contract_file_count": 20,
+    "available_contract_file_count": 34,
+    "evolutiono_transition_completed_stage_count": 0,
+    "evolutiono_transition_stage_count": 5,
     "interpretation": "derived_local_inventory_counts_not_completion_or_remote_proof",
     "missing_or_unavailable_contract_file_count": 1,
-    "planned_stage_count": 13,
+    "planned_stage_count": 18,
     "remote_verified_stage_count": 0,
-    "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d",
-    "stage_count": 13
+    "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f",
+    "stage_count": 18
   },
   "remote_verification_complete": false,
-  "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d",
+  "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f",
   "source_root": "/workspaces/Alpha-Q-ai",
   "source_scope": "materialized_local_only",
   "stages": [
@@ -29,20 +50,21 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 1,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 1,
       "source_files": [
         {
-          "bytes": 6855,
+          "bytes": 6831,
           "path": "AUTODEV.md",
-          "sha256": "2951b9de3fd5d1f1706c5b712906d7eba6b4cfde82cbd29f28ce67ea50e2938c",
+          "sha256": "0a7558abf0ac36de24496888f9e971109c390898955a543d374b44b686105334",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "3520c56987e74bcd6efb8c3335fd7b6e1def95798a95e65ecc84e37adbeb34e4",
+      "source_sha256": "1f2b8ef36afb68209391d76d90bbb45aaccc76356754648bdba8ad893db1f3b6",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -55,14 +77,14 @@
         "missing_or_unavailable_source_file_count": 1,
         "remote_verified": false,
         "source_file_count": 2,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 2,
       "source_files": [
         {
-          "bytes": 5816,
+          "bytes": 5792,
           "path": "MODELEVOLUTIONO.md",
-          "sha256": "a142289ed5474dc2cab00856d66f5668f46ec8d05e857cc3392f8be27dc54d55",
+          "sha256": "5fa78b0d0fb12ae9ba57b754007c4070b58638097e253379c1daa6f5b8cfc9c3",
           "status": "observed_local"
         },
         {
@@ -72,9 +94,10 @@
           "status": "missing_or_unsafe"
         }
       ],
-      "source_sha256": "f2c203820e25c9678edba915feb62acdf5824ed5d85b00bbc988342b8dc79c4a",
+      "source_sha256": "a0e83cdb8ed145fbdfa9b88fe738cc509240b0bac88aada51a8f1933ce61d99a",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -87,20 +110,21 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 1,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 3,
       "source_files": [
         {
-          "bytes": 24402,
+          "bytes": 24378,
           "path": "Qvillageevolutions.md",
-          "sha256": "21b322f1aa5cd6f5ce7012090d72e13cfcb5ed3b2ad781b25050ba33d1c8e8d9",
+          "sha256": "80d87d482c4bb521b79ce46905e76ad6d4ea213b4d896aec3202cc16ee8c4956",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "e4a401efdfe8ce7e19f4e5c34cc3299c3029da32745b656c4ad1de402a74c02f",
+      "source_sha256": "8138f5e7d847d7acf65318c7e359e9a12cf7f65425fb20ecf59ae52c96838d29",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -113,20 +137,21 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 1,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 4,
       "source_files": [
         {
-          "bytes": 9186,
+          "bytes": 9166,
           "path": "INTERNALRESEARCH.md",
-          "sha256": "15ae76a381333717902e9da62f64fdadfb52e5b791a7d7f054798a824edd5635",
+          "sha256": "adf85de47af71747843e3aebfaae36b2694042d4647fc8bac7d1fa9f2fb9ab28",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "175b86be2b2b0da971c1da620e0dc8da99bf9ff1e727c62a5855dd9c3f8c0876",
+      "source_sha256": "92ee0664c29ed519c18774c058b0ec95b161eb6782971f19d0684a643e531cf7",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -139,26 +164,27 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 2,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 5,
       "source_files": [
         {
-          "bytes": 5457,
+          "bytes": 8096,
           "path": "EXTERNALRESEARCH.md",
-          "sha256": "2d6e9c527e07291b7d6ff8f33fadd7154fe88391732b86695027cc9a05f51ad4",
+          "sha256": "8ebbdeef98d7a9273bde6aa18889b0aa764f5aba1991d76d05d3dec3f6e3fad9",
           "status": "observed_local"
         },
         {
-          "bytes": 11286,
+          "bytes": 13925,
           "path": "EXTERIORRESEARCH.md",
-          "sha256": "d1667b3552c02962176c82dfdf3f5216e78101769528a1bf48e988b2ac85680c",
+          "sha256": "8442ffed6de59812327cec01c359706255ec6f4eeec00f9388660f07bfee9e04",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "e1d19e2399cda61f6b09a4253b8c45e0193b3b745762364d7b1625061516f3a8",
+      "source_sha256": "bbfeb55cc3b8c4454a7ac72f16fd513fd1f8bd26583855760982b12b749451b1",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -171,20 +197,21 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 1,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 6,
       "source_files": [
         {
-          "bytes": 8441,
+          "bytes": 8417,
           "path": "QSEED.md",
-          "sha256": "484f6b9d975d5de4635195e7afe04a4d23f074521ed7fcdd6a9f41e4728e674f",
+          "sha256": "20a4011af04c6052fceb385a3c3e8566e6dc17dcbc65bd9bd87535f4dab13b8f",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "cefec4d8a83a0d8643e7aa707d41ccfa149760859c8c19c26fe454b934504c09",
+      "source_sha256": "60ba5d849ef13491f8b8e9422e7f4007456813a4129a2bdf4f143818e7ee93c5",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -197,20 +224,21 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 1,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 7,
       "source_files": [
         {
-          "bytes": 129815,
+          "bytes": 131648,
           "path": "QVERSIONMANAGER.md",
-          "sha256": "f1dda2120224d73deddbb9812e10cc62b98e8d1ed37c4c98e6bc0be73d1018e1",
+          "sha256": "422dd8c250e2dd0520091eb375aef72376d88ded2ad07be1f747839b69a2fcea",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "b9f63f548dd4acd722561a4d086c20a2f8347a28efcadf6841f1ec8113625bb6",
+      "source_sha256": "b6ea55be96846e0fb5e30555efdd24ea81f149f5749620b95b6a6e539ecab37d",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -223,26 +251,27 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 2,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 8,
       "source_files": [
         {
-          "bytes": 6761,
+          "bytes": 7047,
           "path": "AGENTS.md",
-          "sha256": "9b1c21acb83478dc64623acd5455877e1ff94ea27784fdd300e9084a39cac911",
+          "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea",
           "status": "observed_local"
         },
         {
-          "bytes": 7477,
+          "bytes": 8391,
           "path": ".github/copilot-instructions.md",
-          "sha256": "0dd6b616904d22c807c38aef5ab5a10dfd90d73eef4655dc9fc9e2394dfe2fc8",
+          "sha256": "d387cf7e8a69f0e0d91efc5150483fd96e048ed7ce690e4f341db3906dbee651",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "fce7e0d1d8e1d3cbb94da4e959cdb04cff9f44d1f64f923b4b1836b2d6b33404",
+      "source_sha256": "8e9670b252a782bcf7dae42833b0eca804902c45582ef68d8d3c612843dee576",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -255,26 +284,30 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 2,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 9,
       "source_files": [
         {
-          "bytes": 128486,
-          "path": "QAUDITS.md",
-          "sha256": "91f7c921e282dca863e42fb4dfdaf8e70642c1899431af1de4187141ca860848",
+          "bytes": 71275,
+          "path": "scripts/qaudit_universe.py",
+          "sha256": "408073015c29702918ddff8e7a375c8b427db9a8a833cb68237167777f8ed70f",
           "status": "observed_local"
         },
         {
-          "bytes": 8258,
-          "path": "OFCA.md",
-          "sha256": "bc8c85476aa256570c622cd87a752855ba38cd333c18fd9ec8d7dacea6cdc584",
+          "bytes": 81788,
+          "path": "scripts/ollama_research.py",
+          "sha256": "51fd8070b26f1ad8bf67503d81133b74955d124cd2cbeda2dbdfe66670563d42",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "d6f737f8c7f985a87b17ddd7b7952f4c987ae2d288bd4e8dcd0795c9fc2650c5",
+      "source_sha256": "f8ce200d3ffb69cee532f72f304197e88e9281215ec28d299d0c367c34da29ae",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": [
+        "QAUDITS.md",
+        "OFCA.md"
+      ]
     },
     {
       "blockers": [
@@ -287,32 +320,33 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 3,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 10,
       "source_files": [
         {
-          "bytes": 89267697,
+          "bytes": 89346167,
           "path": "ALLMDFILESREFS.md",
-          "sha256": "57f7d88fb87dc631bd372a4266ce28bc3dfd609931904b5271e96e8da1b690cf",
+          "sha256": "281484109193aa0c473156b1141a06679c86464c9e213821311837f1c5954325",
           "status": "observed_local"
         },
         {
-          "bytes": 15804,
+          "bytes": 15780,
           "path": "TRANSION.md",
-          "sha256": "57ac5c9a344451926fdb68f665a5db6549bc442c23edfc20a0af5dbefe8a194c",
+          "sha256": "ecc4a7a1bc6c199c1c1affc8536d464b8b2740990cab38690ad028b43a222c90",
           "status": "observed_local"
         },
         {
-          "bytes": 5669,
+          "bytes": 5645,
           "path": "TRANSITION.md",
-          "sha256": "f87fe01861c95360bec4597acf8f5e1685b258974abc3c52fa29ec69366e955f",
+          "sha256": "6d8ab7b4aea1eea213acbd1612105f8489c59d9826c78bec6230d801ab4de1ad",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "ac6b0e0a5ff3b26773fd64b047a2349faaa280682f5b797a6438f3e09d458084",
+      "source_sha256": "3fa97c1234514928ff5eb6d8722600e87cf6fd60f199548c488b5ab50c6af201",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -325,26 +359,27 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 2,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 11,
       "source_files": [
         {
-          "bytes": 781421,
+          "bytes": 781447,
           "path": "production.md",
-          "sha256": "66ea5757befcf000c443d9dad52b218fd695f54a726f446cbdf4d4ee569dd955",
+          "sha256": "7a3ebe7e9527417f0e51f372be86d3fde4efb5b33702c4e9b46f8ab6964f13ad",
           "status": "observed_local"
         },
         {
-          "bytes": 657312,
+          "bytes": 657338,
           "path": "productionenhanced.md",
-          "sha256": "0c6d10bc119f7e73ec0ee253cc1f5f97e6884e59a3e693c622d05414d2554d71",
+          "sha256": "b7f2c440535aadbd24f02a2a114baeceff97bc4489caad7bfd9e088a53f4b2e4",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "3cf38cf4c4495eafba9ed3021d3160c73ac79fb7f99c213ca873419d0e016261",
+      "source_sha256": "a52cf71fb4db2a732dbb67a6d1f233593e64b1e3f83e783e9616c6079f1f3351",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -357,20 +392,21 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 1,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 12,
       "source_files": [
         {
-          "bytes": 12024,
+          "bytes": 12000,
           "path": "ALLVALIDATIONS.md",
-          "sha256": "0e06babbcadc5446de9f1e70dfbc418e3c35375ce94780b6ee06684ed5f31023",
+          "sha256": "5806e6e1d0d994b4e645df65021f78a437a31df5c16537209129762a73ef4e05",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "04b7cd9ba53200d4da5ab47b61121fa79127c6771f5be3f6b2de43b263d57972",
+      "source_sha256": "9d567a89d0d7bff479ef8264e6a7f05cd8d35c5409ea7347518f26da5439de98",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
     },
     {
       "blockers": [
@@ -383,26 +419,218 @@
         "missing_or_unavailable_source_file_count": 0,
         "remote_verified": false,
         "source_file_count": 2,
-        "source_manifest_sha256": "f604caed4cca2e044439cdcaeabb9d44d0b394a7a836adf5c50c57ec67d8ed2d"
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
       },
       "sequence": 13,
       "source_files": [
         {
-          "bytes": 439260,
+          "bytes": 577831,
           "path": "remotecompletion.md",
-          "sha256": "5ce85075d87160130fc6f597c93ca65454abd6a5d317ef1585f149dc8da33ede",
+          "sha256": "cc727788f372dfde4881d6c48fea7fb5b6f2f19cc477ff953c4934627fa3f09a",
           "status": "observed_local"
         },
         {
-          "bytes": 58681,
+          "bytes": 68017,
           "path": "remote-completion.json",
-          "sha256": "9dcc291fb4d0b336a3c7b70de51a69614a09047c3fe121fc9c2976b0d052c20c",
+          "sha256": "79a01fd484a5b3929c988aa29eb3cd39be869c136c22522a91c9356ad836ab41",
           "status": "observed_local"
         }
       ],
-      "source_sha256": "720e488a08b915fa927ced206faabb8aa07a25414f12578ec55636c0a5985e1b",
+      "source_sha256": "018d91aad6ad15d8ce6c5e7f71b2948e2f06a8c221bcc5864f5f7ba841f4de30",
       "state": "PLANNED",
-      "status": "PLANNED"
+      "status": "PLANNED",
+      "target_documents": []
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "evolutiono_pre_retirement",
+      "metrics": {
+        "available_source_file_count": 3,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 3,
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
+      },
+      "sequence": 14,
+      "source_files": [
+        {
+          "bytes": 5792,
+          "path": "MODELEVOLUTIONO.md",
+          "sha256": "5fa78b0d0fb12ae9ba57b754007c4070b58638097e253379c1daa6f5b8cfc9c3",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 93544,
+          "path": "scripts/q_version_manager.py",
+          "sha256": "882bb0f13a1a7a274d8d51a15ac977462b91598b1ff18d3a3f73e210ff01e827",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 6831,
+          "path": "AUTODEV.md",
+          "sha256": "0a7558abf0ac36de24496888f9e971109c390898955a543d374b44b686105334",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "451b4cd3492565b196e560357a5cb419d3b2e7262fa710f1a54dd700e593ee34",
+      "state": "PLANNED",
+      "status": "PLANNED",
+      "target_documents": []
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "qmoi_capability_parity",
+      "metrics": {
+        "available_source_file_count": 3,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 3,
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
+      },
+      "sequence": 15,
+      "source_files": [
+        {
+          "bytes": 6831,
+          "path": "AUTODEV.md",
+          "sha256": "0a7558abf0ac36de24496888f9e971109c390898955a543d374b44b686105334",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 1764787,
+          "path": "ALLFEATURES.md",
+          "sha256": "590ac1aaac1f76360ceecdcbe4343ac8059a44a15762250757c4b4ca1a922b2d",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 180471,
+          "path": "ALLTESTSAUTOTESTS.md",
+          "sha256": "a12ed3d7e25fa92fa96663da7092278c0b3065d7a5817e258ce7f65d7d4e6d26",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "6ee1f4f9333ab3e7b2111c4586f1aa9348a276922bd23065428ec52709550471",
+      "state": "PLANNED",
+      "status": "PLANNED",
+      "target_documents": []
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "qreplaceo_archive",
+      "metrics": {
+        "available_source_file_count": 2,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 2,
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
+      },
+      "sequence": 16,
+      "source_files": [
+        {
+          "bytes": 21100,
+          "path": "SYNC.md",
+          "sha256": "30ae8be11f9a9be7cae5f6e8648940c722ebba018a26d31125e16ff2c7ec822b",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 5792,
+          "path": "MODELEVOLUTIONO.md",
+          "sha256": "5fa78b0d0fb12ae9ba57b754007c4070b58638097e253379c1daa6f5b8cfc9c3",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "aec7eb7aca4bf3e303336607ea7f4812b1b34c0ea83f31dc435d8af30be988b3",
+      "state": "PLANNED",
+      "status": "PLANNED",
+      "target_documents": []
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "evolutiono_clean_branch_audit",
+      "metrics": {
+        "available_source_file_count": 3,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 3,
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
+      },
+      "sequence": 17,
+      "source_files": [
+        {
+          "bytes": 21100,
+          "path": "SYNC.md",
+          "sha256": "30ae8be11f9a9be7cae5f6e8648940c722ebba018a26d31125e16ff2c7ec822b",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 71275,
+          "path": "scripts/qaudit_universe.py",
+          "sha256": "408073015c29702918ddff8e7a375c8b427db9a8a833cb68237167777f8ed70f",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 6099,
+          "path": "scripts/qaudits_evolution_planner.py",
+          "sha256": "6a3c34293b5315582a9fc9570bbe1d63b14d065084e7e5b28df0af4d121c20df",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "648f6fc06d44b7a9ac7f0f84c021ed9de76852df6f813f3b31f85d4a1ec91e13",
+      "state": "PLANNED",
+      "status": "PLANNED",
+      "target_documents": []
+    },
+    {
+      "blockers": [
+        "planned_only; implementation, tests, and semantic review are not inferred",
+        "remote exact-SHA evidence is unavailable to this local planner"
+      ],
+      "domain": "evolutiono_ofca_metrics",
+      "metrics": {
+        "available_source_file_count": 3,
+        "missing_or_unavailable_source_file_count": 0,
+        "remote_verified": false,
+        "source_file_count": 3,
+        "source_manifest_sha256": "ad07a38bf05d7a2cd2922706e3a7fdf2795234155243ab4004d124ec636f966f"
+      },
+      "sequence": 18,
+      "source_files": [
+        {
+          "bytes": 5792,
+          "path": "MODELEVOLUTIONO.md",
+          "sha256": "5fa78b0d0fb12ae9ba57b754007c4070b58638097e253379c1daa6f5b8cfc9c3",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 6099,
+          "path": "scripts/qaudits_evolution_planner.py",
+          "sha256": "6a3c34293b5315582a9fc9570bbe1d63b14d065084e7e5b28df0af4d121c20df",
+          "status": "observed_local"
+        },
+        {
+          "bytes": 93544,
+          "path": "scripts/q_version_manager.py",
+          "sha256": "882bb0f13a1a7a274d8d51a15ac977462b91598b1ff18d3a3f73e210ff01e827",
+          "status": "observed_local"
+        }
+      ],
+      "source_sha256": "12e21141cebac85a57cdd8356bf022dc457ffc2d3e8dc08b9c1d384b2d93d42f",
+      "state": "PLANNED",
+      "status": "PLANNED",
+      "target_documents": [
+        "OFCA.md"
+      ]
     }
   ],
   "status": "PLANNED"

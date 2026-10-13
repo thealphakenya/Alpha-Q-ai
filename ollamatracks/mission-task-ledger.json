@@ -25,12 +25,30 @@
         "previous_sha256": "478e1622941dae999b2cedfb994b93bea4d75d815acc933e82fb9954858e6521",
         "remote_verified": false,
         "target_branch_matches_local": false
+      },
+      {
+        "basis": "All listed local mission source mirrors were read and byte-compared.",
+        "local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+        "observed_at": "2026-10-13T16:14:48.761025Z",
+        "observed_sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+        "previous_sha256": "cd2a6d2329258c4988046143ee71f47aa7e42b5c413fdf23420df7eff7bd23ea",
+        "remote_verified": false,
+        "target_branch_matches_local": false
+      },
+      {
+        "basis": "All listed local mission source mirrors were read and byte-compared.",
+        "local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+        "observed_at": "2026-10-13T16:34:05.712248Z",
+        "observed_sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
+        "previous_sha256": "8e95c76210555134a6b50e9c3c641788ad4ebbad3bc855b046257f8ff9a18520",
+        "remote_verified": false,
+        "target_branch_matches_local": false
       }
     ],
-    "mirror_sha256": "cd2a6d2329258c4988046143ee71f47aa7e42b5c413fdf23420df7eff7bd23ea",
+    "mirror_sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950",
     "mission_section_count": 16,
     "path": "NEWMISSION.md",
-    "sha256": "cd2a6d2329258c4988046143ee71f47aa7e42b5c413fdf23420df7eff7bd23ea"
+    "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950"
   },
   "continuation": {
     "independent_checkpoint_resume_demonstrated": false,
@@ -580,7 +598,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-13T15:11:26.674722Z",
+  "updated_at": "2026-10-13T16:34:05.712265Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

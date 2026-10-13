@@ -6996,6 +6996,7 @@ All timestamps use UTC ISO-8601 format.
         internal = build_internal_research_plan(source_roots)
         surface_audit = audit_repository_surfaces(source_roots)
         audit_root = source_roots[0] if source_roots else self.root_dir
+        universal_intelligence_plan = self.refresh_universal_intelligence_plan(audit_root)
         project_documents = self.model_card_generator.refresh_project_autoproject_coverage()
         audit_path = audit_root / "ollamatracks" / "repository_surface_audit.json"
         production_documents = self.refresh_production_manifests(audit_root)
@@ -7046,10 +7047,17 @@ All timestamps use UTC ISO-8601 format.
             "accessibility",
         }
         topics.update(surface_audit.get("research_topics", []))
+        uis_topic_mapping = universal_intelligence_plan.get("research_topic_mapping", [])
+        for mapping in uis_topic_mapping:
+            topics.update(mapping.get("official_topics", []))
         lowered_roots = " ".join(str(path).lower() for path in source_roots)
         if any(token in lowered_roots for token in ("vercel", "netlify", "deployment", "hosting")):
             topics.update({"vercel-deployment", "netlify-deployment"})
         external = build_external_research_plan(topics)
+        external["universal_intelligence_topic_mapping"] = uis_topic_mapping
+        external["universal_intelligence_unmapped_research_areas"] = universal_intelligence_plan.get(
+            "unmapped_research_areas", []
+        )
         visits: list[dict[str, Any]] = []
         failures: list[dict[str, str]] = []
         enabled = (
@@ -7099,6 +7107,10 @@ All timestamps use UTC ISO-8601 format.
             "generated_at": utc_iso(),
             "internal": internal,
             "external": external,
+            "universal_intelligence_plan": {
+                key: universal_intelligence_plan.get(key)
+                for key in ("status", "source_sha256", "section_count", "requirement_count", "research_policy")
+            },
             "internal_control_count": len(INTERNAL_RESEARCH_CONTROLS),
             "external_control_count": len(EXTERNAL_RESEARCH_CONTROLS),
             "external_stage_status": external_status,
@@ -11444,12 +11456,285 @@ All timestamps use UTC ISO-8601 format.
         snapshot["updated_documents"] = [path.relative_to(target).as_posix() for path in updated]
         return snapshot
 
+    def refresh_universal_intelligence_plan(
+        self,
+        root: Path | str | None = None,
+    ) -> dict[str, Any]:
+        """Reconcile the UIS source into a review-only plan and managed status block."""
+        target = Path(root).resolve() if root is not None else self.root_dir.resolve()
+        source_path = target / "QMOIUNIVERSALINTELLIGENCESYSTEM.md"
+        if source_path.is_symlink() or not source_path.is_file():
+            return {
+                "status": "BLOCKED",
+                "source_path": "QMOIUNIVERSALINTELLIGENCESYSTEM.md",
+                "blocker": "uis_source_missing_or_symlinked",
+            }
+
+        try:
+            source_bytes = source_path.read_bytes()
+            if len(source_bytes) > 1_000_000:
+                raise ValueError("UIS source exceeds the 1 MB bounded-read limit")
+            source_text = source_bytes.decode("utf-8")
+        except (OSError, UnicodeDecodeError, ValueError) as exc:
+            return {
+                "status": "BLOCKED",
+                "source_path": source_path.relative_to(target).as_posix(),
+                "blocker": f"uis_source_unreadable:{type(exc).__name__}",
+            }
+
+        start_marker = "<!-- BEGIN QMOI MANAGED: universal-intelligence-execution-plan -->"
+        end_marker = "<!-- END QMOI MANAGED: universal-intelligence-execution-plan -->"
+        if source_text.count(start_marker) != source_text.count(end_marker) or source_text.count(start_marker) > 1:
+            return {
+                "status": "BLOCKED",
+                "source_path": source_path.relative_to(target).as_posix(),
+                "blocker": "uis_managed_section_malformed",
+            }
+        authored_text = re.sub(
+            rf"(?ms)^{re.escape(start_marker)}\r?\n.*?^{re.escape(end_marker)}[ \t]*(?:\r?\n)?",
+            "",
+            source_text,
+        )
+        authored_text = authored_text.rstrip() + "\n"
+        lines = authored_text.splitlines()
+        headings = [
+            (index, int(match.group(1)), match.group(2).strip())
+            for index, line in enumerate(lines)
+            if (match := re.match(r"^(\d+)\.\s+(.+?)\s*$", line))
+        ]
+        if not headings:
+            return {
+                "status": "BLOCKED",
+                "source_path": source_path.relative_to(target).as_posix(),
+                "blocker": "uis_numbered_workstreams_missing",
+            }
+
+        sections: list[dict[str, Any]] = []
+        groups: list[tuple[str, str, int, int]] = []
+        if any(line.strip() for line in lines[: headings[0][0]]):
+            groups.append(("UIS-00", "Objective and scope", 0, headings[0][0]))
+        for heading_index, (line_index, number, title) in enumerate(headings):
+            end = headings[heading_index + 1][0] if heading_index + 1 < len(headings) else len(lines)
+            groups.append((f"UIS-{number:02d}", title, line_index + 1, end))
+
+        for section_id, title, start_index, end_index in groups:
+            requirements = []
+            for line_index in range(start_index, end_index):
+                text = lines[line_index].strip()
+                if not text:
+                    continue
+                requirements.append({
+                    "id": f"{section_id}-R{len(requirements) + 1:02d}",
+                    "source_line": line_index + 1,
+                    "description": text,
+                    "status": "PENDING_EVIDENCE",
+                    "evidence_refs": [],
+                })
+            if requirements:
+                sections.append({
+                    "id": section_id,
+                    "heading": title,
+                    "requirements": requirements,
+                    "status": "PENDING_EVIDENCE",
+                })
+
+        requirement_count = sum(len(section["requirements"]) for section in sections)
+        source_sha256 = hashlib.sha256(authored_text.encode("utf-8")).hexdigest()
+        generated_at = utc_iso()
+        artifact_path = target / "ollamatracks" / "universal_intelligence_plan.json"
+        implementation_plan = [
+            {
+                "id": "UIS-PLAN-01",
+                "priority": "P0",
+                "title": "Requirement and architecture inventory",
+                "depends_on": [],
+                "scope": ["active code", "tests", "workflows", "data stores", "supported platforms", "available remote evidence"],
+                "acceptance_criteria": ["Every UIS source clause maps to an owner, code surface, test, access class, evidence, and blocker or verified status."],
+                "status": "PENDING_EVIDENCE",
+            },
+            {
+                "id": "UIS-PLAN-02",
+                "priority": "P0",
+                "title": "Identity, authorization, consent, and privacy foundation",
+                "depends_on": ["UIS-PLAN-01"],
+                "scope": ["server-side roles", "MFA/step-up", "tenant/data scope", "consent and revocation", "retention", "audit trails"],
+                "acceptance_criteria": ["Direct API and UI denial tests cover public, authenticated, master, and any separately verified operator role.", "Sensitive capabilities cannot bypass consent, authorization, or required human approval."],
+                "status": "PENDING_EVIDENCE",
+            },
+            {
+                "id": "UIS-PLAN-03",
+                "priority": "P0",
+                "title": "Bounded orchestration, checkpoints, and recovery",
+                "depends_on": ["UIS-PLAN-01", "UIS-PLAN-02"],
+                "scope": ["task queue", "dependency selection", "bounded parallel workers", "timeouts/retries", "idempotency", "checkpoint/resume"],
+                "acceptance_criteria": ["Interrupted work resumes from source-bound checkpoints without duplicate completion.", "Retries, worker count, network use, and runtime are bounded; terminal evidence is distinct from dispatch."],
+                "status": "PENDING_EVIDENCE",
+            },
+            {
+                "id": "UIS-PLAN-04",
+                "priority": "P1",
+                "title": "Authorized intelligence modules",
+                "depends_on": ["UIS-PLAN-02", "UIS-PLAN-03"],
+                "scope": ["copilot/voice/multimodal tools", "cited OSINT", "image/video/OCR", "geospatial and imagery", "authorized cameras/sensors", "case/evidence workspaces", "defensive cybersecurity"],
+                "acceptance_criteria": ["Each integration has a real adapter or explicit unavailable status, source provenance, permission tests, limits, and failure behavior.", "Biometric matching, cameras, sensors, and precise location require lawful authorization and explicit subject consent; no covert identification or tracking."],
+                "status": "PENDING_EVIDENCE",
+            },
+            {
+                "id": "UIS-PLAN-05",
+                "priority": "P1",
+                "title": "Model, memory, retrieval, and evaluation",
+                "depends_on": ["UIS-PLAN-01", "UIS-PLAN-04"],
+                "scope": ["RAG/embeddings", "vector search", "long-term memory", "multimodal routing", "structured output", "confidence/source attribution", "evaluation and licensing"],
+                "acceptance_criteria": ["Tool/service capabilities are distinguished from model weights.", "Any model change has reproducible baseline metrics, licensing review, resource budget, regression tests, and rollback."],
+                "status": "PENDING_EVIDENCE",
+            },
+            {
+                "id": "UIS-PLAN-06",
+                "priority": "P1",
+                "title": "Unified interfaces, APIs, and access-aware analytics",
+                "depends_on": ["UIS-PLAN-02", "UIS-PLAN-04"],
+                "scope": ["dashboards", "search", "notifications", "API permissions", "analytics/exports", "accessibility", "supported devices"],
+                "acceptance_criteria": ["Public, authenticated, mixed, and privileged capabilities agree across UI and backend; accessible states and denial paths are tested."],
+                "status": "PENDING_EVIDENCE",
+            },
+            {
+                "id": "UIS-PLAN-07",
+                "priority": "P0",
+                "title": "Integration, security, performance, and recovery verification",
+                "depends_on": ["UIS-PLAN-03", "UIS-PLAN-04", "UIS-PLAN-05", "UIS-PLAN-06"],
+                "scope": ["unit/integration tests", "security scans", "load/resource tests", "failure injection", "rollback and audit evidence"],
+                "acceptance_criteria": ["Each capability has measurable acceptance evidence at the exact tested source revision; unknowns and omissions remain blockers."],
+                "status": "PENDING_EVIDENCE",
+            },
+            {
+                "id": "UIS-PLAN-08",
+                "priority": "P2",
+                "title": "Authorized remote delivery and operational verification",
+                "depends_on": ["UIS-PLAN-07"],
+                "scope": ["approved branch", "normal commit/PR", "target-owned CI", "artifact and deployment observation", "cross-repository parity"],
+                "acceptance_criteria": ["Exact repository/ref/SHA, terminal checks, artifacts, and any deployment state are independently verified; protected operations have explicit authority."],
+                "status": "BLOCKED",
+                "blocker": "Current mission target/ref and protected-write authority are not verified.",
+            },
+        ]
+        capability_matrix = [
+            {"capability": "Copilot, voice, contextual memory, multimodal planning, and tool orchestration", "plan_id": "UIS-PLAN-04", "status": "PENDING_EVIDENCE"},
+            {"capability": "Vision, OCR, object/vehicle/building recognition, and consent-gated biometric matching", "plan_id": "UIS-PLAN-04", "status": "PENDING_EVIDENCE"},
+            {"capability": "Authorized public-source OSINT with citations, timelines, entity resolution, and relationship graphs", "plan_id": "UIS-PLAN-04", "status": "PENDING_EVIDENCE"},
+            {"capability": "Maps, imagery, geocoding, route analysis, and consented location-event visualization", "plan_id": "UIS-PLAN-04", "status": "PENDING_EVIDENCE"},
+            {"capability": "Owned/authorized camera and sensor event processing", "plan_id": "UIS-PLAN-04", "status": "PENDING_EVIDENCE"},
+            {"capability": "Investigation cases, defensive threat analysis, and audit trails", "plan_id": "UIS-PLAN-04", "status": "PENDING_EVIDENCE"},
+            {"capability": "Research, recovery, model/RAG evolution, dashboards, APIs, and accessible device support", "plan_id": "UIS-PLAN-03", "status": "PENDING_EVIDENCE"},
+        ]
+        research_topic_mapping = [
+            {"plan_id": "UIS-PLAN-01", "official_topics": ["github-rest-api", "python-testing"], "status": "MAPPED_TO_OFFICIAL_CATALOG"},
+            {"plan_id": "UIS-PLAN-02", "official_topics": ["application-security"], "status": "MAPPED_TO_OFFICIAL_CATALOG"},
+            {"plan_id": "UIS-PLAN-03", "official_topics": ["github-actions-auth", "python-testing"], "status": "MAPPED_TO_OFFICIAL_CATALOG"},
+            {"plan_id": "UIS-PLAN-04", "official_topics": ["model-hosting", "model-evaluation", "github-rest-api", "application-security"], "status": "PARTIAL_MAPPING"},
+            {"plan_id": "UIS-PLAN-05", "official_topics": ["ollama-runtime", "model-evaluation", "model-hosting"], "status": "MAPPED_TO_OFFICIAL_CATALOG"},
+            {"plan_id": "UIS-PLAN-06", "official_topics": ["accessibility", "http-semantics"], "status": "MAPPED_TO_OFFICIAL_CATALOG"},
+            {"plan_id": "UIS-PLAN-07", "official_topics": ["application-security", "python-testing"], "status": "MAPPED_TO_OFFICIAL_CATALOG"},
+            {"plan_id": "UIS-PLAN-08", "official_topics": ["github-actions-auth", "github-rest-api"], "status": "MAPPED_TO_OFFICIAL_CATALOG"},
+        ]
+        unmapped_research_areas = [
+            {"plan_id": "UIS-PLAN-04", "area": "Geospatial APIs, geocoding, and route-analysis providers", "status": "OFFICIAL_SOURCE_MAPPING_REQUIRED"},
+            {"plan_id": "UIS-PLAN-04", "area": "Satellite/aerial imagery providers and licensing", "status": "OFFICIAL_SOURCE_MAPPING_REQUIRED"},
+            {"plan_id": "UIS-PLAN-04", "area": "Camera/sensor integration standards and jurisdiction-specific biometric/location rules", "status": "OFFICIAL_SOURCE_MAPPING_REQUIRED"},
+        ]
+        plan = {
+            "schema_version": 1,
+            "generated_at": generated_at,
+            "repository": target.name,
+            "source_path": source_path.relative_to(target).as_posix(),
+            "source_sha256": source_sha256,
+            "source_hash_basis": "UTF-8 authored text with the generated section removed and trailing whitespace normalized to one newline.",
+            "source_contents_recorded": True,
+            "status": "NEEDS_REVIEW",
+            "scope": "local_requirement_inventory_and_safe_execution_plan",
+            "sections": sections,
+            "implementation_plan": implementation_plan,
+            "capability_matrix": capability_matrix,
+            "section_count": len(sections),
+            "requirement_count": requirement_count,
+            "requirements_with_verified_implementation": 0,
+            "research_policy": {
+                "refresh_on_agent_cycle": True,
+                "default_external_fetch": False,
+                "external_sources": "Official, allowlisted sources only; record retrieval time, URL, content hash, license, limitations, and validation evidence before marking visited.",
+                "research_status": "PLANNED_NOT_VISITED",
+                "topic_mapping": research_topic_mapping,
+                "unmapped_research_areas": unmapped_research_areas,
+                "external_fetch_gate": "Requires GitHub-hosted execution and QMOI_EXTERNAL_RESEARCH_ENABLED=true; otherwise remain PLANNED_NOT_VISITED.",
+                "evolution_cycle": "bounded topic selection, source review, proposal, evaluation, tests, rollback plan, then human approval for high-impact changes",
+            },
+            "evolution_policy": {
+                "mode": "bounded_proposals_with_tests_and_rollback",
+                "self_modifying_policy": False,
+                "high_impact_changes_require_human_approval": True,
+            },
+            "access_policy": {
+                "public_guest": "Public information only; no private or user-specific data.",
+                "authenticated_user": "Own or explicitly authorized data, with server-side identity and consent checks.",
+                "master_operator": "Administrative planning and approval controls require server-verified role, MFA/step-up, audit context, and required human confirmation.",
+                "sister_operator": "NOT_VERIFIED; do not infer identity or grant access from archive content or account names.",
+                "master_sister_only_features": [
+                    "System-wide research priorities and proposal review, after server-side role verification.",
+                    "Administrative health, security, and audit dashboards with redaction and audited export.",
+                    "High-impact integration and deployment approvals subject to independent human confirmation.",
+                ],
+                "location_data": "Disabled by default. Only explicit, visible, time-bounded, revocable opt-in from the data subject's authenticated device/service is allowed; operator roles do not bypass consent. No covert locating, device-less tracking, or claims of finding people without connectivity.",
+            },
+            "blockers": [
+                "Every listed requirement remains pending source-to-implementation/test/owner mapping.",
+                "Sister operator identity and server-side authorization are not verified in the active repository.",
+                "No universal capability is promoted based on a plan, archive, or candidate inventory alone.",
+            ],
+            "artifact_path": artifact_path.relative_to(target).as_posix(),
+        }
+        body = [
+            "## Agent-managed Universal Intelligence execution plan",
+            "",
+            f"- Refreshed by the bounded agent lifecycle at: `{generated_at}`.",
+            f"- Authored-source SHA-256 (managed block excluded): `{source_sha256}`.",
+            f"- Scope: `{len(sections)}` workstreams, `{requirement_count}` source-line requirements; `{requirement_count}` remain `PENDING_EVIDENCE`.",
+            "- Dependency plan: `UIS-PLAN-01` inventory → `UIS-PLAN-02` identity/privacy → `UIS-PLAN-03` orchestration → authorized modules/model/interfaces → verification → authority-gated delivery.",
+            "- Capability matrix: copilot/voice/multimodal, vision/OCR, cited OSINT, geospatial, authorized sensors, cases/defensive security, RAG/model, and accessible dashboards remain individually pending evidence.",
+            "- Every autonomous/continuation cycle refreshes this plan; refresh is not proof of implementation or external research.",
+            "- Research remains `PLANNED_NOT_VISITED` unless an authorized, allowlisted source visit produces timestamped, hashed evidence.",
+            "- UIS topics join the existing official-source queue; geospatial/satellite providers, camera/sensor standards, and jurisdiction-specific biometric rules remain unmapped until approved sources are registered.",
+            "- Evolution is bounded and proposal-led; tests, rollback evidence, and human approval are required for high-impact changes.",
+            "- Master-only administration requires server-side role verification, MFA/step-up, audit context, and required human confirmation.",
+            "- Sister role: `NOT_VERIFIED`; the agent must not infer identity or grant access from names, archives, or credentials in historical content.",
+            "- Location: explicit, visible, time-limited, revocable subject opt-in only; no covert, device-less, offline, or consent-bypassing location discovery.",
+            "- Status: `NEEDS_REVIEW`; no UIS feature is marked implemented or verified by this plan.",
+        ]
+        _upsert_managed_markdown_section(
+            source_path,
+            "QMOIUNIVERSALINTELLIGENCESYSTEM.md",
+            "universal-intelligence-execution-plan",
+            "\n".join(body),
+        )
+        safe_json_write(artifact_path, plan)
+        return {
+            "status": plan["status"],
+            "source_sha256": source_sha256,
+            "section_count": len(sections),
+            "requirement_count": requirement_count,
+            "requirements_with_verified_implementation": 0,
+            "artifact_path": artifact_path.relative_to(target).as_posix(),
+            "location_consent_enforced_in_plan": True,
+            "sister_role_verified": False,
+            "research_topic_mapping": research_topic_mapping,
+            "unmapped_research_areas": unmapped_research_areas,
+        }
+
     def refresh_managed_surface_documents(
         self,
         root: Path | str | None = None,
     ) -> dict[str, Any]:
         """Refresh all managed app/hosting/UI docs and run structural link checks."""
         target = Path(root) if root is not None else self.root_dir
+        universal_intelligence_plan = self.refresh_universal_intelligence_plan(target)
         qstore_documents = self.refresh_qstream_qstore_documents(target)
         hosting_documents = self.refresh_hosting_quantum_ui_documents(target)
         research_documents = self.refresh_research_contract_documents(target)
@@ -11477,6 +11762,8 @@ All timestamps use UTC ISO-8601 format.
                 for name, path in hosting_documents["documents"].items()
             },
         }
+        if universal_intelligence_plan.get("artifact_path"):
+            document_paths["universal_intelligence_plan"] = target / universal_intelligence_plan["artifact_path"]
         document_paths.update({
             "qvillage": target / "QVILLAGE.md",
             "qvillage_research": qvillage_research_path,
@@ -11537,6 +11824,10 @@ All timestamps use UTC ISO-8601 format.
         ):
             structural_errors.append("Cloned-platform UI coverage matrix is incomplete")
         structural_errors.extend(automation_coverage["parse_errors"])
+        if universal_intelligence_plan.get("status") == "BLOCKED":
+            structural_errors.append(
+                f"universal intelligence plan blocked: {universal_intelligence_plan.get('blocker', 'unknown')}"
+            )
         if not link_validation["passed"]:
             structural_errors.extend(link_validation["errors"])
 
@@ -11556,6 +11847,7 @@ All timestamps use UTC ISO-8601 format.
             "clone_platform_ui_coverage": hosting_documents["clone_platform_ui_coverage"],
             "automation_coverage": automation_coverage,
             "restore_point_memory": restore_memory,
+            "universal_intelligence_plan": universal_intelligence_plan,
             "master_access_verified": False,
             "implementation_verified": False,
             "link_validation": link_validation,
@@ -11915,9 +12207,9 @@ All timestamps use UTC ISO-8601 format.
 
         for iteration in range(1, max_iterations + 1):
             checkpoint = self.load_checkpoint() or {}
-            if str(checkpoint.get("status", "")).lower() in {"success", "autonomous_complete", "ready", "continuation_complete"}:
+            if str(checkpoint.get("status", "")).lower() in {"success", "autonomous_complete", "continuation_complete"}:
                 self.update_resume_checkpoint(
-                    status="success" if checkpoint.get("status") in {"success", "autonomous_complete", "ready"} else "continuation_complete",
+                    status="success" if checkpoint.get("status") in {"success", "autonomous_complete"} else "continuation_complete",
                     completed_steps=[*completed_steps, "continuation cycle"],
                     evidence={
                         "continue_mode": True,
@@ -11984,7 +12276,7 @@ All timestamps use UTC ISO-8601 format.
                 return 0
 
             checkpoint = self.load_checkpoint() or {}
-            if str(checkpoint.get("status", "")).lower() in {"success", "autonomous_complete", "ready"}:
+            if str(checkpoint.get("status", "")).lower() in {"success", "autonomous_complete"}:
                 self.update_resume_checkpoint(
                     status="success",
                     completed_steps=[*completed_steps, f"continuation iteration {iteration}", "success contract"],
@@ -12614,6 +12906,8 @@ def main(
         default="validate-all",
         choices=[
             "validate-all",
+            "instruction-inventory",
+            "universal-intelligence-plan",
             "audit-inventory",
             "audit-inventory-shard",
             "qaudit-universe",
@@ -12685,6 +12979,110 @@ def main(
         print(json.dumps(refresh_commands_category(root), indent=2, sort_keys=True, default=str))
         return 0
 
+    if args.command == "instruction-inventory":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        inventory = audit_instruction_files(root)
+        inventory_path = root / "ollamatracks" / "instruction_inventory.json"
+        safe_json_write(inventory_path, inventory)
+        inventory_bytes = inventory_path.read_bytes()
+        ledger_path = root / "ollamatracks" / "mission-task-ledger.json"
+        try:
+            mission_ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            mission_ledger = {}
+        correlation_id = mission_ledger.get("correlation_id")
+        if not isinstance(correlation_id, str) or not correlation_id:
+            correlation_id = str(uuid.uuid4())
+        blockers = []
+        if inventory.get("status") != "PASS":
+            blockers.append("instruction_inventory_incomplete")
+        checkpoint = record_qaudit_checkpoint(
+            root,
+            "instruction-inventory",
+            {
+                "status": inventory.get("status", "UNKNOWN"),
+                "artifact_path": inventory_path.relative_to(root).as_posix(),
+                "artifact_sha256": hashlib.sha256(inventory_bytes).hexdigest(),
+                "artifact_bytes": len(inventory_bytes),
+                "metrics": {
+                    "files_discovered": inventory.get("files_discovered", 0),
+                    "files_read": inventory.get("files_read", 0),
+                    "unreadable_or_invalid_count": len(inventory.get("unreadable_or_invalid", [])),
+                    "source_contents_recorded": False,
+                },
+                "blockers": blockers,
+                "next_action": (
+                    "Resolve unreadable instruction sources and rerun this bounded inventory."
+                    if blockers
+                    else "Continue the next dependency-ready mission task; remote completion remains separately gated."
+                ),
+            },
+            correlation_id=correlation_id,
+        )
+        print(json.dumps({
+            "instruction_inventory": inventory,
+            "artifact_path": inventory_path.relative_to(root).as_posix(),
+            "checkpoint": checkpoint,
+            "remote_mutation_performed": False,
+        }, indent=2, sort_keys=True))
+        return 0 if inventory.get("status") == "PASS" else 1
+
+    if args.command == "universal-intelligence-plan":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        plan = agent.refresh_universal_intelligence_plan(root)
+        artifact_path = root / str(plan.get("artifact_path", "ollamatracks/universal_intelligence_plan.json"))
+        artifact_integrity = _local_artifact_integrity(root, str(artifact_path))
+        ledger_path = root / "ollamatracks" / "mission-task-ledger.json"
+        try:
+            mission_ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            mission_ledger = {}
+        correlation_id = mission_ledger.get("correlation_id")
+        if not isinstance(correlation_id, str) or not correlation_id:
+            correlation_id = str(uuid.uuid4())
+        blocked = plan.get("status") == "BLOCKED"
+        checkpoint = record_qaudit_checkpoint(
+            root,
+            "universal-intelligence-plan",
+            {
+                "status": plan.get("status", "UNKNOWN"),
+                "artifact_path": artifact_integrity.get("path"),
+                "artifact_sha256": artifact_integrity.get("sha256"),
+                "artifact_bytes": artifact_integrity.get("bytes"),
+                "source_manifest_sha256": plan.get("source_sha256"),
+                "metrics": {
+                    "uis_section_count": plan.get("section_count", 0),
+                    "uis_requirement_count": plan.get("requirement_count", 0),
+                    "requirements_with_verified_implementation": plan.get(
+                        "requirements_with_verified_implementation", 0
+                    ),
+                    "sister_role_verified": plan.get("sister_role_verified", False),
+                    "location_consent_enforced_in_plan": plan.get(
+                        "location_consent_enforced_in_plan", False
+                    ),
+                    "remote_verified": False,
+                },
+                "blockers": (
+                    [str(plan.get("blocker", "uis_plan_blocked"))]
+                    if blocked
+                    else ["uis_requirements_pending_implementation_evidence"]
+                ),
+                "next_action": (
+                    "Resolve the UIS source blocker before planning implementation."
+                    if blocked
+                    else "Map each pending UIS requirement to an owner, implementation, access class, test, workflow, and verification artifact."
+                ),
+            },
+            correlation_id=correlation_id,
+        )
+        print(json.dumps({
+            "plan": plan,
+            "artifact_integrity": artifact_integrity,
+            "checkpoint": checkpoint,
+            "remote_mutation_performed": False,
+        }, indent=2, sort_keys=True))
+        return 1 if blocked else 0
+
     if args.command == "audit-inventory-shard":
         root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
         result = run_bounded_audit_shards(
@@ -12717,6 +13115,7 @@ def main(
                 ),
             },
         )
+        universal_intelligence_plan = agent.refresh_universal_intelligence_plan(root)
         research = agent.build_autoresearch_report([root], fetch_external=False)
         ofca = agent.refresh_ollama_reference_audit(
             root,
@@ -12770,6 +13169,7 @@ def main(
                 "files_discovered": instructions.get("files_discovered", 0),
                 "files_read": instructions.get("files_read", 0),
             },
+            "universal_intelligence_plan": universal_intelligence_plan,
             "markdown_category_inventory": {
                 "status": markdown_catalog.get("status", "UNKNOWN"),
                 "markdown_file_count": len(markdown_catalog.get("all_markdown_files", [])),
@@ -12903,11 +13303,23 @@ def main(
                         "status", "UNKNOWN"
                     ),
                     "markdown_category_count": len(markdown_catalog.get("category_map", {})),
+                    "uis_section_count": universal_intelligence_plan.get("section_count", 0),
+                    "uis_requirement_count": universal_intelligence_plan.get("requirement_count", 0),
+                    "uis_requirements_with_verified_implementation": universal_intelligence_plan.get(
+                        "requirements_with_verified_implementation", 0
+                    ),
                 },
                 "resolved_blockers": ["audit_inventory_run_not_yet_terminal"],
+                "artifact_refs": {
+                    "universal_intelligence_plan": _local_artifact_integrity(
+                        root,
+                        str(root / "ollamatracks" / "universal_intelligence_plan.json"),
+                    ),
+                },
                 "blockers": [
                     *surface.get("blockers", []),
                     *ofca.get("blockers", []),
+                    "universal_intelligence_requirements_pending_implementation_evidence",
                     *(
                         ["financial_claim_inventory_artifact_unavailable"]
                         if financial_artifact["status"] != "verified_local_hash"
@@ -13002,8 +13414,24 @@ def main(
 
     if args.command == "qaudit-markdown-sentences":
         root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        correlation_id = str(uuid.uuid4())
+        record_qaudit_checkpoint(
+            root,
+            "qaudit-markdown-sentences",
+            {
+                "status": "IN_PROGRESS",
+                "metrics": {"phase": "surface_audit_start"},
+                "blockers": ["markdown_sentence_audit_not_yet_terminal"],
+                "next_action": "Resume this sentence audit from its correlated start checkpoint if interrupted.",
+            },
+            correlation_id=correlation_id,
+        )
         surface_audit = audit_repository_surfaces([root])
-        evidence = write_markdown_sentence_audit(root, surface_audit)
+        evidence = write_markdown_sentence_audit(
+            root,
+            surface_audit,
+            correlation_id=correlation_id,
+        )
         financial_inventory_path = root / "ollamatracks" / "financial_claim_inventory.json"
         financial_artifact = _local_artifact_integrity(root, str(financial_inventory_path))
         financial_summary: dict[str, Any] = {}
@@ -13063,6 +13491,7 @@ def main(
                     "financial_claim_inventory": financial_artifact,
                 },
                 "metrics": {**evidence["totals"], **financial_summary},
+                "resolved_blockers": ["markdown_sentence_audit_not_yet_terminal"],
                 "blockers": [
                     *evidence["blockers"],
                     *(

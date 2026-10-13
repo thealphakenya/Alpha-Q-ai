@@ -1,0 +1,466 @@
+{
+  "access_policy": {
+    "authenticated_user": "Own or explicitly authorized data, with server-side identity and consent checks.",
+    "location_data": "Disabled by default. Only explicit, visible, time-bounded, revocable opt-in from the data subject's authenticated device/service is allowed; operator roles do not bypass consent. No covert locating, device-less tracking, or claims of finding people without connectivity.",
+    "master_operator": "Administrative planning and approval controls require server-verified role, MFA/step-up, audit context, and required human confirmation.",
+    "master_sister_only_features": [
+      "System-wide research priorities and proposal review, after server-side role verification.",
+      "Administrative health, security, and audit dashboards with redaction and audited export.",
+      "High-impact integration and deployment approvals subject to independent human confirmation."
+    ],
+    "public_guest": "Public information only; no private or user-specific data.",
+    "sister_operator": "NOT_VERIFIED; do not infer identity or grant access from archive content or account names."
+  },
+  "artifact_path": "ollamatracks/universal_intelligence_plan.json",
+  "blockers": [
+    "Every listed requirement remains pending source-to-implementation/test/owner mapping.",
+    "Sister operator identity and server-side authorization are not verified in the active repository.",
+    "No universal capability is promoted based on a plan, archive, or candidate inventory alone."
+  ],
+  "capability_matrix": [
+    {
+      "capability": "Copilot, voice, contextual memory, multimodal planning, and tool orchestration",
+      "plan_id": "UIS-PLAN-04",
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "capability": "Vision, OCR, object/vehicle/building recognition, and consent-gated biometric matching",
+      "plan_id": "UIS-PLAN-04",
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "capability": "Authorized public-source OSINT with citations, timelines, entity resolution, and relationship graphs",
+      "plan_id": "UIS-PLAN-04",
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "capability": "Maps, imagery, geocoding, route analysis, and consented location-event visualization",
+      "plan_id": "UIS-PLAN-04",
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "capability": "Owned/authorized camera and sensor event processing",
+      "plan_id": "UIS-PLAN-04",
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "capability": "Investigation cases, defensive threat analysis, and audit trails",
+      "plan_id": "UIS-PLAN-04",
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "capability": "Research, recovery, model/RAG evolution, dashboards, APIs, and accessible device support",
+      "plan_id": "UIS-PLAN-03",
+      "status": "PENDING_EVIDENCE"
+    }
+  ],
+  "evolution_policy": {
+    "high_impact_changes_require_human_approval": true,
+    "mode": "bounded_proposals_with_tests_and_rollback",
+    "self_modifying_policy": false
+  },
+  "generated_at": "2026-10-13T17:03:41.607167Z",
+  "implementation_plan": [
+    {
+      "acceptance_criteria": [
+        "Every UIS source clause maps to an owner, code surface, test, access class, evidence, and blocker or verified status."
+      ],
+      "depends_on": [],
+      "id": "UIS-PLAN-01",
+      "priority": "P0",
+      "scope": [
+        "active code",
+        "tests",
+        "workflows",
+        "data stores",
+        "supported platforms",
+        "available remote evidence"
+      ],
+      "status": "PENDING_EVIDENCE",
+      "title": "Requirement and architecture inventory"
+    },
+    {
+      "acceptance_criteria": [
+        "Direct API and UI denial tests cover public, authenticated, master, and any separately verified operator role.",
+        "Sensitive capabilities cannot bypass consent, authorization, or required human approval."
+      ],
+      "depends_on": [
+        "UIS-PLAN-01"
+      ],
+      "id": "UIS-PLAN-02",
+      "priority": "P0",
+      "scope": [
+        "server-side roles",
+        "MFA/step-up",
+        "tenant/data scope",
+        "consent and revocation",
+        "retention",
+        "audit trails"
+      ],
+      "status": "PENDING_EVIDENCE",
+      "title": "Identity, authorization, consent, and privacy foundation"
+    },
+    {
+      "acceptance_criteria": [
+        "Interrupted work resumes from source-bound checkpoints without duplicate completion.",
+        "Retries, worker count, network use, and runtime are bounded; terminal evidence is distinct from dispatch."
+      ],
+      "depends_on": [
+        "UIS-PLAN-01",
+        "UIS-PLAN-02"
+      ],
+      "id": "UIS-PLAN-03",
+      "priority": "P0",
+      "scope": [
+        "task queue",
+        "dependency selection",
+        "bounded parallel workers",
+        "timeouts/retries",
+        "idempotency",
+        "checkpoint/resume"
+      ],
+      "status": "PENDING_EVIDENCE",
+      "title": "Bounded orchestration, checkpoints, and recovery"
+    },
+    {
+      "acceptance_criteria": [
+        "Each integration has a real adapter or explicit unavailable status, source provenance, permission tests, limits, and failure behavior.",
+        "Biometric matching, cameras, sensors, and precise location require lawful authorization and explicit subject consent; no covert identification or tracking."
+      ],
+      "depends_on": [
+        "UIS-PLAN-02",
+        "UIS-PLAN-03"
+      ],
+      "id": "UIS-PLAN-04",
+      "priority": "P1",
+      "scope": [
+        "copilot/voice/multimodal tools",
+        "cited OSINT",
+        "image/video/OCR",
+        "geospatial and imagery",
+        "authorized cameras/sensors",
+        "case/evidence workspaces",
+        "defensive cybersecurity"
+      ],
+      "status": "PENDING_EVIDENCE",
+      "title": "Authorized intelligence modules"
+    },
+    {
+      "acceptance_criteria": [
+        "Tool/service capabilities are distinguished from model weights.",
+        "Any model change has reproducible baseline metrics, licensing review, resource budget, regression tests, and rollback."
+      ],
+      "depends_on": [
+        "UIS-PLAN-01",
+        "UIS-PLAN-04"
+      ],
+      "id": "UIS-PLAN-05",
+      "priority": "P1",
+      "scope": [
+        "RAG/embeddings",
+        "vector search",
+        "long-term memory",
+        "multimodal routing",
+        "structured output",
+        "confidence/source attribution",
+        "evaluation and licensing"
+      ],
+      "status": "PENDING_EVIDENCE",
+      "title": "Model, memory, retrieval, and evaluation"
+    },
+    {
+      "acceptance_criteria": [
+        "Public, authenticated, mixed, and privileged capabilities agree across UI and backend; accessible states and denial paths are tested."
+      ],
+      "depends_on": [
+        "UIS-PLAN-02",
+        "UIS-PLAN-04"
+      ],
+      "id": "UIS-PLAN-06",
+      "priority": "P1",
+      "scope": [
+        "dashboards",
+        "search",
+        "notifications",
+        "API permissions",
+        "analytics/exports",
+        "accessibility",
+        "supported devices"
+      ],
+      "status": "PENDING_EVIDENCE",
+      "title": "Unified interfaces, APIs, and access-aware analytics"
+    },
+    {
+      "acceptance_criteria": [
+        "Each capability has measurable acceptance evidence at the exact tested source revision; unknowns and omissions remain blockers."
+      ],
+      "depends_on": [
+        "UIS-PLAN-03",
+        "UIS-PLAN-04",
+        "UIS-PLAN-05",
+        "UIS-PLAN-06"
+      ],
+      "id": "UIS-PLAN-07",
+      "priority": "P0",
+      "scope": [
+        "unit/integration tests",
+        "security scans",
+        "load/resource tests",
+        "failure injection",
+        "rollback and audit evidence"
+      ],
+      "status": "PENDING_EVIDENCE",
+      "title": "Integration, security, performance, and recovery verification"
+    },
+    {
+      "acceptance_criteria": [
+        "Exact repository/ref/SHA, terminal checks, artifacts, and any deployment state are independently verified; protected operations have explicit authority."
+      ],
+      "blocker": "Current mission target/ref and protected-write authority are not verified.",
+      "depends_on": [
+        "UIS-PLAN-07"
+      ],
+      "id": "UIS-PLAN-08",
+      "priority": "P2",
+      "scope": [
+        "approved branch",
+        "normal commit/PR",
+        "target-owned CI",
+        "artifact and deployment observation",
+        "cross-repository parity"
+      ],
+      "status": "BLOCKED",
+      "title": "Authorized remote delivery and operational verification"
+    }
+  ],
+  "repository": "Alpha-Q-ai",
+  "requirement_count": 22,
+  "requirements_with_verified_implementation": 0,
+  "research_policy": {
+    "default_external_fetch": false,
+    "evolution_cycle": "bounded topic selection, source review, proposal, evaluation, tests, rollback plan, then human approval for high-impact changes",
+    "external_sources": "Official, allowlisted sources only; record retrieval time, URL, content hash, license, limitations, and validation evidence before marking visited.",
+    "refresh_on_agent_cycle": true,
+    "research_status": "PLANNED_NOT_VISITED"
+  },
+  "schema_version": 1,
+  "scope": "local_requirement_inventory_and_safe_execution_plan",
+  "section_count": 8,
+  "sections": [
+    {
+      "heading": "Objective and scope",
+      "id": "UIS-00",
+      "requirements": [
+        {
+          "description": "QMOI MASTER MISSION: UNIVERSAL INTELLIGENCE SYSTEM (UIS)",
+          "evidence_refs": [],
+          "id": "UIS-00-R01",
+          "source_line": 1,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "Work on the designated remote-completion branch and preserve all existing work.",
+          "evidence_refs": [],
+          "id": "UIS-00-R02",
+          "source_line": 3,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "OBJECTIVE:",
+          "evidence_refs": [],
+          "id": "UIS-00-R03",
+          "source_line": 5,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "Transform QMOI into a fully functional, modular, production-ready Universal Intelligence System inspired by advanced fictional intelligence systems, Palantir-style intelligence analysis, personal AI assistants, OSINT platforms, computer vision, and autonomous AI agents.",
+          "evidence_refs": [],
+          "id": "UIS-00-R04",
+          "source_line": 6,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "heading": "AUDIT EVERYTHING",
+      "id": "UIS-01",
+      "requirements": [
+        {
+          "description": "Inspect the entire repositories, branches, architecture, QMOI model, APIs, interfaces, databases, documentation, tests, workflows, automations, and existing implementations. Identify every missing, incomplete, duplicated, mocked, disconnected, or broken feature before implementation. Reuse and enhance existing functionality instead of unnecessarily rebuilding it.",
+          "evidence_refs": [],
+          "id": "UIS-01-R01",
+          "source_line": 9,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "heading": "IMPLEMENT THE COMPLETE INTELLIGENCE PLATFORM",
+      "id": "UIS-02",
+      "requirements": [
+        {
+          "description": "Implement and integrate:",
+          "evidence_refs": [],
+          "id": "UIS-02-R01",
+          "source_line": 12,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- AI copilot with natural-language and voice interaction, contextual memory, multimodal reasoning, planning, and tool orchestration.",
+          "evidence_refs": [],
+          "id": "UIS-02-R02",
+          "source_line": 13,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Computer vision for image/video understanding, object detection, vehicle and building recognition, OCR, and authorized facial matching with appropriate safeguards.",
+          "evidence_refs": [],
+          "id": "UIS-02-R03",
+          "source_line": 14,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- OSINT and investigative research using authorized public sources, web search, document analysis, evidence citations, timelines, entity resolution, and relationship graphs.",
+          "evidence_refs": [],
+          "id": "UIS-02-R04",
+          "source_line": 15,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Geospatial intelligence, interactive maps, satellite/aerial imagery analysis, geocoding, route analysis, and location-based event visualization.",
+          "evidence_refs": [],
+          "id": "UIS-02-R05",
+          "source_line": 16,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Authorized live-camera and sensor integrations, event detection, alerting, and real-time situational awareness.",
+          "evidence_refs": [],
+          "id": "UIS-02-R06",
+          "source_line": 17,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Investigation workspaces for people, organizations, vehicles, locations, incidents, evidence, reports, and case histories.",
+          "evidence_refs": [],
+          "id": "UIS-02-R07",
+          "source_line": 18,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Cybersecurity analysis, anomaly detection, defensive threat intelligence, audit logging, and security monitoring.",
+          "evidence_refs": [],
+          "id": "UIS-02-R08",
+          "source_line": 19,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Autonomous agents, task queues, scheduling, event-driven workflows, background processing, error recovery, checkpoints, resumable execution, and verified cross-repository synchronization.",
+          "evidence_refs": [],
+          "id": "UIS-02-R09",
+          "source_line": 20,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Unified dashboards, searchable intelligence, APIs, notifications, permissions, analytics, exports, and accessible interfaces across supported devices.",
+          "evidence_refs": [],
+          "id": "UIS-02-R10",
+          "source_line": 21,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "heading": "ENHANCE THE QMOI MODEL ITSELF",
+      "id": "UIS-03",
+      "requirements": [
+        {
+          "description": "Inspect and improve QMOI's model architecture, system instructions, reasoning and planning, tool-use capabilities, retrieval-augmented generation (RAG), embeddings, vector search, long-term memory, multimodal inputs, structured outputs, confidence estimation, source attribution, model routing, context management, evaluation, and safe autonomous execution.",
+          "evidence_refs": [],
+          "id": "UIS-03-R01",
+          "source_line": 24,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "Distinguish model weights and training from capabilities supplied by external tools, services, APIs, and data. Add or fine-tune models only where justified by evaluation, available compute, licensing, and measurable improvements. Preserve offline/local inference options and resource-efficient model routing.",
+          "evidence_refs": [],
+          "id": "UIS-03-R02",
+          "source_line": 26,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "heading": "ADVANCED AUTOMATION",
+      "id": "UIS-04",
+      "requirements": [
+        {
+          "description": "Create a unified, observable orchestration system that automatically discovers tasks, prioritizes work, executes independent tasks in parallel, validates outputs, retries recoverable failures, checkpoints progress, resumes interrupted jobs, records timestamps and evidence, and continues until completion criteria are met or a clearly documented blocker is reached.",
+          "evidence_refs": [],
+          "id": "UIS-04-R01",
+          "source_line": 29,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "heading": "PRODUCTION REQUIREMENTS",
+      "id": "UIS-05",
+      "requirements": [
+        {
+          "description": "No fake integrations, mock-only implementations, placeholder success messages, invented data, or unverified completion claims. Use real integrations where credentials and infrastructure are available; otherwise provide functional adapters, explicit setup instructions, and honest capability statuses. Enforce least-privilege access, consent and authorization, privacy protections, retention controls, human approval for sensitive actions, and comprehensive audit trails. Never enable unauthorized tracking, access, interception, or surveillance.",
+          "evidence_refs": [],
+          "id": "UIS-05-R01",
+          "source_line": 32,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "heading": "EXECUTION AND VERIFICATION",
+      "id": "UIS-06",
+      "requirements": [
+        {
+          "description": "First create a prioritized dependency-aware implementation plan, then execute it immediately. Work in parallel where safe. Add migrations, configuration, documentation, tests, integration checks, security scans, performance benchmarks, and failure-recovery tests. Run existing and new tests, inspect actual diffs, fix regressions, and verify every feature against measurable acceptance criteria.",
+          "evidence_refs": [],
+          "id": "UIS-06-R01",
+          "source_line": 35,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    },
+    {
+      "heading": "REMOTE COMPLETION",
+      "id": "UIS-07",
+      "requirements": [
+        {
+          "description": "Commit and push only validated changes to the designated branch. Verify remote commits, CI results, workflow artifacts, deployment status where configured, and synchronization with both repositories. Maintain a timestamped progress ledger containing completed work, test evidence, remaining tasks, blockers, and the exact next action. Resume automatically from checkpoints without repeating completed work or losing changes.",
+          "evidence_refs": [],
+          "id": "UIS-07-R01",
+          "source_line": 38,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "Start now. Do not stop after producing a plan or a report. Implement the highest-priority work, continue through all remaining tasks, and report only verified results. Never claim total completion while outstanding requirements or unverified integrations remain.",
+          "evidence_refs": [],
+          "id": "UIS-07-R02",
+          "source_line": 40,
+          "status": "PENDING_EVIDENCE"
+        }
+      ],
+      "status": "PENDING_EVIDENCE"
+    }
+  ],
+  "source_contents_recorded": true,
+  "source_hash_basis": "UTF-8 authored text with the generated section removed and trailing whitespace normalized to one newline.",
+  "source_path": "QMOIUNIVERSALINTELLIGENCESYSTEM.md",
+  "source_sha256": "9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e",
+  "status": "NEEDS_REVIEW"
+}

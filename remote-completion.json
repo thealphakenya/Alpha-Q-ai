@@ -6,6 +6,7 @@
     "required_capability": "user-owned GitHub token or a scoped GitHub App with final workflow, contents, checks, and protected-branch authority"
   },
   "blockers": [
+    "18_paths_skipped_by_declared_shard_exclusions_or_symlink_policy",
     "2026-10-02 observation: Alpha SHA 0beecbad has required checks in progress; QMOI SHA cb543712 autosync failed; branch protection and Dependabot reads returned HTTP 403; local bank documentation scan does not verify implementation or provider capability.",
     "2026-10-03T00:51:32Z: QMOI imported/theofalphakenya/main ref exists at 7cfca70c556fcda2e2707b94b14c6ed6d8541e2f; compare API returned 404, so ancestry remains unknown.",
     "2026-10-03T00:51:32Z: gh CLI unauthenticated; git push --dry-run could not obtain credentials. No normal push or workflow dispatch was attempted; worktree is dirty and local main is 0 ahead/8 behind.",
@@ -98,6 +99,8 @@
     "archive_patch_ids_do_not_resolve_to_local_commit_objects",
     "archive_sync_log_unbound_to_exact_sha_ref_or_terminal_workflow_run",
     "audit_inventory_remaining_catalog_instruction_memory_and_legacy_phases_not_terminal",
+    "audit_inventory_run_interrupted_before_terminal_checkpoint",
+    "audit_inventory_run_not_yet_terminal",
     "audit_inventory_shards_remaining",
     "authorized remote completion gate remains blocked",
     "authorized target-owned remote ref/tree/workflow evidence is unavailable",
@@ -114,6 +117,7 @@
     "branch_protection_and_write_authority_unverified",
     "branch_protection_http_403",
     "branch_protection_http_403_for_both_repositories",
+    "branch_protection_read_denied_http_403",
     "branch_protection_reads_HTTP_403_for_both_repositories",
     "branch_protection_reads_return_http_403_for_both_repositories",
     "branch_protection_reads_returned_HTTP_403_for_both_repositories",
@@ -154,6 +158,7 @@
     "finance_inventory_checkpoint_written_after_prior_command_interruption",
     "finance_inventory_is_candidate_discovery_not_verified_coverage",
     "finance_inventory_is_keyword_candidate_discovery_only",
+    "financial_candidates_are_not_verified_coverage_or_action_authority",
     "financial_features_are_keyword_candidates_not_verified_coverage",
     "financial_keyword_candidates_are_not_feature_or_provider_verification",
     "findings_status_unknown_without_alert_visibility",
@@ -163,10 +168,12 @@
     "full repository source scan is not semantic or remote verification",
     "full_QAUDITS_feature_universe_and_remote_history_coverage_not_complete",
     "full_QSeed_tests_not_run_in_dependency_ready_workspace",
+    "full_audit_inventory_run_interrupted_before_terminal_checkpoint",
     "full_local_audit_inventory_not_terminal",
     "full_surface_and_remote_history_refresh_not_verified",
     "full_surface_coverage_requires_bounded_resumable_shards",
     "github_cli_authentication_unavailable",
+    "github_instructions_mission_mirror_differs_from_root_mission",
     "historical_candidate_ownership_tests_and_terminal_workflow_evidence_unverified",
     "historical_snapshot_filesystem_mtimes_are_extraction_times_not_source_dates",
     "instruction_hash_change_requires_protected_planning_stop",
@@ -192,6 +199,7 @@
     "master_and_qmoi_refs_not_advertised",
     "master_and_qmoi_refs_not_advertised_in_read_only_git_ls_remote",
     "master_and_qmoi_refs_were_not_advertised_by_git_ls_remote",
+    "metric_and_completion_claims_require_semantic_source_test_review",
     "mission_instruction_hash_changed_during_status_refresh_protected_planning_stopped",
     "mission_md_initialized_with_fail_closed_evidence",
     "mission_remote_completion_blocked_until_target_owned_exact_sha_workflow_proof_exists",
@@ -209,6 +217,7 @@
     "optimized_full_audit_inventory_not_terminal",
     "original_qmoi_enhanced_source_history_unavailable",
     "original_source_commit_and_sync_workflow_evidence_not_mapped_for_every_candidate",
+    "path_hash_shard_skips_require_scope_review:18",
     "prior_audit_inventory_run_interrupted_and_not_terminal",
     "prior_full_audit_inventory_interrupted; generated universe manifest is stale after subsequent edits",
     "prior_full_audit_inventory_interrupted_and_not_terminal",
@@ -223,6 +232,7 @@
     "qmoi_enhanced_vercel_statuses_failed",
     "qmoi_vercel_statuses_failed",
     "qseed_and_priority_queue_changes_are_uncommitted_and_not_fully_validated",
+    "qseed_routing_test_unavailable_cryptography_dependency_missing",
     "remote_branch_protection_HTTP_403_both_repositories",
     "remote_branch_ref_not_observed",
     "remote_completion_authority_and_exact_sha_proof_unavailable",
@@ -237,18 +247,26 @@
     "remote_master_and_qmoi_refs_not_advertised_by_anonymous_observation",
     "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
     "required_branch_mismatch",
+    "required_mission_branch_differs_from_checked_out_branch",
     "root_publish_and_functions_targets_absent",
     "second_live_repository_and_remote_QSeed_parity_not_verified",
     "semantic feature/test mapping remains local and incomplete",
+    "semantic_feature_security_and_production_review_not_complete",
     "semantic_feature_test_security_and_remote_gates_not_run",
+    "semantic_markdown_requirement_feature_and_security_review_incomplete",
+    "sentence_audit_skipped_sources:40",
+    "sentence_audit_unreadable_files:27",
+    "sentence_claims_require_source_owner_and_test_mapping",
     "sentence_records_omitted_by_bound:18997",
     "single_pass_feature_audit_not_terminal",
     "skipped_sources:36",
     "skipped_sources:37",
     "skipped_sources:38",
     "skipped_sources:39",
+    "skipped_sources:40",
     "snapshot_mtime_dates_are_extraction_metadata_not_original_source_dates",
     "source_dates_ownership_and_live_peer_parity_not_verified",
+    "standalone_instruction_inventory_stale",
     "styles_universals_feature_test_hook_mapping_incomplete",
     "styles_universals_feature_test_hook_mapping_incomplete_404_features_unmapped",
     "surface_audit_needs_review",
@@ -262,6 +280,7 @@
     "target_owned_terminal_remote_sha_proof_unavailable",
     "test_generated_synthetic_monitor_telemetry_retained_as_append_only_data",
     "this_checkpoint_updates_continuation_records_only_no_ollama_execution_claimed",
+    "uis_requirements_pending_implementation_evidence",
     "unreadable_files:27",
     "vercel_checks_fail_on_both_current_main_shas",
     "vercel_status_contexts_fail_on_both_current_main_shas",
@@ -275,19 +294,17 @@
   ],
   "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
   "current_local_checkpoint": {
-    "artifact_bytes": null,
-    "artifact_path": "ollamatracks/qaudit_universe.json",
-    "artifact_refs": {
-      "candidate_tree": "QMOItracks/style_universal_candidate_tree.md"
-    },
-    "artifact_sha256": null,
+    "artifact_bytes": 19455,
+    "artifact_path": "ollamatracks/universal_intelligence_plan.json",
+    "artifact_refs": {},
+    "artifact_sha256": "9731aa386841adb489db2207310cc36e90ba20ef1292b3646a03a339e658b82f",
     "blockers": [
-      "full repository source scan is not semantic or remote verification",
       "target_owned_terminal_remote_sha_proof_unavailable",
+      "uis_requirements_pending_implementation_evidence",
       "worktree_dirty_or_status_unavailable"
     ],
     "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-    "generated_at": "2026-10-13T15:12:49.262898Z",
+    "generated_at": "2026-10-13T17:03:41.608726Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -304,11 +321,11 @@
         "sha256": "d387cf7e8a69f0e0d91efc5150483fd96e048ed7ce690e4f341db3906dbee651"
       },
       {
-        "bytes": 35361,
+        "bytes": 38202,
         "path": ".github/instructions/MISSION.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "cd2a6d2329258c4988046143ee71f47aa7e42b5c413fdf23420df7eff7bd23ea"
+        "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950"
       },
       {
         "bytes": 11894,
@@ -353,27 +370,30 @@
         "sha256": "277d4379e16498d87e96079b4098ffa81930e8150ca250c5c95188b063b7eec8"
       }
     ],
-    "instruction_inventory_sha256": "0796782ab40c8e2d69cd188c663fa1bb262373697eb57cf49e7a9785b2d59e82",
-    "local_head_sha": "abe325da0bed9a0b51fd8e2a397a5ba07a2ce2b9",
-    "local_tree_sha": "8475ccc5956de48b431d4e59e47d1029ecd70a40",
+    "instruction_inventory_sha256": "334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667",
+    "local_head_sha": "7c40ff79dd1f046cf03b5253a7e273f6f483594b",
+    "local_tree_sha": "b70359989eb06a21e1696c4a0965b9094629727a",
     "metrics": {
-      "expected_outputs": 2,
+      "location_consent_enforced_in_plan": true,
       "remote_verified": false,
-      "scope": "materialized local files only"
+      "requirements_with_verified_implementation": 0,
+      "sister_role_verified": false,
+      "uis_requirement_count": 22,
+      "uis_section_count": 8
     },
-    "next_action": "Complete the bounded local QAUDITS scan, retain its source-manifest hash and omissions, and finalize with the same correlation ID.",
-    "operation": "qaudit-language-manifest-refresh",
+    "next_action": "Map each pending UIS requirement to an owner, implementation, access class, test, workflow, and verification artifact.",
+    "operation": "universal-intelligence-plan",
     "paired_document_sha256": {
-      "oe2.txt": "989876e436bb675225cfc6de4e1448d78b9414cbcdd9ce3474a10e9c5ce8aa9e",
-      "remotecompletion.md": "23090b26e4cf1093ee5826b5ea4cae569ac9f708757a53127b32ea2ba6cdb0cf"
+      "oe2.txt": "550eddfa32929df064e755d9c627ff6a82e3dc0225c8125af5e0bb32c4228f3a",
+      "remotecompletion.md": "5c64098505d0c70c983c0a7d072e2cc7b9dd1cff1a3c4eb74d38b48608b691dd"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
     "remote_verified": false,
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
-    "source_manifest_sha256": null,
-    "status": "IN_PROGRESS",
+    "source_manifest_sha256": "9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e",
+    "status": "NEEDS_REVIEW",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": true
   },
@@ -390,7 +410,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-13T15:12:49.262898Z",
+  "generated_at": "2026-10-13T17:03:41.608726Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -721,19 +741,17 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": null,
-      "artifact_path": "ollamatracks/qaudit_universe.json",
-      "artifact_refs": {
-        "candidate_tree": "QMOItracks/style_universal_candidate_tree.md"
-      },
-      "artifact_sha256": null,
+      "artifact_bytes": 19455,
+      "artifact_path": "ollamatracks/universal_intelligence_plan.json",
+      "artifact_refs": {},
+      "artifact_sha256": "9731aa386841adb489db2207310cc36e90ba20ef1292b3646a03a339e658b82f",
       "blockers": [
-        "full repository source scan is not semantic or remote verification",
         "target_owned_terminal_remote_sha_proof_unavailable",
+        "uis_requirements_pending_implementation_evidence",
         "worktree_dirty_or_status_unavailable"
       ],
       "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-      "generated_at": "2026-10-13T15:12:49.262898Z",
+      "generated_at": "2026-10-13T17:03:41.608726Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -750,11 +768,11 @@
           "sha256": "d387cf7e8a69f0e0d91efc5150483fd96e048ed7ce690e4f341db3906dbee651"
         },
         {
-          "bytes": 35361,
+          "bytes": 38202,
           "path": ".github/instructions/MISSION.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "cd2a6d2329258c4988046143ee71f47aa7e42b5c413fdf23420df7eff7bd23ea"
+          "sha256": "54cb222cd79c3c30f1a75a63263162c1e4af56e59fe6dc6b14428eeab0a1c950"
         },
         {
           "bytes": 11894,
@@ -799,27 +817,30 @@
           "sha256": "277d4379e16498d87e96079b4098ffa81930e8150ca250c5c95188b063b7eec8"
         }
       ],
-      "instruction_inventory_sha256": "0796782ab40c8e2d69cd188c663fa1bb262373697eb57cf49e7a9785b2d59e82",
-      "local_head_sha": "abe325da0bed9a0b51fd8e2a397a5ba07a2ce2b9",
-      "local_tree_sha": "8475ccc5956de48b431d4e59e47d1029ecd70a40",
+      "instruction_inventory_sha256": "334e565da253b5e8f135d53280b226345f499ab297e206983946e11627258667",
+      "local_head_sha": "7c40ff79dd1f046cf03b5253a7e273f6f483594b",
+      "local_tree_sha": "b70359989eb06a21e1696c4a0965b9094629727a",
       "metrics": {
-        "expected_outputs": 2,
+        "location_consent_enforced_in_plan": true,
         "remote_verified": false,
-        "scope": "materialized local files only"
+        "requirements_with_verified_implementation": 0,
+        "sister_role_verified": false,
+        "uis_requirement_count": 22,
+        "uis_section_count": 8
       },
-      "next_action": "Complete the bounded local QAUDITS scan, retain its source-manifest hash and omissions, and finalize with the same correlation ID.",
-      "operation": "qaudit-language-manifest-refresh",
+      "next_action": "Map each pending UIS requirement to an owner, implementation, access class, test, workflow, and verification artifact.",
+      "operation": "universal-intelligence-plan",
       "paired_document_sha256": {
-        "oe2.txt": "989876e436bb675225cfc6de4e1448d78b9414cbcdd9ce3474a10e9c5ce8aa9e",
-        "remotecompletion.md": "23090b26e4cf1093ee5826b5ea4cae569ac9f708757a53127b32ea2ba6cdb0cf"
+        "oe2.txt": "550eddfa32929df064e755d9c627ff6a82e3dc0225c8125af5e0bb32c4228f3a",
+        "remotecompletion.md": "5c64098505d0c70c983c0a7d072e2cc7b9dd1cff1a3c4eb74d38b48608b691dd"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
       "remote_verified": false,
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
-      "source_manifest_sha256": null,
-      "status": "IN_PROGRESS",
+      "source_manifest_sha256": "9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e",
+      "status": "NEEDS_REVIEW",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": true
     },
@@ -895,7 +916,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "abe325da0bed9a0b51fd8e2a397a5ba07a2ce2b9",
+    "local_head_sha": "7c40ff79dd1f046cf03b5253a7e273f6f483594b",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",
