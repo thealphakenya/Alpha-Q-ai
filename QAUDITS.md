@@ -174,6 +174,52 @@ Optimize time-to-actionable-evidence, not by weakening coverage gates. Order saf
 
 Report cold-scan and warm-resume time separately, including enumeration, hashing, parsing, document refresh, test, remote API, and final-readback durations. Never translate a time budget, prioritization, cache hit, parallel worker completion, partial shard, or bounded run into a completeness claim. Large or multi-year scopes may require multiple target-owned jobs; do not promise completion in minutes where exhaustive histories, external approvals, unavailable files, security findings, or human semantic review remain. The exit condition is complete independently verified gates—or a terminal, prioritized blocker queue that names every unfinished gate and its evidence/authority prerequisite—not elapsed time.
 
+### Language, QLion, and succession coverage
+
+The materialized source scan labels paths using
+`scripts/language_strategy.py` and reports `language_counts`,
+`unclassified_file_count`, `catalog_language_count`,
+`catalog_coverage_complete_for_all_languages`,
+`remote_research_verified`, and `release_versions_verified` in the QAUDITS
+universe. These are path counts for the scanned local manifest; unknown
+extensions, excluded directories, unreadable files, and historical/remote
+scopes remain separately visible. The inventory must not claim to enumerate
+every language worldwide.
+
+Language task-fit recommendations are deterministic advisory output only.
+They must include domains, ranked candidate rationale, unknown domains, and
+`migration_recommended=false`; repository changes require a separate
+requirement, ownership, compatibility, test, security, performance, rollback,
+and authorization review. Compare languages with matched workloads and record
+environment, source SHA, correctness, repeated performance measurements,
+variance, and resource use. Never convert a qualitative strength into a
+security/performance pass.
+
+QLion readiness is a compiler/toolchain implementation gate: specification,
+grammar, type/runtime semantics, deterministic builds, language adapters,
+conformance/security tests, release provenance, and exact-SHA validation must
+all be evidenced before claiming it is a usable programming language. Until
+then, describe it only as a proposed language-neutral
+interoperability/orchestration layer.
+
+QVillage language research uses official specifications, release notes,
+support policies, and security advisories. Track source URL, fetched-at time,
+content hash, collector/parser version, freshness, and retrieval failures.
+Live release research is `UNKNOWN` until a bounded collector runs and its
+results are reviewed; documentation and local candidate counts are not
+real-time research evidence.
+
+Ollama-to-QMOI transition is owned by OFCA and QVersion's
+`QMOI_CAPABILITY_PARITY`/`PRODUCTION_REPLACEMENTS` gates. At every phase or
+task boundary, record a full preflight or a validated manifest-bound reuse,
+delta, duration, matched files/directories, omissions, and status. Block
+destructive changes on stale/incomplete inventory, unknown ownership,
+unverified QMOI parity, failing focused tests, or missing rollback. Automatic
+renames and rewrites remain disabled by default; archived, third-party,
+runtime/model, credential, and externally managed surfaces require separate
+review. Record candidates and accepted migrations independently, by exact
+manifest and denominator.
+
 ### Required audit telemetry
 
 Every refresh reports scan duration (per source and overall), bytes hashed, files with parsed content, metadata-only large files, read/hash failures, excluded roots, duplicate paths, candidate counts by scope/category/extension, directory depth, dependency edges, orphan counts, worker cap/batch size, and manifest digest. The Markdown sentence sidecar includes source scan duration alongside indexed/omitted counts. Coverage ratios are emitted only for stable denominators and include numerator/denominator/state/source. A changed inventory requires a new digest; semantic coverage, passing tests, remote history, and authorization remain separate measures.

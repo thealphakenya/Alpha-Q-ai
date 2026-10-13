@@ -22,6 +22,12 @@ import uuid
 from pathlib import Path
 from typing import Any
 
+from scripts.language_strategy import (
+    LANGUAGE_PROFILES,
+    aggregate_language_counts,
+    classify_language,
+)
+
 EXCLUDED_DIRECTORIES = {
     ".git",
     "node_modules",
@@ -47,6 +53,7 @@ EXCLUDED_FILES = {
     "ollamatracks/feature_test_hook_coverage.json",
     "ollamatracks/system_accountability_audit.json",
     "ollamatracks/qaudits_evolution_plan.json",
+    "ollamatracks/language_research_plan.json",
     "ollamatracks/qaudit_markdown_sentence_audit.json",
     "ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz",
     "QMOItracks/style_universal_candidate_tree.md",
@@ -116,7 +123,7 @@ GOVERNANCE_AUDIT_DOMAINS = {
 CODE_SUFFIXES = {".py", ".js", ".jsx", ".ts", ".tsx", ".go", ".rs", ".java", ".kt", ".swift", ".c", ".h", ".cpp", ".cs", ".rb", ".php"}
 PACKAGE_SUFFIXES = {".apk", ".aab", ".ipa", ".exe", ".msi", ".dmg", ".pkg", ".deb", ".rpm", ".whl", ".tar", ".gz", ".zip", ".appx", ".wasm"}
 UNIVERSE_SCHEMA_VERSION = 3
-SCANNER_VERSION = "2.3"
+SCANNER_VERSION = "2.4"
 AUDIT_PRIORITY_POLICY_VERSION = "1"
 
 
@@ -639,24 +646,36 @@ def build_lion_universe(root: Path | str) -> dict[str, Any]:
         relative = record["path"].lower()
         text = record["content"]
         path = Path(record["path"])
-        variation_document = "lion_variations" in relative or (
+        qlion_document = "qlion" in relative or bool(re.search(r"(?i)\bqlion\b", text))
+        variation_document = (
+            "lion_variations" in relative
+            or qlion_document
+            or Path(record["path"]).name.lower() == "lionvariations.md"
+        ) or (
             path.suffix.lower() == ".md"
             and re.match(r"^lion[-._ ]", path.name, flags=re.IGNORECASE) is not None
         )
-        if variation_document and re.search(r"(?i)\blion\b", text):
+        if variation_document and (
+            re.search(r"(?i)\blion\b", text)
+            or qlion_document
+            or Path(record["path"]).name.lower() == "lionvariations.md"
+        ):
             lion_variation = re.findall(
                 r"(?i)\blion(?:[._ -]([a-z0-9][a-z0-9._-]*))?",
                 path.name,
             )
+            variation_names = {
+                item.lower().replace("_", "-") for item in lion_variation
+            }
+            if qlion_document:
+                variation_names.add("qlion-programming-language")
             variations.append({
                 "path": record["path"],
                 "scope": record["scope"],
                 "sha256": record["sha256"],
                 "bytes": record["size"],
                 "classification": "lion_variation_document_candidate",
-                "variation_candidates": sorted({
-                    item.lower().replace("_", "-") for item in lion_variation
-                }),
+                "variation_candidates": sorted(variation_names),
                 "verification": "candidate_only",
                 "implementation_verified": False,
                 "release_verified": False,
@@ -890,7 +909,19 @@ def build_system_accountability_audit(
         delivery_matches = [stage for stage, pattern in DELIVERY_AUDIT_STAGES.items() if pattern.search(searchable)]
         governance_matches = [domain for domain, pattern in GOVERNANCE_AUDIT_DOMAINS.items() if pattern.search(searchable)]
         lion_matches = re.findall(r"(?i)\blion(?:[._ -][a-z0-9][a-z0-9._-]*)?", path.name)
-        lion_candidate = "lion" in relative.lower() or bool(lion_matches) or bool(re.search(r"(?i)\blion\b", text))
+        qlion_candidate = "qlion" in relative or bool(re.search(r"(?i)\bqlion\b", text))
+        lion_candidate = (
+            "lion" in relative
+            or bool(lion_matches)
+            or bool(re.search(r"(?i)\blion\b", text))
+            or qlion_candidate
+        )
+        variation_names = {
+            item.lower().replace("_", "-").replace(" ", "-")
+            for item in lion_matches
+        }
+        if qlion_candidate:
+            variation_names.add("qlion-programming-language")
         extension_candidate = (
             any(term in relative.lower() for term in ("extension", "extensions", "plugin", "plugins", "addon", "add-on"))
             or bool(re.search(r"(?i)\b(?:extension|plugin|add-on)\b", text))
@@ -902,7 +933,7 @@ def build_system_accountability_audit(
             "delivery_matches": delivery_matches,
             "governance_matches": governance_matches,
             "lion_candidate": lion_candidate,
-            "lion_variation_candidates": sorted({item.lower().replace("_", "-").replace(" ", "-") for item in lion_matches}),
+            "lion_variation_candidates": sorted(variation_names),
             "extension_candidate": extension_candidate,
         }
 
@@ -1153,6 +1184,7 @@ def build_qaudit_universe(
                 classification = classify_entity(relative, kind or "audit")
                 class_record = {
                     "path": relative,
+                    "language": classify_language(relative),
                     "kind": kind or "other",
                     "classification": classification["classification"],
                     "canonical_status": classification["canonical_status"],
@@ -1221,6 +1253,7 @@ def build_qaudit_universe(
             record["path"],
             record["bytes"],
             record["sha256"],
+            record["language"],
             record["kind"],
             record["categories"],
             record["scope"],
@@ -1310,6 +1343,16 @@ def build_qaudit_universe(
             "directory_paths": sorted(directories),
             "bytes_scanned": total_bytes,
             "extension_counts": dict(sorted(extension_counts.items())),
+            "language_inventory": {
+                "language_counts": aggregate_language_counts(record["path"] for record in files),
+                "catalog_language_count": len(LANGUAGE_PROFILES),
+                "unclassified_file_count": sum(
+                    record["language"] == "unclassified" for record in files
+                ),
+                "catalog_coverage_complete_for_all_languages": False,
+                "remote_research_verified": False,
+                "release_versions_verified": False,
+            },
             "candidate_counts_by_kind": {
                 kind: sum(1 for record in files if record["kind"] == kind)
                 for kind in ("style", "universal", "audit", "other")

@@ -1,3 +1,5 @@
+Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+
 # Release instructions
 
 ## Release policy
@@ -29,6 +31,12 @@
 - Update `RELEASES.md` and related app/build/download/tag/publish/QTeam documents only from observed release state; bind every claim to release/tag ID, source SHA, artifact hashes, verification, and remote retrieval evidence.
 - QAUDITS must not publish, tag, sign, or deploy on its own. Require explicit authority and all release gates, then record terminal target-owned workflow results and independently verified remote state; otherwise retain the release as blocked in paired completion records.
 - Bind any CodeQL evidence used in release review to the release source SHA and record terminal run/check status. A successful scan alone does not establish release readiness; missing alert access or unresolved findings remain explicit blockers, and release automation must not trigger a duplicate scan solely to accelerate completion.
+
+## Two-hour mission monitoring
+
+- Track sections `M01`–`M16` and task/phase elapsed time in the correlated mission checkpoint, while keeping release preparation distinct from publish/deploy evidence.
+- Record phase/task transitions with `python -m scripts.mission_task_ledger ...`; keep release, signing, and deployment steps blocked until their separate authority and provenance gates pass.
+- At the deadline, preserve release-related blockers, required approvals, exact source SHA, and the next safe action. Never use elapsed time or a completed local task to bypass release authority or provenance gates.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

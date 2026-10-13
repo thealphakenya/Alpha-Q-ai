@@ -1,3 +1,5 @@
+Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+
 # Workspace instructions
 
 ## Purpose
@@ -40,6 +42,13 @@ Keep the workspace safe, deterministic, and consistent with the repository’s r
 - Remote completion remains blocked until exact repository/ref/SHA, terminal target-owned workflow result, remote tree/artifact verification, and required authority/security gates are independently evidenced.
 - For long QAUDITS runs, record phase timing and the active correlation ID in paired evidence; avoid concurrent duplicate full-tree scans and use deterministic, bounded work where available. Keep user-edited mission content intact, preserve the mission mirror byte-for-byte, and retain interrupted scans as `IN_PROGRESS` until a fresh run reaches a terminal checkpoint.
 - CodeQL fast-path integration is read-only: reuse exact-SHA workflow metadata already fetched, never launch a duplicate analysis, and keep alert API 403/404 or stale/missing runs explicitly unknown/incomplete.
+
+## Two-hour mission monitoring
+
+- Track all 16 mission sections by stable IDs `M01`–`M16`; record actual UTC start/finish and elapsed time for phases/tasks, status, retries, evidence, blockers, dependencies, and next actions in the latest checkpoint.
+- Update `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and append-only `remote-evidence-ledger.jsonl` together through the supported writer using one correlation ID. Record when monotonic timing is unavailable after restart.
+- Use `python -m scripts.mission_task_ledger ...` to atomically maintain the canonical 16-section ledger and synchronize each phase/task transition with correlated evidence.
+- At the 120-minute deadline, report measured outcomes and preserve the resumable queue. Do not claim completion or automatic continuation without the required implementation and independent execution evidence.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

@@ -109,6 +109,7 @@ from scripts.ollama_research import (
     VALIDATION_RESEARCH_MAP,
     build_external_research_plan,
     build_internal_research_plan,
+    build_language_research_plan,
     build_validation_research_matrix,
     audit_repository_surfaces,
     fetch_official_resource,
@@ -121,6 +122,7 @@ from scripts.qaudit_universe import write_qaudit_artifacts
 from scripts.qaudits_evolution_planner import build_evolution_plan
 from scripts.qaudit_shard_runner import run_bounded_audit_shards
 from scripts.qaudits_parallel_auditor import run_parallel_merge_audit
+from scripts.language_strategy import LANGUAGE_PROFILES
 
 try:
     from scripts.live_activity_stream import (
@@ -2598,6 +2600,7 @@ class ModelCardGenerator:
             for path in self.root_dir.rglob("*")
             if path.is_file() and ".git" not in path.parts
         ]
+        language_evolution = self._language_evolution_evidence()
         return {
             "generated": utc_iso(),
             "tracked_files": len(tracked_files),
@@ -2621,6 +2624,7 @@ class ModelCardGenerator:
             "memory_recovery_sources": self._memory_recovery_sources(),
             "dataset_inventory": self._dataset_inventory(),
             "best_model_proof": self._best_model_proof_status(),
+            "language_evolution": language_evolution,
             "qseed_surface": {
                 "specification_exists": (self.root_dir / "QSEED.md").is_file(),
                 "utility_exists": (self.root_dir / "scripts" / "qseed_vault.py").is_file(),
@@ -2628,6 +2632,70 @@ class ModelCardGenerator:
             },
             "branch_sync": branch_sync,
         }
+
+    def _language_evolution_evidence(self) -> dict[str, Any]:
+        """Read existing local audit artifacts without treating their presence as validation."""
+        artifacts = {
+            "qaudit_universe": self.root_dir / "ollamatracks" / "qaudit_universe.json",
+            "language_research_plan": self.root_dir / "ollamatracks" / "language_research_plan.json",
+        }
+        result: dict[str, Any] = {
+            "qaudit_universe_status": "NOT_OBSERVED",
+            "source_manifest_sha256": None,
+            "language_counts": {},
+            "unclassified_file_count": None,
+            "language_catalog_coverage_complete": False,
+            "qlion_variation_candidate_count": None,
+            "qlion_candidate_paths": [],
+            "language_research_status": "NOT_OBSERVED",
+            "language_research_sources_planned": 0,
+            "language_release_versions_observed": 0,
+            "remote_research_verified": False,
+            "toolchain_or_compiler_verified": False,
+        }
+        try:
+            universe = json.loads(artifacts["qaudit_universe"].read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            universe = None
+        if isinstance(universe, dict):
+            metrics = universe.get("metrics", {})
+            accountability = universe.get("accountability", {})
+            if isinstance(metrics, dict):
+                language = metrics.get("language_inventory", {})
+                if isinstance(language, dict):
+                    result.update({
+                        "qaudit_universe_status": str(universe.get("status", "UNKNOWN")),
+                        "source_manifest_sha256": metrics.get("source_manifest_sha256"),
+                        "language_counts": language.get("language_counts", {}),
+                        "unclassified_file_count": language.get("unclassified_file_count"),
+                        "language_catalog_coverage_complete": language.get(
+                            "catalog_coverage_complete_for_all_languages", False
+                        ),
+                    })
+            if isinstance(accountability, dict):
+                qlion_candidates = [
+                    item
+                    for item in accountability.get("lion_variation_candidates", [])
+                    if isinstance(item, dict)
+                    and "qlion-programming-language" in item.get("variation_candidates", [])
+                ]
+                result["qlion_variation_candidate_count"] = len(qlion_candidates)
+                result["qlion_candidate_paths"] = sorted(
+                    str(item.get("path", "")) for item in qlion_candidates
+                )
+        try:
+            research = json.loads(
+                artifacts["language_research_plan"].read_text(encoding="utf-8")
+            )
+        except (OSError, json.JSONDecodeError):
+            research = None
+        if isinstance(research, dict):
+            result["language_research_status"] = str(research.get("status", "UNKNOWN"))
+            result["language_research_sources_planned"] = research.get("source_count", 0)
+            result["language_release_versions_observed"] = research.get(
+                "observed_release_versions", 0
+            )
+        return result
 
     def _count_master_plan_topics(self) -> int:
         plan = self.root_dir / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md"
@@ -2858,6 +2926,20 @@ The model-card comparison section is intended to provide a benchmark-oriented ov
 
 {comparison_table}
 
+## Language engineering, QLion, and Lion variations
+
+- Maintained language profiles: {len(LANGUAGE_PROFILES)}
+- Latest QAUDITS universe: {evidence["language_evolution"]["qaudit_universe_status"]}
+- Source-manifest SHA-256: {evidence["language_evolution"]["source_manifest_sha256"] or "not observed"}
+- Local language path counts: {json.dumps(evidence["language_evolution"]["language_counts"], sort_keys=True)}
+- Unclassified paths: {evidence["language_evolution"]["unclassified_file_count"] if evidence["language_evolution"]["unclassified_file_count"] is not None else "not observed"}
+- Language release research: {evidence["language_evolution"]["language_research_status"]}; official sources planned: {evidence["language_evolution"]["language_research_sources_planned"]}; release versions actually observed: {evidence["language_evolution"]["language_release_versions_observed"]}
+- QLion variation candidates: {evidence["language_evolution"]["qlion_variation_candidate_count"] if evidence["language_evolution"]["qlion_variation_candidate_count"] is not None else "not observed"}; compiler/toolchain implemented and verified: {evidence["language_evolution"]["toolchain_or_compiler_verified"]}
+- QLion status: proposed language-neutral interoperability/orchestration layer; universal-language or compiler support is not claimed.
+- Local QAUDITS counts and deterministic task-fit suggestions are advisory; they do not prove every-language support, language security/performance, or authorize migration.
+- The autonomous agent refreshes both repository model-card files from local evidence during its model-card generation/validation paths. This updates evidence and timestamp, not model weights or capabilities. Local QVillage documentation receives a card hash/status reference when present; hosted QVillage publication remains unverified unless separately evidenced.
+- The twenty engineering review dimensions and task-fit profiles are in ALLLANGUAGES.md; comparison methodology and official release-source candidates are in ALLLANGUAGESCOMPARE.md. Proposed language-layer acceptance gates are in QLIONPROGRAMMINGLANGUAGE.md and the Lion variation catalog.
+
 ## Best-model validation gate
 
 {best_model_status}
@@ -2913,6 +2995,25 @@ The autonomous validation contract covers:
             content,
         )
         safe_text_write(self.qmoi_card_path, content)
+        village_document = self.root_dir / "QVILLAGE.md"
+        if village_document.is_file() and not village_document.is_symlink():
+            card_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
+            village_lines = [
+                "## QMOI model-card local synchronization",
+                "",
+                f"- Card generated at UTC: `{evidence['generated']}`.",
+                f"- Card source: `{self.qmoi_card_path.relative_to(self.root_dir).as_posix()}`; SHA-256: `{card_hash}`.",
+                f"- QAUDITS source manifest: `{evidence['language_evolution']['source_manifest_sha256'] or 'not observed'}`.",
+                f"- Language research: `{evidence['language_evolution']['language_research_status']}`; observed release versions: `{evidence['language_evolution']['language_release_versions_observed']}`.",
+                f"- QLion variation candidates: `{evidence['language_evolution']['qlion_variation_candidate_count'] if evidence['language_evolution']['qlion_variation_candidate_count'] is not None else 'not observed'}`; implementation verified: `False`.",
+                "- Local card synchronization is metadata-only evidence. Hosted QVillage publication, model training/evolution, and remote verification are not established by this update.",
+            ]
+            _upsert_managed_markdown_section(
+                village_document,
+                village_document.name,
+                "qmoi-model-card-local-sync",
+                "\n".join(village_lines),
+            )
 
         return self.card_path
 
@@ -6176,7 +6277,10 @@ All timestamps use UTC ISO-8601 format.
                 include_inventory=False,
             )
 
-        ollama_full_coverage_audit = self.refresh_ollama_reference_audit(primary_root)
+        ollama_full_coverage_audit = self.refresh_ollama_reference_audit(
+            primary_root,
+            phase_id="merge_execution_preflight",
+        )
         feature_test_hook_coverage = self.refresh_test_hook_coverage_documents(primary_root)
         coverage_summary = feature_test_hook_coverage.get("styles_universals_coverage", {})
         ollama_audit_local = ollama_full_coverage_audit.get("local_scan", {})
@@ -8309,6 +8413,9 @@ All timestamps use UTC ISO-8601 format.
         )
         evolution_path = target / "ollamatracks" / "qaudits_evolution_plan.json"
         safe_json_write(evolution_path, evolution_plan)
+        language_research_plan = build_language_research_plan()
+        language_research_path = target / "ollamatracks" / "language_research_plan.json"
+        safe_json_write(language_research_path, language_research_plan)
         qstats = evolution_plan.get("qstats", {})
         evolutiono_metrics = dict(evolution_plan.get("evolutiono_transition", {}))
         evolutiono_metrics["source_manifest_sha256"] = evolution_plan.get("plan_sha256")
@@ -8342,6 +8449,7 @@ All timestamps use UTC ISO-8601 format.
             "This section is refreshed from the same local QAUDITS universe on every invocation of `refresh_ollama_reference_audit()` (pre-merge and full `audit-inventory` paths). It is not a timer or remote verification.",
             f"- Generated at: `{universe.get('generated_at', 'unavailable')}`; correlation ID: `{universe.get('correlation_id', 'unavailable')}`.",
             f"- Source manifest SHA-256: `{metrics.get('source_manifest_sha256', 'unavailable')}`; scope: `{metrics.get('source_scope', 'materialized_local_only')}`.",
+            f"- Source language path counts: `{json.dumps(metrics.get('language_inventory', {}).get('language_counts', {}), sort_keys=True)}`; unclassified: `{metrics.get('language_inventory', {}).get('unclassified_file_count', 0)}`; all-world coverage: `False`.",
             f"- Style candidates: `{len(inventory.get('styles', []))}`; universal candidates: `{len(inventory.get('universals', []))}`; all remain candidate-only.",
             f"- QStats: `{qstats.get('stage_count', 0)}` planned domains; `{qstats.get('available_contract_file_count', 0)}` observed contract files; `{qstats.get('missing_or_unavailable_contract_file_count', 0)}` missing/unavailable; remote verified: `False`.",
             f"- EvolutionO retirement plan: `{evolutiono_metrics.get('completed_stage_count', 0)}/{evolutiono_metrics.get('planned_stage_count', 0)}` phases complete; plan SHA-256 `{evolutiono_metrics.get('plan_sha256', 'unavailable')}`; OFCA target `OFCA.md`; status remains `PLANNED` until terminal remote gates pass.",
@@ -8352,6 +8460,25 @@ All timestamps use UTC ISO-8601 format.
             "- Audit status: `NEEDS_REVIEW` until owners, implementations, user-selected access preferences, privacy boundaries, applicable tests, and exact-SHA evidence are mapped. No disability is inferred or stored as a user profile.",
             "- Missing, stale, or provider-unverified health/oxygen values remain `UNKNOWN`; dashboard balances and account values require authorized provider evidence and are not inferred from prose.",
             "- Updating this managed section never rewrites historical/archive documents, policy instructions, or Q-version artifacts.",
+        ]
+        language_inventory = metrics.get("language_inventory", {})
+        language_research_summary = {
+            "plan_artifact": language_research_path.relative_to(target).as_posix(),
+            "plan_status": language_research_plan["status"],
+            "official_sources_planned": language_research_plan["source_count"],
+            "source_not_registered_count": language_research_plan["source_not_registered_count"],
+            "observed_release_versions": language_research_plan["observed_release_versions"],
+            "external_fetch_performed": language_research_plan["external_fetch_performed"],
+        }
+        language_lines = [
+            "## QAUDITS language-inventory observation",
+            "",
+            f"- Generated at: `{universe.get('generated_at', 'unavailable')}`; source-manifest SHA-256: `{metrics.get('source_manifest_sha256', 'unavailable')}`; scope: `{metrics.get('source_scope', 'materialized_local_only')}`.",
+            f"- Scanned paths by language: `{json.dumps(language_inventory.get('language_counts', {}), sort_keys=True)}`.",
+            f"- Unclassified paths: `{language_inventory.get('unclassified_file_count', 0)}`; maintained profiles: `{language_inventory.get('catalog_language_count', 0)}`; all-language coverage complete: `{language_inventory.get('catalog_coverage_complete_for_all_languages', False)}`.",
+            f"- Official release research verified: `{language_inventory.get('release_versions_verified', False)}`; QVillage external research verified: `{language_inventory.get('remote_research_verified', False)}`.",
+            f"- Official language release research plan: `{json.dumps(language_research_summary, sort_keys=True)}`; current versions remain unknown until sources are fetched and reviewed.",
+            "- Counts are local path candidates only. Unknown, excluded, historical, and remote scopes remain explicit; language recommendations do not authorize migration.",
         ]
         updated: list[str] = []
         blocked: list[str] = []
@@ -8377,6 +8504,24 @@ All timestamps use UTC ISO-8601 format.
                 "\n".join(lines),
             )
             updated.append(filename)
+        for filename in (
+            "ALLLANGUAGES.md",
+            "ALLLANGUAGESCOMPARE.md",
+            "QVILLAGE.md",
+            "QLIONPROGRAMMINGLANGUAGE.md",
+            "QVERSIONMANAGER.md",
+            "OFCA.md",
+        ):
+            path = target / filename
+            if not path.is_file() or path.is_symlink():
+                continue
+            _upsert_managed_markdown_section(
+                path,
+                filename,
+                "qaudit-language-inventory",
+                "\n".join(language_lines),
+            )
+            updated.append(filename)
         return {
             "status": "UPDATED" if not blocked else "NEEDS_REVIEW",
             "updated_documents": updated,
@@ -8387,6 +8532,7 @@ All timestamps use UTC ISO-8601 format.
             "evolution_plan_artifact": evolution_path.relative_to(target).as_posix(),
             "evolutiono_metrics": evolutiono_metrics,
             "qstats": qstats,
+            "language_research_plan": language_research_summary,
             "qlion": {
                 "variation_candidate_count": accountability.get("lion_variation_candidate_count", 0),
                 "registered_extension_count": accountability.get("registered_extension_count", 0),
@@ -8397,6 +8543,8 @@ All timestamps use UTC ISO-8601 format.
     def refresh_ollama_reference_audit(
         self,
         root: Path | str | None = None,
+        *,
+        phase_id: str = "unspecified_entrypoint",
     ) -> dict[str, Any]:
         """Refresh metadata-only Ollama mention coverage and its Q-version gate contract."""
         target = Path(root) if root is not None else self.root_dir
@@ -8461,6 +8609,19 @@ All timestamps use UTC ISO-8601 format.
 
         report = audit_ollama_reference_files(target)
         report["correlation_id"] = uuid.uuid4().hex
+        report["phase_preflight"] = {
+            "phase_id": phase_id,
+            "started_at": initial["scan_started_at"],
+            "completed_at": report["scan_completed_at"],
+            "ofca_full_scan_count": 2,
+            "qaudit_universe_full_scan_count": 1,
+            "phase_preflight_invocations_verified": False,
+            "task_boundary_preflight_invocations_verified": False,
+            "status": "LOCAL_SCAN_CANDIDATE_ONLY",
+        }
+        report["language_inventory"] = universe.get("metrics", {}).get(
+            "language_inventory", {}
+        )
         report["qaudit_universe_artifact"] = str(universe_path)
         report["qaudit_universe_file_count"] = universe["discovery"]["files_scanned"]
         report["system_accountability_audit"] = {
@@ -8484,6 +8645,8 @@ All timestamps use UTC ISO-8601 format.
             "",
             f"- Audit name: `OFCA`; local scan status: `{report['local_scan']['status']}`.",
             f"- Materialized files scanned: `{report['local_scan']['files_scanned']}`; mention-bearing files: `{report['local_scan']['matched_file_count']}`.",
+            f"- Ollam path/content candidates: `{report['local_scan']['candidate_path_count']}` paths and `{report['local_scan']['matched_directory_count']}` named directories; scan duration: `{report['scan_duration_seconds']}` seconds; start `{report['scan_started_at']}`, finish `{report['scan_completed_at']}`.",
+            f"- Phase preflight `{phase_id}`: 2 OFCA full scans plus 1 QAUDITS-universe scan; every-phase/task wiring: `NOT_VERIFIED`.",
             f"- Local refs: `{report['local_git_history']['ref_count']}`; local commits: `{report['local_git_history']['commit_count']}`; mention-change commits: `{report['local_git_history']['ollama_mention_diff_commit_count']}`.",
             f"- Source manifest SHA-256: `{report['source_manifest_sha256']}`; full remote-history coverage: `{report['coverage_complete']}`.",
             f"- EvolutionO phases: `{evolutiono_metrics.get('completed_stage_count', 0)}/{evolutiono_metrics.get('planned_stage_count', 0)}` planned phases complete; plan SHA-256 `{evolutiono_metrics.get('plan_sha256', 'unavailable')}`; metrics SHA-256 `{evolutiono_metrics.get('metrics_sha256', 'unavailable')}`; remote verified: `False`.",
@@ -8537,7 +8700,10 @@ All timestamps use UTC ISO-8601 format.
         instruction_inventory = audit_instruction_files(self.root_dir)
 
         financial_documents = self.refresh_financial_manager_catalog(self.root_dir)
-        ollama_reference_audit = self.refresh_ollama_reference_audit(self.root_dir)
+        ollama_reference_audit = self.refresh_ollama_reference_audit(
+            self.root_dir,
+            phase_id="runtime_status_snapshot",
+        )
 
         agent_status = {
             "status": "running",
@@ -11947,7 +12113,10 @@ All timestamps use UTC ISO-8601 format.
             repo_roots = self.discover_repo_roots(include_history=True)
             bank_automation_evidence = self.refresh_bank_automation_evidence(self.root_dir)
             self.results["bank_automation_evidence"] = bank_automation_evidence
-            ollama_reference_audit = self.refresh_ollama_reference_audit(self.root_dir)
+            ollama_reference_audit = self.refresh_ollama_reference_audit(
+                self.root_dir,
+                phase_id="validation_pipeline_preflight",
+            )
             self.results["ollama_reference_audit"] = ollama_reference_audit
             initial_merge = self.execute_merge_and_sync(repo_roots, auto_push=False)
             lifecycle_execution_id = initial_merge.get("q_version_lifecycle_execution_id")
@@ -12549,7 +12718,10 @@ def main(
             },
         )
         research = agent.build_autoresearch_report([root], fetch_external=False)
-        ofca = agent.refresh_ollama_reference_audit(root)
+        ofca = agent.refresh_ollama_reference_audit(
+            root,
+            phase_id="audit_inventory_preflight",
+        )
         feature_coverage = agent.refresh_test_hook_coverage_documents(root)
         feature_audit = run_parallel_feature_audit(
             root,
@@ -12632,6 +12804,9 @@ def main(
                 "status": ofca.get("status", "UNKNOWN"),
                 "coverage_complete": ofca.get("coverage_complete", False),
                 "source_manifest_sha256": ofca.get("source_manifest_sha256"),
+                "phase_preflight": ofca.get("phase_preflight", {}),
+                "local_scan": ofca.get("local_scan", {}),
+                "language_inventory": ofca.get("language_inventory", {}),
                 "next_action": ofca.get("next_action"),
             },
             "styles_universals": styles_universals,

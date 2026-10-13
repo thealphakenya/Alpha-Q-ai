@@ -244,12 +244,16 @@ class TestAuditInventoryCommand:
                 "external": {"status": "PLANNED_NOT_VISITED", "visited_count": 0},
             }
 
-        def refresh_ofca(self, root=None):
+        def refresh_ofca(self, root=None, *, phase_id="unspecified_entrypoint"):
             calls["ofca_root"] = root
+            calls["ofca_phase_id"] = phase_id
             return {
                 "status": "NEEDS_REMOTE_HISTORY_EVIDENCE",
                 "coverage_complete": False,
                 "source_manifest_sha256": "manifest-hash",
+                "phase_preflight": {"phase_id": phase_id},
+                "local_scan": {},
+                "language_inventory": {},
                 "next_action": "Run the authorized target-owned audit.",
             }
 
@@ -278,6 +282,7 @@ class TestAuditInventoryCommand:
         assert calls["research"]["fetch_external"] is False
         assert calls["research"]["roots"] == [tmp_path.resolve()]
         assert calls["ofca_root"] == tmp_path.resolve()
+        assert calls["ofca_phase_id"] == "audit_inventory_preflight"
         assert calls["feature_root"] == tmp_path.resolve()
         assert calls["instruction_root"] == tmp_path.resolve()
         assert result["repository_surface_audit"]["status"] == "NEEDS_REVIEW"
@@ -1500,6 +1505,12 @@ class TestFeatureTester:
         report = agent.refresh_ollama_reference_audit(tmp_path)
 
         assert report["status"] == "NEEDS_REMOTE_HISTORY_EVIDENCE"
+        assert report["phase_preflight"]["phase_id"] == "unspecified_entrypoint"
+        assert report["phase_preflight"]["ofca_full_scan_count"] == 2
+        assert report["phase_preflight"]["phase_preflight_invocations_verified"] is False
+        assert report["local_scan"]["candidate_path_count"] >= 1
+        assert report["local_scan"]["matched_directory_count"] == 1
+        assert report["language_inventory"]["remote_research_verified"] is False
         assert any(
             item["path"] == "scripts/ollama_agent.py"
             for item in report["matched_files"]
@@ -1514,6 +1525,7 @@ class TestFeatureTester:
             text = (tmp_path / filename).read_text(encoding="utf-8")
             assert "Agent-managed OFCA status" in text
             assert "QVillage/QVS materialized references" in text
+            assert "every-phase/task wiring: `NOT_VERIFIED`" in text
 
     def test_agent_refreshes_productionenhanced_manifest_for_nonproduction_markers(self, tmp_path):
         """The autonomous agent should scan for shallow or non-production implementations and update productionenhanced.md."""
@@ -1887,6 +1899,62 @@ class TestModelCardGenerator:
         assert "QVillage UI and Card Synchronization" in content
         assert "Master-plan topics discovered" in content
         assert generator.qmoi_card_path.exists()
+
+    def test_model_card_syncs_language_evidence_to_local_qvillage(self, tmp_path):
+        import hashlib
+
+        tracks = tmp_path / "ollamatracks"
+        tracks.mkdir()
+        (tracks / "qaudit_universe.json").write_text(
+            json.dumps(
+                {
+                    "status": "NEEDS_REVIEW",
+                    "metrics": {
+                        "source_manifest_sha256": "a" * 64,
+                        "language_inventory": {
+                            "language_counts": {"Python": 4, "Rust": 2},
+                            "unclassified_file_count": 3,
+                            "catalog_coverage_complete_for_all_languages": False,
+                        },
+                    },
+                    "accountability": {
+                        "lion_variation_candidates": [
+                            {
+                                "path": "QLIONPROGRAMMINGLANGUAGE.md",
+                                "variation_candidates": ["qlion-programming-language"],
+                            }
+                        ]
+                    },
+                }
+            ),
+            encoding="utf-8",
+        )
+        (tracks / "language_research_plan.json").write_text(
+            json.dumps({
+                "status": "SOURCES_PLANNED_NOT_FETCHED",
+                "source_count": 26,
+                "observed_release_versions": 0,
+            }),
+            encoding="utf-8",
+        )
+        village = tmp_path / "QVILLAGE.md"
+        village.write_text("# QVillage\n", encoding="utf-8")
+
+        generator = ModelCardGenerator(tmp_path)
+        generator.generate_card()
+        card = generator.qmoi_card_path.read_text(encoding="utf-8")
+        village_text = village.read_text(encoding="utf-8")
+        card_hash = hashlib.sha256(card.encode("utf-8")).hexdigest()
+
+        assert "Language engineering, QLion, and Lion variations" in card
+        assert '"Python": 4' in card and '"Rust": 2' in card
+        assert "official sources planned: 26" in card
+        assert "release versions actually observed: 0" in card
+        assert "compiler/toolchain implemented and verified: False" in card
+        assert generator.card_path.read_bytes() == generator.qmoi_card_path.read_bytes()
+        assert card_hash in village_text
+        assert "Hosted QVillage publication" in village_text
+        assert "## QMOI model-card local synchronization" in village_text
 
     def test_model_card_reports_qseed_surface_presence_without_claiming_validation(self, tmp_path):
         (tmp_path / "QSEED.md").write_text("# QSeed\n", encoding="utf-8")

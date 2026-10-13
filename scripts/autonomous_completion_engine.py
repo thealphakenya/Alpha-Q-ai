@@ -12,6 +12,7 @@ import json
 import os
 import re
 import subprocess
+import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -176,6 +177,8 @@ def audit_instruction_files(root: Path | str) -> dict[str, Any]:
 def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
     """Inventory Ollama mentions without copying source lines into evidence."""
     target = Path(root).resolve()
+    scan_started_at = utc_now()
+    scan_started_monotonic = time.monotonic()
     excluded_directory_names = {
         ".git", "node_modules", ".venv", "venv", "__pycache__",
         ".pytest_cache", "dist", "build", "coverage",
@@ -185,6 +188,7 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
     excluded_directories: dict[str, int] = {}
     matched_files: list[dict[str, Any]] = []
     qvillage_qvs_files: list[dict[str, Any]] = []
+    matched_directories: set[str] = set()
     category_counts: dict[str, int] = {}
     scope_counts: dict[str, int] = {}
     self_excluded_files = 0
@@ -220,6 +224,8 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
         for name in directory_names:
             directory = current_path / name
             relative = directory.relative_to(target).as_posix()
+            if "ollam" in relative.lower():
+                matched_directories.add(relative)
             if name in excluded_directory_names or name.startswith((".venv", "venv")):
                 excluded_directories[relative] = excluded_directories.get(relative, 0) + 1
             elif directory.is_symlink():
@@ -287,11 +293,11 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
                     "qve_mention_count": qve_mentions,
                 })
 
-            path_match = "ollama" in relative.lower()
+            path_match = "ollam" in relative.lower()
             lines = content.decode("utf-8", errors="replace").splitlines()
             matching_line_numbers = [
                 index for index, line in enumerate(lines, 1)
-                if "ollama" in line.lower()
+                if "ollam" in line.lower()
             ]
             if not path_match and not matching_line_numbers:
                 continue
@@ -315,7 +321,7 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
                 "sha256": content_sha256,
                 "path_match": path_match,
                 "matching_line_count": len(matching_line_numbers),
-                "mention_count": sum(line.lower().count("ollama") for line in matched_lines),
+                "mention_count": sum(line.lower().count("ollam") for line in matched_lines),
                 "matching_line_numbers": matching_line_numbers[:100],
                 "line_numbers_truncated": len(matching_line_numbers) > 100,
                 "categories": categories,
@@ -384,10 +390,14 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
         sort_keys=True,
         separators=(",", ":"),
     ).encode("utf-8")
+    scan_completed_at = utc_now()
     return {
         "schema_version": 1,
         "status": "NEEDS_REMOTE_HISTORY_EVIDENCE" if local_complete else "INCOMPLETE_LOCAL_SCAN",
-        "generated_at": utc_now(),
+        "generated_at": scan_completed_at,
+        "scan_started_at": scan_started_at,
+        "scan_completed_at": scan_completed_at,
+        "scan_duration_seconds": round(time.monotonic() - scan_started_monotonic, 3),
         "repository": target.name,
         "head_sha": _git(target, "rev-parse", "HEAD"),
         "scope": "all materialized files excluding explicitly listed dependency, build, cache, and Git roots",
@@ -397,6 +407,9 @@ def audit_ollama_reference_files(root: Path | str) -> dict[str, Any]:
             "files_scanned": scanned_files,
             "bytes_scanned": scanned_bytes,
             "matched_file_count": len(matched_files),
+            "candidate_path_count": len(matched_files),
+            "matched_directory_count": len(matched_directories),
+            "matched_directories": sorted(matched_directories),
             "matched_files_by_scope": dict(sorted(scope_counts.items())),
             "matched_files_by_category": dict(sorted(category_counts.items())),
             "tree_sha256": tree_digest.hexdigest(),

@@ -1,3 +1,5 @@
+Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+
 # Security instructions
 
 ## Fail-closed expectations
@@ -28,6 +30,13 @@ The autonomous agent may collect read-only diagnostics and propose bounded remed
 - Block merge, release, and deployment claims while actionable security findings or missing terminal exact-SHA evidence remain. Record explicit blockers in `oe2.txt`, `remotecompletion.md`, and machine-readable evidence without exposing secret values.
 - Finance audits must include currency/amount, revenue, payments, wallets/banks, deals, employment/payroll, jurisdiction, project-finance, and financial-security candidates. Persist only path/hash/scope/line/category metadata; never persist amount strings, account IDs, source lines, credentials, or provider secrets. Candidate counts do not prove legal coverage or authorize a transaction.
 - Use CodeQL as an existing source of security-analysis evidence, not as a substitute for triage. Reuse already-collected exact-SHA workflow metadata when available; do not add a duplicate analysis run to the fast QAUDITS path. A stale, skipped, failed, in-progress, or absent CodeQL run is not a clean scan. HTTP 403/404 alert access is `UNKNOWN`, not zero findings; preserve the state and let required-check/security policy determine whether work is blocked.
+
+## Two-hour mission monitoring
+
+- Record section `M01`–`M16` status, UTC timing, retries, security evidence, unresolved findings, blockers, and next actions without storing secrets or sensitive source content.
+- Use the mission-ledger updater to record security-task start/finish and evidence references; do not mark a finding verified complete without remediation evidence and required checks.
+- Keep the time budget independent of security approval. Unresolved or unknown security state remains visible and blocks protected completion regardless of elapsed time or local test results.
+- Preserve unfinished safe work at the deadline; do not downgrade, suppress, or mark a finding resolved to meet the window.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

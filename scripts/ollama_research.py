@@ -76,6 +76,32 @@ OFFICIAL_RESEARCH_DOMAINS = frozenset({
     "docs.qdrant.tech",
     "w3.org",
     "www.rfc-editor.org",
+    "python.org",
+    "rust-lang.org",
+    "go.dev",
+    "nodejs.org",
+    "typescriptlang.org",
+    "openjdk.org",
+    "kotlinlang.org",
+    "swift.org",
+    "dart.dev",
+    "elixir-lang.org",
+    "haskell.org",
+    "julialang.org",
+    "lua.org",
+    "php.net",
+    "perl.org",
+    "r-project.org",
+    "ruby-lang.org",
+    "scala-lang.org",
+    "isocpp.org",
+    "open-std.org",
+    "dotnet.microsoft.com",
+    "developer.apple.com",
+    "learn.microsoft.com",
+    "ziglang.org",
+    "gnu.org",
+    "postgresql.org",
 })
 
 OFFICIAL_RESOURCE_CATALOG = (
@@ -98,6 +124,32 @@ OFFICIAL_RESOURCE_CATALOG = (
     {"url": "https://huggingface.co/docs/hub/index", "topic": "huggingface-research", "purpose": "official model, dataset, Space, license, and Hub capability research"},
     {"url": "https://www.itl.nist.gov/div898/handbook/", "topic": "statistical-methods", "purpose": "measurement, uncertainty, sampling, and statistical comparison methodology"},
     {"url": "https://www.cftc.gov/LearnAndProtect/AdvisoriesAndArticles/index.htm", "topic": "financial-controls", "purpose": "official risk and consumer-protection guidance for financial/trading workflow audits"},
+    {"url": "https://www.open-std.org/jtc1/sc22/wg14/", "topic": "language-c-release", "purpose": "C language standards committee and public standards work"},
+    {"url": "https://isocpp.org/std/status", "topic": "language-cpp-release", "purpose": "C++ standard status and language resources"},
+    {"url": "https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core", "topic": "language-csharp-release", "purpose": "official .NET release support lifecycle"},
+    {"url": "https://dart.dev/get-dart/archive", "topic": "language-dart-release", "purpose": "official Dart SDK release archive"},
+    {"url": "https://elixir-lang.org/announcement.html", "topic": "language-elixir-release", "purpose": "official Elixir release announcements"},
+    {"url": "https://go.dev/doc/devel/release", "topic": "language-go-release", "purpose": "official Go release history and support policy"},
+    {"url": "https://www.haskell.org/ghc/download.html", "topic": "language-haskell-release", "purpose": "official GHC compiler releases"},
+    {"url": "https://openjdk.org/projects/jdk/", "topic": "language-java-release", "purpose": "OpenJDK release projects and schedules"},
+    {"url": "https://nodejs.org/en/about/previous-releases", "topic": "language-javascript-release", "purpose": "official Node.js release and lifecycle information"},
+    {"url": "https://julialang.org/downloads/", "topic": "language-julia-release", "purpose": "official Julia release downloads"},
+    {"url": "https://kotlinlang.org/docs/releases.html", "topic": "language-kotlin-release", "purpose": "official Kotlin release notes"},
+    {"url": "https://www.lua.org/versions.html", "topic": "language-lua-release", "purpose": "official Lua version history"},
+    {"url": "https://developer.apple.com/documentation/", "topic": "language-objective-c-release", "purpose": "official Apple language and SDK documentation"},
+    {"url": "https://www.php.net/releases/", "topic": "language-php-release", "purpose": "official PHP releases and support information"},
+    {"url": "https://www.perl.org/get.html", "topic": "language-perl-release", "purpose": "official Perl distribution and release resources"},
+    {"url": "https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell", "topic": "language-powershell-release", "purpose": "official PowerShell installation and release guidance"},
+    {"url": "https://www.python.org/downloads/", "topic": "language-python-release", "purpose": "official Python release downloads and lifecycle details"},
+    {"url": "https://www.r-project.org/", "topic": "language-r-release", "purpose": "official R project and release resources"},
+    {"url": "https://www.ruby-lang.org/en/downloads/releases/", "topic": "language-ruby-release", "purpose": "official Ruby release history"},
+    {"url": "https://www.rust-lang.org/tools/install", "topic": "language-rust-release", "purpose": "official Rust toolchain installation and release channel"},
+    {"url": "https://www.scala-lang.org/download/", "topic": "language-scala-release", "purpose": "official Scala release and installation resources"},
+    {"url": "https://www.gnu.org/software/bash/", "topic": "language-shell-release", "purpose": "official GNU Bash project and release information"},
+    {"url": "https://www.postgresql.org/docs/current/release.html", "topic": "language-sql-release", "purpose": "example database-dialect release notes; not the SQL standard"},
+    {"url": "https://swift.org/download/", "topic": "language-swift-release", "purpose": "official Swift releases and toolchain downloads"},
+    {"url": "https://www.typescriptlang.org/download/", "topic": "language-typescript-release", "purpose": "official TypeScript compiler release channel"},
+    {"url": "https://ziglang.org/download/", "topic": "language-zig-release", "purpose": "official Zig compiler release channel"},
 )
 
 VALIDATION_RESEARCH_MAP = {
@@ -120,6 +172,34 @@ VALIDATION_RESEARCH_MAP = {
     "styles_universals_hooks_and_webhooks": ("accessibility", "application-security", "github-actions-auth"),
     "memory_awareness_and_q_versions": ("python-testing", "github-rest-api"),
     "projects_and_autoprojects": ("github-rest-api", "application-security", "python-testing"),
+    "programming_language_release_research": (
+        "language-c-release",
+        "language-cpp-release",
+        "language-csharp-release",
+        "language-dart-release",
+        "language-elixir-release",
+        "language-go-release",
+        "language-haskell-release",
+        "language-java-release",
+        "language-javascript-release",
+        "language-julia-release",
+        "language-kotlin-release",
+        "language-lua-release",
+        "language-objective-c-release",
+        "language-php-release",
+        "language-perl-release",
+        "language-powershell-release",
+        "language-python-release",
+        "language-r-release",
+        "language-ruby-release",
+        "language-rust-release",
+        "language-scala-release",
+        "language-shell-release",
+        "language-sql-release",
+        "language-swift-release",
+        "language-typescript-release",
+        "language-zig-release",
+    ),
 }
 
 MAX_RESOURCE_BYTES = 256 * 1024
@@ -1216,6 +1296,58 @@ def build_external_research_plan(topics: Iterable[str] | None = None) -> dict[st
         },
         "visited_sources": [],
         "status": "PLANNED_NOT_VISITED",
+    }
+
+
+def build_language_research_plan(
+    languages: Iterable[str] | None = None,
+) -> dict[str, Any]:
+    """Plan official language release lookups without fetching or asserting versions."""
+    from scripts.language_strategy import LANGUAGE_PROFILES
+
+    resources_by_topic = {
+        str(resource["topic"]): dict(resource)
+        for resource in OFFICIAL_RESOURCE_CATALOG
+        if str(resource.get("topic", "")).startswith("language-")
+    }
+    requested = sorted(
+        {str(language).strip() for language in (languages or LANGUAGE_PROFILES) if str(language).strip()}
+    )
+    observations = []
+    for language in requested:
+        topic = f"language-{language.lower().replace('+', 'p').replace('#', 'sharp')}-release"
+        resource = resources_by_topic.get(topic)
+        if resource is None:
+            observations.append({
+                "language": language,
+                "status": "SOURCE_NOT_REGISTERED",
+                "topic": topic,
+                "release_version": None,
+                "visited_at": None,
+            })
+            continue
+        canonical_url, hostname = _canonical_url(str(resource["url"]))
+        observations.append({
+            "language": language,
+            "status": "PLANNED_NOT_VISITED",
+            "topic": topic,
+            "url": canonical_url,
+            "hostname": hostname,
+            "purpose": str(resource["purpose"]),
+            "release_version": None,
+            "visited_at": None,
+        })
+    return {
+        "generated_at": utc_now(),
+        "status": "PLANNED_NOT_VISITED",
+        "observed_release_versions": 0,
+        "source_count": len(observations),
+        "source_not_registered_count": sum(
+            item["status"] == "SOURCE_NOT_REGISTERED" for item in observations
+        ),
+        "observations": observations,
+        "external_fetch_performed": False,
+        "source_scope": "official_source_candidates_only",
     }
 
 

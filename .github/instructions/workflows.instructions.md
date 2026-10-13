@@ -1,3 +1,5 @@
+Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+
 # Workflow instructions
 
 ## Default model
@@ -32,6 +34,13 @@ The autonomous agent must bind every queued or dispatched job to the exact repos
 - Require terminal conclusions plus independent remote ref/tree and artifact verification. Update paired `oe2.txt`/`remotecompletion.md` and machine evidence with the correlation ID and evidence level; leave remote completion blocked when any required check is missing.
 - Keep heavy validation on target-owned workflows where available; local QAUDITS is orchestration and evidence, not a substitute for remote worker results or human authorization.
 - Prefer the repository's existing CodeQL default setup. QAUDITS may summarize CodeQL workflow-run metadata from the workflow-run response it already fetched, but must bind it to the exact remote SHA/ref, label missing or stale runs `NOT_OBSERVED`, and must not launch a duplicate scan or extra API request as part of the fast completion path. Record run ID and per-language job terminal state; in-progress jobs and unavailable alert APIs stay incomplete/unknown. CodeQL metadata alone neither proves clean findings nor satisfies the remote-completion gate; required checks, security findings, authorization, and independent remote verification remain authoritative.
+
+## Two-hour mission monitoring
+
+- Track sections `M01`–`M16` and phase/task durations with real UTC events and one correlation ID across the paired documents and machine evidence.
+- Invoke the mission-ledger updater only from the verified target checkout; its checkpoint is local evidence unless a later authorized hosted run records terminal exact-SHA results.
+- Distinguish a configured schedule, accepted dispatch, running workflow, terminal conclusion, and independently verified remote state. The two-hour target does not replace any workflow or SHA gate.
+- Leave unfinished actions durable at the deadline. Mark continuation verified only after a distinct run demonstrably restores the checkpoint and executes the next eligible task.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

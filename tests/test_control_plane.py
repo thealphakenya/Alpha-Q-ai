@@ -23,7 +23,9 @@ from scripts.ollama_research import (
     INTERNAL_RESEARCH_CONTROLS,
     _markdown_sentence_evidence,
     audit_repository_surfaces,
+    build_language_research_plan,
     build_internal_research_plan,
+    build_validation_research_matrix,
     discover_resource_candidates,
     fetch_official_resource,
     record_research_visit,
@@ -1162,6 +1164,10 @@ def test_ollama_reference_audit_indexes_materialized_history_without_source_text
     (tmp_path / "scripts" / "ollama_agent.py").write_text(
         "# Ollama runtime and model inference\n", encoding="utf-8"
     )
+    (tmp_path / "OllamTools").mkdir()
+    (tmp_path / "OllamTools" / "README.md").write_text(
+        "QMOI handoff candidate\n", encoding="utf-8"
+    )
     archived = tmp_path / "qmoi-enhanced-history-14" / "docs"
     archived.mkdir(parents=True)
     (archived / "agent.md").write_text(
@@ -1180,7 +1186,12 @@ def test_ollama_reference_audit_indexes_materialized_history_without_source_text
 
     assert report["status"] == "NEEDS_REMOTE_HISTORY_EVIDENCE"
     assert report["local_scan"]["complete"] is True
-    assert report["local_scan"]["matched_file_count"] == 2
+    assert report["local_scan"]["matched_file_count"] == 3
+    assert report["local_scan"]["candidate_path_count"] == 3
+    assert report["local_scan"]["matched_directory_count"] == 1
+    assert report["local_scan"]["matched_directories"] == ["OllamTools"]
+    assert report["scan_started_at"] <= report["scan_completed_at"]
+    assert report["scan_duration_seconds"] >= 0
     assert report["local_scan"]["matched_files_by_scope"]["qmoi_enhanced_history"] == 1
     archived_file = next(item for item in report["matched_files"] if item["scope"] == "qmoi_enhanced_history")
     assert "history_and_merges" in archived_file["categories"]
@@ -1879,6 +1890,22 @@ def test_research_visit_requires_exact_source_and_records_content_hash():
             ref="main",
             source_sha="unknown",
         )
+
+
+def test_language_release_research_is_official_source_plan_not_fabricated_live_data():
+    plan = build_language_research_plan()
+
+    assert plan["status"] == "PLANNED_NOT_VISITED"
+    assert plan["source_count"] == 26
+    assert plan["source_not_registered_count"] == 0
+    assert plan["observed_release_versions"] == 0
+    assert plan["external_fetch_performed"] is False
+    assert all(item["status"] == "PLANNED_NOT_VISITED" for item in plan["observations"])
+    assert all(item["url"].startswith("https://") for item in plan["observations"])
+    matrix = build_validation_research_matrix()
+    language_matrix = matrix["validation_domains"]["programming_language_release_research"]
+    assert len(language_matrix["required_research_topics"]) == 26
+    assert language_matrix["research_status"] == "PLANNED_OR_NOT_VISITED"
 
 
 def test_repo_retirement_plan_is_metadata_only_and_never_rewrites_without_gates(tmp_path):

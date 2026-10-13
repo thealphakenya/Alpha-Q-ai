@@ -25,6 +25,8 @@ def test_lion_universe_covers_variations_extensions_and_delivery_surfaces(tmp_pa
     paths = {
         "docs/lion_variations/lion-cloud.md": "# Lion Cloud\n",
         "docs/lion_variations/lion-ai.md": "# Lion AI\n",
+        "LIONVARIATIONS.md": "# Lion Variations\nQMOI Lion product variants.\n",
+        "QLIONPROGRAMMINGLANGUAGE.md": "# QLion Programming Language\n",
         "scripts/lion_plugins/lion_cloud.py": "LION_VARIATION = 'cloud'\n",
         "assets/lion-logo.svg": "<svg/>\n",
         "config/lion_settings.json": '{"variant": "cloud"}\n',
@@ -46,7 +48,7 @@ def test_lion_universe_covers_variations_extensions_and_delivery_surfaces(tmp_pa
 
     assert universe["status"] == "NEEDS_REVIEW"
     assert universe["remote_verification_complete"] is False
-    assert universe["metrics"]["variation_count"] == 3
+    assert universe["metrics"]["variation_count"] == 5
     assert universe["metrics"]["extension_candidate_count"] >= 1
     assert universe["metrics"]["logo_candidate_count"] >= 1
     assert universe["metrics"]["settings_candidate_count"] >= 1
@@ -56,6 +58,11 @@ def test_lion_universe_covers_variations_extensions_and_delivery_surfaces(tmp_pa
     assert universe["metrics"]["ref_count"] >= 1
     assert universe["metrics"]["ref_coverage_complete"] is False
     assert any(item["path"] == "docs/lion_variations/lion-cloud.md" for item in universe["variations"])
+    qlion = next(item for item in universe["variations"] if item["path"] == "QLIONPROGRAMMINGLANGUAGE.md")
+    assert "qlion-programming-language" in qlion["variation_candidates"]
+    assert qlion["implementation_verified"] is False
+    assert qlion["remote_verified"] is False
+    assert any(item["path"] == "LIONVARIATIONS.md" for item in universe["variations"])
     assert any(item["path"] == "qmoi-enhanced-history-14/docs/lion_variations/lion-enterprise.md" for item in universe["variations"])
     assert any(item["path"] == "scripts/lion_plugins/lion_cloud.py" for item in universe["extension_candidates"])
     assert any(item["path"] == ".github/workflows/lion-release.yml" for item in universe["delivery_candidates"])

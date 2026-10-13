@@ -1,6 +1,8 @@
 ---
 applyTo: "**"
 ---
+Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+
 # Autonomous Agent Instructions
 
 ## Instruction coverage
@@ -68,3 +70,11 @@ applyTo: "**"
 ## Mission roadmap
 
 - Follow the canonical [root mission](../../MISSION.md) and its instruction-directory mirror. The mission defines task mapping, bounded resumable execution, measured evidence, and completion gates; it does not override this policy or authorize remote/protected operations.
+
+## Two-hour mission monitoring
+
+- Use stable IDs `M01`–`M16` for the mission's 16 sections. Track each section's status, actual UTC start/finish, elapsed seconds, retries, acceptance evidence, blockers, dependencies, and next action in the latest machine checkpoint.
+- Record phase/task transitions using the same correlation ID in `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl` via the supported checkpoint writer. Use monotonic timing only while the process is live; mark continuity unavailable after restarts.
+- Use `python -m scripts.mission_task_ledger phase-start PHASE_ID`, `phase-finish PHASE_ID`, `start Mxx`, and `finish Mxx` for task/phase transitions; the helper enforces ledger schema, branch matching, dependency readiness, bounded locks, and evidence-backed completion.
+- Keep implementation, test, remote-CI, and production verification metrics distinct. Do not infer completion from time budgets, counts, or attempted work.
+- At the 120-minute boundary, preserve unfinished work and concrete resume actions. Claim autonomous continuation only after a separate run has actually loaded and resumed the saved checkpoint.

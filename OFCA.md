@@ -21,6 +21,61 @@ The metadata-only report in `ollamatracks/ollama_reference_audit.json` records m
 
 Q version lifecycle gate 21 requires OFCA on each merge execution. Finalization additionally requires terminal target-owned audit evidence for both repositories covering current refs, pull requests, and intermediate commit trees at exact final SHAs. Until that evidence exists, the audit stays `NEEDS_REVIEW` and Q-version finalization stays blocked.
 
+## Per-phase Ollama inventory and QMOI succession gate
+
+At the start of every autonomous execution, lifecycle phase, and bounded task
+batch, record an OFCA preflight event before doing work. The event must include
+phase/task ID, UTC start/end and duration, repository/ref/HEAD, materialized
+source-manifest SHA-256, files and bytes enumerated/read, Ollama/Ollam
+path/content candidate counts, matched directory counts, skipped/unreadable/
+oversized/symlink paths by reason, local refs/commits/PR evidence observed,
+and the next action. Do not copy source lines into telemetry.
+
+The preflight verifies the exact tree state, not just an `ollama` filename
+search. Inventory both path names and file contents for Ollama/Ollam
+responsibilities, including runtime/model use, workflows, policies,
+telemetry, memory, history, dependencies, APIs, tests, and credentials
+references (names/paths only). Keep materialized, historical, fetched-ref,
+and remote-target coverage denominators separate. Record a changed-manifest
+delta and rerun the full scan after any mutation. An unchanged manifest may
+reuse an earlier full scan only when path set, hashes, exclusions, root/ref,
+scanner version, and timestamp freshness all match; otherwise it is
+`STALE`/`UNKNOWN`, not a pass. Never start merge, replacement, release, or
+publication from a stale or incomplete preflight.
+
+Ollama retirement is a gated handoff, not a string substitution. QMOI must
+first demonstrate task-level capability parity, reliability, security,
+performance, health, recovery, data compatibility, test coverage, and
+operational ownership. Require a complete OFCA candidate inventory, reviewed
+path-by-path dependency and ownership mapping, backwards-compatible adapter
+or migration plan, focused regression tests, rollback, and terminal exact-SHA
+validation. Only then may an authorized migration change eligible active
+files/directories. Preserve third-party/runtime dependencies, historical
+archives, user data, credentials/configuration, and externally managed
+resources unless a separate explicit approval and compatibility plan covers
+them. Never rewrite all matches in bulk or remove Ollama before QMOI parity is
+independently proven.
+
+Required succession counters are `preflight_runs`, `full_scans`,
+`manifest_reuse_runs`, `stale_preflight_runs`, `candidate_paths`,
+`candidate_directories`, `mapped_to_owner_or_feature`,
+`unmapped_candidates`, `parity_gates_passed`, `eligible_migrations`,
+`migrations_applied`, `focused_checks_passed`, `rollbacks`, and
+`remote_sha_verified`. Publish numerator and denominator, scan scope, source
+manifest, status, and blockers for each; local counts are not percentages of
+global or remote coverage. QVersion's `QMOI_CAPABILITY_PARITY` and
+`PRODUCTION_REPLACEMENTS` gates own acceptance. The existing automatic
+replacement default remains disabled.
+
+Implementation evidence must be reported, not implied by this contract: the
+current OFCA helper performs a materialized-tree scan during explicit audit
+entry points, and the existing agent refresh invokes it during inventory and
+validation flows. This checkout has not yet demonstrated a separately
+correlated preflight at every phase/task boundary, manifest-safe reuse,
+candidate-directory counts, or automated QMOI parity evaluation. Those
+capabilities remain `NOT_VERIFIED`; do not describe the above requirements as
+already-running automation.
+
 ## Restore point and branch coverage
 
 OFCA evidence for restore operations must bind the audit SHA to both repositories' `main`, `autosync-backup`, `qmoi`, and `master` refs, the corresponding tree SHA, required completion-document hashes, and the terminal Ollama workflow run that authorized restore publication. `master` is a fast-forward mirror of validated `main`, not an independent development branch. The pre-agent check may report `BOOTSTRAP_READY` only when both `qmoi` and `master` refs are absent and both `main`/backup pairs exactly match the trusted checkout under the explicit `QMOI_BRANCH_PUBLICATION_AUTHORIZED` gate. It may report `MASTER_BOOTSTRAP_READY` only when `qmoi`, `main`, and backup already agree and `master` is absent in both repositories. Any one-sided or stale ref remains blocked.

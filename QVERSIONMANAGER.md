@@ -12,6 +12,35 @@ The Q-version lifecycle must know when to run the style and universal evaluation
 
 The styles and universals gate is tied to the same crosswalk used by [QAUDITS.md](QAUDITS.md), [ALLMDFILESREFS.md](ALLMDFILESREFS.md), [TRANSION.md](TRANSION.md), and the active candidate inventory. Candidate counts may be discovered locally, but they are not considered replacements until a verified lineage record exists and the exact repository/ref/SHA is supplied.
 
+## Language strategy, QLion, and Ollama succession
+
+`PRODUCT_PLATFORM_CATALOG` consumes the source-manifest-bound language counts
+and deterministic advisory selector in `scripts/language_strategy.py`. Keep
+unclassified extensions, unsupported profiles, and historical/remote scopes
+explicit. The maintained catalog in [ALLLANGUAGES.md](ALLLANGUAGES.md) is not
+an all-world language census, and [ALLLANGUAGESCOMPARE.md](ALLLANGUAGESCOMPARE.md)
+does not contain current release facts until official-source observations are
+retrieved and timestamped.
+
+Recommendations do not migrate code. QLion remains
+`PROPOSED_INTEROPERABILITY_LAYER` until its versioned specification,
+toolchain/compiler, host adapters, conformance and security tests, releases,
+and exact-SHA validation exist. QVillage research freshness and source hashes
+must be recorded separately from local path inventory.
+
+`OLLAMA_FULL_COVERAGE_AUDIT` must inventory name and content candidates at
+phase/task boundaries. A full scan may be reused only with identical
+repository/ref, tree/source-manifest digest, scanner version, exclusions, and
+freshness; any changed or unknown input invalidates reuse. The phase report
+records invocations, full scans, reuse, stale scans, candidate files and
+directories, omissions, duration, and lineage. Before an Ollama-named active
+file or directory can be migrated, `QMOI_CAPABILITY_PARITY` must prove
+behavioral, security, performance, health, recovery, and operational parity
+with mapped requirements, passing focused checks, and a tested rollback.
+`PRODUCTION_REPLACEMENTS` remains disabled until owner review, authorization,
+and exact-SHA evidence pass. Preserve history and external/runtime
+dependencies unless separately approved; never implement a blanket rename.
+
 ## Canonical autonomous lifecycle
 
 The Q-version lifecycle is the contract for the fully autonomous Ollama agent. These are the required stage names and the order they must be recorded in:

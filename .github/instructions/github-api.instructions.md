@@ -1,3 +1,5 @@
+Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+
 # GitHub API instructions
 
 ## Required approach
@@ -36,6 +38,13 @@ Record:
 - Refresh `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl` through the supported checkpoint path. Record whether evidence is observed, terminal, or independently verified; leave remote verification false when any binding or authority gate is absent.
 - QAUDITS can queue and prioritize authorized work but cannot self-authorize a mutation, infer identity from secret presence, bypass branch protection, or convert local completion into remote completion.
 - CodeQL workflow and code-scanning observations must be bound to the canonical repository, exact ref/full SHA, run/check ID, and terminal status. Reuse an existing workflow-run response where possible; an HTTP 403/404 alert response, absent run, stale SHA, or in-progress job is `UNKNOWN`/incomplete, never zero findings or success.
+
+## Two-hour mission monitoring
+
+- Track mission sections `M01`–`M16` with actual UTC phase/task times, status, retries, evidence, blockers, and next actions. Correlate the paired Markdown checkpoint, machine state, and append-only event through the supported writer.
+- Keep the mission deadline separate from remote verification. Record identity, exact ref/SHA, endpoint response, and terminal evidence as observed; missing authentication or remote evidence remains blocked and must not be inferred from local elapsed-time metrics.
+- Use the mission-ledger updater for local task/phase timing and retain its correlated remote-verification=false result until authenticated exact-SHA evidence is independently available.
+- Preserve unfinished work at the deadline. A scheduled trigger or dispatch is not proof that continuation executed or resumed.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

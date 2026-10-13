@@ -41,6 +41,10 @@ def test_qaudit_universe_covers_style_universal_and_audit_objects(tmp_path: Path
     assert universe["metrics"]["total_duration_seconds"] > 0
     assert universe["metrics"]["dependency_edge_count"] == len(universe["dependency_graph"]["edges"])
     assert universe["metrics"]["files_with_parsed_content_count"] == universe["discovery"]["files_scanned"]
+    assert universe["classes"]["docs/consumer.py"]["language"] == "Python"
+    assert universe["metrics"]["language_inventory"]["language_counts"]["Python"] == 1
+    assert universe["metrics"]["language_inventory"]["catalog_coverage_complete_for_all_languages"] is False
+    assert universe["metrics"]["language_inventory"]["remote_research_verified"] is False
     assert "styles/button.css" in render_style_universal_candidate_tree(universe)
     assert universe["metrics"]["source_manifest_sha256"] == build_qaudit_universe(tmp_path)["metrics"]["source_manifest_sha256"]
 
@@ -76,6 +80,12 @@ def test_qaudit_universe_tracks_product_delivery_and_accountability_domains(tmp_
     historical_style = tmp_path / "Alpha-Q-ai-2025" / "styles" / "legacy.css"
     historical_style.parent.mkdir(parents=True)
     historical_style.write_text("/* historical style candidate */\n", encoding="utf-8")
+    (tmp_path / "QLIONPROGRAMMINGLANGUAGE.md").write_text(
+        "# QLion Programming Language\n", encoding="utf-8"
+    )
+    (tmp_path / "LIONVARIATIONS.md").write_text(
+        "# Lion Variations\nQMOI Lion family catalog.\n", encoding="utf-8"
+    )
 
     universe = build_qaudit_universe(
         tmp_path,
@@ -92,8 +102,17 @@ def test_qaudit_universe_tracks_product_delivery_and_accountability_domains(tmp_
     assert accountability["registered_application_count"] == 2
     assert accountability["applications"][0]["implementation_status"] == "not_verified"
     assert accountability["registered_platform_count"] == 2
-    assert accountability["lion_variation_candidate_count"] == 1
-    assert accountability["lion_variation_candidates"][0]["scope"] == "historical_snapshot"
+    assert accountability["lion_variation_candidate_count"] >= 3
+    historical_candidate = next(
+        item for item in accountability["lion_variation_candidates"]
+        if item["path"].startswith("qmoi-enhanced-history-14/")
+    )
+    assert historical_candidate["scope"] == "historical_snapshot"
+    qlion_candidate = next(
+        item for item in accountability["lion_variation_candidates"]
+        if item["path"] == "QLIONPROGRAMMINGLANGUAGE.md"
+    )
+    assert "qlion-programming-language" in qlion_candidate["variation_candidates"]
     assert universe["classes"]["Alpha-Q-ai-2025/styles/legacy.css"]["scope"] == "historical_snapshot"
     assert accountability["extension_candidate_count"] >= 1
     assert accountability["extension_file_types"][".py"]["file_count"] >= 1
