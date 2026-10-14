@@ -127,6 +127,7 @@
     "QMOI_main_CodeQL_JavaScript_TypeScript_is_in_progress",
     "QMOI_main_CodeQL_JavaScript_TypeScript_job_in_progress",
     "QMOI_main_CodeQL_JavaScript_TypeScript_job_is_in_progress",
+    "QQUANTUM item 14 names TRANSIONQ.md, which is absent; TRANSION.md and TRANSITION.md are the existing near-name documents.",
     "QSEED_second_repository_live_checkout_and_remote_parity_not_verified",
     "QStats values are derived local counts and are not production health or balance evidence",
     "QVILLAGE_trailing_blank_line_at_EOF",
@@ -137,10 +138,12 @@
     "Remote authentication, branch policies, exact-SHA hosted results, and production parity remain unverified.",
     "Remote completion remains blocked until independently verified target-owned terminal exact-SHA and tree evidence is recorded.",
     "Remote completion, GitHub protection/authority, Ollama inference, and independent hosted resume remain unverified.",
+    "Remote target ref and write authority are not verified; worktree contains existing user changes.",
     "Semantic reconciliation of historical operation payloads and directive candidates remains incomplete.",
     "Semantic review of remaining operation payloads, directive candidates, and 15 unreviewed workflows is incomplete.",
     "Semantic review of the remaining workflow files is incomplete.",
     "Static source timestamps are not evidence of metric freshness or service health.",
+    "TRANSION.md requires fresh QAUDITS, lineage, tests, authorization, and exact-SHA evidence; completion is not proven.",
     "Tests do not exercise the cross-repo-autosync workflow-level counterpart contract push; its authorization alignment remains a policy review item.",
     "The canonical mission ledger is not consumed by any of the 17 reviewed GitHub workflow files; independent hosted resume remains unverified.",
     "The canonical mission ledger is not consumed by the reviewed workflows, so independent hosted ledger resume remains unverified.",
@@ -383,43 +386,31 @@
   ],
   "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
   "current_local_checkpoint": {
-    "artifact_bytes": 71856,
-    "artifact_path": "ollamatracks/mission-task-ledger.json",
+    "artifact_bytes": 6726,
+    "artifact_path": "QQUANTUM.md",
     "artifact_refs": {
-      ".github/workflows/cross-repo-autosync.yml": {
-        "bytes": 7685,
-        "path": ".github/workflows/cross-repo-autosync.yml",
-        "sha256": "7b2b3ce1243dc013f5c3b1ca24c9b81445edee88b40431c0a65b77e411320f85"
+      "transition_index": {
+        "bytes": 6081,
+        "line_count": 47,
+        "path": "TRANSITION.md",
+        "sha256": "4de7a7469510712b73442c050acfd59512903b868337ae70ca9ab2047d01ada8"
       },
-      "ollamatracks/mission-task-ledger.json": {
-        "bytes": 71856,
-        "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "9d2b0160661bf7eea1c7e1c74ba652011957f76d09d331685b14cfca326717d6"
-      },
-      "tests/test_cross_repo_sync.py": {
-        "bytes": 24781,
-        "path": "tests/test_cross_repo_sync.py",
-        "sha256": "accc81d48c1eed233890b6238b79c62533e6880b5d143f2eeeb23b557a852717"
-      },
-      "tests/test_mission_task_ledger.py": {
-        "bytes": 7619,
-        "path": "tests/test_mission_task_ledger.py",
-        "sha256": "d92d09438a1e2146a6c9e691aea5eead8713008514a00129a0775975e7f9ec06"
+      "transition_plan": {
+        "bytes": 16216,
+        "line_count": 178,
+        "path": "TRANSION.md",
+        "sha256": "12b87396b470cbf660d4f1fcbf44ab8fea5774f70ec4b31480790c321368be18"
       }
     },
-    "artifact_sha256": "9d2b0160661bf7eea1c7e1c74ba652011957f76d09d331685b14cfca326717d6",
+    "artifact_sha256": "363284c92ef3a29a6fc136c0b104f18bd3e3328fa57b46dc17c6771dd7a60a85",
     "blockers": [
-      "Earlier broad-test failure traceback is unavailable; isolated test results do not establish the original failure cause.",
-      "GitHub authorization, branch protection, exact-SHA terminal workflow and remote tree evidence remain unavailable; no remote mutation occurred.",
-      "Local Ollama inference and agent bridge remain unverified/not measured.",
-      "M02 semantic requirement mapping and M10 terminal hosted workflow evidence/independent ledger resume remain incomplete.",
-      "The counterpart contract authorization guard is validated locally only; owner variable configuration and hosted workflow execution remain unknown.",
-      "Unclassified dirty paths remain untouched.",
+      "QQUANTUM item 14 names TRANSIONQ.md, which is absent; TRANSION.md and TRANSITION.md are the existing near-name documents.",
+      "TRANSION.md requires fresh QAUDITS, lineage, tests, authorization, and exact-SHA evidence; completion is not proven.",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
     "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-    "generated_at": "2026-10-13T23:48:07.672661Z",
+    "generated_at": "2026-10-14T22:21:12.243305Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -486,52 +477,26 @@
       }
     ],
     "instruction_inventory_sha256": "74f661e6ef67bcc869eeda61d9b11a49951bd9aae016ba4d0185e5fd740dfa21",
-    "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
-    "local_tree_sha": "4d73f09dfed1709bf5a20cda454662747285648f",
+    "local_head_sha": "e59ccebec13fef7aceb35983fbb870a19656ed05",
+    "local_tree_sha": "365dbbad9bb3dbe6d42a7d801051910d9e76a172",
     "metrics": {
-      "conceptual_architecture": {
-        "bounded_execution": "LOCAL ONLY; NO REMOTE MUTATION",
-        "evidence_handoff": "CORRELATED CHECKPOINT",
-        "executor": "LOCAL TESTS ONLY; HOSTED NOT VERIFIED",
-        "independent_resume": "NOT_DEMONSTRATED",
-        "ollama_inference": "NOT_MEASURED",
-        "remote_exact_sha_tree": "NOT_VERIFIED",
-        "structured_task_and_constraints": "RECORDED",
-        "validation": "FOCUSED TESTS PASSED"
-      },
-      "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-      "cross_repo_guard": "Requires existing QMOI_BRANCH_PUBLICATION_AUTHORIZED variable exactly true before counterpart contract copy/commit/push; otherwise skips with notice.",
-      "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
-      "mission_status_counts": {
-        "blocked": 1,
-        "failed": 0,
-        "in_progress": 7,
-        "partially_complete": 3,
-        "pending": 5,
-        "verified_complete": 0
-      },
-      "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
-      "remote_mutation_performed": false,
+      "active_task_id": "M02",
+      "active_task_status": "PARTIALLY_COMPLETE",
+      "established_transition_plan_reviewed": true,
+      "ollama_inference": "NOT_MEASURED",
+      "qquantum_sections_reviewed": 14,
+      "quantum_execution": "NOT_IMPLEMENTED_OR_VERIFIED_IN_ACTIVE_CODE",
       "remote_verified": false,
-      "repository": "thealphakenya/Alpha-Q-ai",
-      "source_history_wording": "Historical finding now explicitly distinguished from current local remediation and unresolved hosted state.",
-      "task_statuses": {
-        "M02": "IN_PROGRESS",
-        "M10": "IN_PROGRESS",
-        "M11": "PARTIALLY_COMPLETE"
-      },
-      "validation": {
-        "cross_repo_sync_tests": "18 passed in 5.25s",
-        "git_diff_check": "PASS",
-        "mission_task_ledger_tests": "10 passed in 0.32s",
-        "workflow_validator": "17 YAML files; local validation passed"
-      }
+      "requested_transionq_path_present": false,
+      "transition_index_reviewed": true,
+      "transition_plan_status": "CANDIDATES_AND_PENDING_EVIDENCE_ONLY",
+      "transition_replacement_counts_verified": 0
     },
-    "next_action": "Continue M02 semantic requirement mapping; leave M10 open until the owner-authorized target workflow, exact-SHA/tree evidence, and independent ledger resume are verified. Continue safe local tasks without changing unclassified dirty paths.",
-    "operation": "mission-m10-cross-repo-bootstrap-authorization-guard-reconciled",
+    "next_action": "Keep M02 partial. Resolve whether TRANSIONQ.md is intended to refer to TRANSION.md, then reconcile each transition requirement and the remaining master-plan sources before starting quantum implementation.",
+    "operation": "mission-m02-qquantum-transition-reference-correction",
     "paired_document_sha256": {
-      "oe2.txt": "44e228e2837d0d034ba406552479702fffd7b819107a3cd760b44aa3e9c03a29",
-      "remotecompletion.md": "a409ffb09e2792695b1e56fe304bc01ab9a39bea1faf4f1fbf8f1e3b6a6c562f"
+      "oe2.txt": "88acf0123e91b11693dce4ffbe26ce1fe97e34f68114fd9e60e1566582ad9893",
+      "remotecompletion.md": "90da75d24bfc5de62b26bd442a11cbea55bca4cb5df39414fba316235d577316"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -539,7 +504,7 @@
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
     "source_manifest_sha256": null,
-    "status": "LOCAL_GUARD_AND_LEDGER_RECONCILIATION_VALIDATED; HOSTED_AND_REMOTE_GATES_BLOCKED",
+    "status": "PARTIALLY_COMPLETE",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": true
   },
@@ -556,7 +521,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-13T23:48:07.672661Z",
+  "generated_at": "2026-10-14T22:21:12.243305Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -887,43 +852,31 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 71856,
-      "artifact_path": "ollamatracks/mission-task-ledger.json",
+      "artifact_bytes": 6726,
+      "artifact_path": "QQUANTUM.md",
       "artifact_refs": {
-        ".github/workflows/cross-repo-autosync.yml": {
-          "bytes": 7685,
-          "path": ".github/workflows/cross-repo-autosync.yml",
-          "sha256": "7b2b3ce1243dc013f5c3b1ca24c9b81445edee88b40431c0a65b77e411320f85"
+        "transition_index": {
+          "bytes": 6081,
+          "line_count": 47,
+          "path": "TRANSITION.md",
+          "sha256": "4de7a7469510712b73442c050acfd59512903b868337ae70ca9ab2047d01ada8"
         },
-        "ollamatracks/mission-task-ledger.json": {
-          "bytes": 71856,
-          "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "9d2b0160661bf7eea1c7e1c74ba652011957f76d09d331685b14cfca326717d6"
-        },
-        "tests/test_cross_repo_sync.py": {
-          "bytes": 24781,
-          "path": "tests/test_cross_repo_sync.py",
-          "sha256": "accc81d48c1eed233890b6238b79c62533e6880b5d143f2eeeb23b557a852717"
-        },
-        "tests/test_mission_task_ledger.py": {
-          "bytes": 7619,
-          "path": "tests/test_mission_task_ledger.py",
-          "sha256": "d92d09438a1e2146a6c9e691aea5eead8713008514a00129a0775975e7f9ec06"
+        "transition_plan": {
+          "bytes": 16216,
+          "line_count": 178,
+          "path": "TRANSION.md",
+          "sha256": "12b87396b470cbf660d4f1fcbf44ab8fea5774f70ec4b31480790c321368be18"
         }
       },
-      "artifact_sha256": "9d2b0160661bf7eea1c7e1c74ba652011957f76d09d331685b14cfca326717d6",
+      "artifact_sha256": "363284c92ef3a29a6fc136c0b104f18bd3e3328fa57b46dc17c6771dd7a60a85",
       "blockers": [
-        "Earlier broad-test failure traceback is unavailable; isolated test results do not establish the original failure cause.",
-        "GitHub authorization, branch protection, exact-SHA terminal workflow and remote tree evidence remain unavailable; no remote mutation occurred.",
-        "Local Ollama inference and agent bridge remain unverified/not measured.",
-        "M02 semantic requirement mapping and M10 terminal hosted workflow evidence/independent ledger resume remain incomplete.",
-        "The counterpart contract authorization guard is validated locally only; owner variable configuration and hosted workflow execution remain unknown.",
-        "Unclassified dirty paths remain untouched.",
+        "QQUANTUM item 14 names TRANSIONQ.md, which is absent; TRANSION.md and TRANSITION.md are the existing near-name documents.",
+        "TRANSION.md requires fresh QAUDITS, lineage, tests, authorization, and exact-SHA evidence; completion is not proven.",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
       "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-      "generated_at": "2026-10-13T23:48:07.672661Z",
+      "generated_at": "2026-10-14T22:21:12.243305Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -990,52 +943,26 @@
         }
       ],
       "instruction_inventory_sha256": "74f661e6ef67bcc869eeda61d9b11a49951bd9aae016ba4d0185e5fd740dfa21",
-      "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
-      "local_tree_sha": "4d73f09dfed1709bf5a20cda454662747285648f",
+      "local_head_sha": "e59ccebec13fef7aceb35983fbb870a19656ed05",
+      "local_tree_sha": "365dbbad9bb3dbe6d42a7d801051910d9e76a172",
       "metrics": {
-        "conceptual_architecture": {
-          "bounded_execution": "LOCAL ONLY; NO REMOTE MUTATION",
-          "evidence_handoff": "CORRELATED CHECKPOINT",
-          "executor": "LOCAL TESTS ONLY; HOSTED NOT VERIFIED",
-          "independent_resume": "NOT_DEMONSTRATED",
-          "ollama_inference": "NOT_MEASURED",
-          "remote_exact_sha_tree": "NOT_VERIFIED",
-          "structured_task_and_constraints": "RECORDED",
-          "validation": "FOCUSED TESTS PASSED"
-        },
-        "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-        "cross_repo_guard": "Requires existing QMOI_BRANCH_PUBLICATION_AUTHORIZED variable exactly true before counterpart contract copy/commit/push; otherwise skips with notice.",
-        "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
-        "mission_status_counts": {
-          "blocked": 1,
-          "failed": 0,
-          "in_progress": 7,
-          "partially_complete": 3,
-          "pending": 5,
-          "verified_complete": 0
-        },
-        "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
-        "remote_mutation_performed": false,
+        "active_task_id": "M02",
+        "active_task_status": "PARTIALLY_COMPLETE",
+        "established_transition_plan_reviewed": true,
+        "ollama_inference": "NOT_MEASURED",
+        "qquantum_sections_reviewed": 14,
+        "quantum_execution": "NOT_IMPLEMENTED_OR_VERIFIED_IN_ACTIVE_CODE",
         "remote_verified": false,
-        "repository": "thealphakenya/Alpha-Q-ai",
-        "source_history_wording": "Historical finding now explicitly distinguished from current local remediation and unresolved hosted state.",
-        "task_statuses": {
-          "M02": "IN_PROGRESS",
-          "M10": "IN_PROGRESS",
-          "M11": "PARTIALLY_COMPLETE"
-        },
-        "validation": {
-          "cross_repo_sync_tests": "18 passed in 5.25s",
-          "git_diff_check": "PASS",
-          "mission_task_ledger_tests": "10 passed in 0.32s",
-          "workflow_validator": "17 YAML files; local validation passed"
-        }
+        "requested_transionq_path_present": false,
+        "transition_index_reviewed": true,
+        "transition_plan_status": "CANDIDATES_AND_PENDING_EVIDENCE_ONLY",
+        "transition_replacement_counts_verified": 0
       },
-      "next_action": "Continue M02 semantic requirement mapping; leave M10 open until the owner-authorized target workflow, exact-SHA/tree evidence, and independent ledger resume are verified. Continue safe local tasks without changing unclassified dirty paths.",
-      "operation": "mission-m10-cross-repo-bootstrap-authorization-guard-reconciled",
+      "next_action": "Keep M02 partial. Resolve whether TRANSIONQ.md is intended to refer to TRANSION.md, then reconcile each transition requirement and the remaining master-plan sources before starting quantum implementation.",
+      "operation": "mission-m02-qquantum-transition-reference-correction",
       "paired_document_sha256": {
-        "oe2.txt": "44e228e2837d0d034ba406552479702fffd7b819107a3cd760b44aa3e9c03a29",
-        "remotecompletion.md": "a409ffb09e2792695b1e56fe304bc01ab9a39bea1faf4f1fbf8f1e3b6a6c562f"
+        "oe2.txt": "88acf0123e91b11693dce4ffbe26ce1fe97e34f68114fd9e60e1566582ad9893",
+        "remotecompletion.md": "90da75d24bfc5de62b26bd442a11cbea55bca4cb5df39414fba316235d577316"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -1043,7 +970,7 @@
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
       "source_manifest_sha256": null,
-      "status": "LOCAL_GUARD_AND_LEDGER_RECONCILIATION_VALIDATED; HOSTED_AND_REMOTE_GATES_BLOCKED",
+      "status": "PARTIALLY_COMPLETE",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": true
     },
@@ -1119,7 +1046,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
+    "local_head_sha": "e59ccebec13fef7aceb35983fbb870a19656ed05",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",
