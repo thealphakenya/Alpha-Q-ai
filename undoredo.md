@@ -1,7 +1,7 @@
 # QMOI checkpoint undo and redo
 
 ## Purpose and boundaries
-
+abc
 Undo/redo gives the autonomous agent a controlled way to revisit its resumable lifecycle state. It complements restore points, but it does not replace Git history, a backup branch, or the `qmoi` restore-point branch.
 
 `CheckpointManager.undo()` and `CheckpointManager.redo()` move the cursor over a bounded history of up to 50 distinct state snapshots for one execution ID. Writes are atomic; a new state after undo discards the redo branch. Unreadable or malformed checkpoint/history data raises an error instead of silently resetting state. The state history is stored in the checkpoint JSON and `load()` returns the current public checkpoint state without exposing manager metadata.
