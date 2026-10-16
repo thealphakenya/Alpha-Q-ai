@@ -104,12 +104,21 @@
         "previous_sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b",
         "remote_verified": false,
         "target_branch_matches_local": true
+      },
+      {
+        "basis": "Explicit user-requested adoption of latest mission.md; six established mirrors were written and byte-verified.",
+        "local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+        "observed_at": "2026-10-16T20:00:19.701402Z",
+        "observed_sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662",
+        "previous_sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151",
+        "remote_verified": false,
+        "target_branch_matches_local": true
       }
     ],
-    "mirror_sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151",
+    "mirror_sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662",
     "mission_section_count": 18,
     "path": "latest mission.md",
-    "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
+    "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
   },
   "continuation": {
     "independent_checkpoint_resume_demonstrated": false,
@@ -646,7 +655,7 @@
   "mission_phase_metric_source": {
     "path": "latest mission.md",
     "phase_count": 18,
-    "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
+    "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
   },
   "mission_phase_metrics": [
     {
@@ -10331,19 +10340,26 @@
         },
         {
           "active_time_known": false,
-          "elapsed_seconds": null,
-          "finished_at": null,
-          "outcome": "IN_PROGRESS",
+          "elapsed_seconds": 166392.066,
+          "finished_at": "2026-10-16T20:26:42.910250Z",
+          "outcome": "PARTIALLY_COMPLETE",
           "started_at": "2026-10-14T22:13:30.843941Z"
         }
       ],
-      "elapsed_seconds": null,
-      "finished_at": null,
+      "elapsed_seconds": 252818.092,
+      "evidence_refs": [
+        ".github/instructions/continue.instructions.md",
+        "ollamatracks/instruction_inventory.json",
+        "ollamatracks/mission-task-ledger.json",
+        "remote-evidence-ledger.jsonl"
+      ],
+      "finished_at": "2026-10-16T20:26:42.910250Z",
       "id": "P02_REQUIREMENT_AND_CONTINUATION_INSPECTION",
       "last_started_at": "2026-10-14T22:13:30.843941Z",
+      "next_action": "Continue semantic reconciliation of mission, oe2.txt, and remotecompletion.md requirements against implementation, tests, workflows, and owner evidence; 760 source-line candidates remain unreviewed.",
       "result": null,
       "started_at": "2026-10-13T13:52:55Z",
-      "status": "IN_PROGRESS"
+      "status": "PARTIALLY_COMPLETE"
     }
   ],
   "remote_sha": "280abad164ac2a3b248b7ff37f5853869af375c4",
@@ -10352,10 +10368,10 @@
   "schema_version": "1.0",
   "status": "IN_PROGRESS",
   "status_counts": {
-    "blocked": 1,
+    "blocked": 2,
     "failed": 0,
-    "in_progress": 5,
-    "partially_complete": 5,
+    "in_progress": 0,
+    "partially_complete": 9,
     "pending": 5,
     "verified_complete": 0
   },
@@ -10493,49 +10509,81 @@
     },
     {
       "acceptance_criteria": "Persist all 16 stable task IDs with source references, acceptance criteria, dependencies, status, actual timestamps, elapsed time, retries, evidence, blockers, and next actions in one canonical ledger.",
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 282745.435,
+          "finished_at": "2026-10-16T20:25:20.435300Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-13T13:52:55Z",
+          "timing_basis": "utc_wall_interval_process_activity_unknown"
+        }
+      ],
       "blockers": [],
       "dependencies": [
         "M02"
       ],
-      "elapsed_seconds": null,
+      "elapsed_seconds": 282745.435,
       "estimated_duration_minutes": null,
+      "evidence_refs": [
+        "ollamatracks/mission-task-ledger.json",
+        "tests/test_mission_task_ledger.py",
+        "remote-evidence-ledger.jsonl"
+      ],
       "failure_history": [],
-      "finished_at": null,
+      "finished_at": "2026-10-16T20:25:20.435300Z",
       "heading": "Use one authoritative machine-readable task ledger",
       "id": "M03",
       "implementation_sha": null,
-      "next_action": "Complete acceptance/dependency mapping and link the ledger digest from the correlated checkpoint.",
+      "next_action": "Continue source-linked acceptance mapping for the 760 unreviewed mission requirement-line candidates; do not claim complete requirement reconciliation.",
       "priority": "P0",
       "remote_sha": null,
+      "result": "The canonical ledger persists all 16 task IDs and 18 phase records; ledger schema and task-transition regressions pass, while semantic source reconciliation remains incomplete.",
       "retries": 0,
       "risk": "HIGH",
       "section": 3,
       "source_line": 90,
       "started_at": "2026-10-13T13:52:55Z",
-      "status": "IN_PROGRESS",
+      "status": "PARTIALLY_COMPLETE",
       "test_results": [],
       "workflow_evidence": []
     },
     {
       "acceptance_criteria": "Maintain a 120-minute deadline and actual UTC timestamps and elapsed seconds for each phase and task; record unavailable monotonic continuity explicitly.",
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 282916.719,
+          "finished_at": "2026-10-16T20:25:35.794293Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-13T13:50:19.075+00:00",
+          "timing_basis": "utc_wall_interval_process_activity_unknown"
+        }
+      ],
       "blockers": [],
       "dependencies": [],
-      "elapsed_seconds": null,
+      "elapsed_seconds": 282916.719,
       "estimated_duration_minutes": null,
+      "evidence_refs": [
+        "ollamatracks/mission-task-ledger.json",
+        "oe2.txt",
+        "remotecompletion.md"
+      ],
       "failure_history": [],
-      "finished_at": null,
+      "finished_at": "2026-10-16T20:25:35.794293Z",
       "heading": "Start a strict two-hour execution clock",
       "id": "M04",
       "implementation_sha": null,
-      "next_action": "Update elapsed and remaining time at each phase/task checkpoint.",
+      "next_action": "Preserve this expired clock; do not restart or extend it. Record any future authorized mission run under a new explicit clock and correlation ID.",
       "priority": "P0",
       "remote_sha": null,
+      "result": "The 120-minute deadline and UTC elapsed/remaining metrics are enforced and reported; elapsed process-active time is unavailable and the existing run expired.",
       "retries": 0,
       "risk": "MEDIUM",
       "section": 4,
       "source_line": 128,
       "started_at": "2026-10-13T13:50:19.075+00:00",
-      "status": "IN_PROGRESS",
+      "status": "PARTIALLY_COMPLETE",
       "test_results": [],
       "workflow_evidence": []
     },
@@ -10593,28 +10641,46 @@
     },
     {
       "acceptance_criteria": "Persist a correlated, schema-valid checkpoint, paired Markdown event, JSON state, and append-only JSONL event with exact local identity, timing, blockers, and next action.",
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 282698.607,
+          "finished_at": "2026-10-16T20:25:50.982212Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-13T13:54:12.375676Z",
+          "timing_basis": "utc_wall_interval_process_activity_unknown"
+        }
+      ],
       "blockers": [],
       "dependencies": [
         "M01",
         "M03",
         "M04"
       ],
-      "elapsed_seconds": null,
+      "elapsed_seconds": 282698.607,
       "estimated_duration_minutes": null,
+      "evidence_refs": [
+        "remote-completion.json",
+        "remote-evidence-ledger.jsonl",
+        "oe2.txt",
+        "remotecompletion.md",
+        "tests/test_mission_task_ledger.py"
+      ],
       "failure_history": [],
-      "finished_at": null,
+      "finished_at": "2026-10-16T20:25:50.982212Z",
       "heading": "Build durable checkpoints and evidence",
       "id": "M07",
       "implementation_sha": null,
-      "next_action": "Validate the refreshed ledger hash, paired-document hashes, and event correlation before closing this task.",
+      "next_action": "Keep paired state, ledger digest, artifact hashes, and correlation synchronized after each safe operation; finish remaining requirement mapping and remote gates separately.",
       "priority": "P0",
       "remote_sha": null,
+      "result": "Paired JSON, JSONL, oe2.txt, and remotecompletion.md checkpoints are schema-valid and hash-consistent under the mission correlation; tests pass, but overall task dependencies and remote proof remain open.",
       "retries": 0,
       "risk": "HIGH",
       "section": 7,
       "source_line": 210,
       "started_at": "2026-10-13T13:54:12.375676Z",
-      "status": "IN_PROGRESS",
+      "status": "PARTIALLY_COMPLETE",
       "test_results": [
         {
           "command": "python -m pytest tests/test_control_plane.py -k qaudit_checkpoint -q --tb=short",
@@ -10626,37 +10692,53 @@
     },
     {
       "acceptance_criteria": "A supported independent runner loads and validates the canonical ledger/checkpoint, selects a dependency-ready task, executes bounded work, persists results, and resumes without duplicating completed work.",
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 282459.127,
+          "finished_at": "2026-10-16T20:26:06.126960Z",
+          "outcome": "BLOCKED",
+          "started_at": "2026-10-13T13:58:27Z",
+          "timing_basis": "utc_wall_interval_process_activity_unknown"
+        }
+      ],
       "blockers": [
         "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
-        "No independent mission-ledger resume has been demonstrated."
+        "No independent mission-ledger resume has been demonstrated.",
+        "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial."
       ],
       "dependencies": [
         "M03",
         "M07"
       ],
-      "elapsed_seconds": null,
+      "elapsed_seconds": 282459.127,
       "estimated_duration_minutes": null,
       "evidence_refs": [
         ".github/workflows/ollama-autonomous-agent.yml:162-167 checks out github.event.repository.default_branch; no mission-task-ledger or mission_task_ledger reference",
         ".github/workflows/ollama-autonomous-agent.yml:823-839 persists resumefromhere.txt and ollamatracks/checkpoint.json only",
         ".github/workflows/ollama-master-orchestrator.yml: inspected selected executor steps; no canonical mission-ledger reference",
         "scripts/ollama_autonomous_agent.py: instruction-inventory and universal-intelligence-plan read the ledger only for correlation ID reuse, not task selection",
-        "remote-evidence-ledger.jsonl:correlation_id=b57e7caf-9994-4400-bdad-96a066b8a14e"
+        "remote-evidence-ledger.jsonl:correlation_id=b57e7caf-9994-4400-bdad-96a066b8a14e",
+        ".github/workflows/ollama-autonomous-agent.yml",
+        ".github/workflows/ollama-master-orchestrator.yml",
+        "scripts/mission_task_ledger.py",
+        "remote-evidence-ledger.jsonl"
       ],
       "failure_history": [],
-      "finished_at": null,
+      "finished_at": "2026-10-16T20:26:06.126960Z",
       "heading": "Make automatic continuation functional",
       "id": "M08",
       "implementation_sha": null,
-      "next_action": "Design and test a non-mutating bridge that lets a supported runner validate the canonical ledger and choose dependency-ready work without changing the default-branch or persistence policy; do not dispatch remotely.",
+      "next_action": "Design and test a non-mutating local queue handoff that validates the ledger, selects only dependency-ready tasks, and preserves default-branch and remote authorization policies before considering any hosted integration.",
       "priority": "P0",
       "remote_sha": null,
+      "result": "Workflow inspection and local evidence show no independent mission-ledger resume. Remote dispatch and mutation remain unauthorized and unverified.",
       "retries": 0,
       "risk": "HIGH",
       "section": 8,
       "source_line": 249,
       "started_at": "2026-10-13T13:58:27Z",
-      "status": "IN_PROGRESS",
+      "status": "BLOCKED",
       "test_results": [],
       "workflow_evidence": []
     },
@@ -11037,28 +11119,45 @@
     },
     {
       "acceptance_criteria": "Recompute actual elapsed/remaining time, throughput, failure rate, test duration, blockers, and next priorities at each checkpoint.",
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 282964.67,
+          "finished_at": "2026-10-16T20:26:23.745370Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-13T13:50:19.075+00:00",
+          "timing_basis": "utc_wall_interval_process_activity_unknown"
+        }
+      ],
       "blockers": [],
       "dependencies": [
         "M04",
         "M05",
         "M11"
       ],
-      "elapsed_seconds": null,
+      "elapsed_seconds": 282964.67,
       "estimated_duration_minutes": null,
+      "evidence_refs": [
+        "scripts/mission_task_ledger.py",
+        "tests/test_mission_task_ledger.py",
+        "oe2.txt",
+        "remotecompletion.md"
+      ],
       "failure_history": [],
-      "finished_at": null,
+      "finished_at": "2026-10-16T20:26:23.745370Z",
       "heading": "Adapt continuously to time and resources",
       "id": "M14",
       "implementation_sha": null,
-      "next_action": "Refresh remaining time and reprioritize after each validated task.",
+      "next_action": "Add throughput, repair-count, and human-intervention metrics only where actual execution events are observable; never infer process-active duration from UTC wall time.",
       "priority": "P1",
       "remote_sha": null,
+      "result": "Paired dashboards now render PH01-PH18 counts, M01-M16 task counts, UTC elapsed/remaining time, expired status, and monotonic time availability; throughput and repair metrics remain incomplete.",
       "retries": 0,
       "risk": "MEDIUM",
       "section": 14,
       "source_line": 447,
       "started_at": "2026-10-13T13:50:19.075+00:00",
-      "status": "IN_PROGRESS",
+      "status": "PARTIALLY_COMPLETE",
       "test_results": [],
       "workflow_evidence": []
     },
@@ -11127,7 +11226,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-16T18:03:26.531326Z",
+  "updated_at": "2026-10-16T20:51:45.986082Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

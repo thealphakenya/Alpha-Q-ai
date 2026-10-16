@@ -5,10 +5,10 @@
 
 This generated QMOI tracker includes currently registered and planned/unverified feature requirements. It creates review work automatically; it does not claim feature availability or silently install runtime telemetry.
 
-- Status: `NEEDS_REVIEW`; correlation: `30ac936d-b95e-4e59-a79c-ee14a59a38a6`.
-- Source manifest: `2712e7e019921a0b404ee73e1f6f950f5067c2ea44bbce2435a4d81fd9a1e7b7`; local source SHA: `f849ecac7cd7c435c5184d30edb8d1f76b1de1ae`.
+- Status: `NEEDS_REVIEW`; correlation: `7a77e4f3-448c-4801-ad77-b65306c958ab`.
+- Source manifest: `e0a00cfcb5d632986ece2627752a83e06a8d372114585efbc491a0c4c913e175`; local source SHA: `3c8479d87dfb5e35d665c8a7d88b4faa2dae1400`.
 - Registered features: `404`; planned/UIS requirements: `179`.
-- Local Ollama tracker file paths: `2454`; QMOI tracker file paths: `3`. Managed output paths are path-listed but excluded from self-hashing.
+- Local Ollama tracker file paths: `2573`; QMOI tracker file paths: `3`. Managed output paths are path-listed but excluded from self-hashing.
 - All requirements with a generated monitoring-review action: `595/595`.
 - Verified monitor mappings: `0/595`; coverage verified: `False`.
 
@@ -639,20 +639,20 @@ This generated QMOI tracker includes currently registered and planned/unverified
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `11182`; directories: `1288`; Markdown: `2440`.
+- Status: `NEEDS_REVIEW`; materialized files: `11301`; directories: `1291`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
 - Managed-document family candidates: `app_platform=2177, build_download_install=2131, disability_accessibility=288, orchestration=2082, qteam_accountability=2071, release_tag_publish=2110, tree_inventory=2022`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2230`; needs review: `202`; metric candidate lines: `53160`; percentage occurrences: `22268`.
+- Markdown structural checks passed: `2230`; needs review: `202`; metric candidate lines: `53187`; percentage occurrences: `22274`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13537`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13561`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `41035` lines in `3741` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `333`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `41058` lines in `3748` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `340`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

@@ -2,6 +2,7 @@
 title: "QMOI Command Reference - Enhanced Universal Automation"
 qmoi_validation_frontmatter: true
 ---
+source /workspaces/Alpha-Q-ai/qmoi-enhanced-history-14/.venv/bin/activate
 
 <!-- LION_VALIDATION_START -->
 

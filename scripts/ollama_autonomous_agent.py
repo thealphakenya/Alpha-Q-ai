@@ -13860,6 +13860,19 @@ def main(
             else 1
         )
 
+    if args.command == "audit-inventory-shard":
+        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
+        result = run_bounded_audit_shards(
+            root,
+            shard_size=args.shard_size,
+            max_shards=args.max_shards,
+        )
+        output = {key: value for key, value in result.items() if key != "remaining_shard_numbers"}
+        output["remaining_shard_number_preview"] = result.get("remaining_shard_numbers", [])[:10]
+        output["remaining_shard_numbers_omitted"] = max(0, len(result.get("remaining_shard_numbers", [])) - 10)
+        print(json.dumps(output, indent=2, sort_keys=True, default=str))
+        return 0
+
     agent = OllamaAutonomousAgent(
         args.base_path
     )
@@ -13972,19 +13985,6 @@ def main(
             "remote_mutation_performed": False,
         }, indent=2, sort_keys=True))
         return 1 if blocked else 0
-
-    if args.command == "audit-inventory-shard":
-        root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()
-        result = run_bounded_audit_shards(
-            root,
-            shard_size=args.shard_size,
-            max_shards=args.max_shards,
-        )
-        output = {key: value for key, value in result.items() if key != "remaining_shard_numbers"}
-        output["remaining_shard_number_preview"] = result.get("remaining_shard_numbers", [])[:10]
-        output["remaining_shard_numbers_omitted"] = max(0, len(result.get("remaining_shard_numbers", [])) - 10)
-        print(json.dumps(output, indent=2, sort_keys=True, default=str))
-        return 0
 
     if args.command == "audit-inventory":
         root = Path(args.base_path).resolve() if args.base_path else Path.cwd().resolve()

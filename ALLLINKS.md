@@ -3,7 +3,7 @@
 <!-- BEGIN QMOI MANAGED: materialized-link-inventory -->
 ## Materialized Markdown link inventory
 
-- Link references: `10973`; URL query strings and fragments are omitted from display.
+- Link references: `10972`; URL query strings and fragments are omitted from display.
 - A listed link is not a reachability or permission check; local missing targets remain in `repository_surface_audit.json`.
 
 | Source path | Line | Sanitized target | Target SHA-256 | Kind |
@@ -2537,11 +2537,10 @@
 | `Qhost.md` | 3357 | `qmoi-enhanced-history-14/whatsapp-qmoi-bot/README.md` | `d512eb69f222038f38c7dd83a4e4de32e9663cb570ad41e662225fca9cdaca4a` | `local` |
 | `Qhost.md` | 3358 | `qseeds/README.md` | `b42006f9aa59bdc3ac54891adc0aa33de9a7dc4a5a170ac1d278c79d042e0744` | `local` |
 | `Qhost.md` | 3359 | `remote-multi-platform-build-farm.md` | `6486bca0d7710f802e620f43a394d03a7b799d37ca3e54e2c201e25ae050e895` | `local` |
-| `Qhost.md` | 3360 | `remotecompletion.md` | `a4e20c5168eed8d7dfc027e3dbc4db6991c58c7626002175e6c0d6d9a6cd2d51` | `local` |
-| `Qhost.md` | 3361 | `remotehardening.md` | `da7cab1b74eb7e8e8f109915481e350f460125f44537c5f6a756f6577daa5613` | `local` |
-| `Qhost.md` | 3362 | `trigger.md` | `9333a2a0afd520643610f68a4c7a78f7dcf5d21db4bef594b1f1ba2d351794da` | `local` |
-| `Qhost.md` | 3363 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
-| `Qhost.md` | 3367 | `QQUANTUM.md` | `4365fed3d307dc4cd9097fdd9a65de3a2380d3feee8b3ae18c94938e412a7856` | `local` |
+| `Qhost.md` | 3360 | `remotehardening.md` | `da7cab1b74eb7e8e8f109915481e350f460125f44537c5f6a756f6577daa5613` | `local` |
+| `Qhost.md` | 3361 | `trigger.md` | `9333a2a0afd520643610f68a4c7a78f7dcf5d21db4bef594b1f1ba2d351794da` | `local` |
+| `Qhost.md` | 3362 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
+| `Qhost.md` | 3366 | `QQUANTUM.md` | `4365fed3d307dc4cd9097fdd9a65de3a2380d3feee8b3ae18c94938e412a7856` | `local` |
 | `Qtrade.md` | 40 | `compare.md` | `8bcd0bd5766eedc73d44f67819233255fec52f2b56787e7b07e37aa76e766437` | `local` |
 | `Qtrade.md` | 293 | `Qtrade.md` | `0eb51217e27d9e9f7c57a148d83edc95a92e59cc9fdccc63efac9782c4333669` | `local` |
 | `Qtrade.md` | 294 | `TRADINGREADME.md` | `4676daa204a64892b41af786d7ebfe24c8b59d46f17e45d48b48624249483f4f` | `local` |
@@ -2617,9 +2616,9 @@
 | `STYLES.md` | 128 | `qmoi-enhanced-history-14/STYLES.md` | `d65308a76e8116770d3fe357d978835c0dce2c75a0bb749fe6f105ca79dcd3c4` | `local` |
 | `STYLES.md` | 129 | `qmoi-enhanced-history-14/UNIVERSALS.md` | `c0f47cced70c423e588bd7d40af2c8e65335cd03422b22d6aa37906540a34a72` | `local` |
 | `STYLES.md` | 130 | `qmoi-enhanced-history-14/ALLMDFILESREFS.md` | `6e67cb97d703008b0b3db815cba88e23cf2cb3f21e0b6c5f71acd34ed5ef9275` | `local` |
-| `SYNC.md` | 332 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
-| `SYNC.md` | 333 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
-| `SYNC.md` | 334 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
+| `SYNC.md` | 336 | `MERGE.md` | `df8cb3c420dba39e76dfc180ebacb8784e018060a711f71a3179ae39f51883ee` | `local` |
+| `SYNC.md` | 337 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
+| `SYNC.md` | 338 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
 | `TRADINGREADME.md` | 94 | `FINANCIALMANAGER.md` | `28deb4af15ab67ea6e1629f2374beaab5d175bedc3e73d455f16787d559ee80b` | `local` |
 | `TRADINGREADME.md` | 95 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `TRADINGREADME.md` | 96 | `ALLAUTO.md` | `956f40f6393d305e05d764e75007110a54c1f0cd2fd972ff284bd5f264e2c30a` | `local` |
@@ -10986,20 +10985,20 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `11182`; directories: `1288`; Markdown: `2440`.
+- Status: `NEEDS_REVIEW`; materialized files: `11301`; directories: `1291`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
 - Managed-document family candidates: `app_platform=2177, build_download_install=2131, disability_accessibility=288, orchestration=2082, qteam_accountability=2071, release_tag_publish=2110, tree_inventory=2022`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2230`; needs review: `202`; metric candidate lines: `53160`; percentage occurrences: `22268`.
+- Markdown structural checks passed: `2230`; needs review: `202`; metric candidate lines: `53187`; percentage occurrences: `22274`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13537`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13561`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `41035` lines in `3741` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `333`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `41058` lines in `3748` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `340`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

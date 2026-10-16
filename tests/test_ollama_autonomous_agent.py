@@ -326,6 +326,9 @@ class TestAuditInventoryCommand:
     def test_bounded_audit_inventory_shard_command_routes_limits(self, tmp_path, monkeypatch, capsys):
         calls = {}
 
+        def unexpected_agent_construction(*args, **kwargs):
+            raise AssertionError("shard command must not initialize the autonomous agent")
+
         def run_shards(root, *, shard_size, max_shards):
             calls.update({"root": root, "shard_size": shard_size, "max_shards": max_shards})
             return {
@@ -337,6 +340,7 @@ class TestAuditInventoryCommand:
             }
 
         monkeypatch.setattr("ollama_autonomous_agent.run_bounded_audit_shards", run_shards)
+        monkeypatch.setattr("ollama_autonomous_agent.OllamaAutonomousAgent", unexpected_agent_construction)
 
         assert autonomous_agent_main([
             "audit-inventory-shard",
@@ -3062,6 +3066,10 @@ class TestGitHubProofContract:
             (tmp_path / app_doc).write_text("# App documentation\n", encoding="utf-8")
         (tmp_path / "QMOIUNIVERSALINTELLIGENCESYSTEM.md").write_text(
             "# Universal Intelligence\n\n1. Access\n- Require verified, authorized access.\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "Qhost.md").write_text(
+            "# Qhost authored requirements\n\n1. Inspect implementation and validation evidence.\n",
             encoding="utf-8",
         )
         proof = agent.build_github_proof_contract()

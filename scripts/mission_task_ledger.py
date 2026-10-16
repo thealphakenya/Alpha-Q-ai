@@ -340,7 +340,14 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
         raise LedgerError("Cannot render mission metrics until all 18 phases are indexed")
     instant = now or datetime.now(timezone.utc)
     counts = mission_phase_status_counts(ledger)
+    task_counts = status_counts(ledger)
     source = ledger.get("mission_phase_metric_source", {})
+    mission_clock = ledger["mission_clock"]
+    mission_started = _parse_utc(mission_clock["started_at"])
+    mission_deadline = _parse_utc(mission_clock["deadline_at"])
+    mission_elapsed = max(0.0, (instant - mission_started).total_seconds())
+    mission_remaining = max(0.0, (mission_deadline - instant).total_seconds())
+    mission_clock_status = "ACTIVE" if mission_remaining > 0 else "EXPIRED"
     lines = [
         MISSION_PHASE_START,
         "## Mission Phase Metrics",
@@ -348,6 +355,8 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
         f"- Canonical source: `{source.get('path', MISSION_SOURCE_PATH.as_posix())}`; SHA-256: `{source.get('sha256', 'unavailable')}`.",
         f"- Generated at: `{instant.isoformat().replace('+00:00', 'Z')}`; ledger correlation ID: `{ledger.get('correlation_id', 'unavailable')}`.",
         f"- Phase count: {len(phases)}; PASS: {counts['PASS']}; in progress: {counts['IN_PROGRESS']}; partial: {counts['PARTIALLY_COMPLETE']}; blocked: {counts['BLOCKED']}; failed: {counts['FAILED']}; pending: {counts['PENDING']}.",
+        f"- Legacy task status counts (M01-M16): verified_complete={task_counts['verified_complete']}; in_progress={task_counts['in_progress']}; partially_complete={task_counts['partially_complete']}; blocked={task_counts['blocked']}; failed={task_counts['failed']}; pending={task_counts['pending']}.",
+        f"- Mission clock: status `{mission_clock_status}`; started `{mission_clock['started_at']}`; deadline `{mission_clock['deadline_at']}`; UTC wall elapsed={mission_elapsed:.3f}s; remaining={mission_remaining:.3f}s; process-active monotonic time `NOT_MEASURED`.",
         f"- Mission authored content-line candidates indexed: {ledger.get('mission_requirement_line_count', 0)}; semantic review complete: {ledger.get('mission_requirement_line_review_counts', {}).get('reviewed', 0)}; review pending: {ledger.get('mission_requirement_line_review_counts', {}).get('not_reviewed', 0)}. Counts are line locators, not semantic requirement completion.",
         "- Completion percentage is not inferred from phase count; only evidence-backed `PASS` is terminal success. Remote verification remains `False` until independently proven.",
         "",
@@ -708,20 +717,42 @@ def finish_task(
     timestamp = now or utc_now()
     instant = _parse_utc(timestamp)
     attempts = task.get("attempt_history", [])
-    if not attempts or attempts[-1].get("finished_at") is not None:
+    legacy_attempt_recovered = False
+    if not attempts:
+        legacy_started_at = task.get("last_started_at") or task.get("started_at")
+        if not legacy_started_at:
+            raise LedgerError(f"Cannot finish {task_id}; start timestamp is missing")
+        legacy_started = _parse_utc(legacy_started_at)
+        legacy_elapsed = (instant - legacy_started).total_seconds()
+        if legacy_elapsed < 0:
+            raise LedgerError("Task finish timestamp precedes its start")
+        attempts.append(
+            {
+                "started_at": legacy_started_at,
+                "finished_at": timestamp,
+                "elapsed_seconds": round(legacy_elapsed, 3),
+                "outcome": status,
+                "active_time_known": False,
+                "timing_basis": "utc_wall_interval_process_activity_unknown",
+            }
+        )
+        task["attempt_history"] = attempts
+        legacy_attempt_recovered = True
+    elif attempts[-1].get("finished_at") is not None:
         raise LedgerError(f"{task_id} has no open task attempt to finish")
-    started = _parse_utc(attempts[-1]["started_at"])
-    elapsed = (instant - started).total_seconds()
-    if elapsed < 0:
-        raise LedgerError("Task finish timestamp precedes its start")
-    attempts[-1].update(
-        {
-            "finished_at": timestamp,
-            "elapsed_seconds": round(elapsed, 3),
-            "outcome": status,
-            "active_time_known": False,
-        }
-    )
+    if not legacy_attempt_recovered:
+        started = _parse_utc(attempts[-1]["started_at"])
+        elapsed = (instant - started).total_seconds()
+        if elapsed < 0:
+            raise LedgerError("Task finish timestamp precedes its start")
+        attempts[-1].update(
+            {
+                "finished_at": timestamp,
+                "elapsed_seconds": round(elapsed, 3),
+                "outcome": status,
+                "active_time_known": False,
+            }
+        )
     completed_attempt_seconds = sum(
         float(attempt["elapsed_seconds"])
         for attempt in attempts

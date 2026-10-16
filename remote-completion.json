@@ -6,7 +6,10 @@
     "required_capability": "user-owned GitHub token or a scoped GitHub App with final workflow, contents, checks, and protected-branch authority"
   },
   "blockers": [
+    "18_local_path_hash_scan_exclusions_or_unfollowed_symlinks",
+    "18_paths_excluded_or_unfollowed",
     "18_paths_skipped_by_declared_shard_exclusions_or_symlink_policy",
+    "18_qhost_logical_targets_missing_or_unmatched",
     "2026-10-02 observation: Alpha SHA 0beecbad has required checks in progress; QMOI SHA cb543712 autosync failed; branch protection and Dependabot reads returned HTTP 403; local bank documentation scan does not verify implementation or provider capability.",
     "2026-10-03T00:51:32Z: QMOI imported/theofalphakenya/main ref exists at 7cfca70c556fcda2e2707b94b14c6ed6d8541e2f; compare API returned 404, so ancestry remains unknown.",
     "2026-10-03T00:51:32Z: gh CLI unauthenticated; git push --dry-run could not obtain credentials. No normal push or workflow dispatch was attempted; worktree is dirty and local main is 0 ahead/8 behind.",
@@ -22,6 +25,10 @@
     "2026-10-05T00:28:42Z: Ollama local audit covers 10,321 materialized files and 1,960 local-ref commits/4,087 changed paths, but remote refs, PRs, and intermediate commit trees are not covered. This gate remains blocked.",
     "2026-10-05T00:28:42Z: Styles/universals feature-test and hook/webhook applicability still lack complete feature mappings and terminal exact-SHA evidence in both repositories; no Q-version is reserved or materialized.",
     "29 source files exceed the 1 MB hash bound; their paths, sizes, and skip statuses are recorded in unavailable_sources.",
+    "404_style_universal_hook_mappings_unreviewed",
+    "41_uis_requirements_have_zero_verified_implementations",
+    "760_mission_requirement_lines_pending_semantic_review",
+    "760_requirement_lines_pending_semantic_review",
     "Additional dirty paths have unclassified origin and were not modified.",
     "Additional pre-existing dirty paths have unclassified origin and were not modified.",
     "Additional referenced requirement sources and remote issues/PRs are not fully inventoried; remote state is unauthenticated/unverified.",
@@ -98,13 +105,16 @@
     "Mission deadline expired with unfinished tasks; timing continuity after the prior run is unavailable.",
     "Mission deadline expired with unfinished work; monotonic continuity after restart is unavailable.",
     "Mission ledger target spelling codespace-sturdy-fishstick-69wx9rjjgw5pfrq65 has no observed origin ref; checked-out/upstream ref codespace-sturdy-fishstick-69wxr9jjgw5pfrq65 exists at the local HEAD. Do not rewrite the mission target binding without owner confirmation.",
+    "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
     "Netlify_TOML_syntax_fix_unpublished",
     "Netlify_deploy_logs_and_intended_site_architecture_unavailable",
     "Netlify_deployment_architecture_and_logs_unavailable",
     "Netlify_provider_logs_and_intended_site_architecture_unavailable",
     "Netlify_root_publish_missing_index_html_and_functions_directory",
     "No final remote completion claim is valid without a target-owned workflow conclusion and exact remote SHA evidence.",
+    "No independent mission-ledger resume has been demonstrated.",
     "No live metric endpoint or runtime sample was read by this inventory.",
+    "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial.",
     "No terminal target-owned workflow or independently verified exact-SHA remote evidence is available.",
     "No terminal target-owned workflow result or independent resume evidence was observed.",
     "Ollama inference and local agent bridge measurements remain unavailable/not verified.",
@@ -238,8 +248,10 @@
     "dependency_scan_scope_limited_to_root_requirements",
     "exact_sha_remote_completion_proof_unavailable",
     "existing_audit_inventory_not_terminal",
+    "external_research_not_visited",
     "failed_vercel_and_alpha_autosync_checks",
     "failed_vercel_statuses_and_alpha_autosync_workflow",
+    "feature_hook_mapping_pending",
     "feature_mapping_is_local_candidate_evidence_only",
     "feature_mapping_remains_local_NEEDS_REVIEW",
     "feature_registry_test_hook_mapping_incomplete",
@@ -263,6 +275,7 @@
     "full_surface_coverage_requires_bounded_resumable_shards",
     "github_cli_authentication_unavailable",
     "github_instructions_mission_mirror_differs_from_root_mission",
+    "github_proof_contract_test_expected_ready_but_observed_not_ready_for_github",
     "historical_candidate_ownership_tests_and_terminal_workflow_evidence_unverified",
     "historical_snapshot_filesystem_mtimes_are_extraction_times_not_source_dates",
     "instruction_hash_change_requires_protected_planning_stop",
@@ -270,6 +283,7 @@
     "interrupted_inventory_attempt_has_no_terminal_feature_manifest",
     "legacy_snapshot_candidate_artifacts_not_semantically_reviewed",
     "legacy_snapshot_inventory_not_terminal",
+    "legacy_snapshots_lack_live_peer_and_original_date_evidence",
     "legacy_sync_inventory_not_terminal",
     "legacy_sync_requires_live_peer_and_original_date_evidence",
     "live_language_research_not_observed",
@@ -291,10 +305,12 @@
     "master_and_qmoi_refs_not_advertised_in_read_only_git_ls_remote",
     "master_and_qmoi_refs_were_not_advertised_by_git_ls_remote",
     "metric_and_completion_claims_require_semantic_source_test_review",
+    "mission_120_minute_window_expired",
     "mission_clock_expired_with_unfinished_sections",
     "mission_instruction_hash_changed_during_status_refresh_protected_planning_stopped",
     "mission_md_initialized_with_fail_closed_evidence",
     "mission_remote_completion_blocked_until_target_owned_exact_sha_workflow_proof_exists",
+    "mission_requirement_semantic_review_incomplete",
     "mission_specific_automatic_resume_not_verified",
     "netlify_functions_directory_is_missing",
     "netlify_root_publish_has_no_index_html",
@@ -305,6 +321,7 @@
     "no_authorized_exact_sha_remote_completion_proof",
     "no_authorized_remote_completion_proof",
     "no_authorized_target_owned_exact_sha_remote_completion_proof",
+    "ofca_local_scan_incomplete_and_remote_history_unavailable",
     "ofca_remote_history_scan_incomplete",
     "ollama_runtime_and_model_unavailable",
     "optimized_full_audit_inventory_not_terminal",
@@ -323,6 +340,9 @@
     "pytest_unavailable_in_selected_interpreters",
     "pytest_unavailable_in_selected_python_environments",
     "q_version_finalization_requires_all_lifecycle_and_remote_gates",
+    "qhost_18_logical_targets_have_no_confirmed_active_equivalent",
+    "qhost_targets_without_confirmed_active_equivalent",
+    "qhost_targets_without_confirmed_equivalent",
     "qmoi_current_main_sha_codeql_run_not_terminal",
     "qmoi_enhanced_codeql_run_38017104002_was_in_progress_at_last_read",
     "qmoi_enhanced_codeql_run_not_terminal",
@@ -344,11 +364,13 @@
     "remote_master_and_qmoi_refs_not_advertised_by_anonymous_observation",
     "remote_refs_prs_intermediate_trees_and_release_state_not_verified",
     "remote_sha_and_target_owned_terminal_checks_not_verified",
+    "remote_target_owned_exact_sha_proof_unavailable",
     "root_publish_and_functions_targets_absent",
     "second_live_repository_and_remote_QSeed_parity_not_verified",
     "semantic feature/test mapping remains local and incomplete",
     "semantic_feature_security_and_production_review_not_complete",
     "semantic_feature_test_security_and_remote_gates_not_run",
+    "semantic_feature_test_security_qlion_and_remote_sha_gates_not_run",
     "semantic_markdown_requirement_feature_and_security_review_incomplete",
     "sentence_audit_skipped_sources:40",
     "sentence_audit_unreadable_files:27",
@@ -395,23 +417,26 @@
   ],
   "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
   "current_local_checkpoint": {
-    "artifact_bytes": 411603,
+    "artifact_bytes": 416923,
     "artifact_path": "ollamatracks/mission-task-ledger.json",
     "artifact_refs": {
       "mission_task_ledger": {
-        "bytes": 411603,
+        "bytes": 416923,
         "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b"
+        "sha256": "f6d6268cbf68b0cf615e378d2653c03adc6817221e6f923f550fbb5bcf5e1e77"
       }
     },
-    "artifact_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
+    "artifact_sha256": "f6d6268cbf68b0cf615e378d2653c03adc6817221e6f923f550fbb5bcf5e1e77",
     "blockers": [
+      "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
+      "No independent mission-ledger resume has been demonstrated.",
+      "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial.",
       "Remote target ref and write authority are not verified; worktree contains existing user changes.",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
     "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-    "generated_at": "2026-10-16T18:03:26.608240Z",
+    "generated_at": "2026-10-16T20:51:46.075149Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -432,7 +457,7 @@
         "path": ".github/instructions/MISSION.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
+        "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
       },
       {
         "bytes": 13048,
@@ -440,6 +465,20 @@
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
         "sha256": "69634299ba6992935b1fbe10f24fa28d906733c6a21f05918a3126fe3f27b048"
+      },
+      {
+        "bytes": 4029,
+        "path": ".github/instructions/continue.instructions.md",
+        "read_parse": "read_utf8; syntax_not_parsed",
+        "scope": ".github/instructions/**",
+        "sha256": "36d99fcd67529ff3d7e5f27d620401f9aba682f6faf895220dff6e8d3565a834"
+      },
+      {
+        "bytes": 1042,
+        "path": ".github/instructions/continueinstructions.md",
+        "read_parse": "read_utf8; syntax_not_parsed",
+        "scope": ".github/instructions/**",
+        "sha256": "d51f264ffca9e033dff666477eb766968b24ca90141d16f342c2c8407144fb5c"
       },
       {
         "bytes": 8004,
@@ -477,18 +516,18 @@
         "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
       }
     ],
-    "instruction_inventory_sha256": "391672a9d2d12b45b9ef77545de0fb903509394d2a61f88564a87cfeeda12393",
-    "local_head_sha": "f849ecac7cd7c435c5184d30edb8d1f76b1de1ae",
-    "local_tree_sha": "ce728f03417a10b3f5dc334a965b87ae9c641e48",
+    "instruction_inventory_sha256": "4828933a5978867b429a26731c281fe661f2378942bcf3e1dc78960f94d2a3a3",
+    "local_head_sha": "3c8479d87dfb5e35d665c8a7d88b4faa2dae1400",
+    "local_tree_sha": "15220df5f438fe2ab9161029f36180917ee9e664",
     "metrics": {
       "active_phase_id": "PH01",
       "active_task_id": null,
       "active_task_status": null,
-      "checkpoint_utc": "2026-10-16T18:03:26.552637+00:00",
+      "checkpoint_utc": "2026-10-16T20:51:46.009798+00:00",
       "deadline_utc": "2026-10-13T15:50:19.075+00:00",
-      "elapsed_seconds": 274387.478,
+      "elapsed_seconds": 284486.935,
       "ledger_id": "newmission-120-minute-2026-10-13",
-      "ledger_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
+      "ledger_sha256": "f6d6268cbf68b0cf615e378d2653c03adc6817221e6f923f550fbb5bcf5e1e77",
       "ledger_version": "1.0",
       "mission_phase_count": 18,
       "mission_phase_metrics": [
@@ -640,7 +679,7 @@
       "mission_phase_source": {
         "path": "latest mission.md",
         "phase_count": 18,
-        "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
+        "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
       },
       "mission_phase_status_counts": {
         "BLOCKED": 0,
@@ -657,10 +696,10 @@
       },
       "mission_start_utc": "2026-10-13T13:50:19.075+00:00",
       "mission_status_counts": {
-        "blocked": 1,
+        "blocked": 2,
         "failed": 0,
-        "in_progress": 5,
-        "partially_complete": 5,
+        "in_progress": 0,
+        "partially_complete": 9,
         "pending": 5,
         "verified_complete": 0
       },
@@ -670,10 +709,10 @@
       "task_elapsed_seconds": null
     },
     "next_action": "Resume the highest-priority dependency-ready mission task.",
-    "operation": "phase-finish",
+    "operation": "mission-metrics-refresh",
     "paired_document_sha256": {
-      "oe2.txt": "2e387d45bcc9197f2c474562414d01aec6a582d4f0eff96c31c66a7140d8d63b",
-      "remotecompletion.md": "c2fcf3a78d559f5431af4c697d692fc4a39c7d41472dde7ef5ea32361f36318a"
+      "oe2.txt": "5363bca95a86d52293125ed979363b72e7ee3c0e71ec1f1a4f2b813759cd77fb",
+      "remotecompletion.md": "e31fdaa5ec3ecf072798f21343e642723f5aed560439a1d417a3b6a75ff18d5c"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -698,7 +737,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-16T18:03:26.608240Z",
+  "generated_at": "2026-10-16T20:51:46.075149Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -1029,23 +1068,26 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 411603,
+      "artifact_bytes": 416923,
       "artifact_path": "ollamatracks/mission-task-ledger.json",
       "artifact_refs": {
         "mission_task_ledger": {
-          "bytes": 411603,
+          "bytes": 416923,
           "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b"
+          "sha256": "f6d6268cbf68b0cf615e378d2653c03adc6817221e6f923f550fbb5bcf5e1e77"
         }
       },
-      "artifact_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
+      "artifact_sha256": "f6d6268cbf68b0cf615e378d2653c03adc6817221e6f923f550fbb5bcf5e1e77",
       "blockers": [
+        "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
+        "No independent mission-ledger resume has been demonstrated.",
+        "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial.",
         "Remote target ref and write authority are not verified; worktree contains existing user changes.",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
       "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-      "generated_at": "2026-10-16T18:03:26.608240Z",
+      "generated_at": "2026-10-16T20:51:46.075149Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -1066,7 +1108,7 @@
           "path": ".github/instructions/MISSION.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
+          "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
         },
         {
           "bytes": 13048,
@@ -1074,6 +1116,20 @@
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
           "sha256": "69634299ba6992935b1fbe10f24fa28d906733c6a21f05918a3126fe3f27b048"
+        },
+        {
+          "bytes": 4029,
+          "path": ".github/instructions/continue.instructions.md",
+          "read_parse": "read_utf8; syntax_not_parsed",
+          "scope": ".github/instructions/**",
+          "sha256": "36d99fcd67529ff3d7e5f27d620401f9aba682f6faf895220dff6e8d3565a834"
+        },
+        {
+          "bytes": 1042,
+          "path": ".github/instructions/continueinstructions.md",
+          "read_parse": "read_utf8; syntax_not_parsed",
+          "scope": ".github/instructions/**",
+          "sha256": "d51f264ffca9e033dff666477eb766968b24ca90141d16f342c2c8407144fb5c"
         },
         {
           "bytes": 8004,
@@ -1111,18 +1167,18 @@
           "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
         }
       ],
-      "instruction_inventory_sha256": "391672a9d2d12b45b9ef77545de0fb903509394d2a61f88564a87cfeeda12393",
-      "local_head_sha": "f849ecac7cd7c435c5184d30edb8d1f76b1de1ae",
-      "local_tree_sha": "ce728f03417a10b3f5dc334a965b87ae9c641e48",
+      "instruction_inventory_sha256": "4828933a5978867b429a26731c281fe661f2378942bcf3e1dc78960f94d2a3a3",
+      "local_head_sha": "3c8479d87dfb5e35d665c8a7d88b4faa2dae1400",
+      "local_tree_sha": "15220df5f438fe2ab9161029f36180917ee9e664",
       "metrics": {
         "active_phase_id": "PH01",
         "active_task_id": null,
         "active_task_status": null,
-        "checkpoint_utc": "2026-10-16T18:03:26.552637+00:00",
+        "checkpoint_utc": "2026-10-16T20:51:46.009798+00:00",
         "deadline_utc": "2026-10-13T15:50:19.075+00:00",
-        "elapsed_seconds": 274387.478,
+        "elapsed_seconds": 284486.935,
         "ledger_id": "newmission-120-minute-2026-10-13",
-        "ledger_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
+        "ledger_sha256": "f6d6268cbf68b0cf615e378d2653c03adc6817221e6f923f550fbb5bcf5e1e77",
         "ledger_version": "1.0",
         "mission_phase_count": 18,
         "mission_phase_metrics": [
@@ -1274,7 +1330,7 @@
         "mission_phase_source": {
           "path": "latest mission.md",
           "phase_count": 18,
-          "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
+          "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
         },
         "mission_phase_status_counts": {
           "BLOCKED": 0,
@@ -1291,10 +1347,10 @@
         },
         "mission_start_utc": "2026-10-13T13:50:19.075+00:00",
         "mission_status_counts": {
-          "blocked": 1,
+          "blocked": 2,
           "failed": 0,
-          "in_progress": 5,
-          "partially_complete": 5,
+          "in_progress": 0,
+          "partially_complete": 9,
           "pending": 5,
           "verified_complete": 0
         },
@@ -1304,10 +1360,10 @@
         "task_elapsed_seconds": null
       },
       "next_action": "Resume the highest-priority dependency-ready mission task.",
-      "operation": "phase-finish",
+      "operation": "mission-metrics-refresh",
       "paired_document_sha256": {
-        "oe2.txt": "2e387d45bcc9197f2c474562414d01aec6a582d4f0eff96c31c66a7140d8d63b",
-        "remotecompletion.md": "c2fcf3a78d559f5431af4c697d692fc4a39c7d41472dde7ef5ea32361f36318a"
+        "oe2.txt": "5363bca95a86d52293125ed979363b72e7ee3c0e71ec1f1a4f2b813759cd77fb",
+        "remotecompletion.md": "e31fdaa5ec3ecf072798f21343e642723f5aed560439a1d417a3b6a75ff18d5c"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -1391,7 +1447,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "f849ecac7cd7c435c5184d30edb8d1f76b1de1ae",
+    "local_head_sha": "3c8479d87dfb5e35d665c8a7d88b4faa2dae1400",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

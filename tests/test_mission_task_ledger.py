@@ -4,6 +4,7 @@ import copy
 import hashlib
 import json
 import subprocess
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -115,6 +116,53 @@ def test_resuming_partially_completed_task_preserves_prior_elapsed_time():
     assert task["elapsed_seconds"] == 90
 
 
+def test_finishing_legacy_in_progress_task_records_wall_interval_not_active_time():
+    ledger = _ledger()
+    task = next(item for item in ledger["tasks"] if item["id"] == "M04")
+    task.update(
+        {
+            "status": "IN_PROGRESS",
+            "started_at": "2026-10-13T14:00:00Z",
+            "finished_at": None,
+            "elapsed_seconds": None,
+        }
+    )
+    task.pop("attempt_history", None)
+
+    finished = finish_task(
+        ledger,
+        "M04",
+        "PARTIALLY_COMPLETE",
+        evidence_refs=["oe2.txt", "remotecompletion.md"],
+        next_action="Resume in a newly authorized mission run.",
+        now="2026-10-13T14:01:30Z",
+    )
+
+    attempt = finished["attempt_history"][-1]
+    assert finished["status"] == "PARTIALLY_COMPLETE"
+    assert finished["elapsed_seconds"] == 90
+    assert attempt["outcome"] == "PARTIALLY_COMPLETE"
+    assert attempt["active_time_known"] is False
+    assert attempt["timing_basis"] == "utc_wall_interval_process_activity_unknown"
+
+
+def test_finishing_legacy_in_progress_task_requires_start_timestamp():
+    ledger = _ledger()
+    task = next(item for item in ledger["tasks"] if item["id"] == "M04")
+    task.update({"status": "IN_PROGRESS", "started_at": None, "finished_at": None})
+    task.pop("attempt_history", None)
+
+    with pytest.raises(LedgerError, match="start timestamp is missing"):
+        finish_task(
+            ledger,
+            "M04",
+            "PARTIALLY_COMPLETE",
+            evidence_refs=["oe2.txt"],
+            next_action="Reconstruct timing evidence before finalizing this task.",
+            now="2026-10-13T14:01:30Z",
+        )
+
+
 def test_phase_transitions_record_elapsed_time_and_evidence():
     ledger = _ledger()
     phase_id = "P02_REQUIREMENT_AND_CONTINUATION_INSPECTION"
@@ -207,6 +255,41 @@ def test_dashboard_refresh_replaces_stale_metrics_and_preserves_later_history(tm
         assert "old metrics" not in refreshed
         assert "keep history" in refreshed
         assert "Remote verification remains `False`" in refreshed
+
+
+def test_mission_metrics_include_task_counts_and_elapsed_deadline_state():
+    ledger = _ledger()
+    clock_start = datetime.fromisoformat(
+        ledger["mission_clock"]["started_at"].replace("Z", "+00:00")
+    )
+    clock_deadline = datetime.fromisoformat(
+        ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
+    )
+    task_counts = status_counts(ledger)
+    expected_task_counts = (
+        "- Legacy task status counts (M01-M16): "
+        f"verified_complete={task_counts['verified_complete']}; "
+        f"in_progress={task_counts['in_progress']}; "
+        f"partially_complete={task_counts['partially_complete']}; "
+        f"blocked={task_counts['blocked']}; failed={task_counts['failed']}; "
+        f"pending={task_counts['pending']}."
+    )
+
+    active = render_mission_phase_metrics(
+        ledger,
+        now=clock_start + timedelta(minutes=30),
+    )
+    expired = render_mission_phase_metrics(
+        ledger,
+        now=clock_deadline + timedelta(seconds=10),
+    )
+
+    assert expected_task_counts in active
+    assert "Mission clock: status `ACTIVE`" in active
+    assert "UTC wall elapsed=1800.000s; remaining=5400.000s" in active
+    assert "process-active monotonic time `NOT_MEASURED`" in active
+    assert "Mission clock: status `EXPIRED`" in expired
+    assert "UTC wall elapsed=7210.000s; remaining=0.000s" in expired
 
 
 def test_sync_mission_source_adopts_latest_mission_and_preserves_task_ledger(tmp_path, monkeypatch):

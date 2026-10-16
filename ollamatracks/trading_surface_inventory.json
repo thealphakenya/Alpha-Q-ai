@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-10-16T17:24:38.384674Z",
+  "captured_at": "2026-10-16T19:45:22.991546Z",
   "counts_by_role": {
     "backend_api_or_adapter": 175,
     "documentation": 43,
@@ -25,7 +25,7 @@
   },
   "coverage_verified": false,
   "credential_references": {
-    "captured_at": "2026-10-16T17:24:38.378030Z",
+    "captured_at": "2026-10-16T19:45:22.984924Z",
     "coverage_verified": false,
     "credential_values_persisted_or_emitted": false,
     "credential_values_read_from_secret_stores": false,
@@ -44,10 +44,10 @@
       "paypal": 22,
       "pesapal": 10,
       "stripe": 3,
-      "unmapped_provider": 830
+      "unmapped_provider": 832
     },
     "provider_verification": "not_performed",
-    "reference_count": 1129,
+    "reference_count": 1131,
     "references": [
       {
         "credential_value_stored": false,
@@ -164,8 +164,8 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          1638,
-          1721
+          1642,
+          1725
         ],
         "name": "BINANCE_API_KEY",
         "path": "tests/test_ollama_autonomous_agent.py",
@@ -176,7 +176,7 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          1638
+          1642
         ],
         "name": "BINANCE_API_SECRET",
         "path": "tests/test_ollama_autonomous_agent.py",
@@ -5366,10 +5366,21 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          1963
+          1967
         ],
         "name": "API_KEY",
         "path": "tests/test_ollama_autonomous_agent.py",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          209
+        ],
+        "name": "API_KEY",
+        "path": "tests/test_qmoi_credentials.py",
         "provider": "unmapped_provider",
         "scope": "active_checkout",
         "status": "reference_only_not_verified"
@@ -5407,6 +5418,17 @@
         ],
         "name": "API_SECRET",
         "path": "scripts/ollama_autonomous_agent.py",
+        "provider": "unmapped_provider",
+        "scope": "active_checkout",
+        "status": "reference_only_not_verified"
+      },
+      {
+        "credential_value_stored": false,
+        "line_numbers": [
+          218
+        ],
+        "name": "API_SECRET",
+        "path": "tests/test_qmoi_credentials.py",
         "provider": "unmapped_provider",
         "scope": "active_checkout",
         "status": "reference_only_not_verified"
@@ -10391,7 +10413,7 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          1963
+          1967
         ],
         "name": "MY_CUSTOM_TOKEN",
         "path": "tests/test_ollama_autonomous_agent.py",
@@ -10992,7 +11014,7 @@
       {
         "credential_value_stored": false,
         "line_numbers": [
-          419
+          441
         ],
         "name": "PASSPHRASE",
         "path": "scripts/qmoi_credentials.py",
@@ -17290,7 +17312,7 @@
         "documentation"
       ],
       "scope": "active_checkout",
-      "sha256": "d2ccb07a201fa2a6791d7a1e76ede9fd889a8391a2a84bdcd742cf1fd73e0313",
+      "sha256": "3b0718a99849d962fabb89f868462b8dcbea2253d10338c935d39594ffda3077",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": []
     },
@@ -17306,7 +17328,7 @@
         "documentation"
       ],
       "scope": "active_checkout",
-      "sha256": "d2ccb07a201fa2a6791d7a1e76ede9fd889a8391a2a84bdcd742cf1fd73e0313",
+      "sha256": "3b0718a99849d962fabb89f868462b8dcbea2253d10338c935d39594ffda3077",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": []
     },
@@ -24786,7 +24808,7 @@
         "runtime_or_integration_candidate"
       ],
       "scope": "active_checkout",
-      "sha256": "eb92fc322a280769ca6cdb641ee476c7ff397b4f87771f8f9e584e68dfee6280",
+      "sha256": "97f39f7b5061bacd78cdd787af7f59609dbf46749f07f253251b22cdc0183b74",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": [
         "binance",
@@ -24849,7 +24871,7 @@
       "venues": []
     },
     {
-      "bytes": 25732,
+      "bytes": 26718,
       "content_scanned": true,
       "matched_by": [
         "content:trading-domain-term"
@@ -24860,7 +24882,7 @@
         "runtime_or_integration_candidate"
       ],
       "scope": "active_checkout",
-      "sha256": "250f8688980315bfc5ff62955e4649a367f1bebc068c6184dd085ada26c404cf",
+      "sha256": "1a35635e631f900902826feb36d0d2b11b2c8f218f0d0f3b8e988210a5a908bc",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": [
         "bitget"
@@ -24920,7 +24942,7 @@
       "venues": []
     },
     {
-      "bytes": 160870,
+      "bytes": 161315,
       "content_scanned": true,
       "matched_by": [
         "content:trading-domain-term"
@@ -24931,7 +24953,7 @@
         "test"
       ],
       "scope": "active_checkout",
-      "sha256": "6414b8ba30166fb6b93541bf8daa0c4f318afb1accb47a054dfa8800bd137baa",
+      "sha256": "d76e86f514dd2cee81de4d585976c621cf01a59e3adb1590e098d4019f4acecf",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": [
         "binance",
@@ -24965,7 +24987,7 @@
       ]
     },
     {
-      "bytes": 10309,
+      "bytes": 12697,
       "content_scanned": true,
       "matched_by": [
         "content:trading-domain-term"
@@ -24976,7 +24998,7 @@
         "test"
       ],
       "scope": "active_checkout",
-      "sha256": "ddbaa947c45f27c3e2f23425c5f179a3d8a119ced01d2a792581b8e85ee1ddce",
+      "sha256": "e072955685d1705a40ce0c3d410a3954298442d12fe72ce22d1afe68dd721677",
       "status": "discovered_unmapped_not_coverage_proof",
       "venues": [
         "bitget"
