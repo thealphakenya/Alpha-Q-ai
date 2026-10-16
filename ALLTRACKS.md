@@ -6,33 +6,33 @@
 This report is a generated local inventory and implementation plan. Path discovery and source hashes do not prove that a monitor executes, that a metric is live/fresh, or that a feature is implemented.
 
 - Status: `NEEDS_REVIEW`; scope: `materialized_nonignored_local_checkout`.
-- Repository/ref/local HEAD: `Alpha-Q-ai` / `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `088de18b8bd8fcf47ab58829c899881d154ae6e4`.
-- Correlation ID: `f5b3e262-3f33-44b5-a098-57bef9f98d2a`; generated: `2026-10-15T23:30:32.555596Z`.
-- Source-manifest SHA-256: `9b8382f96abc1df907d1af26847c658b59a7ced74bf22ca45ae83c000350a3ce`.
+- Repository/ref/local HEAD: `Alpha-Q-ai` / `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `f849ecac7cd7c435c5184d30edb8d1f76b1de1ae`.
+- Correlation ID: `30ac936d-b95e-4e59-a79c-ee14a59a38a6`; generated: `2026-10-16T17:25:40.309024Z`.
+- Source-manifest SHA-256: `2712e7e019921a0b404ee73e1f6f950f5067c2ea44bbce2435a4d81fd9a1e7b7`.
 - Complete path-level references and hashes: `ollamatracks/alltracks_monitoring_inventory.json`.
 
 ### Calculated QAUDITS metrics
 
 | Metric | Value | Formula / interpretation |
 | --- | ---: | --- |
-| Indexed materialized paths | 11229 | Enumerated local non-ignored scope only |
+| Indexed materialized paths | 11456 | Enumerated local non-ignored scope only |
 | Registered feature requirements | 404 | Registry denominator; not implementation count |
 | Master UI requirements | 12 | Master dashboard/control requirements |
 | Planned/unverified requirements | 138 | Future or not-yet-verified product requirements |
 | UIS requirements | 41 | Requirements referenced by ID/line/hash, without copying source prose |
 | Monitoring requirements | 595 | Registered, master UI, planned, and UIS requirements |
 | Monitoring source candidates | 39 | Path candidates; execution not verified |
-| Metric artifact references | 36 | Hashed file references; values were not read |
+| Metric artifact references | 37 | Hashed file references; values were not read |
 | Tracking document references | 18 | Local Markdown path candidates |
-| Tracking artifacts referenced | 538 | Local JSON/JSONL/CSV files under tracker roots; metric values are never read and hashing is bounded |
-| Tracker-directory file path references | 2230 | Materialized non-ignored input files plus managed output paths; self-referential output contents are excluded |
-| Ollama tracker file paths / metric artifacts | 2227 / 36 | Input path/metadata inventory; input hashes are bounded to 1000000 bytes; metric values are not read |
+| Tracking artifacts referenced | 765 | Local JSON/JSONL/CSV files under tracker roots; metric values are never read and hashing is bounded |
+| Tracker-directory file path references | 2457 | Materialized non-ignored input files plus managed output paths; self-referential output contents are excluded |
+| Ollama tracker file paths / metric artifacts | 2454 / 37 | Input path/metadata inventory; input hashes are bounded to 1000000 bytes; metric values are not read |
 | QMOI tracker file paths / metric artifacts | 3 / 0 | Input path/metadata inventory; input hashes are bounded to 1000000 bytes; metric values are not read |
 | Verified per-requirement monitor mappings | 0 | Evidence-linked feature mappings only |
 | Pending monitoring review actions | 595 | One durable review action per requirement; no runtime mutation authorized |
 | Monitor-mapping rate | 0.0% | Verified mappings / all requirements; zero currently verified |
-| Source hash coverage | 98.69% | Hashed candidates / discovered source candidates; local integrity only |
-| Unhashed, unavailable, or changed sources | 30 | Check `unavailable_sources` for per-path reasons, including the 1 MB hashing bound |
+| Source hash coverage | 98.76% | Hashed candidates / discovered source candidates; local integrity only |
+| Unhashed, unavailable, or changed sources | 31 | Check `unavailable_sources` for per-path reasons, including the 1 MB hashing bound |
 | Live metric samples observed | 0 | No runtime endpoint was read |
 | Verified live provider connections | 0 | No provider connection was made |
 
@@ -689,20 +689,20 @@ The machine inventory defines each calculation, numerator, denominator, unit, an
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
+- Status: `NEEDS_REVIEW`; materialized files: `11182`; directories: `1288`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
-- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
+- Managed-document family candidates: `app_platform=2177, build_download_install=2131, disability_accessibility=288, orchestration=2082, qteam_accountability=2071, release_tag_publish=2110, tree_inventory=2022`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
+- Markdown structural checks passed: `2230`; needs review: `202`; metric candidate lines: `53160`; percentage occurrences: `22268`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13537`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `41035` lines in `3741` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `333`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

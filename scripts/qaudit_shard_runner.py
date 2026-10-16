@@ -22,6 +22,7 @@ IGNORED_DIRECTORIES = {
     ".mypy_cache", ".ruff_cache", "dist", "build", "target", "coverage", ".cache",
 }
 EXCLUDED_PATHS = {
+    "oe2.md",
     "oe2.txt",
     "remotecompletion.md",
     "remote-completion.json",
@@ -41,6 +42,7 @@ EXCLUDED_PATHS = {
     "ollamatracks/qaudit_universe.json",
     "ollamatracks/qaudits_evolution_plan.json",
     "ollamatracks/qaudit_shards",
+    "ollamatracks/mission-task-ledger.json",
     "ollamatracks/ollama_reference_audit.json",
     "ollamatracks/repository_surface_audit.json",
     "ollamatracks/feature_test_hook_coverage.json",

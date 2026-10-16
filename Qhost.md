@@ -895,20 +895,20 @@ The mission is not complete merely because code or documentation has been genera
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
+- Status: `NEEDS_REVIEW`; materialized files: `11182`; directories: `1288`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
-- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
+- Managed-document family candidates: `app_platform=2177, build_download_install=2131, disability_accessibility=288, orchestration=2082, qteam_accountability=2071, release_tag_publish=2110, tree_inventory=2022`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
+- Markdown structural checks passed: `2230`; needs review: `202`; metric candidate lines: `53160`; percentage occurrences: `22268`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13537`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `41035` lines in `3741` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `333`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
@@ -916,10 +916,10 @@ The mission is not complete merely because code or documentation has been genera
 <!-- BEGIN QMOI MANAGED: qhost-documentation-map -->
 ## Agent-managed Qhost mission map
 
-- Qhost authored-source SHA-256: `a08ab7c2945a2008ca5f01582d0823be3bc0990b19e841038c73a825bc38a97c`; generated: `2026-10-16T01:22:16.324952Z`.
+- Qhost authored-source SHA-256: `2416a1716cf19b124d643cc3b9c60020e80472c8d6820436395dfd3a26ba18fa`; generated: `2026-10-16T17:31:37.132674Z`.
 - Machine inventory: [`ollamatracks/qhost_documentation_inventory.json`](ollamatracks/qhost_documentation_inventory.json).
-- Scope: materialized local Markdown only; 2314 related candidates indexed; equivalence and implementation are not inferred.
-- Materialized paths: 2443; unreadable/oversized/symlinked paths recorded: 11; candidate manifest SHA-256: `5f356e3661e216d6ed8cfc7cb1e7f9484a619164c765c9d4fe557ea3b122f9ea`.
+- Scope: materialized local Markdown only; 2313 related candidates indexed; equivalence and implementation are not inferred.
+- Materialized paths: 2443; unreadable/oversized/symlinked paths recorded: 12; candidate manifest SHA-256: `b90f86461a4ba575de40af75029a8b863230ce13bdab30128b9fbda1de5d8f46`.
 - Authored Qhost content lines indexed: 907; each line has a source reference and SHA-256, but semantic requirement review remains pending.
 - The logical targets below are Qhost requirements, not a directive to create duplicate placeholder documents.
 
@@ -1006,7 +1006,7 @@ These are locally observed source/test paths, not proof of production behavior. 
 
 | Candidate | Role | Scope/status | Tests | SHA-256 |
 |---|---|---|---|---|
-| scripts/ollama_autonomous_agent.py | active_agent_documentation_owner | active checkout: DOCUMENTATION_AND_CAPABILITY_CONTRACTS_PRESENT; HOSTING_PROVIDER_EXECUTION_UNVERIFIED | tests/test_ollama_autonomous_agent.py | `d5587e64473a15920ac028913f9fe8df87267235360893b7bdb315bab04686b3` |
+| scripts/ollama_autonomous_agent.py | active_agent_documentation_owner | active checkout: DOCUMENTATION_AND_CAPABILITY_CONTRACTS_PRESENT; HOSTING_PROVIDER_EXECUTION_UNVERIFIED | tests/test_ollama_autonomous_agent.py | `eb92fc322a280769ca6cdb641ee476c7ff397b4f87771f8f9e584e68dfee6280` |
 | scripts/link_validator.py | active_link_validation_utility | active checkout: LOCAL_AND_REMOTE_LINK_CHECKS_IMPLEMENTED; LIVE_CHECKS_NOT_RUN_IN_THIS_INVENTORY | tests/test_ollama_runtime.py | `e92dbe2afb4559088b7e96e10185695e3fd1e8001fca2b499e7905968873c1cf` |
 | tests/test_ollama_runtime.py | active_link_validation_tests | active checkout: MOCKED_LINK_AND_CATALOG_TESTS_PRESENT; REAL_PROVIDER_TRANSACTION_NOT_TESTED | None found | `46574b0b1211d5178b97895217735a4f180e6e58e808d762b2014c0a9f74c027` |
 | scripts/qmoi_cloud_setup.py | expected_active_cloud_setup_candidate | active checkout: MISSING_IN_ACTIVE_CHECKOUT | None found | `unavailable` |
@@ -3357,7 +3357,6 @@ Candidate matching is discovery, not semantic equivalence. Snapshot and archive 
 - [qmoi-enhanced-history-14/whatsapp-qmoi-bot/README.md](qmoi-enhanced-history-14/whatsapp-qmoi-bot/README.md) — scope `historical_archive`, categories `api_routes_and_backend, security_monitoring_and_recovery, styles_and_ui`, status `candidate_related_not_semantically_validated`.
 - [qseeds/README.md](qseeds/README.md) — scope `active_checkout`, categories `security_monitoring_and_recovery`, status `candidate_related_not_semantically_validated`.
 - [remote-multi-platform-build-farm.md](remote-multi-platform-build-farm.md) — scope `active_checkout`, categories `accessibility_and_devices, api_routes_and_backend, billing_finance_and_sponsorship, hosting_domains_and_deployment, qaudits_agents_and_remote_completion, security_monitoring_and_recovery, styles_and_ui, universals_and_contracts`, status `candidate_related_not_semantically_validated`.
-- [remotecompletion.md](remotecompletion.md) — scope `active_checkout`, categories `accessibility_and_devices, api_routes_and_backend, billing_finance_and_sponsorship, global_and_country_platforms, hosting_domains_and_deployment, qaudits_agents_and_remote_completion, security_monitoring_and_recovery, styles_and_ui, universals_and_contracts`, status `candidate_related_not_semantically_validated`.
 - [remotehardening.md](remotehardening.md) — scope `active_checkout`, categories `api_routes_and_backend, hosting_domains_and_deployment, qaudits_agents_and_remote_completion, security_monitoring_and_recovery, styles_and_ui`, status `candidate_related_not_semantically_validated`.
 - [trigger.md](trigger.md) — scope `active_checkout`, categories `api_routes_and_backend, qaudits_agents_and_remote_completion, security_monitoring_and_recovery, styles_and_ui`, status `candidate_related_not_semantically_validated`.
 - [undoredo.md](undoredo.md) — scope `active_checkout`, categories `accessibility_and_devices, api_routes_and_backend, billing_finance_and_sponsorship, qaudits_agents_and_remote_completion, security_monitoring_and_recovery, styles_and_ui`, status `candidate_related_not_semantically_validated`.

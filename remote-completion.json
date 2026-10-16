@@ -54,6 +54,7 @@
     "Further requirement sources referenced by historical logs remain to be inventoried and reconciled.",
     "GitHub API identity, branch protection, write authority, issues/PRs, and remote checks remain unverified.",
     "GitHub App key rotation is not verified; do not authenticate with the current local key material.",
+    "GitHub App rotation and authenticated remote access remain unverified",
     "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
     "GitHub CLI unauthenticated",
     "GitHub authentication, branch protections/rulesets, credential rotation, exact-SHA terminal workflow evidence, and remote state remain unverified.",
@@ -189,7 +190,6 @@
     "archive_sync_log_unbound_to_exact_sha_ref_or_terminal_workflow_run",
     "audit_inventory_remaining_catalog_instruction_memory_and_legacy_phases_not_terminal",
     "audit_inventory_run_interrupted_before_terminal_checkpoint",
-    "audit_inventory_run_not_yet_terminal",
     "audit_inventory_shards_remaining",
     "authorized remote completion gate remains blocked",
     "authorized target-owned remote ref/tree/workflow evidence is unavailable",
@@ -235,6 +235,7 @@
     "current_authenticated_target_owned_exact_sha_remote_proof_unavailable",
     "current_remote_branch_protection_and_code_scanning_alert_apis_return_http_403",
     "default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app",
+    "dependency_scan_scope_limited_to_root_requirements",
     "exact_sha_remote_completion_proof_unavailable",
     "existing_audit_inventory_not_terminal",
     "failed_vercel_and_alpha_autosync_checks",
@@ -284,6 +285,7 @@
     "local_validation_is_not_remote_completion",
     "local_worktree_dirty_and_head_differs_from_both_remote_main_refs",
     "local_worktree_dirty_and_not_equal_to_remote_main_shas",
+    "main_and_autosync_backup_shas_differ_in_both_repositories",
     "managed_document_and_sentence_audit_artifacts_may_be_stale_after_local_changes",
     "master_and_qmoi_refs_not_advertised",
     "master_and_qmoi_refs_not_advertised_in_read_only_git_ls_remote",
@@ -304,15 +306,19 @@
     "no_authorized_remote_completion_proof",
     "no_authorized_target_owned_exact_sha_remote_completion_proof",
     "ofca_remote_history_scan_incomplete",
+    "ollama_runtime_and_model_unavailable",
     "optimized_full_audit_inventory_not_terminal",
     "original_qmoi_enhanced_source_history_unavailable",
     "original_source_commit_and_sync_workflow_evidence_not_mapped_for_every_candidate",
     "path_hash_shard_skips_require_scope_review:18",
+    "previous_partial_manifest_not_reusable_after_resumability_fix",
     "prior_audit_inventory_run_interrupted_and_not_terminal",
     "prior_full_audit_inventory_interrupted; generated universe manifest is stale after subsequent edits",
     "prior_full_audit_inventory_interrupted_and_not_terminal",
+    "prior_shard_manifest_included_mutable_oe2_md; corrected exclusion requires a fresh manifest",
     "priority_queue_and_model_review_integration_not_fully_validated",
     "protection_endpoints_HTTP_403_both_repositories",
+    "provider-specific verification not performed",
     "pylance_test_module_scripts_path_imports_unresolved;pytest_runtime_imports_passed",
     "pytest_unavailable_in_selected_interpreters",
     "pytest_unavailable_in_selected_python_environments",
@@ -325,6 +331,7 @@
     "qseed_and_priority_queue_changes_are_uncommitted_and_not_fully_validated",
     "qseed_routing_test_unavailable_cryptography_dependency_missing",
     "remote_branch_protection_HTTP_403_both_repositories",
+    "remote_codeql_and_cross_repository_security_evidence_not_observed",
     "remote_completion_authority_and_exact_sha_proof_unavailable",
     "remote_completion_gates_remain_blocked_by_denied_permissions_and_failed_required_statuses",
     "remote_completion_not_verified",
@@ -368,9 +375,11 @@
     "target_owned_terminal_remote_sha_and_tree_proof_unavailable",
     "target_owned_terminal_remote_sha_proof_unavailable",
     "terminal_exact_sha_remote_evidence_unavailable",
+    "terminal_exact_sha_workflow_and_independent_tree_evidence_unavailable",
     "test_generated_synthetic_monitor_telemetry_retained_as_append_only_data",
     "this_checkpoint_updates_continuation_records_only_no_ollama_execution_claimed",
     "uis_requirements_pending_implementation_evidence",
+    "universal_intelligence_requirements_pending_implementation_evidence",
     "universal_intelligence_requirements_remain_pending_evidence",
     "unreadable_files:27",
     "vercel_checks_fail_on_both_current_main_shas",
@@ -386,23 +395,23 @@
   ],
   "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
   "current_local_checkpoint": {
-    "artifact_bytes": 402878,
+    "artifact_bytes": 411603,
     "artifact_path": "ollamatracks/mission-task-ledger.json",
     "artifact_refs": {
       "mission_task_ledger": {
-        "bytes": 402878,
+        "bytes": 411603,
         "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125"
+        "sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b"
       }
     },
-    "artifact_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
+    "artifact_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
     "blockers": [
       "Remote target ref and write authority are not verified; worktree contains existing user changes.",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
     "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-    "generated_at": "2026-10-16T01:21:19.500241Z",
+    "generated_at": "2026-10-16T18:03:26.608240Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -423,7 +432,7 @@
         "path": ".github/instructions/MISSION.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+        "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
       },
       {
         "bytes": 13048,
@@ -468,24 +477,24 @@
         "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
       }
     ],
-    "instruction_inventory_sha256": "94f317f1152d4a696d061347bd5edbefc0e0c12776aa7ed80b1c8d8ecc938c1d",
-    "local_head_sha": "088de18b8bd8fcf47ab58829c899881d154ae6e4",
-    "local_tree_sha": "4b4a5b01d7bf3bc9aa60db0039091ab6f4fe10ae",
+    "instruction_inventory_sha256": "391672a9d2d12b45b9ef77545de0fb903509394d2a61f88564a87cfeeda12393",
+    "local_head_sha": "f849ecac7cd7c435c5184d30edb8d1f76b1de1ae",
+    "local_tree_sha": "ce728f03417a10b3f5dc334a965b87ae9c641e48",
     "metrics": {
-      "active_phase_id": "PH13",
+      "active_phase_id": "PH01",
       "active_task_id": null,
       "active_task_status": null,
-      "checkpoint_utc": "2026-10-16T01:21:19.448737+00:00",
+      "checkpoint_utc": "2026-10-16T18:03:26.552637+00:00",
       "deadline_utc": "2026-10-13T15:50:19.075+00:00",
-      "elapsed_seconds": 214260.374,
+      "elapsed_seconds": 274387.478,
       "ledger_id": "newmission-120-minute-2026-10-13",
-      "ledger_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
+      "ledger_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
       "ledger_version": "1.0",
       "mission_phase_count": 18,
       "mission_phase_metrics": [
         {
-          "attempt_count": 1,
-          "elapsed_seconds": 0.219,
+          "attempt_count": 6,
+          "elapsed_seconds": 200.088,
           "id": "PH01",
           "requirement_bullet_candidates": 10,
           "source_ref": "latest mission.md#L34-L71",
@@ -548,12 +557,12 @@
           "status": "PENDING"
         },
         {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
+          "attempt_count": 1,
+          "elapsed_seconds": 13.759,
           "id": "PH09",
           "requirement_bullet_candidates": 34,
           "source_ref": "latest mission.md#L390-L446",
-          "status": "PENDING"
+          "status": "PARTIALLY_COMPLETE"
         },
         {
           "attempt_count": 0,
@@ -572,16 +581,16 @@
           "status": "PENDING"
         },
         {
-          "attempt_count": 2,
-          "elapsed_seconds": 0.464,
+          "attempt_count": 3,
+          "elapsed_seconds": 14.974,
           "id": "PH12",
           "requirement_bullet_candidates": 11,
           "source_ref": "latest mission.md#L513-L541",
           "status": "PARTIALLY_COMPLETE"
         },
         {
-          "attempt_count": 2,
-          "elapsed_seconds": 0.477,
+          "attempt_count": 5,
+          "elapsed_seconds": 2131.617,
           "id": "PH13",
           "requirement_bullet_candidates": 16,
           "source_ref": "latest mission.md#L542-L573",
@@ -631,15 +640,15 @@
       "mission_phase_source": {
         "path": "latest mission.md",
         "phase_count": 18,
-        "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+        "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
       },
       "mission_phase_status_counts": {
         "BLOCKED": 0,
         "FAILED": 0,
         "IN_PROGRESS": 0,
-        "PARTIALLY_COMPLETE": 4,
+        "PARTIALLY_COMPLETE": 5,
         "PASS": 0,
-        "PENDING": 14
+        "PENDING": 13
       },
       "mission_requirement_line_count": 760,
       "mission_requirement_line_review_counts": {
@@ -661,10 +670,10 @@
       "task_elapsed_seconds": null
     },
     "next_action": "Resume the highest-priority dependency-ready mission task.",
-    "operation": "mission-metrics-refresh",
+    "operation": "phase-finish",
     "paired_document_sha256": {
-      "oe2.txt": "97a63651f7b09c879fde3a7ba275baa3fd3fd8c5492f9101284a1b116383669d",
-      "remotecompletion.md": "7362aaae28c8d34361ce9af2fd84a309ecfc29c4a4c52293475b0bad420a5f5b"
+      "oe2.txt": "2e387d45bcc9197f2c474562414d01aec6a582d4f0eff96c31c66a7140d8d63b",
+      "remotecompletion.md": "c2fcf3a78d559f5431af4c697d692fc4a39c7d41472dde7ef5ea32361f36318a"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -689,7 +698,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-16T01:21:19.500241Z",
+  "generated_at": "2026-10-16T18:03:26.608240Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -1020,23 +1029,23 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 402878,
+      "artifact_bytes": 411603,
       "artifact_path": "ollamatracks/mission-task-ledger.json",
       "artifact_refs": {
         "mission_task_ledger": {
-          "bytes": 402878,
+          "bytes": 411603,
           "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125"
+          "sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b"
         }
       },
-      "artifact_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
+      "artifact_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
       "blockers": [
         "Remote target ref and write authority are not verified; worktree contains existing user changes.",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
       "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-      "generated_at": "2026-10-16T01:21:19.500241Z",
+      "generated_at": "2026-10-16T18:03:26.608240Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -1057,7 +1066,7 @@
           "path": ".github/instructions/MISSION.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+          "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
         },
         {
           "bytes": 13048,
@@ -1102,24 +1111,24 @@
           "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
         }
       ],
-      "instruction_inventory_sha256": "94f317f1152d4a696d061347bd5edbefc0e0c12776aa7ed80b1c8d8ecc938c1d",
-      "local_head_sha": "088de18b8bd8fcf47ab58829c899881d154ae6e4",
-      "local_tree_sha": "4b4a5b01d7bf3bc9aa60db0039091ab6f4fe10ae",
+      "instruction_inventory_sha256": "391672a9d2d12b45b9ef77545de0fb903509394d2a61f88564a87cfeeda12393",
+      "local_head_sha": "f849ecac7cd7c435c5184d30edb8d1f76b1de1ae",
+      "local_tree_sha": "ce728f03417a10b3f5dc334a965b87ae9c641e48",
       "metrics": {
-        "active_phase_id": "PH13",
+        "active_phase_id": "PH01",
         "active_task_id": null,
         "active_task_status": null,
-        "checkpoint_utc": "2026-10-16T01:21:19.448737+00:00",
+        "checkpoint_utc": "2026-10-16T18:03:26.552637+00:00",
         "deadline_utc": "2026-10-13T15:50:19.075+00:00",
-        "elapsed_seconds": 214260.374,
+        "elapsed_seconds": 274387.478,
         "ledger_id": "newmission-120-minute-2026-10-13",
-        "ledger_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
+        "ledger_sha256": "56532986dad577f3786b2516226d3cee5a38d2ae7c0df08463ad1b0687a9a08b",
         "ledger_version": "1.0",
         "mission_phase_count": 18,
         "mission_phase_metrics": [
           {
-            "attempt_count": 1,
-            "elapsed_seconds": 0.219,
+            "attempt_count": 6,
+            "elapsed_seconds": 200.088,
             "id": "PH01",
             "requirement_bullet_candidates": 10,
             "source_ref": "latest mission.md#L34-L71",
@@ -1182,12 +1191,12 @@
             "status": "PENDING"
           },
           {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
+            "attempt_count": 1,
+            "elapsed_seconds": 13.759,
             "id": "PH09",
             "requirement_bullet_candidates": 34,
             "source_ref": "latest mission.md#L390-L446",
-            "status": "PENDING"
+            "status": "PARTIALLY_COMPLETE"
           },
           {
             "attempt_count": 0,
@@ -1206,16 +1215,16 @@
             "status": "PENDING"
           },
           {
-            "attempt_count": 2,
-            "elapsed_seconds": 0.464,
+            "attempt_count": 3,
+            "elapsed_seconds": 14.974,
             "id": "PH12",
             "requirement_bullet_candidates": 11,
             "source_ref": "latest mission.md#L513-L541",
             "status": "PARTIALLY_COMPLETE"
           },
           {
-            "attempt_count": 2,
-            "elapsed_seconds": 0.477,
+            "attempt_count": 5,
+            "elapsed_seconds": 2131.617,
             "id": "PH13",
             "requirement_bullet_candidates": 16,
             "source_ref": "latest mission.md#L542-L573",
@@ -1265,15 +1274,15 @@
         "mission_phase_source": {
           "path": "latest mission.md",
           "phase_count": 18,
-          "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+          "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
         },
         "mission_phase_status_counts": {
           "BLOCKED": 0,
           "FAILED": 0,
           "IN_PROGRESS": 0,
-          "PARTIALLY_COMPLETE": 4,
+          "PARTIALLY_COMPLETE": 5,
           "PASS": 0,
-          "PENDING": 14
+          "PENDING": 13
         },
         "mission_requirement_line_count": 760,
         "mission_requirement_line_review_counts": {
@@ -1295,10 +1304,10 @@
         "task_elapsed_seconds": null
       },
       "next_action": "Resume the highest-priority dependency-ready mission task.",
-      "operation": "mission-metrics-refresh",
+      "operation": "phase-finish",
       "paired_document_sha256": {
-        "oe2.txt": "97a63651f7b09c879fde3a7ba275baa3fd3fd8c5492f9101284a1b116383669d",
-        "remotecompletion.md": "7362aaae28c8d34361ce9af2fd84a309ecfc29c4a4c52293475b0bad420a5f5b"
+        "oe2.txt": "2e387d45bcc9197f2c474562414d01aec6a582d4f0eff96c31c66a7140d8d63b",
+        "remotecompletion.md": "c2fcf3a78d559f5431af4c697d692fc4a39c7d41472dde7ef5ea32361f36318a"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -1382,7 +1391,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "088de18b8bd8fcf47ab58829c899881d154ae6e4",
+    "local_head_sha": "f849ecac7cd7c435c5184d30edb8d1f76b1de1ae",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

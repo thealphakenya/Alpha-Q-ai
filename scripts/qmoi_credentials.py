@@ -35,7 +35,10 @@ SECRET_REFERENCE = re.compile(
 )
 AUDIT_EXCLUDED_PARTS = {".git"}
 SOURCE_EXCLUDED_PARTS = {".git", "node_modules", "__pycache__", ".pytest_cache", "dist", "build", ".venv", "venv", "target", "coverage"}
-SOURCE_SUFFIXES = {".py", ".js", ".jsx", ".ts", ".tsx", ".json", ".jsonl", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf", ".sh", ".bash", ".env", ".pem", ".key", ".crt"}
+SOURCE_EXCLUDED_SECRET_PARTS = {"credentials", "secrets", "vault", "private", ".ssh", "github-app"}
+SOURCE_EXCLUDED_SECRET_SUFFIXES = {".pem", ".key", ".crt"}
+SOURCE_EXCLUDED_SECRET_NAMES = {"credentials.json", "secrets.json", "vault.json"}
+SOURCE_SUFFIXES = {".py", ".js", ".jsx", ".ts", ".tsx", ".json", ".jsonl", ".yaml", ".yml", ".toml", ".ini", ".cfg", ".conf", ".sh", ".bash"}
 GIT_CREDENTIAL_PATHS = (
     "*.md", "*.mdx", "*.txt", "*.py", "*.js", "*.jsx", "*.ts", "*.tsx",
     "*.json", "*.jsonl", "*.yaml", "*.yml", "*.toml", "*.ini", "*.cfg",
@@ -93,15 +96,27 @@ def scan_markdown_tree(root: Path, *, excluded_roots: set[str] | None = None) ->
 
 
 def scan_source_tree(root: Path, *, excluded_roots: set[str] | None = None) -> dict[str, Any]:
-    """Scan current source/config text files while excluding generated dependency/build trees."""
+    """Scan source/config references while excluding secret-bearing files and stores."""
     findings = []
     source_count = 0
+    excluded_secret_file_count = 0
     excluded_roots = excluded_roots or set()
     for path in root.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in SOURCE_SUFFIXES and not path.name.lower().startswith(".env"):
+        if not path.is_file():
             continue
         relative = path.relative_to(root)
         if any(part in SOURCE_EXCLUDED_PARTS for part in relative.parts) or relative.parts[0] in excluded_roots:
+            continue
+        filename = path.name.lower()
+        if (
+            filename.startswith(".env")
+            or filename in SOURCE_EXCLUDED_SECRET_NAMES
+            or path.suffix.lower() in SOURCE_EXCLUDED_SECRET_SUFFIXES
+            or any(part.lower() in SOURCE_EXCLUDED_SECRET_PARTS for part in relative.parts[:-1])
+        ):
+            excluded_secret_file_count += 1
+            continue
+        if path.suffix.lower() not in SOURCE_SUFFIXES:
             continue
         source_count += 1
         try:
@@ -117,7 +132,12 @@ def scan_source_tree(root: Path, *, excluded_roots: set[str] | None = None) -> d
                 "category": _credential_category(line),
                 "assignment_like": bool(SECRET_ASSIGNMENT.search(line)),
             })
-    return {"source_files": source_count, "references": findings}
+    return {
+        "source_files": source_count,
+        "references": findings,
+        "excluded_secret_file_count": excluded_secret_file_count,
+        "secret_source_files_read": False,
+    }
 
 
 def scan_local_git_history(root: Path) -> dict[str, Any]:
@@ -157,6 +177,7 @@ def audit_credentials(root: Path, report_path: Path) -> dict[str, Any]:
             tree_reports[name] = {
                 "markdown_files": markdown_report["markdown_files"],
                 "source_config_files": source_report["source_files"],
+                "excluded_secret_file_count": source_report["excluded_secret_file_count"],
                 "references": markdown_report["references"] + source_report["references"],
             }
         else:
@@ -181,6 +202,7 @@ def audit_credentials(root: Path, report_path: Path) -> dict[str, Any]:
         "future_or_unfetched_history": "not covered; must be refreshed after fetch or remote tree access",
         "commit_count_across_local_refs": commit_count,
         "local_ref_count": len(refs),
+        "secret_store_files_read": False,
         "markdown_scopes": tree_reports,
         "git_history": history_report,
         "secret_values_recorded": False,
@@ -521,11 +543,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--qtrade", type=Path, default=Path("Qtrade.md"))
     parser.add_argument("--vault-dir", type=Path, default=VAULT_DIR)
     args = parser.parse_args(argv)
+    if args.command == "audit":
+        report_path = args.vault_dir.expanduser() / "credential-inventory.json"
+        result = audit_credentials(args.qtrade.resolve().parent, report_path)
+        print(json.dumps(result, sort_keys=True))
+        return 0
+
     vault = CredentialVault(args.vault_dir)
     if args.command == "migrate-qtrade":
         result = migrate_qtrade(args.qtrade, vault)
-    elif args.command == "audit":
-        result = audit_credentials(args.qtrade.resolve().parent, vault.directory / "credential-inventory.json")
     elif args.command == "verify-bitget":
         record = vault.get("bitget")
         if not record:

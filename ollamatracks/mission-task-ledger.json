@@ -95,12 +95,21 @@
         "previous_sha256": "de7f1fcb82f05303a88dc8907127d7bd16e681f58f4179a0b26281ed2c859267",
         "remote_verified": false,
         "target_branch_matches_local": true
+      },
+      {
+        "basis": "Explicit user-requested adoption of latest mission.md; six established mirrors were written and byte-verified.",
+        "local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
+        "observed_at": "2026-10-16T17:40:41.733685Z",
+        "observed_sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151",
+        "previous_sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b",
+        "remote_verified": false,
+        "target_branch_matches_local": true
       }
     ],
-    "mirror_sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b",
+    "mirror_sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151",
     "mission_section_count": 18,
     "path": "latest mission.md",
-    "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+    "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
   },
   "continuation": {
     "independent_checkpoint_resume_demonstrated": false,
@@ -122,7 +131,7 @@
     ]
   },
   "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-  "current_phase": "PH13",
+  "current_phase": "PH01",
   "inventory_coverage": {
     "instruction_files_discovered_and_read": 9,
     "mission_sections_mapped": 16,
@@ -637,7 +646,7 @@
   "mission_phase_metric_source": {
     "path": "latest mission.md",
     "phase_count": 18,
-    "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+    "sha256": "531b8e520a57e760b7e827bf662d924f4f6bdb41b707e106aa1539e74a467151"
   },
   "mission_phase_metrics": [
     {
@@ -648,19 +657,70 @@
           "finished_at": "2026-10-15T23:05:54.388158Z",
           "outcome": "PARTIALLY_COMPLETE",
           "started_at": "2026-10-15T23:05:54.168767Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 137.947,
+          "finished_at": "2026-10-16T16:51:54.937865Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T16:49:36.991041Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 11.69,
+          "finished_at": "2026-10-16T16:54:12.262644Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T16:54:00.572148Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 13.382,
+          "finished_at": "2026-10-16T16:56:53.724685Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T16:56:40.342187Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 16.394,
+          "finished_at": "2026-10-16T17:53:21.774740Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T17:53:05.380548Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 20.456,
+          "finished_at": "2026-10-16T18:03:26.531289Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T18:03:06.075306Z"
         }
       ],
       "blockers": [],
-      "elapsed_seconds": 0.219,
+      "elapsed_seconds": 200.088,
       "evidence_refs": [
         "git status and target branch inspection",
-        "latest mission and current instructions read"
+        "latest mission and current instructions read",
+        "ollamatracks/instruction_inventory.json",
+        "python scripts/validate_workflows.py:17 valid workflows; local only",
+        "pytest tests/test_mission_task_ledger.py -q:15 passed",
+        "git ls-remote --heads: exact four-ref observation for both repositories in correlated remote-completion.json and remote-evidence-ledger.jsonl",
+        "python scripts/validate_workflows.py:17 valid local workflow files",
+        "dependency-security-audit: pip-audit requirements.txt; zero known vulnerabilities in that scope",
+        "public-remote-ref-observation: main/backup divergence and absent master/qmoi observations for both repositories",
+        "audit-inventory terminal NEEDS_REVIEW: local scan 11,164 files; 1,115,355,995 bytes scanned; 9/9 instruction sources read; remote false",
+        "value-free credential inventory: 1,129 references; 830 unmapped-provider candidates; credential values not read/persisted; provider verification not performed",
+        "pytest tests/test_qmoi_credentials.py -q: 13 passed; audit skips .env/key/certificate/vault files and does not initialize the encrypted vault",
+        "python -m pip_audit -r requirements.txt: no known vulnerabilities in root requirements scope",
+        "python scripts/validate_workflows.py: 17 valid workflows; local only",
+        "audit-inventory terminal NEEDS_REVIEW: 11,164 files and 1,115,355,995 bytes scanned; 2,440 materialized Markdown; 9/9 instructions read; semantic and remote scopes incomplete",
+        "credential-reference inventory: 1,129 references, 830 unmapped-provider candidates; no credential values read/persisted; provider verification not performed",
+        "credential-manager safety fix: .env/key/certificate/vault files are skipped before read, metadata audit bypasses vault initialization; 13 credential tests passed",
+        "exact public refs recorded: main/backup diverge in both repositories; master/qmoi not advertised; no tree, protection, or terminal workflow proof"
       ],
-      "finished_at": "2026-10-15T23:05:54.388158Z",
+      "finished_at": "2026-10-16T18:03:26.531289Z",
       "heading": "DISCOVER AND PRESERVE EVERYTHING",
       "id": "PH01",
-      "last_started_at": "2026-10-15T23:05:54.168767Z",
-      "next_action": "Complete the mission-wide repository, test, workflow, dependency, security, and remote baseline inventory; unavailable remote authority remains a blocker.",
+      "last_started_at": "2026-10-16T18:03:06.075306Z",
+      "next_action": "Continue source-to-requirement, feature/test/security, and owner mapping; resolve 18 Qhost missing-target candidates semantically. Obtain authorized exact-SHA/tree/terminal workflow evidence for both repositories. Ollama CLI/API unavailable; App rotation unverified; do not access secret values or mutate remote branches.",
       "number": 1,
       "requirement_bullet_candidates": 10,
       "requirement_line_count": 28,
@@ -825,14 +885,28 @@
       "unreviewed_requirement_line_count": 31
     },
     {
-      "attempt_history": [],
+      "attempt_history": [
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 13.759,
+          "finished_at": "2026-10-16T17:58:24.741360Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T17:58:10.982778Z"
+        }
+      ],
       "blockers": [],
-      "elapsed_seconds": 0.0,
-      "evidence_refs": [],
-      "finished_at": null,
+      "elapsed_seconds": 13.759,
+      "evidence_refs": [
+        "credential-reference-inventory-safety: source audit skips .env, PEM/key/certificate files and secret-store directories without reading; audit mode bypasses credential vault initialization",
+        "pytest tests/test_qmoi_credentials.py -q: 13 passed; synthetic test asserts protected files are not read and audit creates no key/vault",
+        "pip-audit -r requirements.txt: no known vulnerabilities in root requirements scope only",
+        "full local audit remains NEEDS_REVIEW; remote CodeQL/alert evidence and second-repository security state not observed"
+      ],
+      "finished_at": "2026-10-16T17:58:24.741360Z",
       "heading": "ADD INDEPENDENT QUALITY AND SECURITY GATES",
       "id": "PH09",
-      "next_action": "Start this phase through scripts.mission_task_ledger.",
+      "last_started_at": "2026-10-16T17:58:10.982778Z",
+      "next_action": "Continue owner/scope/finding triage across active source and tests; reuse only exact-SHA existing CodeQL results, and obtain authorized remote security/check evidence for both repositories. Ollama unavailable; credential/App/provider verification remains blocked.",
       "number": 9,
       "requirement_bullet_candidates": 34,
       "requirement_line_count": 47,
@@ -840,8 +914,8 @@
       "source_line_start": 390,
       "source_path": "latest mission.md",
       "source_ref": "latest mission.md#L390-L446",
-      "started_at": null,
-      "status": "PENDING",
+      "started_at": "2026-10-16T17:58:10.982778Z",
+      "status": "PARTIALLY_COMPLETE",
       "unreviewed_requirement_line_count": 47
     },
     {
@@ -899,21 +973,31 @@
           "finished_at": "2026-10-16T00:18:27.068961Z",
           "outcome": "PARTIALLY_COMPLETE",
           "started_at": "2026-10-16T00:18:26.816653Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 14.51,
+          "finished_at": "2026-10-16T17:58:59.882668Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T17:58:45.372661Z"
         }
       ],
       "blockers": [],
-      "elapsed_seconds": 0.464,
+      "elapsed_seconds": 14.974,
       "evidence_refs": [
         "six mission mirrors byte-verified against latest mission.md",
         "six instruction files and Copilot instructions updated",
         "Qhost.md managed target/phase/gate map and ALLMDFILESREFS.md refresh integration",
-        "tests/test_ollama_autonomous_agent.py: Qhost map tests passed"
+        "tests/test_ollama_autonomous_agent.py: Qhost map tests passed",
+        "audit-inventory terminal NEEDS_REVIEW: materialized Markdown count 2,440; 10 category assignments; ALLMDFILESREFS.md regenerated",
+        "Qhost inventory: 27 logical targets, 18 missing, 907 requirement lines, 16 numbered sections, 20 QAUDITS gates; semantic review incomplete; no live peer checkout",
+        "all seven mission source/mirror hashes equal; instruction inventory 9/9 pass; remote verification false"
       ],
-      "finished_at": "2026-10-16T00:18:27.068961Z",
+      "finished_at": "2026-10-16T17:58:59.882668Z",
       "heading": "KEEP DOCUMENTATION SYNCHRONIZED",
       "id": "PH12",
-      "last_started_at": "2026-10-16T00:18:26.816653Z",
-      "next_action": "Semantically reconcile each mapped Qhost requirement against implementation, tests, provider evidence, and the 18 missing logical docs; do not create placeholders.",
+      "last_started_at": "2026-10-16T17:58:45.372661Z",
+      "next_action": "Map each missing Qhost logical target to existing implementation/docs/tests and identify actual gaps; semantically reconcile the 907 requirement-line candidates. Do not create placeholders or claim all Markdown/history coverage from the local scan.",
       "number": 12,
       "requirement_bullet_candidates": 11,
       "requirement_line_count": 21,
@@ -940,21 +1024,53 @@
           "finished_at": "2026-10-16T00:18:27.583918Z",
           "outcome": "PARTIALLY_COMPLETE",
           "started_at": "2026-10-16T00:18:27.328591Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 281.149,
+          "finished_at": "2026-10-16T17:07:26.755633Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T17:02:45.606378Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 163.329,
+          "finished_at": "2026-10-16T17:11:24.745313Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T17:08:41.416621Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 1686.662,
+          "finished_at": "2026-10-16T17:41:16.789669Z",
+          "outcome": "PARTIALLY_COMPLETE",
+          "started_at": "2026-10-16T17:13:10.127403Z"
         }
       ],
       "blockers": [],
-      "elapsed_seconds": 0.477,
+      "elapsed_seconds": 2131.617,
       "evidence_refs": [
         "tests/test_mission_task_ledger.py: 14 passed",
         "oe2.txt and remotecompletion.md contain generated PH01-PH18 metric rows",
         "Qhost inventory integrated into audit-inventory result and checkpoint metrics",
-        "Qhost G1-G20 remain NOT_VERIFIED; external research NOT_VISITED and cross-repository verification NOT_PERFORMED"
+        "Qhost G1-G20 remain NOT_VERIFIED; external research NOT_VISITED and cross-repository verification NOT_PERFORMED",
+        "ollamatracks/qaudit_shards/fbdc125ad0a83d4eb6e0/shard_run.json: 10,464 files across 105 shards; 10,463 hashed; 1 metadata-only oversized file; 0 hash errors; 18 excluded/skipped paths",
+        "tests/test_qaudit_shard_runner.py -q: 1 passed",
+        "source manifest fbdc125ad0a83d4eb6e050e3d40596ea908f495d9f00ac9e786034b35b0b4bfd; mutable mission ledger excluded and separately checkpointed",
+        "ollamatracks/qaudit_shards/957f3a5583b41a797e65/shard_run.json: NEEDS_REVIEW; 10,463 files in 105 shards; 10,462 hashed; ALLMDFILESREFS.md (103,491,160 bytes) metadata-only; zero hash errors; 18 excluded/skipped paths",
+        "tests/test_qaudit_shard_runner.py -q: 1 passed; manifest stayed stable across repeated QAUDITS checkpoints",
+        "source manifest 957f3a5583b41a797e6533b083908b57c0e49926a2da126316f6f3de7888c44b; oe2.md and mission-task-ledger.json excluded as mutable evidence",
+        "audit-inventory terminal NEEDS_REVIEW under correlation 7edc9eb9-db48-4a09-a3cd-a10cc89a69f1; 9/9 instructions read; 2,440 Markdown candidates; 139 registered features, 162 capabilities; styles/universals 404 unmapped, 0 test mappings, 0 hook applicability reviews; 1,084 finance candidate files and 26,718 candidate lines; external research disabled/not visited; 907 Qhost requirement lines and 18 missing logical targets",
+        "ollamatracks/repository_surface_audit.json: 483,818,657 bytes; local surface NEEDS_REVIEW; OFCA incomplete, 11,164 files and 1,115,355,995 bytes scanned, 6,336 unclassified; 2 oversized sources skipped",
+        "pytest tests/test_mission_task_ledger.py tests/test_qaudit_shard_runner.py -q: 16 passed",
+        "python scripts/validate_workflows.py: 17 valid local workflows; remote execution/deployment unverified",
+        "pip-audit -r requirements.txt: no known vulnerabilities in root requirements scope only"
       ],
-      "finished_at": "2026-10-16T00:18:27.583918Z",
+      "finished_at": "2026-10-16T17:41:16.789669Z",
       "heading": "MAINTAIN LIVE PROGRESS AND EVIDENCE",
       "id": "PH13",
-      "last_started_at": "2026-10-16T00:18:27.328591Z",
-      "next_action": "Complete bounded Qhost QAUDITS shards and external research only through authorized, cited sources; preserve provider/security/remote blockers.",
+      "last_started_at": "2026-10-16T17:13:10.127403Z",
+      "next_action": "Complete semantic requirement-to-code/test/security mappings; review 404 feature hooks, Qhost missing docs and oversized ALLMDFILESREFS.md; obtain authenticated exact-SHA/tree/workflow evidence for both repositories. Ollama runtime/model is unavailable locally. Public main/backup refs diverge and master/qmoi refs were not advertised; do not mutate remote branches.",
       "number": 13,
       "requirement_bullet_candidates": 16,
       "requirement_line_count": 24,
@@ -11011,7 +11127,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-16T01:21:19.422640Z",
+  "updated_at": "2026-10-16T18:03:26.531326Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

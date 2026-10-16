@@ -201,6 +201,69 @@ def test_audit_covers_materialized_markdown_and_never_persists_values(tmp_path: 
     assert report_path.stat().st_mode & 0o777 == 0o600
 
 
+def test_source_audit_skips_secret_files_without_reading_them(tmp_path: Path, monkeypatch):
+    from scripts.qmoi_credentials import scan_source_tree
+
+    root = tmp_path / "repo"
+    root.mkdir()
+    (root / "safe.py").write_text('API_KEY = "SYNTHETIC_TEST_VALUE"\n', encoding="utf-8")
+    secret_paths = [
+        root / ".env",
+        root / ".env.example",
+        root / "keys" / "private.pem",
+        root / "vault" / "credentials.json",
+    ]
+    for path in secret_paths:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("API_SECRET=SYNTHETIC_DO_NOT_READ\n", encoding="utf-8")
+
+    original_read_text = Path.read_text
+    protected_paths = {path.resolve() for path in secret_paths}
+
+    def guarded_read_text(path, *args, **kwargs):
+        if path.resolve() in protected_paths:
+            raise AssertionError("credential source must not be read")
+        return original_read_text(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "read_text", guarded_read_text)
+    report = scan_source_tree(root)
+
+    assert report["source_files"] == 1
+    assert report["excluded_secret_file_count"] == len(secret_paths)
+    assert report["secret_source_files_read"] is False
+    assert [item["path"] for item in report["references"]] == ["safe.py"]
+    assert "SYNTHETIC_TEST_VALUE" not in json.dumps(report)
+
+
+def test_audit_does_not_load_or_create_vault_key(tmp_path: Path, monkeypatch):
+    from scripts import qmoi_credentials
+
+    root = tmp_path / "repo"
+    root.mkdir()
+    (root / "Qtrade.md").write_text("# Credential audit fixture\n", encoding="utf-8")
+    vault_dir = tmp_path / "credential-store"
+
+    def reject_vault_access(*_args, **_kwargs):
+        raise AssertionError("metadata-only audit must not initialize the credential vault")
+
+    monkeypatch.setattr(qmoi_credentials, "CredentialVault", reject_vault_access)
+    result = qmoi_credentials.main([
+        "audit",
+        "--qtrade",
+        str(root / "Qtrade.md"),
+        "--vault-dir",
+        str(vault_dir),
+    ])
+
+    report_path = vault_dir / "credential-inventory.json"
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    assert result == 0
+    assert report["secret_values_recorded"] is False
+    assert report["secret_store_files_read"] is False
+    assert not (vault_dir / "master.key").exists()
+    assert not (vault_dir / "vault.enc").exists()
+
+
 def test_git_history_audit_reports_commit_and_path_without_secret_values(tmp_path: Path):
     root = tmp_path / "history-repo"
     root.mkdir()

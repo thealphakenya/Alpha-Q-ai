@@ -40,6 +40,8 @@ def test_bounded_audit_shards_resume_deterministically_without_source_text(tmp_p
     assert second["remaining_shard_numbers"] == []
     assert second["status"] == "NEEDS_REVIEW"
     assert "ollamatracks/STATE.txt" in second["excluded_paths"]
+    assert "ollamatracks/mission-task-ledger.json" in second["excluded_paths"]
+    assert "oe2.md" in second["excluded_paths"]
     assert third["source_manifest_sha256"] == first["source_manifest_sha256"]
     assert third["shards_written_this_call"] == []
     assert len(checkpoints) == 6

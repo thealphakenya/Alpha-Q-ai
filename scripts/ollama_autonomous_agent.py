@@ -5552,7 +5552,7 @@ class OllamaAutonomousAgent:
         safe_text_write(
             self.current_status_path,
             (
-                "QMOI autonomous agent status: running\n"
+                "QMOI autonomous agent status: initialized\n"
                 f"Timestamp: {now}\n"
             ),
         )

@@ -2427,6 +2427,7 @@ class TestRealtimeTracker:
         assert (tracker_dir / "STATE.txt").exists()
         assert (tracker_dir / "PR_STATUS.txt").exists()
         assert (tracker_dir / "telemetry.jsonl").exists()
+        assert "status: initialized" in (tracker_dir / "CURRENT_STATUS.txt").read_text(encoding="utf-8")
 
         telemetry = (tracker_dir / "telemetry.jsonl").read_text(encoding="utf-8")
         assert "agent_startup" in telemetry or "validation_started" in telemetry or "monitor_initialized" in telemetry
