@@ -632,7 +632,7 @@ Materialized source paths are candidates, not proof of implementation, authoriza
 - Candidate files: `552`; materialized scope counts: `{"active_checkout": 19, "historical_archive": 432, "snapshot": 101}`.
 - Candidate role counts: `{"backend_api_or_adapter": 175, "documentation": 43, "frontend_ui": 81, "runtime_or_integration_candidate": 226, "test": 40}`.
 - Venue mentions: `{"binance": 27, "bitget": 62, "bybit": 2, "cashon": 101, "coinbase": 10, "kraken": 10, "megavault": 34, "okx": 2, "paypal": 39}`.
-- Local refs discovered: `42`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.
+- Local refs discovered: `39`; this refresh does not scan every ref tree or intermediate commit. Remote completeness: `not_verified`.
 - Machine-readable path, size, hash, source scope, role, and venue evidence: `ollamatracks/trading_surface_inventory.json`.
 - Coverage state: `discovered_unmapped`; platform execution, credential validity, balances, provider webhook registration, and live-order readiness are not verified by path discovery.
 ### Credential references and provider verification
@@ -1215,26 +1215,26 @@ Every UI/API/backend feature must have a stable feature ID, owning repository/re
 ### Styles and universals test/hook mapping: `ollamatracks/feature_test_hook_coverage.json`
 
 Registered feature count: `404`; test mappings: `0`; reviewed hook applicability: `0/404`; status: `NEEDS_FEATURE_TEST_HOOK_MAPPING`.
-Styles/universals replacement plan: `ollamatracks/style_universal_replacement_inventory.json`; `1680` style files, `1872` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
+Styles/universals replacement plan: `ollamatracks/style_universal_replacement_inventory.json`; `1688` style files, `1875` universal/access files, `673` directories; candidates require review and tests, and replacements are not authorized by discovery.
 <!-- END QMOI MANAGED: active-test-feature-coverage -->
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
-- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
+- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

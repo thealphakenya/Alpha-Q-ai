@@ -404,7 +404,7 @@ Production-oriented financial management model: active and under continued enhan
 Trading and balance displays must distinguish provider-observed, simulated, stale, and unavailable values. Path discovery does not prove account ownership, current balances, settlement, or provider integration.
 
 - Materialized trading candidates: `552`; detailed inventory: `ollamatracks/trading_surface_inventory.json`.
-- Financial claim audit: `1081` files, `26621` redacted candidate lines; values are excluded from the report and no balances are verified.
+- Financial claim audit: `1085` files, `26825` redacted candidate lines; values are excluded from the report and no balances are verified.
 - Only authorized read-only provider responses can produce current balance evidence; include account scope, currency, observed-at timestamp, and reconciliation status without exposing account secrets.
 - Transfers, deposits, withdrawals, payroll, and live trading remain blocked without explicit authorization, verified provider capability, risk checks, and auditable confirmation.
 - Revenue, P&L, and model-comparison claims must be independently sourced and net of fees; no guaranteed growth/profit claims.
@@ -412,13 +412,13 @@ Trading and balance displays must distinguish provider-observed, simulated, stal
 
 This scan indexes claim locations and metadata only; it does not verify balances, account ownership, provider access, or transaction truth. Raw amounts, account identifiers, and source line text are never copied into the report.
 
-- Tracked materialized Markdown files with financial claims: `1081`.
-- Candidate financial lines: `26621`; amount-like candidates: `3320`; untyped numeric candidates: `5448`.
+- Tracked materialized Markdown files with financial claims: `1085`.
+- Candidate financial lines: `26825`; amount-like candidates: `3332`; untyped numeric candidates: `5446`.
 - Account-ID-like lines: `4`; actual balances independently verified by this scan: `0`.
 - Currency mentions by owner label: `{"binance": {"AED": 1, "BTC": 8, "CAD": 1, "CNY": 1, "ETH": 8, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 5, "RAND": 1, "USD": 5, "USDC": 1, "USDT": 14}, "bitget": {"AED": 1, "BTC": 4, "CAD": 1, "CNY": 1, "ETH": 4, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 10}, "bybit": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "cashon": {"AED": 1, "BTC": 6, "CAD": 1, "CNY": 1, "ETH": 6, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 29, "RAND": 1, "USD": 5, "USDC": 1, "USDT": 11}, "coinbase": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "kcb": {"AED": 1, "BTC": 2, "CAD": 1, "CNY": 1, "ETH": 2, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 4, "RAND": 1, "USD": 2, "USDC": 1, "USDT": 1}, "kraken": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "ledger_wallet": {"BTC": 1, "ETH": 1}, "megavault": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "okx": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 1, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 1}, "paypal": {"AED": 1, "BTC": 2, "CAD": 1, "CNY": 1, "ETH": 2, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 9, "RAND": 1, "USD": 2, "USDC": 1, "USDT": 4}, "pesapal": {"AED": 1, "BTC": 1, "CAD": 1, "CNY": 1, "ETH": 1, "EUR": 1, "GBP": 1, "JPY": 1, "KES": 3, "RAND": 1, "USD": 1, "USDC": 1, "USDT": 2}, "standard_chartered": {"BTC": 1, "ETH": 1}, "unassigned_account_wallet_bank": {"BTC": 1, "ETH": 1, "EUR": 3, "GBP": 3, "KES": 39, "USD": 16, "USDC": 1, "USDT": 2}, "unassigned_financial_claim": {"AED": 1, "BTC": 111, "CAD": 2, "CNY": 1, "ETH": 11, "EUR": 18, "GBP": 16, "JPY": 1, "KES": 1235, "RAND": 11, "USD": 62, "USDT": 50}}`.
-- Candidate lines by financial-management category: `{"amount_currency": 5308, "country_and_jurisdiction": 924, "deals_and_contracts": 1420, "employment_and_payroll": 2343, "financial_security_and_authorization": 2019, "payments_and_transfers": 2572, "project_budget_and_expenses": 274, "revenue_income_money_making": 10719, "wallets_and_banking": 4190}`.
+- Candidate lines by financial-management category: `{"amount_currency": 5323, "country_and_jurisdiction": 964, "deals_and_contracts": 1447, "employment_and_payroll": 2343, "financial_security_and_authorization": 2104, "payments_and_transfers": 2588, "project_budget_and_expenses": 252, "revenue_income_money_making": 10722, "wallets_and_banking": 4263}`.
 - Candidate locations, line numbers, hashes, scopes, and owner groups: `ollamatracks/financial_claim_inventory.json`.
-- Tracked Markdown denominator: `2429`; untracked/ignored/oversized/unreadable/symlink exclusions: `0/0/6/3/0`.
+- Tracked Markdown denominator: `2433`; untracked/ignored/oversized/unreadable/symlink exclusions: `0/0/6/3/0`.
 - Taxonomy categories are keyword candidates (amount/currency, revenue/income, payments/transfers, wallets/banking, deals/contracts, employment/payroll, country/jurisdiction, project budgets/expenses, and financial security/authorization); counts overlap and do not establish implementation or coverage.
 - Unsupported claims remain `needs_independent_review_not_verified`; do not silently delete or replace historical amounts with invented evidence. Resolve each claim with authorized source proof or retain it clearly marked unverified.
 <!-- END QMOI MANAGED: trading-evidence-and-balance-accountability -->
@@ -426,20 +426,20 @@ This scan indexes claim locations and metadata only; it does not verify balances
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
-- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
+- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

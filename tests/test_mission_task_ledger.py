@@ -14,10 +14,15 @@ from scripts.mission_task_ledger import (
     finish_phase,
     finish_task,
     load_ledger,
+    mission_phase_status_counts,
+    refresh_paired_mission_phase_metrics,
+    render_mission_phase_metrics,
     refresh_mission_source_hash,
     start_phase,
     start_task,
     status_counts,
+    sync_mission_phase_catalog,
+    sync_mission_source,
     validate_ledger,
 )
 
@@ -112,7 +117,12 @@ def test_resuming_partially_completed_task_preserves_prior_elapsed_time():
 
 def test_phase_transitions_record_elapsed_time_and_evidence():
     ledger = _ledger()
-    phase = start_phase(ledger, "P02_REQUIREMENT_AND_CONTINUATION_INSPECTION", now="2026-10-13T14:00:00Z")
+    phase_id = "P02_REQUIREMENT_AND_CONTINUATION_INSPECTION"
+    phase_record = next(item for item in ledger["phase_history"] if item["id"] == phase_id)
+    phase_record.update({"status": "PENDING", "started_at": None, "finished_at": None})
+    phase_record.pop("attempt_history", None)
+    phase_record.pop("elapsed_seconds", None)
+    phase = start_phase(ledger, phase_id, now="2026-10-13T14:00:00Z")
 
     assert phase["status"] == "IN_PROGRESS"
     phase = finish_phase(
@@ -125,6 +135,110 @@ def test_phase_transitions_record_elapsed_time_and_evidence():
     )
     assert phase["elapsed_seconds"] == 75
     assert phase["status"] == "PARTIALLY_COMPLETE"
+
+
+def test_canonical_phase_catalog_indexes_all_eighteen_source_headings():
+    ledger = _ledger()
+    mission_text = (ROOT / "latest mission.md").read_text(encoding="utf-8")
+
+    phases = sync_mission_phase_catalog(ledger, mission_text)
+
+    assert len(phases) == 18
+    assert [phase["id"] for phase in phases] == [f"PH{i:02d}" for i in range(1, 19)]
+    assert phases[16]["heading"] == "IMPLEMENT A STRUCTURED COPILOT-TO-OLLAMA BRIDGE"
+    assert phases[17]["heading"] == "FINAL EXECUTION AND DELIVERABLES"
+    assert sum(mission_phase_status_counts(ledger).values()) == 18
+
+
+def test_mission_requirement_lines_are_hash_indexed_without_copying_source_text():
+    ledger = _ledger()
+    mission_text = (ROOT / "latest mission.md").read_text(encoding="utf-8")
+    sync_mission_phase_catalog(ledger, mission_text)
+
+    records = ledger["mission_requirement_line_records"]
+    assert ledger["mission_requirement_line_count"] == len(records)
+    assert len(records) > 500
+    assert len({record["id"] for record in records}) == len(records)
+    assert all(record["status"] == "NOT_REVIEWED" for record in records)
+    assert all(record["semantic_reviewed"] is False for record in records)
+    assert all(len(record["line_sha256"]) == 64 for record in records)
+    assert all("text" not in record and "source_text" not in record for record in records)
+    assert {record["phase_id"] for record in records if record["phase_id"]} == {
+        f"PH{index:02d}" for index in range(1, 19)
+    }
+    assert ledger["mission_requirement_line_review_counts"] == {
+        "not_reviewed": len(records),
+        "reviewed": 0,
+    }
+
+
+def test_mission_phase_transition_records_elapsed_evidence_and_status():
+    ledger = _ledger()
+    sync_mission_phase_catalog(ledger, (ROOT / "latest mission.md").read_text(encoding="utf-8"))
+    partial_before = mission_phase_status_counts(ledger)["PARTIALLY_COMPLETE"]
+
+    phase = start_phase(ledger, "PH18", now="2026-10-15T14:00:00Z")
+    phase = finish_phase(
+        ledger,
+        "PH18",
+        "PARTIALLY_COMPLETE",
+        evidence_refs=["tests/test_mission_task_ledger.py"],
+        next_action="Continue the remaining final deliverables.",
+        now="2026-10-15T14:00:05Z",
+    )
+
+    assert phase["elapsed_seconds"] == 5
+    assert phase["evidence_refs"] == ["tests/test_mission_task_ledger.py"]
+    assert mission_phase_status_counts(ledger)["PARTIALLY_COMPLETE"] == partial_before + 1
+
+
+def test_dashboard_refresh_replaces_stale_metrics_and_preserves_later_history(tmp_path):
+    ledger = _ledger()
+    sync_mission_phase_catalog(ledger, (ROOT / "latest mission.md").read_text(encoding="utf-8"))
+    legacy = "## Mission phase dashboard (live metrics)\nold metrics\n\n## Live time accounting\nkeep history\n"
+    for name in ("oe2.txt", "remotecompletion.md", "oe2.md"):
+        (tmp_path / name).write_text(legacy, encoding="utf-8")
+
+    refresh_paired_mission_phase_metrics(tmp_path, ledger)
+
+    for name in ("oe2.txt", "remotecompletion.md", "oe2.md"):
+        refreshed = (tmp_path / name).read_text(encoding="utf-8")
+        assert refreshed.count("| PH") == 18
+        assert "old metrics" not in refreshed
+        assert "keep history" in refreshed
+        assert "Remote verification remains `False`" in refreshed
+
+
+def test_sync_mission_source_adopts_latest_mission_and_preserves_task_ledger(tmp_path, monkeypatch):
+    ledger = copy.deepcopy(_ledger())
+    branch = ledger["target_branch"]
+    subprocess.run(["git", "init", "-q", "-b", branch, str(tmp_path)], check=True)
+    subprocess.run(
+        ["git", "-C", str(tmp_path), "remote", "add", "origin", "https://github.com/thealphakenya/Alpha-Q-ai"],
+        check=True,
+    )
+    source = (ROOT / "latest mission.md").read_bytes()
+    (tmp_path / "latest mission.md").write_bytes(source)
+    for relative in ["MISSION.md", "NEWMISSION.md", "MISSIONEW.md", "MISSIONNEW.md", "MISSIONNEWEST.md", ".github/instructions/MISSION.md"]:
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(b"old mission\n")
+    ledger_path = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+    ledger_path.parent.mkdir(parents=True, exist_ok=True)
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+    monkeypatch.setattr(
+        "scripts.mission_task_ledger._record_checkpoint",
+        lambda *args, **kwargs: {"generated_at": "2026-10-15T14:00:00Z"},
+    )
+
+    result = sync_mission_source(tmp_path)
+    refreshed = json.loads(ledger_path.read_text(encoding="utf-8"))
+
+    assert result["phase_count"] == 18
+    assert len(refreshed["tasks"]) == 16
+    assert len(refreshed["mission_phase_metrics"]) == 18
+    assert refreshed["canonical_source"]["path"] == "latest mission.md"
+    assert all((tmp_path / path).read_bytes() == source for path in result["mirror_paths"])
 
 
 def test_malformed_ledger_is_rejected_without_success_fallback():

@@ -3,7 +3,7 @@
 <!-- BEGIN QMOI MANAGED: materialized-link-inventory -->
 ## Materialized Markdown link inventory
 
-- Link references: `8673`; URL query strings and fragments are omitted from display.
+- Link references: `8657`; URL query strings and fragments are omitted from display.
 - A listed link is not a reachability or permission check; local missing targets remain in `repository_surface_audit.json`.
 
 | Source path | Line | Sanitized target | Target SHA-256 | Kind |
@@ -15,6 +15,9 @@
 | `ALLAUTO.md` | 40 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
 | `ALLAUTO.md` | 43 | `undoredo.md` | `3b5d54126a938759f92f73109b7282b88ad435a98a93a8dede91a5ed51616ce2` | `local` |
 | `ALLLANGUAGESCOMPARE.md` | 8 | `./ALLLANGUAGES.md` | `e3b7fd6b06ad8e2e0a5c1f39179451b46161e9dec15763f27ee9c03147ae76ea` | `local` |
+| `ALLTRACKS.md` | 47 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `ALLTRACKS.md` | 47 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `ALLTRACKS.md` | 47 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
 | `API.md` | 70 | `ALLMDFILESREFS.md` | `dcd00d9f25250af8602a018f4efa7910f6842311166a684538b359ea10b3c73b` | `local` |
 | `API.md` | 71 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
 | `API.md` | 72 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
@@ -129,18 +132,6 @@
 | `MERGE.md` | 2457 | `SYNC.md` | `3d99e517d949327c5f8ff76084a636433efa693d73b43f35d10bf17f96808e02` | `local` |
 | `MERGE.md` | 2458 | `or.md` | `e5a917d518ee8f8fbeace7fc120599a8a8d06b6cb4847290b361a577c754a107` | `local` |
 | `MERGE.md` | 2459 | `zx.txt` | `bf15b9b4533c7af9ece0e1ab5a0363ca5f58f3a0895580afa905bc538bf41672` | `local` |
-| `MISSION.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `MISSION.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
-| `MISSION.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `MISSIONEW.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `MISSIONEW.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
-| `MISSIONEW.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `MISSIONNEW.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `MISSIONNEW.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
-| `MISSIONNEW.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `MISSIONNEWEST.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `MISSIONNEWEST.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
-| `MISSIONNEWEST.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
 | `MONITORING_INDEX.md` | 62 | `MONITORING_SUMMARY.md` | `d090da629e264fcaca6372029a02a5b7ac8623c946223f39002833d57d8dd486` | `local` |
 | `MONITORING_INDEX.md` | 69 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `MONITORING_INDEX.md` | 76 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
@@ -166,9 +157,6 @@
 | `MONITORING_SUMMARY.md` | 332 | `WORKFLOW_STATUS_DASHBOARD.md` | `d687bcabc6af24c6db7aacc84b5cf7875145da1784e415eb04005b9b8d54e11d` | `local` |
 | `MONITORING_SUMMARY.md` | 333 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
 | `MONITORING_SUMMARY.md` | 334 | `GITHUB_ACTIONS_EXECUTION_GUIDE.md` | `bd1f5d14f6edffc83fe6ba733d26d2386ef775697ea6311ff65f47c50c8410df` | `local` |
-| `NEWMISSION.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `NEWMISSION.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
-| `NEWMISSION.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
 | `OLLAMA_AUTOMATION_GUIDE.md` | 92 | `PLATFORM_REQUIREMENTS.md` | `ebc7c5485a2a53a41541919a3491e4598dbe3d0eab82c24434b77a86efe39609` | `local` |
 | `OLLAMA_AUTOMATION_GUIDE.md` | 410 | `DOWNLOAD.md` | `1cc1acd2a26c5c9f67d5a60606a44a59755e2bd4c3a7c2487cee39d28f60e753` | `local` |
 | `OLLAMA_AUTOMATION_GUIDE.md` | 411 | `INSTALL.md` | `09b140a43ebfdd8dbec31ce72cafffd15164d2860fd390692a030bcb932b54a0` | `local` |
@@ -194,6 +182,9 @@
 | `QAUDITS.md` | 7 | `TRANSION.md` | `6f67716dc2c6c916fd87c9c00832896afc61e0e347f257f1d3a993d29d34fe1d` | `local` |
 | `QAUDITS.md` | 91 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
 | `QAUDITS.md` | 120 | `QSEED.md` | `1da9dbf053e769cbbf8420c33813fb196dc54a2988f8ae01044714b93dbe790b` | `local` |
+| `QAUDITS.md` | 305 | `ALLTRACKS.md` | `8d1ad785dc8c9c482a81fbdcfef976b08e9be457180d8899624e6b903fd472fd` | `local` |
+| `QAUDITS.md` | 306 | `QMOITACKS.md` | `5fd578eadf7b921e6cbc34e7f12d4ac2bf064ae29fce3e29f069b66159d9ee7f` | `local` |
+| `QAUDITS.md` | 306 | `QMOITRACKS.md` | `d0f9586b46c5fd8291912c4c81a9fb55bca826e0a1f9b5ff5bf820254b17c932` | `local` |
 | `QLIONPROGRAMMINGLANGUAGE.md` | 35 | `./ALLLANGUAGES.md` | `e3b7fd6b06ad8e2e0a5c1f39179451b46161e9dec15763f27ee9c03147ae76ea` | `local` |
 | `QLIONPROGRAMMINGLANGUAGE.md` | 36 | `./ALLLANGUAGESCOMPARE.md` | `a47fb65dfd7b8dda0914483e50ea428b8d7074e751b2923b044533006a154d0b` | `local` |
 | `QLIONPROGRAMMINGLANGUAGE.md` | 80 | `./LIONVARIATIONS.md` | `99d8834c3da7291f1a9fc11689433563ebd7f7420217a93ae3ca73f57e989a52` | `local` |
@@ -201,6 +192,12 @@
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUMPAYED.md` | `0ea9235e0afe898dd3589a58d06ebdf47758216c1170b712588d4376fc675be5` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `QUANTUM.md` | `f39d66bf63a5cda11e56c8ab153a9b47673b78f34e9b2469d6097f1ab0e6aba9` | `local` |
 | `QMOICLONEVERCEL.md` | 33 | `APP_LINKS.md` | `4a2cbcb2cc999cda4dbed5699aab00d09920283070d6b924bcefec4d48480f9a` | `local` |
+| `QMOITACKS.md` | 593 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `QMOITACKS.md` | 593 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `QMOITACKS.md` | 593 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
+| `QMOITRACKS.md` | 593 | `STYLES.md` | `e9776328b2b1d001c2c6e0251680069cac9b9a786d6589fb9385757256d83f6d` | `local` |
+| `QMOITRACKS.md` | 593 | `UNIVERSAL.md` | `ef1f868b7c274476d4df51d106f70a5dcb71978f77cadf903b30c7d9545dd8a3` | `local` |
+| `QMOITRACKS.md` | 593 | `UNIVERSALS.md` | `fcc52c867d15ffdb22ba15d61bd1d1309490ae8cec3b7c9d439428e14b62618d` | `local` |
 | `QSEED.md` | 12 | `scripts/qseed_vault.py` | `ad77bc6b0f72765e3063eb657b569f0c2e53c5d5c340284c086499772fc2a638` | `local` |
 | `QSEED.md` | 76 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
 | `QSEED.md` | 88 | `oe2.txt` | `05a34e3183a9ab3c1acaa99a3e92cc9c2f719a2a67f03f356c44958de57b7cca` | `local` |
@@ -442,39 +439,24 @@
 | `trigger.md` | 179 | `REAL_TIME_MONITORING_GUIDE.md` | `324e82ef559adbf8c6959c51a1c162b569b380e58da76f7da91d8a55eb91bb96` | `local` |
 | `undoredo.md` | 81 | `QAUDITS.md` | `d126587e734c0b7b64b54898f746c88aa27fb4ddc44a5004f2e49bf49b7b16e7` | `local` |
 | `undoredo.md` | 81 | `QVERSIONMANAGER.md` | `48c12a417dbcfb5a1b2c429ade446f027f5952f6b23f6e858ef6a96e7701002b` | `local` |
-| `.github/instructions/MISSION.md` | 547 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `.github/instructions/MISSION.md` | 547 | `ALLLANGUAGESCOMPARE.md` | `2aaf6ce51fcab2fd993f0809efc627c0129c4606b115f94b1e0ba0a014b9edf2` | `local` |
-| `.github/instructions/MISSION.md` | 551 | `ALLLANGUAGES.md` | `75534397c4b23f11d5a034f025fd3200a64e20d9e4fedd710b659e57f9be6906` | `local` |
-| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
-| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
-| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../latest%20mission.md` | `d8c3d92239fa6aef7044c6d4640aaab2f725e51d481a22d323c981bdb846e4d1` | `local` |
 | `.github/instructions/agent-autonomy.instructions.md` | 4 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/agent-autonomy.instructions.md` | 72 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/github-api.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
-| `.github/instructions/github-api.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
-| `.github/instructions/github-api.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/agent-autonomy.instructions.md` | 79 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/github-api.instructions.md` | 1 | `../../latest%20mission.md` | `d8c3d92239fa6aef7044c6d4640aaab2f725e51d481a22d323c981bdb846e4d1` | `local` |
 | `.github/instructions/github-api.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/github-api.instructions.md` | 72 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/release.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
-| `.github/instructions/release.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
-| `.github/instructions/release.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/github-api.instructions.md` | 73 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/release.instructions.md` | 1 | `../../latest%20mission.md` | `d8c3d92239fa6aef7044c6d4640aaab2f725e51d481a22d323c981bdb846e4d1` | `local` |
 | `.github/instructions/release.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/release.instructions.md` | 64 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/security.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
-| `.github/instructions/security.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
-| `.github/instructions/security.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/release.instructions.md` | 65 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/security.instructions.md` | 1 | `../../latest%20mission.md` | `d8c3d92239fa6aef7044c6d4640aaab2f725e51d481a22d323c981bdb846e4d1` | `local` |
 | `.github/instructions/security.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/security.instructions.md` | 64 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/workflows.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
-| `.github/instructions/workflows.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
-| `.github/instructions/workflows.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/security.instructions.md` | 65 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workflows.instructions.md` | 1 | `../../latest%20mission.md` | `d8c3d92239fa6aef7044c6d4640aaab2f725e51d481a22d323c981bdb846e4d1` | `local` |
 | `.github/instructions/workflows.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/workflows.instructions.md` | 68 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/workspace.instructions.md` | 1 | `../../NEWMISSION.md` | `396274672d3d26acb5cd0dd9ae6ffbb52e22ba71ffaedb5d41afa70a3100d2b4` | `local` |
-| `.github/instructions/workspace.instructions.md` | 1 | `../../MISSIONNEWEST.md` | `337038e851c0c1222864adc52b686bd549b36f8f8b5ce7a7da8f54d5fda158e6` | `local` |
-| `.github/instructions/workspace.instructions.md` | 1 | `../../MISSIONNEW.md` | `758c0e3ba549549a8793d7196dfe57af4825e2c1921865ba735693008553797d` | `local` |
+| `.github/instructions/workflows.instructions.md` | 70 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workspace.instructions.md` | 1 | `../../latest%20mission.md` | `d8c3d92239fa6aef7044c6d4640aaab2f725e51d481a22d323c981bdb846e4d1` | `local` |
 | `.github/instructions/workspace.instructions.md` | 1 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
-| `.github/instructions/workspace.instructions.md` | 76 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
+| `.github/instructions/workspace.instructions.md` | 81 | `../../MISSION.md` | `4adb9b24cb1c92864018a997f90fdb81123c3180340cd0f038934f765634c863` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 9 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 10 | `./DOWNLOADQMOIAIAPPALLDEVICES.md` | `3d44031161ffd6826fe255f72f1f9079d1841f51c3976a325a056d7c0e48e0a6` | `local` |
 | `Alpha-Q-ai-2025/@ALLMDFILESREFS.md` | 17 | `./ALLQMOIAIAPPSREALEASESVERSIONS.md` | `88c4e9d62bfdf758a893cb3c69f96407570787fd04ba64dbfed4fad143b4089f` | `local` |
@@ -626,6 +608,8 @@
 | `Alpha-Q-ai-2025/docs/REFERENCES.md` | 1 | `./QMOIGITLABDEV.md` | `1eb904e63ba0b72dbd113b9a807a190ad0d172e02c2ed612cd4c1b91153e1f36` | `local` |
 | `Alpha-Q-ai-2025/docs/REFERENCES.md` | 2 | `./QMOIVERCELDEV.md` | `10aa8a72a88b63280043c7eea42fc78449159b8b79b9be55208cfe1e2d20dfee` | `local` |
 | `Alpha-Q-ai-2025/docs/REFERENCES.md` | 3 | `./QMOIGITHUBDEV.md` | `5c298cb7e3bb90456bdfc637657b22a75b9df1bef4fdc79225d9f6c9b822ac1b` | `local` |
+| `QMOItracks/QMOITRACKS.md` | 6 | `../QMOITRACKS.md` | `06e5188b488d664c7403e4f526dc4a6b31ae2fa96cd0eaef2451eeb4459390cb` | `local` |
+| `ollamatracks/ALLTRACKS.md` | 6 | `../ALLTRACKS.md` | `570fea6eaa8dc93d391d5560a4a5443412f7f767a42893699a3c02ad348d06cb` | `local` |
 | `qmoi-enhanced-history-14/@ALLMDFILESREFS.md` | 51 | `ALLLINKS.md` | `489a7672688a7389d79fa4c317e22edc08fc99e690294f2123c5636700d82f92` | `local` |
 | `qmoi-enhanced-history-14/@ALLMDFILESREFS.md` | 52 | `HOSTLINKSDOMAINS.md` | `1a8f5e6cda42fbab4eb2cd7e31fc88f7b8df792609489dddd30978e1d9790f49` | `local` |
 | `qmoi-enhanced-history-14/@ALLMDFILESREFS.md` | 53 | `docs/operations.md` | `ad74991b96593fdee570962fc5b1e319080abd55e16614f556f74b7de8fd02d1` | `local` |
@@ -8686,20 +8670,20 @@
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
-- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
+- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->

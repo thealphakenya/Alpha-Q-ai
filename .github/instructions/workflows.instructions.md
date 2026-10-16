@@ -1,4 +1,4 @@
-Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+Mission alignment: follow the canonical [latest mission](../../latest%20mission.md), synchronized byte-for-byte to [MISSION.md](../../MISSION.md) and its instruction-directory mirror. Mission phases are `PH01`-`PH18`; legacy requirement task buckets `M01`-`M16` remain distinct. This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
 
 # Workflow instructions
 
@@ -39,7 +39,7 @@ The conceptual Copilot -> local bridge -> Ollama loop may perform bounded local 
 
 ## Two-hour mission monitoring
 
-- Track sections `M01`–`M16` and phase/task durations with real UTC events and one correlation ID across the paired documents and machine evidence.
+- Track phases `PH01`-`PH18` and task durations with real UTC events and one correlation ID across the paired documents and machine evidence; preserve `M01`-`M16` as requirement-task IDs.
 - Invoke the mission-ledger updater only from the verified target checkout; its checkpoint is local evidence unless a later authorized hosted run records terminal exact-SHA results.
 - Distinguish a configured schedule, accepted dispatch, running workflow, terminal conclusion, and independently verified remote state. The two-hour target does not replace any workflow or SHA gate.
 - Leave unfinished actions durable at the deadline. Mark continuation verified only after a distinct run demonstrably restores the checkpoint and executes the next eligible task.

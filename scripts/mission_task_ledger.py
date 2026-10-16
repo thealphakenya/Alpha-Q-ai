@@ -1,4 +1,4 @@
-"""Update the canonical, time-bounded NEWMISSION task ledger safely."""
+"""Safely maintain requirement tasks, 18 canonical mission phases, and checkpoints."""
 from __future__ import annotations
 
 import argparse
@@ -21,6 +21,18 @@ from scripts.qaudit_checkpoint import record_qaudit_checkpoint
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER_RELATIVE_PATH = Path("ollamatracks/mission-task-ledger.json")
+MISSION_SOURCE_PATH = Path("latest mission.md")
+MISSION_PHASE_START = "<!-- BEGIN QMOI MISSION PHASE METRICS -->"
+MISSION_PHASE_END = "<!-- END QMOI MISSION PHASE METRICS -->"
+MISSION_PHASE_COUNT = 18
+MISSION_MIRROR_PATHS = (
+    Path("MISSION.md"),
+    Path("NEWMISSION.md"),
+    Path("MISSIONEW.md"),
+    Path("MISSIONNEW.md"),
+    Path("MISSIONNEWEST.md"),
+    Path(".github/instructions/MISSION.md"),
+)
 MISSION_STATUSES = {
     "PENDING",
     "IN_PROGRESS",
@@ -128,6 +140,27 @@ def validate_ledger(ledger: Any) -> dict[str, Any]:
     if ids != expected:
         raise LedgerError("Mission task IDs must be unique and ordered M01 through M16")
     known_ids = set(expected)
+    phase_metrics = ledger.get("mission_phase_metrics")
+    if phase_metrics is not None:
+        phase_ids = [phase.get("id") for phase in phase_metrics if isinstance(phase, dict)]
+        if phase_ids != [f"PH{index:02d}" for index in range(1, MISSION_PHASE_COUNT + 1)]:
+            raise LedgerError("Mission phase metrics must contain ordered PH01 through PH18 entries")
+        mission_phase_status_counts(ledger)
+    requirement_lines = ledger.get("mission_requirement_line_records")
+    if requirement_lines is not None:
+        if ledger.get("mission_requirement_line_count") != len(requirement_lines):
+            raise LedgerError("Mission requirement-line count does not match its source records")
+        line_ids = [item.get("id") for item in requirement_lines if isinstance(item, dict)]
+        if len(line_ids) != len(requirement_lines) or len(line_ids) != len(set(line_ids)):
+            raise LedgerError("Mission requirement-line IDs must be valid and unique")
+        phase_ids = {f"PH{index:02d}" for index in range(1, MISSION_PHASE_COUNT + 1)}
+        for item in requirement_lines:
+            if item.get("phase_id") is not None and item.get("phase_id") not in phase_ids:
+                raise LedgerError(f"{item.get('id')} references an unknown mission phase")
+            if not re.fullmatch(r"[0-9a-f]{64}", str(item.get("line_sha256", ""))):
+                raise LedgerError(f"{item.get('id')} has an invalid source-line hash")
+            if not isinstance(item.get("semantic_reviewed"), bool):
+                raise LedgerError(f"{item.get('id')} has an invalid semantic-review state")
     for task in tasks:
         if task.get("status") not in MISSION_STATUSES:
             raise LedgerError(f"{task['id']} has an unsupported status")
@@ -160,6 +193,221 @@ def status_counts(ledger: dict[str, Any]) -> dict[str, int]:
     for task in ledger["tasks"]:
         counts[task["status"].lower()] += 1
     return counts
+
+
+def sync_mission_phase_catalog(ledger: dict[str, Any], mission_text: str) -> list[dict[str, Any]]:
+    matches = list(re.finditer(r"^PHASE\s+(\d+)\s+\u2014\s+(.+?)\s*$", mission_text, re.MULTILINE))
+    headings = [(match.group(1), match.group(2)) for match in matches]
+    expected_numbers = [str(number) for number in range(1, MISSION_PHASE_COUNT + 1)]
+    if [number for number, _ in headings] != expected_numbers:
+        raise LedgerError("Canonical mission must contain exactly ordered phase headings 1 through 18")
+
+    existing = {
+        item.get("id"): item
+        for item in ledger.get("mission_phase_metrics", [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    phases = []
+    source_lines = mission_text.splitlines()
+    existing_requirement_lines = {
+        item.get("id"): item
+        for item in ledger.get("mission_requirement_line_records", [])
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    for index, (number, heading) in enumerate(headings):
+        phase_id = f"PH{int(number):02d}"
+        first_line = mission_text.count("\n", 0, matches[index].start()) + 1
+        last_line = (
+            mission_text.count("\n", 0, matches[index + 1].start())
+            if index + 1 < len(matches)
+            else len(source_lines)
+        )
+        phase_lines = source_lines[first_line:last_line]
+        bullet_candidates = sum(
+            1 for line in phase_lines
+            if re.match(r"^\s*(?:[-*+]\s+|\d+[.)]\s+)", line)
+        )
+        phase = existing.get(phase_id, {
+            "id": phase_id,
+            "number": int(number),
+            "status": "PENDING",
+            "started_at": None,
+            "finished_at": None,
+            "elapsed_seconds": 0.0,
+            "attempt_history": [],
+            "evidence_refs": [],
+            "blockers": [],
+            "next_action": "Start this phase through scripts.mission_task_ledger.",
+        })
+        phase["number"] = int(number)
+        phase["heading"] = heading
+        phase["source_path"] = MISSION_SOURCE_PATH.as_posix()
+        phase["source_line_start"] = first_line
+        phase["source_line_end"] = last_line
+        phase["source_ref"] = f"{MISSION_SOURCE_PATH.as_posix()}#L{first_line}-L{last_line}"
+        phase["requirement_bullet_candidates"] = bullet_candidates
+        phases.append(phase)
+
+    authored_line_records = []
+    current_phase_by_line = {
+        line_number: phase["id"]
+        for phase in phases
+        for line_number in range(phase["source_line_start"], phase["source_line_end"] + 1)
+    }
+    in_managed_audit = False
+    for line_number, raw_line in enumerate(source_lines, start=1):
+        stripped = raw_line.strip()
+        if stripped == "<!-- BEGIN QMOI MANAGED: repository-surface-audit -->":
+            in_managed_audit = True
+            continue
+        if stripped == "<!-- END QMOI MANAGED: repository-surface-audit -->":
+            in_managed_audit = False
+            continue
+        if in_managed_audit or not stripped or re.fullmatch(r"[=\-_*\s]+", stripped):
+            continue
+        line_sha256 = hashlib.sha256(raw_line.encode("utf-8")).hexdigest()
+        record_id = f"MREQ-L{line_number:04d}-{line_sha256[:8]}"
+        previous = existing_requirement_lines.get(record_id, {})
+        line_kind = (
+            "phase_heading" if re.match(r"^PHASE\s+\d+\s+", stripped) else
+            "heading_candidate" if re.match(r"^#{1,6}\s+", stripped) else
+            "list_candidate" if re.match(r"^(?:[-*+]\s+|\d+[.)]\s+)", stripped) else
+            "table_row_candidate" if stripped.startswith("|") else
+            "prose_candidate"
+        )
+        authored_line_records.append({
+            "id": record_id,
+            "source_path": MISSION_SOURCE_PATH.as_posix(),
+            "source_line": line_number,
+            "source_ref": f"{MISSION_SOURCE_PATH.as_posix()}#L{line_number}",
+            "line_sha256": line_sha256,
+            "line_kind": line_kind,
+            "phase_id": current_phase_by_line.get(line_number),
+            "status": previous.get("status", "NOT_REVIEWED"),
+            "semantic_reviewed": bool(previous.get("semantic_reviewed", False)),
+            "acceptance_refs": list(previous.get("acceptance_refs", [])),
+        })
+    for phase in phases:
+        phase["requirement_line_count"] = sum(
+            record["phase_id"] == phase["id"] for record in authored_line_records
+        )
+        phase["unreviewed_requirement_line_count"] = sum(
+            record["phase_id"] == phase["id"] and not record["semantic_reviewed"]
+            for record in authored_line_records
+        )
+    ledger["mission_phase_metrics"] = phases
+    ledger["mission_requirement_line_records"] = authored_line_records
+    ledger["mission_requirement_line_count"] = len(authored_line_records)
+    ledger["mission_requirement_line_review_counts"] = {
+        "not_reviewed": sum(not item["semantic_reviewed"] for item in authored_line_records),
+        "reviewed": sum(item["semantic_reviewed"] for item in authored_line_records),
+    }
+    ledger["mission_phase_metric_source"] = {
+        "path": MISSION_SOURCE_PATH.as_posix(),
+        "sha256": hashlib.sha256(mission_text.encode("utf-8")).hexdigest(),
+        "phase_count": MISSION_PHASE_COUNT,
+    }
+    return phases
+
+
+def mission_phase_status_counts(ledger: dict[str, Any]) -> dict[str, int]:
+    phases = ledger.get("mission_phase_metrics", [])
+    counts = {status: 0 for status in ("PENDING", "IN_PROGRESS", "PASS", "PARTIALLY_COMPLETE", "BLOCKED", "FAILED")}
+    for phase in phases:
+        status = phase.get("status")
+        if status not in counts:
+            raise LedgerError(f"Mission phase {phase.get('id')} has an unsupported status")
+        counts[status] += 1
+    return counts
+
+
+def _phase_elapsed_seconds(phase: dict[str, Any], now: datetime) -> float:
+    elapsed = sum(
+        float(attempt["elapsed_seconds"])
+        for attempt in phase.get("attempt_history", [])
+        if attempt.get("elapsed_seconds") is not None
+    )
+    if phase.get("status") == "IN_PROGRESS":
+        started = phase.get("last_started_at") or phase.get("started_at")
+        if started:
+            elapsed += max(0.0, (now - _parse_utc(started)).total_seconds())
+    return round(elapsed, 3)
+
+
+def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None = None) -> str:
+    phases = ledger.get("mission_phase_metrics", [])
+    if len(phases) != MISSION_PHASE_COUNT:
+        raise LedgerError("Cannot render mission metrics until all 18 phases are indexed")
+    instant = now or datetime.now(timezone.utc)
+    counts = mission_phase_status_counts(ledger)
+    source = ledger.get("mission_phase_metric_source", {})
+    lines = [
+        MISSION_PHASE_START,
+        "## Mission Phase Metrics",
+        "",
+        f"- Canonical source: `{source.get('path', MISSION_SOURCE_PATH.as_posix())}`; SHA-256: `{source.get('sha256', 'unavailable')}`.",
+        f"- Generated at: `{instant.isoformat().replace('+00:00', 'Z')}`; ledger correlation ID: `{ledger.get('correlation_id', 'unavailable')}`.",
+        f"- Phase count: {len(phases)}; PASS: {counts['PASS']}; in progress: {counts['IN_PROGRESS']}; partial: {counts['PARTIALLY_COMPLETE']}; blocked: {counts['BLOCKED']}; failed: {counts['FAILED']}; pending: {counts['PENDING']}.",
+        f"- Mission authored content-line candidates indexed: {ledger.get('mission_requirement_line_count', 0)}; semantic review complete: {ledger.get('mission_requirement_line_review_counts', {}).get('reviewed', 0)}; review pending: {ledger.get('mission_requirement_line_review_counts', {}).get('not_reviewed', 0)}. Counts are line locators, not semantic requirement completion.",
+        "- Completion percentage is not inferred from phase count; only evidence-backed `PASS` is terminal success. Remote verification remains `False` until independently proven.",
+        "",
+        "| Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / pending review | Evidence refs | Blockers | Next action |",
+        "|---|---|---:|---|---:|---:|---:|---:|---|---|",
+    ]
+    for phase in phases:
+        safe = lambda value: str(value or "").replace("|", "\\|").replace("\n", " ").strip()
+        attempts = phase.get("attempt_history", [])
+        lines.append(
+            f"| {phase['id']} | {safe(phase.get('heading'))} | {phase.get('source_line_start')}-{phase.get('source_line_end')} | {phase['status']} | "
+            f"{_phase_elapsed_seconds(phase, instant):.3f} | {len(attempts)} | {phase.get('requirement_line_count', 0)} / {phase.get('unreviewed_requirement_line_count', 0)} pending | "
+            f"{len(phase.get('evidence_refs', []))} | {safe('; '.join(phase.get('blockers', [])) or 'None recorded')} | "
+            f"{safe(phase.get('next_action') or 'Start phase and record evidence')} |"
+        )
+    lines.extend(["", MISSION_PHASE_END])
+    return "\n".join(lines)
+
+
+def refresh_paired_mission_phase_metrics(root: Path, ledger: dict[str, Any]) -> None:
+    block = render_mission_phase_metrics(ledger)
+    marker_pattern = re.compile(
+        re.escape(MISSION_PHASE_START) + r".*?" + re.escape(MISSION_PHASE_END),
+        re.DOTALL,
+    )
+    legacy_pattern = re.compile(
+        r"^## Mission phase dashboard.*?(?=^## Live time accounting)",
+        re.MULTILINE | re.DOTALL,
+    )
+    updated: dict[Path, str] = {}
+    for relative in (Path("oe2.txt"), Path("remotecompletion.md"), Path("oe2.md")):
+        path = root / relative
+        if path.is_symlink() or not path.is_file():
+            raise LedgerError(f"Mission metrics target is missing or symlinked: {relative.as_posix()}")
+        text = path.read_text(encoding="utf-8")
+        if marker_pattern.search(text):
+            text, replacements = marker_pattern.subn(lambda _: block, text, count=1)
+            if replacements != 1:
+                raise LedgerError(f"Mission metrics markers are ambiguous in {relative.as_posix()}")
+        elif legacy_pattern.search(text):
+            text, replacements = legacy_pattern.subn(block + "\n\n", text, count=1)
+            if replacements != 1:
+                raise LedgerError(f"Legacy mission dashboard is ambiguous in {relative.as_posix()}")
+        else:
+            raise LedgerError(f"Mission metrics insertion point is missing in {relative.as_posix()}")
+        updated[path] = text
+
+    for path, text in updated.items():
+        if path.is_symlink():
+            raise LedgerError(f"Refusing to replace mission metrics through symlink: {path}")
+        descriptor, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+                stream.write(text)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, path)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
 
 
 def refresh_mission_source_hash(root: Path) -> dict[str, Any]:
@@ -248,11 +496,128 @@ def refresh_mission_source_hash(root: Path) -> dict[str, Any]:
         lock.release(invocation_id)
 
 
+def sync_mission_source(root: Path) -> dict[str, Any]:
+    invocation_id = str(uuid.uuid4())
+    lock = ExecutionLock(root, "mission-task-ledger", stale_after=900)
+    lock.acquire(invocation_id)
+    try:
+        return _sync_mission_source_unlocked(root)
+    finally:
+        lock.release(invocation_id)
+
+
+def _sync_mission_source_unlocked(root: Path) -> dict[str, Any]:
+    ledger_path = root / LEDGER_RELATIVE_PATH
+    ledger = load_ledger(ledger_path)
+    branch = _verify_repository_identity(root, ledger, require_target_branch=True)
+    source_path = root / MISSION_SOURCE_PATH
+    if source_path.is_symlink() or not source_path.is_file():
+        raise LedgerError("Canonical latest mission source is missing or symlinked")
+    source_bytes = source_path.read_bytes()
+    try:
+        source_text = source_bytes.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise LedgerError("Canonical latest mission source is not valid UTF-8") from exc
+    sync_mission_phase_catalog(ledger, source_text)
+
+    targets = [root / relative for relative in MISSION_MIRROR_PATHS]
+    for relative, target in zip(MISSION_MIRROR_PATHS, targets):
+        if target.is_symlink() or not target.is_file():
+            raise LedgerError(f"Mission mirror is missing or symlinked: {relative.as_posix()}")
+    previous_hash = ledger["canonical_source"].get("sha256")
+    observed_hash = hashlib.sha256(source_bytes).hexdigest()
+    for target in targets:
+        descriptor, temporary = tempfile.mkstemp(prefix=f".{target.name}.", suffix=".tmp", dir=target.parent)
+        try:
+            with os.fdopen(descriptor, "wb") as stream:
+                stream.write(source_bytes)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, target)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
+
+    canonical = ledger.setdefault("canonical_source", {})
+    canonical["path"] = MISSION_SOURCE_PATH.as_posix()
+    canonical["byte_identical_mirrors"] = [path.as_posix() for path in MISSION_MIRROR_PATHS]
+    canonical["sha256"] = observed_hash
+    canonical["mirror_sha256"] = observed_hash
+    canonical["mission_section_count"] = MISSION_PHASE_COUNT
+    if previous_hash != observed_hash:
+        canonical.setdefault("hash_history", []).append(
+            {
+                "previous_sha256": previous_hash,
+                "observed_sha256": observed_hash,
+                "observed_at": utc_now(),
+                "local_branch": branch,
+                "target_branch_matches_local": True,
+                "basis": "Explicit user-requested adoption of latest mission.md; six established mirrors were written and byte-verified.",
+                "remote_verified": False,
+            }
+        )
+    ledger["mission_phase_catalog"] = {
+        "source_path": MISSION_SOURCE_PATH.as_posix(),
+        "phase_count": MISSION_PHASE_COUNT,
+        "status": "ALL_PHASES_SOURCE_INDEXED; SEMANTIC_REQUIREMENT_ACCEPTANCE_MAPPING_REMAINS_IN_PROGRESS",
+    }
+    ledger["updated_at"] = utc_now()
+    validate_ledger(ledger)
+    if any(target.read_bytes() != source_bytes for target in targets):
+        raise LedgerError("Mission mirror byte verification failed")
+    _atomic_write(ledger_path, ledger)
+    checkpoint = _record_checkpoint(root, ledger_path, ledger, "mission-source-sync", None)
+    return {
+        "status": "LOCAL_MIRRORS_SYNCHRONIZED",
+        "source_path": MISSION_SOURCE_PATH.as_posix(),
+        "source_sha256": observed_hash,
+        "phase_count": MISSION_PHASE_COUNT,
+        "mirror_paths": [path.as_posix() for path in MISSION_MIRROR_PATHS],
+        "local_branch": branch,
+        "checkpoint_timestamp": checkpoint["generated_at"],
+        "remote_verified": False,
+    }
+
+
+def refresh_mission_metrics(root: Path) -> dict[str, Any]:
+    ledger_path = root / LEDGER_RELATIVE_PATH
+    ledger = load_ledger(ledger_path)
+    _verify_repository(root, ledger)
+    invocation_id = str(uuid.uuid4())
+    lock = ExecutionLock(root, "mission-task-ledger", stale_after=900)
+    lock.acquire(invocation_id)
+    try:
+        ledger = load_ledger(ledger_path)
+        _verify_repository(root, ledger)
+        source_text = (root / MISSION_SOURCE_PATH).read_text(encoding="utf-8")
+        sync_mission_phase_catalog(ledger, source_text)
+        ledger["updated_at"] = utc_now()
+        validate_ledger(ledger)
+        _atomic_write(ledger_path, ledger)
+        checkpoint = _record_checkpoint(root, ledger_path, ledger, "mission-metrics-refresh", None)
+        return {
+            "status": "REFRESHED",
+            "phase_count": len(ledger["mission_phase_metrics"]),
+            "phase_status_counts": mission_phase_status_counts(ledger),
+            "checkpoint_timestamp": checkpoint["generated_at"],
+            "remote_verified": False,
+        }
+    finally:
+        lock.release(invocation_id)
+
+
 def _task(ledger: dict[str, Any], task_id: str) -> dict[str, Any]:
     for task in ledger["tasks"]:
         if task["id"] == task_id:
             return task
     raise LedgerError(f"Unknown mission task ID: {task_id}")
+
+
+def _mission_phase(ledger: dict[str, Any], phase_id: str) -> dict[str, Any] | None:
+    return next(
+        (item for item in ledger.get("mission_phase_metrics", []) if item.get("id") == phase_id),
+        None,
+    )
 
 
 def start_task(ledger: dict[str, Any], task_id: str, *, now: str | None = None) -> dict[str, Any]:
@@ -380,10 +745,12 @@ def finish_task(
 
 
 def start_phase(ledger: dict[str, Any], phase_id: str, *, now: str | None = None) -> dict[str, Any]:
-    phases = ledger.get("phase_history")
-    if not isinstance(phases, list):
-        raise LedgerError("Mission phase history is missing")
-    phase = next((item for item in phases if item.get("id") == phase_id), None)
+    phase = _mission_phase(ledger, phase_id)
+    if phase is None:
+        phases = ledger.get("phase_history")
+        if not isinstance(phases, list):
+            raise LedgerError("Mission phase history is missing")
+        phase = next((item for item in phases if item.get("id") == phase_id), None)
     if phase is None:
         raise LedgerError(f"Unknown mission phase ID: {phase_id}")
     timestamp = now or utc_now()
@@ -429,8 +796,10 @@ def finish_phase(
 ) -> dict[str, Any]:
     if status not in {"PASS", "PARTIALLY_COMPLETE", "BLOCKED", "FAILED"}:
         raise LedgerError("Unsupported mission phase outcome")
-    phases = ledger.get("phase_history")
-    phase = next((item for item in phases or [] if item.get("id") == phase_id), None)
+    phase = _mission_phase(ledger, phase_id)
+    if phase is None:
+        phases = ledger.get("phase_history")
+        phase = next((item for item in phases or [] if item.get("id") == phase_id), None)
     if phase is None or phase.get("status") != "IN_PROGRESS":
         raise LedgerError(f"Cannot finish phase {phase_id}; it is not in progress")
     if status == "PASS" and not evidence_refs:
@@ -504,6 +873,7 @@ def _record_checkpoint(
     start = _parse_utc(ledger["mission_clock"]["started_at"])
     deadline = _parse_utc(ledger["mission_clock"]["deadline_at"])
     active = _task(ledger, task_id) if task_id else None
+    mission_phases = ledger.get("mission_phase_metrics", [])
     elapsed = max(0.0, (now - start).total_seconds())
     remaining = max(0.0, (deadline - now).total_seconds())
     evidence = {
@@ -530,6 +900,22 @@ def _record_checkpoint(
             "remaining_seconds": round(remaining, 3),
             "monotonic_duration_available": False,
             "mission_status_counts": status_counts(ledger),
+            "mission_phase_count": len(mission_phases),
+            "mission_phase_status_counts": mission_phase_status_counts(ledger),
+            "mission_phase_source": ledger.get("mission_phase_metric_source"),
+            "mission_requirement_line_count": ledger.get("mission_requirement_line_count", 0),
+            "mission_requirement_line_review_counts": ledger.get("mission_requirement_line_review_counts", {}),
+            "mission_phase_metrics": [
+                {
+                    "id": phase["id"],
+                    "status": phase["status"],
+                    "elapsed_seconds": _phase_elapsed_seconds(phase, now),
+                    "attempt_count": len(phase.get("attempt_history", [])),
+                    "requirement_bullet_candidates": phase.get("requirement_bullet_candidates", 0),
+                    "source_ref": phase.get("source_ref"),
+                }
+                for phase in mission_phases
+            ],
             "active_task_id": task_id,
             "active_task_status": active["status"] if active else None,
             "task_elapsed_seconds": active["elapsed_seconds"] if active else None,
@@ -544,6 +930,7 @@ def _record_checkpoint(
         ],
         "next_action": active.get("next_action") if active else "Resume the highest-priority dependency-ready mission task.",
     }
+    refresh_paired_mission_phase_metrics(root, ledger)
     return record_qaudit_checkpoint(
         root,
         operation,
@@ -572,6 +959,7 @@ def update_task(
     try:
         ledger = load_ledger(ledger_path)
         _verify_repository(root, ledger)
+        sync_mission_phase_catalog(ledger, (root / MISSION_SOURCE_PATH).read_text(encoding="utf-8"))
         if operation == "start":
             task = start_task(ledger, task_id)
         elif operation == "finish":
@@ -626,6 +1014,7 @@ def update_phase(
     try:
         ledger = load_ledger(ledger_path)
         _verify_repository(root, ledger)
+        sync_mission_phase_catalog(ledger, (root / MISSION_SOURCE_PATH).read_text(encoding="utf-8"))
         if operation == "phase-start":
             phase = start_phase(ledger, phase_id)
         elif operation == "phase-finish":
@@ -682,6 +1071,8 @@ def _parser() -> argparse.ArgumentParser:
         "refresh-source-hash",
         help="Refresh ledger hashes only after verifying byte-identical local mission mirrors.",
     )
+    subparsers.add_parser("refresh-metrics", help="Refresh the canonical 18-phase catalog and dashboards.")
+    subparsers.add_parser("sync-mission", help="Adopt latest mission.md and synchronize its established mirrors.")
     subparsers.add_parser("status", help="Validate and summarize the current ledger.")
     return parser
 
@@ -721,6 +1112,20 @@ def main(argv: list[str] | None = None) -> int:
                     ),
                     3,
                 )
+                for phase in ledger.get("mission_phase_metrics", [])
+                if phase["status"] == "IN_PROGRESS" and (phase.get("last_started_at") or phase.get("started_at"))
+            }
+            active_legacy_phases = {
+                phase["id"]: round(
+                    max(
+                        0.0,
+                        (
+                            now
+                            - _parse_utc(phase.get("last_started_at") or phase["started_at"])
+                        ).total_seconds(),
+                    ),
+                    3,
+                )
                 for phase in ledger.get("phase_history", [])
                 if phase["status"] == "IN_PROGRESS" and (phase.get("last_started_at") or phase.get("started_at"))
             }
@@ -737,6 +1142,11 @@ def main(argv: list[str] | None = None) -> int:
                     "remaining_seconds": round(max(0.0, (deadline - now).total_seconds()), 3),
                     "active_task_wall_seconds_since_latest_start": active_tasks,
                     "active_phase_wall_seconds_since_latest_start": active_phases,
+                    "active_legacy_phase_wall_seconds_since_latest_start": active_legacy_phases,
+                    "mission_phase_status_counts": mission_phase_status_counts(ledger),
+                    "mission_phase_count": len(ledger.get("mission_phase_metrics", [])),
+                    "mission_requirement_line_count": ledger.get("mission_requirement_line_count", 0),
+                    "mission_requirement_line_review_counts": ledger.get("mission_requirement_line_review_counts", {}),
                     "active_duration_basis": "UTC wall-clock interval; process-active monotonic time unavailable",
                     "remote_verified": False,
                 },
@@ -746,6 +1156,14 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.operation == "refresh-source-hash":
             result = refresh_mission_source_hash(root)
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        if args.operation == "sync-mission":
+            result = sync_mission_source(root)
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        if args.operation == "refresh-metrics":
+            result = refresh_mission_metrics(root)
             print(json.dumps(result, indent=2, sort_keys=True))
             return 0
         if args.operation in {"start", "finish"}:

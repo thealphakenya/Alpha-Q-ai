@@ -14,35 +14,39 @@ This file is the saved markdown form of the live execution ledger for the QMOI r
 
 ## Completion status
 
-Status: local continuity work is in progress and remote completion remains blocked pending verified GitHub authorization and exact SHA parity. The current estimate for the remaining execution plan is 495 minutes total, or 8 hours 15 minutes, broken down phase-by-phase below.
+Status: local continuity work is in progress and remote completion remains blocked pending verified GitHub authorization and exact SHA parity. The 495-minute estimate below is a historical 2026-10-11 planning estimate, not current measured time or a completion forecast.
 
-## Mission phase dashboard (live metrics)
+<!-- BEGIN QMOI MISSION PHASE METRICS -->
+## Mission Phase Metrics
 
-Update this table at every checkpoint. It tracks phase status, progress, remaining work, and evidence freshness so the current mission state is visible without reading the full ledger.
+- Canonical source: `latest mission.md`; SHA-256: `5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b`.
+- Generated at: `2026-10-16T01:21:19.448931Z`; ledger correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`.
+- Phase count: 18; PASS: 0; in progress: 0; partial: 4; blocked: 0; failed: 0; pending: 14.
+- Mission authored content-line candidates indexed: 760; semantic review complete: 0; review pending: 760. Counts are line locators, not semantic requirement completion.
+- Completion percentage is not inferred from phase count; only evidence-backed `PASS` is terminal success. Remote verification remains `False` until independently proven.
 
-| Phase | Scope | Status | Progress | Remaining | Evidence status | Next action |
-|---|---|---|---:|---:|---|---|
-| 0 | Repo baseline and branch state | Completed | 100% | 0 | Fresh local evidence | Preserve and continue |
-| 1 | Auth, permission, branch protection, remote blockers | Blocked | 25% | 75% | HTTP 403 / unknown authorization | Wait for owner-approved remote proof |
-| 2 | Completion ledger and evidence rules | In progress | 60% | 40% | Mission docs and ledgers synchronized | Keep append-only evidence current |
-| 3 | Safe execution plan and dependency graph | In progress | 70% | 30% | Local execution plan updated | Continue safe work only |
-| 4 | Ollama agent and automation review | In progress | 55% | 45% | Local validation passed | Continue bounded automation review |
-| 5 | CI/CD and deployment root-cause repair | Blocked | 35% | 65% | Netlify config exists but output target is unknown | Confirm provider architecture and logs |
-| 6 | CodeQL and security verification | In progress | 60% | 40% | Local checks pass; remote alerts unverified | Keep security and CodeQL evidence fresh |
-| 7 | QAUDITS and feature timestamp coverage | In progress | 50% | 50% | Local inventory and workflow checks pass | Keep audit gap list explicit |
-| 8 | Metrics and evidence capture | In progress | 65% | 35% | Dashboard and evidence records updated | Refresh metrics at each checkpoint |
-| 9 | Remote verification, push, merge, final proof | Blocked | 0% | 100% | Remote parity and protected branch proof missing | Await authorized target-owned verification |
-| 10 | Continuation, cleanup, remaining blockers | In progress | 45% | 55% | Local-safe continuation active | Keep checkpoint chain and blockers visible |
+| Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / pending review | Evidence refs | Blockers | Next action |
+|---|---|---:|---|---:|---:|---:|---:|---|---|
+| PH01 | DISCOVER AND PRESERVE EVERYTHING | 34-71 | PARTIALLY_COMPLETE | 0.219 | 1 | 28 / 28 pending | 2 | None recorded | Complete the mission-wide repository, test, workflow, dependency, security, and remote baseline inventory; unavailable remote authority remains a blocker. |
+| PH02 | CREATE A PERSISTENT REQUIREMENTS LEDGER | 72-115 | PARTIALLY_COMPLETE | 0.215 | 1 | 33 / 33 pending | 2 | None recorded | Semantically reconcile every requirement in latest mission, oe2.txt, remotecompletion.md, and referenced sources into source-linked acceptance criteria. |
+| PH03 | UNIFY THE EXISTING AUTONOMOUS ARCHITECTURE | 116-165 | PENDING | 0.000 | 0 | 39 / 39 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH04 | MAKE OLLAMA THE PRIMARY EXECUTION ENGINE | 166-205 | PENDING | 0.000 | 0 | 29 / 29 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH05 | MAXIMIZE SAFE COMPLETION SPEED | 206-255 | PENDING | 0.000 | 0 | 36 / 36 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH06 | ENFORCE REAL PRODUCTION IMPLEMENTATIONS | 256-308 | PENDING | 0.000 | 0 | 41 / 41 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH07 | IMPLEMENT BOUNDED AUTONOMOUS REPAIR | 309-350 | PENDING | 0.000 | 0 | 31 / 31 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH08 | IMPLEMENT DURABLE CHECKPOINTS AND RECOVERY | 351-389 | PENDING | 0.000 | 0 | 31 / 31 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH09 | ADD INDEPENDENT QUALITY AND SECURITY GATES | 390-446 | PENDING | 0.000 | 0 | 47 / 47 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH10 | IMPLEMENT SAFE GIT AND REMOTE AUTOMATION | 447-475 | PENDING | 0.000 | 0 | 19 / 19 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH11 | VERIFY BOTH REPOSITORIES | 476-512 | PENDING | 0.000 | 0 | 25 / 25 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH12 | KEEP DOCUMENTATION SYNCHRONIZED | 513-541 | PARTIALLY_COMPLETE | 0.464 | 2 | 21 / 21 pending | 4 | None recorded | Semantically reconcile each mapped Qhost requirement against implementation, tests, provider evidence, and the 18 missing logical docs; do not create placeholders. |
+| PH13 | MAINTAIN LIVE PROGRESS AND EVIDENCE | 542-573 | PARTIALLY_COMPLETE | 0.477 | 2 | 24 / 24 pending | 4 | None recorded | Complete bounded Qhost QAUDITS shards and external research only through authorized, cited sources; preserve provider/security/remote blockers. |
+| PH14 | AUTOMATED FINAL COMPLETENESS AUDIT | 574-608 | PENDING | 0.000 | 0 | 27 / 27 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH15 | DEFINE HONEST COMPLETION STATES | 609-648 | PENDING | 0.000 | 0 | 31 / 31 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH16 | EXECUTE THE MISSION NOW | 649-676 | PENDING | 0.000 | 0 | 17 / 17 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH17 | IMPLEMENT A STRUCTURED COPILOT-TO-OLLAMA BRIDGE | 677-943 | PENDING | 0.000 | 0 | 200 / 200 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
+| PH18 | FINAL EXECUTION AND DELIVERABLES | 944-1047 | PENDING | 0.000 | 0 | 59 / 59 pending | 0 | None recorded | Start this phase through scripts.mission_task_ledger. |
 
-### Live mission metrics summary
-- Total phases: 11
-- Completed: 1
-- In progress: 7
-- Blocked: 3
-- Local validation status: PASS (workflow and regression checks only)
-- Remote completion status: BLOCKED
-- Current mission gate: exact SHA parity + protected-branch authorization + provider log proof required
-- Update rule: every mission checkpoint must refresh this dashboard and the evidence ledger before closing a phase.
+<!-- END QMOI MISSION PHASE METRICS -->
 
 ## Live time accounting — 2026-10-11
 
@@ -179,26 +183,26 @@ Result:
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 
-- Status: `NEEDS_REVIEW`; materialized files: `10620`; directories: `1281`; Markdown: `2430`.
+- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
 - API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
-- Managed-document family candidates: `app_platform=2165, build_download_install=2106, disability_accessibility=258, orchestration=2061, qteam_accountability=2045, release_tag_publish=2090, tree_inventory=1992`.
+- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
 - Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
 - Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
 - `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
-- Markdown structural checks passed: `2229`; needs review: `193`; metric candidate lines: `52817`; percentage occurrences: `22258`.
+- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
 - Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
 - Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
 - Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
-- Formula/calculation candidate lines: `13376`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
 - Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
-- Instruction candidates: `40576` lines in `3687` files; each requires semantic requirement-to-code/test/workflow mapping.
-- Production-gap candidates: `299`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
 - Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
 - Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
 <!-- END QMOI MANAGED: repository-surface-audit -->
 
 ## Conceptual architecture metrics
 
-The current mission documents now map the conceptual handoff across `M01`–`M16`: developer intent -> Copilot plan -> structured payload -> verified local bridge -> bounded Ollama execution -> local validation/repair -> result returned to Copilot and the developer. Measure payload completeness, local task execution, repair iterations, validation outcomes, handoff completeness, and regression deltas at each phase; record `NOT_MEASURED` when runtime evidence is unavailable.
+The canonical mission has phases `PH01`–`PH18`; `M01`–`M16` remain legacy requirement-task IDs. The conceptual handoff is developer intent -> Copilot plan -> structured payload -> verified local bridge -> bounded Ollama execution -> local validation/repair -> result returned to Copilot and the developer. Measure payload completeness, local task execution, repair iterations, validation outcomes, handoff completeness, and regression deltas per canonical phase; record `NOT_MEASURED` when runtime evidence is unavailable.
 
-The concept note's approximate 20% Copilot monthly-limit usage and 400%+ local work-volume figures are unverified source claims, not measured performance or success criteria. The latest correlated evidence in `oe2.txt` and `remotecompletion.md` records the 16-phase mapping and focused documentation regression result; bridge/Ollama runtime telemetry and remote completion remain unverified.
+The concept note's approximate 20% Copilot monthly-limit usage and 400%+ local work-volume figures are unverified source claims, not measured performance or success criteria. The correlated phase metrics in `oe2.txt` and `remotecompletion.md` track all 18 canonical phases separately from the 16 task buckets; bridge/Ollama runtime telemetry and remote completion remain unverified.

@@ -386,31 +386,23 @@
   ],
   "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
   "current_local_checkpoint": {
-    "artifact_bytes": 6726,
-    "artifact_path": "QQUANTUM.md",
+    "artifact_bytes": 402878,
+    "artifact_path": "ollamatracks/mission-task-ledger.json",
     "artifact_refs": {
-      "transition_index": {
-        "bytes": 6081,
-        "line_count": 47,
-        "path": "TRANSITION.md",
-        "sha256": "4de7a7469510712b73442c050acfd59512903b868337ae70ca9ab2047d01ada8"
-      },
-      "transition_plan": {
-        "bytes": 16216,
-        "line_count": 178,
-        "path": "TRANSION.md",
-        "sha256": "12b87396b470cbf660d4f1fcbf44ab8fea5774f70ec4b31480790c321368be18"
+      "mission_task_ledger": {
+        "bytes": 402878,
+        "path": "ollamatracks/mission-task-ledger.json",
+        "sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125"
       }
     },
-    "artifact_sha256": "363284c92ef3a29a6fc136c0b104f18bd3e3328fa57b46dc17c6771dd7a60a85",
+    "artifact_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
     "blockers": [
-      "QQUANTUM item 14 names TRANSIONQ.md, which is absent; TRANSION.md and TRANSITION.md are the existing near-name documents.",
-      "TRANSION.md requires fresh QAUDITS, lineage, tests, authorization, and exact-SHA evidence; completion is not proven.",
+      "Remote target ref and write authority are not verified; worktree contains existing user changes.",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
     "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-    "generated_at": "2026-10-14T22:21:12.243305Z",
+    "generated_at": "2026-10-16T01:21:19.500241Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -420,83 +412,259 @@
         "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea"
       },
       {
-        "bytes": 9265,
+        "bytes": 9338,
         "path": ".github/copilot-instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": "repository-root",
-        "sha256": "2cadfe6fa3a67d0d47a540443a8b843c2ca72453013309d0e30a07bf2919e6db"
+        "sha256": "ecc4afab4cd6f2df0286dab46d261b9f15489539613cc54f8b525d593e49ba9e"
       },
       {
-        "bytes": 41668,
+        "bytes": 38391,
         "path": ".github/instructions/MISSION.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "02210093fc94f16833fa6831bec42bb89874f73f714a74dfe6c77e16a94a2fe7"
+        "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
       },
       {
-        "bytes": 12914,
+        "bytes": 13048,
         "path": ".github/instructions/agent-autonomy.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "3dfc75b9276779252fb2f738af51ed3accf1657e50c0e09350596a7f792c3da7"
+        "sha256": "69634299ba6992935b1fbe10f24fa28d906733c6a21f05918a3126fe3f27b048"
       },
       {
-        "bytes": 7871,
+        "bytes": 8004,
         "path": ".github/instructions/github-api.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "4f6014ae9ec0da94c64cf0051c89f3c5b1405db9f0307a204431890d50a122c4"
+        "sha256": "d824b10554a2b9184c6dfd92a5f893bb36b5579f1c1ae293b72602b46cb425c1"
       },
       {
-        "bytes": 6926,
+        "bytes": 7040,
         "path": ".github/instructions/release.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "3223b89b5fb4a6c0422034ee294b33448a79260283b50aa854f55f85bb7aecb6"
+        "sha256": "6ddeb4f4707c75c0ff4214a81fc1a8970924942f545c658e78b8d422411827e1"
       },
       {
-        "bytes": 8115,
+        "bytes": 8230,
         "path": ".github/instructions/security.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "0f22530b74ec1d22b26f3304986d07484c4a0bbdc9e07ddc236d28d3cd4f67c5"
+        "sha256": "8f909cf308bc241e4dcc3c66f1a80892bd851cd5dd91e62cc8e687c9ad6e9231"
       },
       {
-        "bytes": 8413,
+        "bytes": 8523,
         "path": ".github/instructions/workflows.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "4ec755ef768eab15a7a088313567efd3f5be53752cbb016addc8a35c807085f7"
+        "sha256": "9f6d04b83713d98f407a6a403e96445ef0343f0e5630ba3d73481a6b6211ce31"
       },
       {
-        "bytes": 9536,
+        "bytes": 10099,
         "path": ".github/instructions/workspace.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "2adabe26cbb38a64f27dc2a04468049e1764c78348ce54903fe383fda34f4147"
+        "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
       }
     ],
-    "instruction_inventory_sha256": "74f661e6ef67bcc869eeda61d9b11a49951bd9aae016ba4d0185e5fd740dfa21",
-    "local_head_sha": "e59ccebec13fef7aceb35983fbb870a19656ed05",
-    "local_tree_sha": "365dbbad9bb3dbe6d42a7d801051910d9e76a172",
+    "instruction_inventory_sha256": "94f317f1152d4a696d061347bd5edbefc0e0c12776aa7ed80b1c8d8ecc938c1d",
+    "local_head_sha": "088de18b8bd8fcf47ab58829c899881d154ae6e4",
+    "local_tree_sha": "4b4a5b01d7bf3bc9aa60db0039091ab6f4fe10ae",
     "metrics": {
-      "active_task_id": "M02",
-      "active_task_status": "PARTIALLY_COMPLETE",
-      "established_transition_plan_reviewed": true,
-      "ollama_inference": "NOT_MEASURED",
-      "qquantum_sections_reviewed": 14,
-      "quantum_execution": "NOT_IMPLEMENTED_OR_VERIFIED_IN_ACTIVE_CODE",
+      "active_phase_id": "PH13",
+      "active_task_id": null,
+      "active_task_status": null,
+      "checkpoint_utc": "2026-10-16T01:21:19.448737+00:00",
+      "deadline_utc": "2026-10-13T15:50:19.075+00:00",
+      "elapsed_seconds": 214260.374,
+      "ledger_id": "newmission-120-minute-2026-10-13",
+      "ledger_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
+      "ledger_version": "1.0",
+      "mission_phase_count": 18,
+      "mission_phase_metrics": [
+        {
+          "attempt_count": 1,
+          "elapsed_seconds": 0.219,
+          "id": "PH01",
+          "requirement_bullet_candidates": 10,
+          "source_ref": "latest mission.md#L34-L71",
+          "status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "attempt_count": 1,
+          "elapsed_seconds": 0.215,
+          "id": "PH02",
+          "requirement_bullet_candidates": 13,
+          "source_ref": "latest mission.md#L72-L115",
+          "status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH03",
+          "requirement_bullet_candidates": 26,
+          "source_ref": "latest mission.md#L116-L165",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH04",
+          "requirement_bullet_candidates": 13,
+          "source_ref": "latest mission.md#L166-L205",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH05",
+          "requirement_bullet_candidates": 17,
+          "source_ref": "latest mission.md#L206-L255",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH06",
+          "requirement_bullet_candidates": 24,
+          "source_ref": "latest mission.md#L256-L308",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH07",
+          "requirement_bullet_candidates": 20,
+          "source_ref": "latest mission.md#L309-L350",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH08",
+          "requirement_bullet_candidates": 22,
+          "source_ref": "latest mission.md#L351-L389",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH09",
+          "requirement_bullet_candidates": 34,
+          "source_ref": "latest mission.md#L390-L446",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH10",
+          "requirement_bullet_candidates": 8,
+          "source_ref": "latest mission.md#L447-L475",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH11",
+          "requirement_bullet_candidates": 10,
+          "source_ref": "latest mission.md#L476-L512",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 2,
+          "elapsed_seconds": 0.464,
+          "id": "PH12",
+          "requirement_bullet_candidates": 11,
+          "source_ref": "latest mission.md#L513-L541",
+          "status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "attempt_count": 2,
+          "elapsed_seconds": 0.477,
+          "id": "PH13",
+          "requirement_bullet_candidates": 16,
+          "source_ref": "latest mission.md#L542-L573",
+          "status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH14",
+          "requirement_bullet_candidates": 16,
+          "source_ref": "latest mission.md#L574-L608",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH15",
+          "requirement_bullet_candidates": 7,
+          "source_ref": "latest mission.md#L609-L648",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH16",
+          "requirement_bullet_candidates": 0,
+          "source_ref": "latest mission.md#L649-L676",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH17",
+          "requirement_bullet_candidates": 53,
+          "source_ref": "latest mission.md#L677-L943",
+          "status": "PENDING"
+        },
+        {
+          "attempt_count": 0,
+          "elapsed_seconds": 0,
+          "id": "PH18",
+          "requirement_bullet_candidates": 36,
+          "source_ref": "latest mission.md#L944-L1047",
+          "status": "PENDING"
+        }
+      ],
+      "mission_phase_source": {
+        "path": "latest mission.md",
+        "phase_count": 18,
+        "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+      },
+      "mission_phase_status_counts": {
+        "BLOCKED": 0,
+        "FAILED": 0,
+        "IN_PROGRESS": 0,
+        "PARTIALLY_COMPLETE": 4,
+        "PASS": 0,
+        "PENDING": 14
+      },
+      "mission_requirement_line_count": 760,
+      "mission_requirement_line_review_counts": {
+        "not_reviewed": 760,
+        "reviewed": 0
+      },
+      "mission_start_utc": "2026-10-13T13:50:19.075+00:00",
+      "mission_status_counts": {
+        "blocked": 1,
+        "failed": 0,
+        "in_progress": 5,
+        "partially_complete": 5,
+        "pending": 5,
+        "verified_complete": 0
+      },
+      "monotonic_duration_available": false,
+      "remaining_seconds": 0.0,
       "remote_verified": false,
-      "requested_transionq_path_present": false,
-      "transition_index_reviewed": true,
-      "transition_plan_status": "CANDIDATES_AND_PENDING_EVIDENCE_ONLY",
-      "transition_replacement_counts_verified": 0
+      "task_elapsed_seconds": null
     },
-    "next_action": "Keep M02 partial. Resolve whether TRANSIONQ.md is intended to refer to TRANSION.md, then reconcile each transition requirement and the remaining master-plan sources before starting quantum implementation.",
-    "operation": "mission-m02-qquantum-transition-reference-correction",
+    "next_action": "Resume the highest-priority dependency-ready mission task.",
+    "operation": "mission-metrics-refresh",
     "paired_document_sha256": {
-      "oe2.txt": "88acf0123e91b11693dce4ffbe26ce1fe97e34f68114fd9e60e1566582ad9893",
-      "remotecompletion.md": "90da75d24bfc5de62b26bd442a11cbea55bca4cb5df39414fba316235d577316"
+      "oe2.txt": "97a63651f7b09c879fde3a7ba275baa3fd3fd8c5492f9101284a1b116383669d",
+      "remotecompletion.md": "7362aaae28c8d34361ce9af2fd84a309ecfc29c4a4c52293475b0bad420a5f5b"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -504,7 +672,7 @@
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
     "source_manifest_sha256": null,
-    "status": "PARTIALLY_COMPLETE",
+    "status": "IN_PROGRESS",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": true
   },
@@ -521,7 +689,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-14T22:21:12.243305Z",
+  "generated_at": "2026-10-16T01:21:19.500241Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -852,31 +1020,23 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 6726,
-      "artifact_path": "QQUANTUM.md",
+      "artifact_bytes": 402878,
+      "artifact_path": "ollamatracks/mission-task-ledger.json",
       "artifact_refs": {
-        "transition_index": {
-          "bytes": 6081,
-          "line_count": 47,
-          "path": "TRANSITION.md",
-          "sha256": "4de7a7469510712b73442c050acfd59512903b868337ae70ca9ab2047d01ada8"
-        },
-        "transition_plan": {
-          "bytes": 16216,
-          "line_count": 178,
-          "path": "TRANSION.md",
-          "sha256": "12b87396b470cbf660d4f1fcbf44ab8fea5774f70ec4b31480790c321368be18"
+        "mission_task_ledger": {
+          "bytes": 402878,
+          "path": "ollamatracks/mission-task-ledger.json",
+          "sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125"
         }
       },
-      "artifact_sha256": "363284c92ef3a29a6fc136c0b104f18bd3e3328fa57b46dc17c6771dd7a60a85",
+      "artifact_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
       "blockers": [
-        "QQUANTUM item 14 names TRANSIONQ.md, which is absent; TRANSION.md and TRANSITION.md are the existing near-name documents.",
-        "TRANSION.md requires fresh QAUDITS, lineage, tests, authorization, and exact-SHA evidence; completion is not proven.",
+        "Remote target ref and write authority are not verified; worktree contains existing user changes.",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
       "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-      "generated_at": "2026-10-14T22:21:12.243305Z",
+      "generated_at": "2026-10-16T01:21:19.500241Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -886,83 +1046,259 @@
           "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea"
         },
         {
-          "bytes": 9265,
+          "bytes": 9338,
           "path": ".github/copilot-instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": "repository-root",
-          "sha256": "2cadfe6fa3a67d0d47a540443a8b843c2ca72453013309d0e30a07bf2919e6db"
+          "sha256": "ecc4afab4cd6f2df0286dab46d261b9f15489539613cc54f8b525d593e49ba9e"
         },
         {
-          "bytes": 41668,
+          "bytes": 38391,
           "path": ".github/instructions/MISSION.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "02210093fc94f16833fa6831bec42bb89874f73f714a74dfe6c77e16a94a2fe7"
+          "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
         },
         {
-          "bytes": 12914,
+          "bytes": 13048,
           "path": ".github/instructions/agent-autonomy.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "3dfc75b9276779252fb2f738af51ed3accf1657e50c0e09350596a7f792c3da7"
+          "sha256": "69634299ba6992935b1fbe10f24fa28d906733c6a21f05918a3126fe3f27b048"
         },
         {
-          "bytes": 7871,
+          "bytes": 8004,
           "path": ".github/instructions/github-api.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "4f6014ae9ec0da94c64cf0051c89f3c5b1405db9f0307a204431890d50a122c4"
+          "sha256": "d824b10554a2b9184c6dfd92a5f893bb36b5579f1c1ae293b72602b46cb425c1"
         },
         {
-          "bytes": 6926,
+          "bytes": 7040,
           "path": ".github/instructions/release.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "3223b89b5fb4a6c0422034ee294b33448a79260283b50aa854f55f85bb7aecb6"
+          "sha256": "6ddeb4f4707c75c0ff4214a81fc1a8970924942f545c658e78b8d422411827e1"
         },
         {
-          "bytes": 8115,
+          "bytes": 8230,
           "path": ".github/instructions/security.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "0f22530b74ec1d22b26f3304986d07484c4a0bbdc9e07ddc236d28d3cd4f67c5"
+          "sha256": "8f909cf308bc241e4dcc3c66f1a80892bd851cd5dd91e62cc8e687c9ad6e9231"
         },
         {
-          "bytes": 8413,
+          "bytes": 8523,
           "path": ".github/instructions/workflows.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "4ec755ef768eab15a7a088313567efd3f5be53752cbb016addc8a35c807085f7"
+          "sha256": "9f6d04b83713d98f407a6a403e96445ef0343f0e5630ba3d73481a6b6211ce31"
         },
         {
-          "bytes": 9536,
+          "bytes": 10099,
           "path": ".github/instructions/workspace.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "2adabe26cbb38a64f27dc2a04468049e1764c78348ce54903fe383fda34f4147"
+          "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
         }
       ],
-      "instruction_inventory_sha256": "74f661e6ef67bcc869eeda61d9b11a49951bd9aae016ba4d0185e5fd740dfa21",
-      "local_head_sha": "e59ccebec13fef7aceb35983fbb870a19656ed05",
-      "local_tree_sha": "365dbbad9bb3dbe6d42a7d801051910d9e76a172",
+      "instruction_inventory_sha256": "94f317f1152d4a696d061347bd5edbefc0e0c12776aa7ed80b1c8d8ecc938c1d",
+      "local_head_sha": "088de18b8bd8fcf47ab58829c899881d154ae6e4",
+      "local_tree_sha": "4b4a5b01d7bf3bc9aa60db0039091ab6f4fe10ae",
       "metrics": {
-        "active_task_id": "M02",
-        "active_task_status": "PARTIALLY_COMPLETE",
-        "established_transition_plan_reviewed": true,
-        "ollama_inference": "NOT_MEASURED",
-        "qquantum_sections_reviewed": 14,
-        "quantum_execution": "NOT_IMPLEMENTED_OR_VERIFIED_IN_ACTIVE_CODE",
+        "active_phase_id": "PH13",
+        "active_task_id": null,
+        "active_task_status": null,
+        "checkpoint_utc": "2026-10-16T01:21:19.448737+00:00",
+        "deadline_utc": "2026-10-13T15:50:19.075+00:00",
+        "elapsed_seconds": 214260.374,
+        "ledger_id": "newmission-120-minute-2026-10-13",
+        "ledger_sha256": "604f59815907873a54c62a293ecfd92e2338dd15649957b59b1c546ef0c28125",
+        "ledger_version": "1.0",
+        "mission_phase_count": 18,
+        "mission_phase_metrics": [
+          {
+            "attempt_count": 1,
+            "elapsed_seconds": 0.219,
+            "id": "PH01",
+            "requirement_bullet_candidates": 10,
+            "source_ref": "latest mission.md#L34-L71",
+            "status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "attempt_count": 1,
+            "elapsed_seconds": 0.215,
+            "id": "PH02",
+            "requirement_bullet_candidates": 13,
+            "source_ref": "latest mission.md#L72-L115",
+            "status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH03",
+            "requirement_bullet_candidates": 26,
+            "source_ref": "latest mission.md#L116-L165",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH04",
+            "requirement_bullet_candidates": 13,
+            "source_ref": "latest mission.md#L166-L205",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH05",
+            "requirement_bullet_candidates": 17,
+            "source_ref": "latest mission.md#L206-L255",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH06",
+            "requirement_bullet_candidates": 24,
+            "source_ref": "latest mission.md#L256-L308",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH07",
+            "requirement_bullet_candidates": 20,
+            "source_ref": "latest mission.md#L309-L350",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH08",
+            "requirement_bullet_candidates": 22,
+            "source_ref": "latest mission.md#L351-L389",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH09",
+            "requirement_bullet_candidates": 34,
+            "source_ref": "latest mission.md#L390-L446",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH10",
+            "requirement_bullet_candidates": 8,
+            "source_ref": "latest mission.md#L447-L475",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH11",
+            "requirement_bullet_candidates": 10,
+            "source_ref": "latest mission.md#L476-L512",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 2,
+            "elapsed_seconds": 0.464,
+            "id": "PH12",
+            "requirement_bullet_candidates": 11,
+            "source_ref": "latest mission.md#L513-L541",
+            "status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "attempt_count": 2,
+            "elapsed_seconds": 0.477,
+            "id": "PH13",
+            "requirement_bullet_candidates": 16,
+            "source_ref": "latest mission.md#L542-L573",
+            "status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH14",
+            "requirement_bullet_candidates": 16,
+            "source_ref": "latest mission.md#L574-L608",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH15",
+            "requirement_bullet_candidates": 7,
+            "source_ref": "latest mission.md#L609-L648",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH16",
+            "requirement_bullet_candidates": 0,
+            "source_ref": "latest mission.md#L649-L676",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH17",
+            "requirement_bullet_candidates": 53,
+            "source_ref": "latest mission.md#L677-L943",
+            "status": "PENDING"
+          },
+          {
+            "attempt_count": 0,
+            "elapsed_seconds": 0,
+            "id": "PH18",
+            "requirement_bullet_candidates": 36,
+            "source_ref": "latest mission.md#L944-L1047",
+            "status": "PENDING"
+          }
+        ],
+        "mission_phase_source": {
+          "path": "latest mission.md",
+          "phase_count": 18,
+          "sha256": "5414060a581ff979a2909728fc726e65cfee00bc73e4b1ee38ffbd16e7fe893b"
+        },
+        "mission_phase_status_counts": {
+          "BLOCKED": 0,
+          "FAILED": 0,
+          "IN_PROGRESS": 0,
+          "PARTIALLY_COMPLETE": 4,
+          "PASS": 0,
+          "PENDING": 14
+        },
+        "mission_requirement_line_count": 760,
+        "mission_requirement_line_review_counts": {
+          "not_reviewed": 760,
+          "reviewed": 0
+        },
+        "mission_start_utc": "2026-10-13T13:50:19.075+00:00",
+        "mission_status_counts": {
+          "blocked": 1,
+          "failed": 0,
+          "in_progress": 5,
+          "partially_complete": 5,
+          "pending": 5,
+          "verified_complete": 0
+        },
+        "monotonic_duration_available": false,
+        "remaining_seconds": 0.0,
         "remote_verified": false,
-        "requested_transionq_path_present": false,
-        "transition_index_reviewed": true,
-        "transition_plan_status": "CANDIDATES_AND_PENDING_EVIDENCE_ONLY",
-        "transition_replacement_counts_verified": 0
+        "task_elapsed_seconds": null
       },
-      "next_action": "Keep M02 partial. Resolve whether TRANSIONQ.md is intended to refer to TRANSION.md, then reconcile each transition requirement and the remaining master-plan sources before starting quantum implementation.",
-      "operation": "mission-m02-qquantum-transition-reference-correction",
+      "next_action": "Resume the highest-priority dependency-ready mission task.",
+      "operation": "mission-metrics-refresh",
       "paired_document_sha256": {
-        "oe2.txt": "88acf0123e91b11693dce4ffbe26ce1fe97e34f68114fd9e60e1566582ad9893",
-        "remotecompletion.md": "90da75d24bfc5de62b26bd442a11cbea55bca4cb5df39414fba316235d577316"
+        "oe2.txt": "97a63651f7b09c879fde3a7ba275baa3fd3fd8c5492f9101284a1b116383669d",
+        "remotecompletion.md": "7362aaae28c8d34361ce9af2fd84a309ecfc29c4a4c52293475b0bad420a5f5b"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -970,7 +1306,7 @@
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
       "source_manifest_sha256": null,
-      "status": "PARTIALLY_COMPLETE",
+      "status": "IN_PROGRESS",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": true
     },
@@ -1046,7 +1382,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "e59ccebec13fef7aceb35983fbb870a19656ed05",
+    "local_head_sha": "088de18b8bd8fcf47ab58829c899881d154ae6e4",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

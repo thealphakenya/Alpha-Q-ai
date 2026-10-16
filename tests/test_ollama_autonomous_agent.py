@@ -1235,6 +1235,7 @@ class TestMarkdownCategoryIndex:
         assert "LEGACY_WALLET_NOTE.md" in result["all_markdown_files"]
         assert result["generated_categories"]
         assert "ALLMDFILESREFS.md" in result["updated_files"]
+        assert result["qhost_documentation"]["status"] == "QHOST_SOURCE_MISSING_OR_SYMLINKED"
         assert set(result["all_category"]["files"]) == {
             "README.md",
             "docs/UPPERCASE.MD",
@@ -1307,6 +1308,120 @@ class TestMarkdownCategoryIndex:
         assert uppercase_metric["validation_status"] == "validated"
         assert "QMOI_MODEL_CARD.md" in result["multi_category_files"]
         assert result["all_category"]["sync_plan"]["status"] == "blocked"
+
+    def test_qhost_documentation_index_maps_targets_phases_gates_and_local_candidates(self, tmp_path):
+        (tmp_path / "ollamatracks").mkdir()
+        (tmp_path / "scripts").mkdir()
+        (tmp_path / "tests").mkdir()
+        (tmp_path / "scripts" / "link_validator.py").write_text("# active link validator\n", encoding="utf-8")
+        (tmp_path / "tests" / "test_ollama_runtime.py").write_text("# link validator tests\n", encoding="utf-8")
+        authored = [
+            "# Qhost authored requirements",
+            *[f"{number}. Section {number}" for number in range(1, 17)],
+            "## 11.1 Mandatory documentation targets",
+            "| STYLES.md | Design tokens and components |",
+            "| HOSTING.md | Hosting architecture |",
+            "## 13. Mandatory QAUDITS completion gates",
+            "Gate",
+            "Required evidence",
+            *[line for number in range(1, 21) for line in (f"G{number}", f"Gate requirement {number}")],
+            "## 15. Required implementation phases",
+            *[f"Phase {number} — Phase {number} scope" for number in range(1, 13)],
+        ]
+        (tmp_path / "Qhost.md").write_text("\n".join(authored) + "\n", encoding="utf-8")
+        (tmp_path / "STYLES.md").write_text("# STYLES\n\nDesign tokens and accessible hosting UI.\n", encoding="utf-8")
+        (tmp_path / "HOSTING.md").write_text("# Hosting\n\nHosting lifecycle and provider integration.\n", encoding="utf-8")
+        related = tmp_path / "docs" / "domain-operations.md"
+        related.parent.mkdir()
+        related.write_text("# Domain operations\n\nDomain registrar, DNS, renewals, and payment security.\n", encoding="utf-8")
+        archived = tmp_path / "qmoi-enhanced-history-14" / "old-hosting.md"
+        archived.parent.mkdir(parents=True)
+        archived.write_text("# Historical hosting plan\n\nVPS and disaster recovery.\n", encoding="utf-8")
+        (tmp_path / "README.md").write_text("# Unrelated project overview\n", encoding="utf-8")
+
+        result = OllamaAutonomousAgent(base_path=tmp_path).refresh_qhost_documentation_index(tmp_path)
+        inventory = json.loads((tmp_path / result["artifact_path"]).read_text(encoding="utf-8"))
+        qhost_text = (tmp_path / "Qhost.md").read_text(encoding="utf-8")
+        targets = {item["logical_target"]: item for item in inventory["logical_document_targets"]}
+        candidates = {item["path"]: item for item in inventory["related_markdown_documents"]}
+
+        assert result["status"] == "NEEDS_REVIEW"
+        assert result["logical_target_count"] == 27
+        assert result["implementation_phase_count"] == 12
+        assert result["qaudit_gate_count"] == 20
+        assert result["numbered_section_count"] == 16
+        assert len(inventory["numbered_sections"]) == 16
+        assert inventory["numbered_section_count"] == 16
+        assert inventory["logical_target_count"] == 27
+        assert inventory["implementation_phase_count"] == 12
+        assert inventory["qaudit_gate_count"] == 20
+        assert inventory["requirement_line_inventory_complete"] is True
+        assert inventory["requirement_line_semantic_review_complete"] is False
+        assert inventory["requirement_line_count"] == len(inventory["requirement_line_records"])
+        assert inventory["requirement_line_count"] > 0
+        assert all(record["status"] == "NOT_REVIEWED" for record in inventory["requirement_line_records"])
+        assert all(len(record["line_sha256"]) == 64 for record in inventory["requirement_line_records"])
+        assert all("text" not in record and "source_text" not in record for record in inventory["requirement_line_records"])
+        code_candidates = {item["path"]: item for item in inventory["implementation_candidates"]}
+        assert code_candidates["scripts/link_validator.py"]["present"] is True
+        assert code_candidates["scripts/link_validator.py"]["tests"] == ["tests/test_ollama_runtime.py"]
+        assert code_candidates["scripts/qmoi_cloud_setup.py"]["present"] is False
+        assert code_candidates["qmoi-enhanced-history-14/scripts/qmoi_master_website_automation.js"]["status"].startswith("ARCHIVE_ONLY")
+        security_candidates = inventory["security_review_candidates"]
+        assert security_candidates[0]["scope"] == "historical_archive"
+        assert security_candidates[0]["secret_value_recorded"] is False
+        assert security_candidates[0]["status"] == "REVIEW_REQUIRED_ARCHIVE_ONLY"
+        assert inventory["live_peer_repository_checkout_present"] is False
+        assert inventory["external_research"]["status"] == "NOT_VISITED"
+        assert inventory["qaudit_gates"][0]["id"] == "G1"
+        assert inventory["qaudit_gates"][0]["requirement"] == "Gate requirement 1"
+        assert inventory["qaudit_gates"][0]["source_ref"].startswith("Qhost.md#L")
+        assert inventory["qaudit_gates"][0]["status"] == "NOT_VERIFIED"
+        assert inventory["upstream_requirement_sources"][0]["requirement_id"] == "QQUANTUM-13"
+        assert inventory["canonical_mission_phase_ids"] == ["PH02", "PH12", "PH13", "PH14", "PH18"]
+        assert targets["STYLES.md"]["status"] == "PRESENT_ACTIVE_ROOT_REVIEW_REQUIRED"
+        assert targets["DOMAIN_API.md"]["status"] == "MISSING_NO_LOCAL_MATCH"
+        assert "HOSTING.md" not in targets["DOMAIN_API.md"]["local_matches"]
+        assert candidates["docs/domain-operations.md"]["status"] == "candidate_related_not_semantically_validated"
+        assert candidates["qmoi-enhanced-history-14/old-hosting.md"]["scope"] == "historical_archive"
+        assert "# Qhost authored requirements" in qhost_text
+        assert qhost_text.count("<!-- BEGIN QMOI MANAGED: qhost-documentation-map -->") == 1
+        assert "[docs/domain-operations.md](docs/domain-operations.md)" in qhost_text
+        assert not (tmp_path / "DOMAIN_API.md").exists()
+        assert inventory["external_research"]["status"] == "NOT_VISITED"
+        assert inventory["cross_repository_verification"] == "NOT_PERFORMED"
+        assert inventory["source_contents_recorded"] is False
+
+    def test_markdown_index_refresh_updates_qhost_and_references_it(self, tmp_path):
+        (tmp_path / "Qhost.md").write_text(
+            "# Qhost\n\n| G1 | Internal research |\nPhase 1 — Discovery and research\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "STYLES.md").write_text("# Styles\n\nShared design tokens.\n", encoding="utf-8")
+
+        result = OllamaAutonomousAgent(base_path=tmp_path).refresh_markdown_category_index(tmp_path)
+
+        assert result["qhost_documentation"]["status"] == "NEEDS_REVIEW"
+        assert "Qhost.md" in result["all_category"]["files"]
+        assert "Qhost.md" in (tmp_path / "ALLMDFILESREFS.md").read_text(encoding="utf-8")
+        assert "Agent-managed Qhost mission map" in (tmp_path / "Qhost.md").read_text(encoding="utf-8")
+
+    def test_hosting_document_refresh_also_updates_qhost_and_all_markdown_index(self, tmp_path):
+        (tmp_path / "Qhost.md").write_text(
+            "# Qhost authored source\n\n| G1 | Internal research |\nPhase 1 — Discovery and research\n",
+            encoding="utf-8",
+        )
+
+        result = OllamaAutonomousAgent(base_path=tmp_path).refresh_hosting_quantum_ui_documents(tmp_path)
+
+        qhost_text = (tmp_path / "Qhost.md").read_text(encoding="utf-8")
+        all_markdown = (tmp_path / "ALLMDFILESREFS.md").read_text(encoding="utf-8")
+        assert result["qhost_documentation"]["status"] == "NEEDS_REVIEW"
+        assert result["markdown_index_status"] == "ready"
+        assert "# Qhost authored source" in qhost_text
+        assert "Qhost.md" in all_markdown
+        assert "Qhost.md" in result["documents"]
+        assert "ALLMDFILESREFS.md" in result["documents"]
 
 
 class TestPlatformValidator:

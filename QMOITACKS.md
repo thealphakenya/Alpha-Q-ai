@@ -5,12 +5,12 @@
 
 This generated QMOI tracker includes currently registered and planned/unverified feature requirements. It creates review work automatically; it does not claim feature availability or silently install runtime telemetry.
 
-- Status: `NEEDS_REVIEW`; correlation: `32748e4b-c579-417a-a451-1ee0c489130d`.
-- Source manifest: `fb3b6e92ea04c3cc485c12c8a5a49840fcc8095f4fa8e76352910237bb5b28d9`; local source SHA: `280abad164ac2a3b248b7ff37f5853869af375c4`.
-- Registered features: `404`; planned/UIS requirements: `160`.
-- Local Ollama tracker file paths: `2226`; QMOI tracker file paths: `3`. Managed output paths are path-listed but excluded from self-hashing.
-- All requirements with a generated monitoring-review action: `576/576`.
-- Verified monitor mappings: `0/576`; coverage verified: `False`.
+- Status: `NEEDS_REVIEW`; correlation: `f5b3e262-3f33-44b5-a098-57bef9f98d2a`.
+- Source manifest: `9b8382f96abc1df907d1af26847c658b59a7ced74bf22ca45ae83c000350a3ce`; local source SHA: `088de18b8bd8fcf47ab58829c899881d154ae6e4`.
+- Registered features: `404`; planned/UIS requirements: `179`.
+- Local Ollama tracker file paths: `2227`; QMOI tracker file paths: `3`. Managed output paths are path-listed but excluded from self-hashing.
+- All requirements with a generated monitoring-review action: `595/595`.
+- Verified monitor mappings: `0/595`; coverage verified: `False`.
 
 ### QMOI product/platform features
 
@@ -585,6 +585,25 @@ This generated QMOI tracker includes currently registered and planned/unverified
 | `uis.uis-06-r01` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:35 | `review_required` | `planned_or_unverified` | `unmapped` |
 | `uis.uis-07-r01` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:38 | `review_required` | `planned_or_unverified` | `unmapped` |
 | `uis.uis-07-r02` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:40 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r03` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:43 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r04` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:44 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r05` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:46 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r06` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:47 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r07` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:48 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r08` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:49 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r09` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:50 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r10` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:51 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r11` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:52 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r12` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:53 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r13` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:54 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r14` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:55 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r15` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:56 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r16` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:57 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r17` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:58 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r18` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:59 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r19` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:60 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r20` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:61 | `review_required` | `planned_or_unverified` | `unmapped` |
+| `uis.uis-07-r21` | `QMOIUNIVERSALINTELLIGENCESYSTEM.md`:62 | `review_required` | `planned_or_unverified` | `unmapped` |
 
 ### Master monitoring access
 
@@ -616,3 +635,24 @@ This generated QMOI tracker includes currently registered and planned/unverified
 - Full metric artifact references and generated review actions are in `ollamatracks/alltracks_monitoring_inventory.json`; raw metric values and user content are not copied into this tracker.
 - This tracker is updated by the Ollama QAUDITS coverage refresh. No remote completion or runtime-health claim is implied.
 <!-- END QMOI MANAGED: qmoitacks-monitoring-inventory -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
+- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
+- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
+- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
+- Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->

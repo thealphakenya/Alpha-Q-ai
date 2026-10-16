@@ -88,7 +88,7 @@ from collections.abc import Iterable, Mapping, Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, ClassVar
-from urllib.parse import unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPOSITORY_ROOT = SCRIPT_DIR.parent
@@ -9401,6 +9401,10 @@ All timestamps use UTC ISO-8601 format.
 
         ordered_files = sorted({Path(relative).name for relative in discovered})
         full_relative_files = sorted(discovered)
+        qhost_documentation = self.refresh_qhost_documentation_index(
+            target,
+            markdown_paths=full_relative_files,
+        )
 
         category_rules = [
             ("Category A — Governance, repo continuity, and documentation integrity", [
@@ -9750,6 +9754,7 @@ All timestamps use UTC ISO-8601 format.
                 ],
             },
             "count": len(ordered_files),
+            "qhost_documentation": qhost_documentation,
             "validation_summary": markdown_validation_summary,
             "multi_category_files": sorted(
                 path for path, labels in (
@@ -10063,6 +10068,565 @@ All timestamps use UTC ISO-8601 format.
             "platforms": list(PLATFORMS),
         }
 
+    def refresh_qhost_documentation_index(
+        self,
+        root: Path | str | None = None,
+        markdown_paths: Sequence[str] | None = None,
+    ) -> dict[str, Any]:
+        """Index Qhost requirements and every locally discovered related Markdown document."""
+        target = Path(root) if root is not None else self.root_dir
+        qhost_path = target / "Qhost.md"
+        if qhost_path.is_symlink() or not qhost_path.is_file():
+            return {
+                "status": "QHOST_SOURCE_MISSING_OR_SYMLINKED",
+                "source_path": "Qhost.md",
+                "related_markdown_count": 0,
+                "artifact_path": None,
+            }
+
+        source_text = qhost_path.read_text(encoding="utf-8")
+        managed_pattern = re.compile(
+            r"^<!-- BEGIN QMOI MANAGED: qhost-documentation-map -->\r?\n.*?"
+            r"^<!-- END QMOI MANAGED: qhost-documentation-map -->\r?\n?",
+            re.MULTILINE | re.DOTALL,
+        )
+        authored_text = managed_pattern.sub("", source_text, count=1)
+        source_sha256 = hashlib.sha256(authored_text.encode("utf-8")).hexdigest()
+        source_lines = authored_text.splitlines()
+
+        if markdown_paths is None:
+            discovered: set[str] = set()
+            for scan_root in (target, target / "qmoi-enhanced-history-14"):
+                if scan_root.exists():
+                    discovered.update(
+                        path.relative_to(target).as_posix()
+                        for path in iter_markdown_files(scan_root)
+                    )
+            markdown_paths = sorted(discovered)
+
+        logical_targets = [
+            ("STYLES.md", "Design tokens, components, themes, accessibility, and hosting UI."),
+            ("UNIVERSALS.md", "Shared feature contracts, configuration, and cross-platform hosting behavior."),
+            ("UNIVERSAL.md", "Universal architecture, feature registration, and compatibility."),
+            ("QAUDITS.md", "Audit categories, evidence schemas, remediation, and gates."),
+            ("API.md", "API authentication, hosting/domain, billing, monitoring, and error contracts."),
+            ("ENDPOINTS.md", "Domain, hosting, deployment, billing, audit, and administrative endpoints."),
+            ("ROUTES.md", "Customer/admin pages, domain workflows, hosting, and global platforms."),
+            ("ACCESSIBILITY.md", "Shared UI accessibility and device-specific requirements."),
+            ("MODELEVOLUTIONO.md", "Agent research, feature evolution, verification, and controlled updates."),
+            ("QILDEVICES.md", "Device integration and hosting-related UI capabilities."),
+            ("QFORALLDEVICES.md", "Cross-device feature support and adaptive UI behavior."),
+            ("HOSTING.md", "Hosting architecture, products, lifecycle, and provider integrations."),
+            ("DOMAINS.md", "Domain registration, transfers, renewals, pricing, and DNS."),
+            ("HOSTING_API.md", "Hosting API contracts and authentication."),
+            ("DOMAIN_API.md", "Domain API contracts and provider adapters."),
+            ("GLOBAL_DEPLOYMENT.md", "Regions, providers, global availability, and rollout."),
+            ("COUNTRY_PLATFORMS.md", "Country generation, localization, readiness, and compliance."),
+            ("CONTINENTAL_PLATFORMS.md", "Regional project generation and orchestration."),
+            ("HOSTING_SECURITY.md", "Access control, secrets, tenant isolation, and incident response."),
+            ("HOSTING_MONITORING.md", "Telemetry, health checks, recovery, and alerts."),
+            ("HOSTING_BILLING.md", "Pricing, payments, subscriptions, refunds, and reconciliation."),
+            ("SPONSORSHIP.md", "Eligibility, benefits, limits, and audit requirements."),
+            ("HOSTING_DISASTER_RECOVERY.md", "Backups, restoration, failover, and disaster recovery."),
+            ("HOSTING_COMPLIANCE.md", "Domain, hosting, privacy, financial, and country requirements."),
+            ("HOSTING_RUNBOOK.md", "Operational procedures and troubleshooting."),
+            ("HOSTING_TEST_PLAN.md", "Test coverage, verification procedures, and production gates."),
+            ("HOSTING_ROADMAP.md", "Dependencies, priorities, blockers, and verified completion."),
+        ]
+        patterns = {
+            "styles_and_ui": re.compile(r"\b(?:styles?|design tokens?|components?|themes?|frontend|user interface|\bUI\b)\b", re.I),
+            "universals_and_contracts": re.compile(r"\b(?:universals?|shared contracts?|feature registry|configuration schema|cross-platform)\b", re.I),
+            "hosting_domains_and_deployment": re.compile(r"\b(?:hosting|domain|registrar|DNSSEC|DNS records?|VPS|cloud provider|SSL certificates?|provisioning|deployment|disaster recovery|backup retention)\b", re.I),
+            "api_routes_and_backend": re.compile(r"\b(?:API|endpoints?|routes?|backend services?|database schemas?)\b", re.I),
+            "accessibility_and_devices": re.compile(r"\b(?:accessibility|accessible|assistive|screen reader|responsive|device support|Android|iOS|Wear OS|tvOS|watchOS|visionOS)\b", re.I),
+            "billing_finance_and_sponsorship": re.compile(r"\b(?:billing|payments?|sponsorship|revenue|refunds?|reconciliation|currency|taxes|financial management|invoices?)\b", re.I),
+            "global_and_country_platforms": re.compile(r"\b(?:global availability|country-specific|continental|regional hosting|data residency|localization|jurisdiction|country registry)\b", re.I),
+            "security_monitoring_and_recovery": re.compile(r"\b(?:security|tenant isolation|secrets management|monitoring|telemetry|incident response|recovery|rollback|disaster recovery)\b", re.I),
+            "qaudits_agents_and_remote_completion": re.compile(r"\b(?:QAUDITS|autonomous agent|master orchestrator|checkpoint|remote completion|exact-SHA|cross-repository|verification gates?)\b", re.I),
+        }
+        discovered_paths = sorted({Path(path).as_posix() for path in markdown_paths})
+        path_matches: dict[str, list[str]] = defaultdict(list)
+        related_documents: list[dict[str, Any]] = []
+        skipped_sources: list[dict[str, str]] = []
+        target_names = {name.casefold() for name, _ in logical_targets}
+
+        for relative in discovered_paths:
+            path = target / relative
+            basename = Path(relative).name.casefold()
+            categories = [
+                category for category, pattern in patterns.items()
+                if pattern.search(relative.replace("_", " ").replace("-", " "))
+            ]
+            if path.is_symlink():
+                skipped_sources.append({"path": relative, "reason": "symlink_not_followed"})
+                continue
+            if not path.is_file():
+                continue
+            try:
+                metadata = path.stat()
+                if metadata.st_size > 1_000_000:
+                    skipped_sources.append({"path": relative, "reason": "oversized_file_not_read"})
+                    continue
+                content_bytes = path.read_bytes()
+            except OSError as exc:
+                skipped_sources.append({"path": relative, "reason": type(exc).__name__})
+                continue
+
+            if relative != "Qhost.md":
+                content = content_bytes.decode("utf-8", errors="replace")
+                categories.extend(
+                    category for category, pattern in patterns.items()
+                    if pattern.search(content) and category not in categories
+                )
+            if basename in target_names:
+                path_matches[basename].append(relative)
+            if not categories and basename not in target_names:
+                continue
+            if relative == "Qhost.md":
+                related_documents.append({
+                    "path": relative,
+                    "scope": "active_checkout",
+                    "bytes": metadata.st_size,
+                    "sha256": None,
+                    "categories": ["qhost_source"],
+                    "status": "self_reference_hash_excluded",
+                })
+                continue
+            scope = (
+                "historical_archive" if "qmoi-enhanced-history-14" in Path(relative).parts
+                or "_archive" in Path(relative).parts else
+                "snapshot" if "Alpha-Q-ai-2025" in Path(relative).parts else
+                "active_checkout"
+            )
+            related_documents.append({
+                "path": relative,
+                "scope": scope,
+                "bytes": metadata.st_size,
+                "sha256": hashlib.sha256(content_bytes).hexdigest(),
+                "categories": sorted(set(categories)),
+                "status": "candidate_related_not_semantically_validated",
+            })
+
+        target_map = []
+        for name, purpose in logical_targets:
+            matches = sorted(set(path_matches.get(name.casefold(), [])))
+            root_present = (target / name).is_file() and not (target / name).is_symlink()
+            scope_status = (
+                "PRESENT_ACTIVE_ROOT_REVIEW_REQUIRED" if root_present else
+                "PRESENT_NONROOT_CANDIDATE_REVIEW_REQUIRED" if matches else
+                "MISSING_NO_LOCAL_MATCH"
+            )
+            target_map.append({
+                "logical_target": name,
+                "purpose": purpose,
+                "status": scope_status,
+                "local_matches": matches,
+                "equivalence_verified": False,
+                "next_action": (
+                    "Review and update this canonical document against implementation evidence."
+                    if root_present else
+                    "Review related candidates for an existing canonical equivalent; create a new document only if an owner confirms a distinct contract is needed."
+                ),
+            })
+
+        phase_records = []
+        section_records = []
+        section_matches = list(re.finditer(r"^(\d{1,2})\.\s+(.+?)\s*$", authored_text, re.M))
+        for index, match in enumerate(section_matches):
+            line = authored_text.count("\n", 0, match.start()) + 1
+            end_line = (
+                authored_text.count("\n", 0, section_matches[index + 1].start())
+                if index + 1 < len(section_matches)
+                else len(source_lines)
+            )
+            section_records.append({
+                "id": f"QHOST-S{int(match.group(1)):02d}",
+                "number": int(match.group(1)),
+                "heading": match.group(2),
+                "source_ref": f"Qhost.md#L{line}",
+                "source_line_start": line,
+                "source_line_end": end_line,
+                "status": "NOT_VERIFIED",
+                "next_action": "Map every normative requirement in this section to an owner, acceptance evidence, implementation, tests, and blocker or verified outcome.",
+            })
+        phase_matches = list(re.finditer(r"^Phase\s+(\d+)\s+[\u2014-]\s+(.+?)\s*$", authored_text, re.M))
+        for index, match in enumerate(phase_matches):
+            line = authored_text.count("\n", 0, match.start()) + 1
+            end_line = (
+                authored_text.count("\n", 0, phase_matches[index + 1].start())
+                if index + 1 < len(phase_matches)
+                else len(source_lines)
+            )
+            phase_records.append({
+                "id": f"QHOST-P{int(match.group(1)):02d}",
+                "number": int(match.group(1)),
+                "heading": match.group(2),
+                "source_ref": f"Qhost.md#L{line}",
+                "source_line_start": line,
+                "source_line_end": end_line,
+                "status": "NOT_VERIFIED",
+                "next_action": "Map acceptance criteria, owner, implementation, tests, and evidence before execution.",
+            })
+        requirement_line_records = []
+        content_exclusions = ("<!-- BEGIN QMOI MANAGED:", "<!-- END QMOI MANAGED:")
+        for line_number, raw_line in enumerate(source_lines, start=1):
+            normalized = raw_line.strip()
+            if (
+                not normalized
+                or normalized.startswith(content_exclusions)
+                or re.match(r"^#{1,6}\s+", normalized)
+                or re.fullmatch(r"[|\s:-]+", normalized)
+                or normalized.startswith("```")
+            ):
+                continue
+            line_hash = hashlib.sha256(raw_line.encode("utf-8")).hexdigest()
+            section = next(
+                (
+                    item for item in section_records
+                    if item["source_line_start"] <= line_number <= item["source_line_end"]
+                ),
+                None,
+            )
+            phase = next(
+                (
+                    item for item in phase_records
+                    if item["source_line_start"] <= line_number <= item["source_line_end"]
+                ),
+                None,
+            )
+            line_kind = (
+                "list_candidate" if re.match(r"^(?:[-*+]\s+|\d+[.)]\s+)", normalized) else
+                "table_row_candidate" if normalized.startswith("|") else
+                "prose_candidate"
+            )
+            requirement_line_records.append({
+                "id": f"QHOST-R{line_number:04d}-{line_hash[:8]}",
+                "source_ref": f"Qhost.md#L{line_number}",
+                "source_line": line_number,
+                "line_sha256": line_hash,
+                "line_kind": line_kind,
+                "section_id": section["id"] if section else None,
+                "phase_id": phase["id"] if phase else None,
+                "status": "NOT_REVIEWED",
+            })
+        gate_records = []
+        for match in re.finditer(r"^\|\s*G(\d+)\s*\|\s*(.*?)\s*\|", authored_text, re.M):
+            line = authored_text.count("\n", 0, match.start()) + 1
+            gate_records.append({
+                "id": f"G{int(match.group(1))}",
+                "requirement": match.group(2),
+                "source_ref": f"Qhost.md#L{line}",
+                "status": "NOT_VERIFIED",
+                "next_action": "Attach gate-specific tests, provider evidence, or an explicit blocker; never infer PASS from documentation presence.",
+            })
+        gate_section = re.search(
+            r"^\s*#{0,6}\s*\d+\.\s+Mandatory QAUDITS completion gates\s*$"
+            r"([\s\S]*?)(?=^\s*#{0,6}\s*\d+\.\s+|\Z)",
+            authored_text,
+            re.MULTILINE | re.IGNORECASE,
+        )
+        if gate_section:
+            gate_lines = gate_section.group(1).splitlines()
+            for index, line in enumerate(gate_lines):
+                gate_match = re.fullmatch(r"\s*G(\d{1,2})\s*", line, re.IGNORECASE)
+                if not gate_match:
+                    continue
+                requirement = next(
+                    (
+                        candidate.strip()
+                        for candidate in gate_lines[index + 1:]
+                        if candidate.strip()
+                        and candidate.strip().casefold() not in {"gate", "required evidence"}
+                        and not re.fullmatch(r"G\d{1,2}", candidate.strip(), re.IGNORECASE)
+                    ),
+                    "Requirement text missing from source.",
+                )
+                gate_id = f"G{int(gate_match.group(1))}"
+                if any(item["id"] == gate_id for item in gate_records):
+                    continue
+                line_number = authored_text.count("\n", 0, authored_text.index(line, authored_text.index(gate_section.group(0)))) + 1
+                gate_records.append({
+                    "id": gate_id,
+                    "requirement": requirement,
+                    "source_ref": f"Qhost.md#L{line_number}",
+                    "status": "NOT_VERIFIED",
+                    "next_action": "Attach gate-specific tests, provider evidence, or an explicit blocker; never infer PASS from documentation presence.",
+                })
+        gate_records.sort(key=lambda item: int(item["id"][1:]))
+
+        code_candidate_specs = [
+            (
+                "scripts/ollama_autonomous_agent.py",
+                "active_agent_documentation_owner",
+                "DOCUMENTATION_AND_CAPABILITY_CONTRACTS_PRESENT; HOSTING_PROVIDER_EXECUTION_UNVERIFIED",
+                ["tests/test_ollama_autonomous_agent.py"],
+            ),
+            (
+                "scripts/link_validator.py",
+                "active_link_validation_utility",
+                "LOCAL_AND_REMOTE_LINK_CHECKS_IMPLEMENTED; LIVE_CHECKS_NOT_RUN_IN_THIS_INVENTORY",
+                ["tests/test_ollama_runtime.py"],
+            ),
+            (
+                "tests/test_ollama_runtime.py",
+                "active_link_validation_tests",
+                "MOCKED_LINK_AND_CATALOG_TESTS_PRESENT; REAL_PROVIDER_TRANSACTION_NOT_TESTED",
+                [],
+            ),
+            (
+                "scripts/qmoi_cloud_setup.py",
+                "expected_active_cloud_setup_candidate",
+                "MISSING_IN_ACTIVE_CHECKOUT",
+                [],
+            ),
+            (
+                "Alpha-Q-ai-2025/scripts/qmoi_master_website_automation.js",
+                "snapshot_website_domain_automation_candidate",
+                "SNAPSHOT_ONLY; PLACEHOLDER_PROVIDER_OPERATIONS_REQUIRE_REVIEW",
+                [],
+            ),
+            (
+                "qmoi-enhanced-history-14/scripts/qmoi_master_website_automation.js",
+                "historical_website_domain_automation_candidate",
+                "ARCHIVE_ONLY; PLACEHOLDER_PROVIDER_OPERATIONS_REQUIRE_REVIEW",
+                ["qmoi-enhanced-history-14/tests/test_domain_assigner.py"],
+            ),
+            (
+                "qmoi-enhanced-history-14/scripts/domain_assigner.py",
+                "historical_domain_assignment_tool",
+                "ARCHIVE_ONLY; DRY_RUN_PROPOSALS_DO_NOT_PROVISION_DNS_OR_TLS",
+                ["qmoi-enhanced-history-14/tests/test_domain_assigner.py"],
+            ),
+        ]
+        code_candidates = []
+        for relative, role, status, test_paths in code_candidate_specs:
+            path = target / relative
+            present = path.is_file() and not path.is_symlink()
+            record = {
+                "path": relative,
+                "role": role,
+                "status": status,
+                "present": present,
+                "tests": [test_path for test_path in test_paths if (target / test_path).is_file()],
+                "remote_verified": False,
+            }
+            if present:
+                try:
+                    content = path.read_bytes()
+                    record.update({"bytes": len(content), "sha256": hashlib.sha256(content).hexdigest()})
+                except OSError as exc:
+                    record.update({"bytes": None, "sha256": None, "read_error": type(exc).__name__})
+            else:
+                record.update({"bytes": None, "sha256": None})
+            code_candidates.append(record)
+
+        artifact_path = target / "ollamatracks" / "qhost_documentation_inventory.json"
+        inventory = {
+            "schema_version": 1,
+            "repository": target.name,
+            "scope": "materialized local Markdown paths only; other repository, remote history, and external sources are not included",
+            "status": "NEEDS_REVIEW",
+            "generated_at": utc_iso(),
+            "source": {"path": "Qhost.md", "authored_content_sha256": source_sha256},
+            "numbered_sections": section_records,
+            "numbered_section_count": len(section_records),
+            "requirement_line_records": requirement_line_records,
+            "requirement_line_count": len(requirement_line_records),
+            "requirement_line_inventory_complete": True,
+            "requirement_line_semantic_review_complete": False,
+            "logical_document_targets": target_map,
+            "logical_target_count": len(target_map),
+            "related_markdown_documents": related_documents,
+            "related_markdown_count": len(related_documents),
+            "related_markdown_count_by_scope": {
+                scope: sum(item["scope"] == scope for item in related_documents)
+                for scope in ("active_checkout", "snapshot", "historical_archive")
+            },
+            "materialized_markdown_path_count": len(discovered_paths),
+            "readable_related_markdown_count": sum(item["sha256"] is not None for item in related_documents),
+            "related_markdown_manifest_sha256": hashlib.sha256(
+                json.dumps(
+                    [
+                        {key: item[key] for key in ("path", "scope", "bytes", "sha256", "categories", "status")}
+                        for item in related_documents
+                    ],
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest(),
+            "implementation_candidates": code_candidates,
+            "implementation_candidate_count": len(code_candidates),
+            "security_review_candidates": [
+                {
+                    "path": "qmoi-enhanced-history-14/scripts/qmoi_master_website_automation.js",
+                    "scope": "historical_archive",
+                    "finding": "Source contains a logging call for a credential environment-variable value; do not execute or copy this archive candidate without remediation review.",
+                    "secret_value_recorded": False,
+                    "status": "REVIEW_REQUIRED_ARCHIVE_ONLY",
+                    "next_action": "Confirm archive provenance and whether the file was ever deployed; if active use is established, rotate the provider credential and remove secret-value logging through an authorized, tested change.",
+                }
+            ],
+            "active_repository_checkout": target.name,
+            "live_peer_repository_checkout_present": (target.parent / "qmoi-enhanced").is_dir(),
+            "live_peer_repository_status": "MISSING_OR_NOT_MATERIALIZED" if not (target.parent / "qmoi-enhanced").is_dir() else "LOCAL_CHECKOUT_PRESENT_REMOTE_NOT_VERIFIED",
+            "skipped_sources": skipped_sources,
+            "implementation_phases": phase_records,
+            "implementation_phase_count": len(phase_records),
+            "qaudit_gates": gate_records,
+            "qaudit_gate_count": len(gate_records),
+            "external_research": {
+                "status": "NOT_VISITED",
+                "source_names": ["Truehost Cloud", "Truehost domain reseller API documentation", "ICANN registrar guidance", "W3C Web Accessibility Initiative", "OWASP", "Kubernetes documentation", "OpenTelemetry documentation"],
+                "fetch_enabled": False,
+            },
+            "upstream_requirement_sources": [
+                {
+                    "path": "QQUANTUM.md",
+                    "line": 118,
+                    "requirement_id": "QQUANTUM-13",
+                    "status": "SOURCE_REFERENCE_RECORDED",
+                }
+            ],
+            "canonical_mission_phase_ids": ["PH02", "PH12", "PH13", "PH14", "PH18"],
+            "cross_repository_verification": "NOT_PERFORMED",
+            "source_contents_recorded": False,
+            "automatic_placeholder_creation": False,
+            "remote_verified": False,
+        }
+        safe_json_write(artifact_path, inventory)
+
+        lines = [
+            "## Agent-managed Qhost mission map",
+            "",
+            f"- Qhost authored-source SHA-256: `{source_sha256}`; generated: `{inventory['generated_at']}`.",
+            f"- Machine inventory: [`ollamatracks/qhost_documentation_inventory.json`](ollamatracks/qhost_documentation_inventory.json).",
+            f"- Scope: materialized local Markdown only; {len(related_documents)} related candidates indexed; equivalence and implementation are not inferred.",
+            f"- Materialized paths: {len(discovered_paths)}; unreadable/oversized/symlinked paths recorded: {len(skipped_sources)}; candidate manifest SHA-256: `{inventory['related_markdown_manifest_sha256']}`.",
+            f"- Authored Qhost content lines indexed: {len(requirement_line_records)}; each line has a source reference and SHA-256, but semantic requirement review remains pending.",
+            "- The logical targets below are Qhost requirements, not a directive to create duplicate placeholder documents.",
+            "",
+            "### Logical documentation targets",
+            "",
+            "| Qhost target | Local status | Local matches | Required action |",
+            "|---|---|---|---|",
+        ]
+        for item in target_map:
+            matches = ", ".join(item["local_matches"]) or "None found"
+            lines.append(
+                f"| {item['logical_target']} | {item['status']} | {matches} | {item['next_action']} |"
+            )
+        lines.extend([
+            "",
+            "### Qhost implementation phases",
+            "",
+            "| Phase | Scope | Source | Status | Next action |",
+            "|---|---|---|---|---|",
+        ])
+        lines.extend([
+            "",
+            "### Numbered Qhost sections",
+            "",
+            "| Section | Requirement area | Source | Status | Next action |",
+            "|---|---|---|---|---|",
+        ])
+        for item in section_records:
+            lines.append(
+                f"| {item['id']} | {item['heading']} | {item['source_ref']} | {item['status']} | {item['next_action']} |"
+            )
+        lines.extend([
+            "",
+            f"Requirement-line coverage: {len(requirement_line_records)} authored content lines have stable line references and hashes in the machine inventory; statuses remain `NOT_REVIEWED` until semantic acceptance mapping is completed.",
+        ])
+        lines.extend([
+            "",
+            "### Implementation phases",
+            "",
+            "| Phase | Scope | Source | Status | Next action |",
+            "|---|---|---|---|---|",
+        ])
+        for item in phase_records:
+            lines.append(
+                f"| {item['id']} | {item['heading']} | {item['source_ref']} | {item['status']} | {item['next_action']} |"
+            )
+        lines.extend([
+            "",
+            "### Internal implementation and test candidates",
+            "",
+            "These are locally observed source/test paths, not proof of production behavior. Snapshot/archive paths are excluded from active implementation claims.",
+            "",
+            "| Candidate | Role | Scope/status | Tests | SHA-256 |",
+            "|---|---|---|---|---|",
+        ])
+        for item in code_candidates:
+            candidate_scope = "active checkout" if item["path"].startswith(("scripts/", "tests/")) else "snapshot/archive or absent"
+            tests = ", ".join(item["tests"]) or "None found"
+            lines.append(
+                f"| {item['path']} | {item['role']} | {candidate_scope}: {item['status']} | {tests} | `{item.get('sha256') or 'unavailable'}` |"
+            )
+        lines.extend([
+            "",
+            "### Security review candidates",
+            "",
+            "- `qmoi-enhanced-history-14/scripts/qmoi_master_website_automation.js`: historical-only source inspection found a credential environment-variable logging candidate. Its value is not recorded here. Do not execute/copy it; establish deployment provenance and remediate only through an authorized, tested change.",
+        ])
+        lines.extend([
+            "",
+            "### QAUDITS gates",
+            "",
+            "| Gate | Requirement | Source | Status | Next action |",
+            "|---|---|---|---|---|",
+        ])
+        for item in gate_records:
+            lines.append(
+                f"| {item['id']} | {item['requirement']} | {item['source_ref']} | {item['status']} | {item['next_action']} |"
+            )
+        lines.extend([
+            "",
+            "### Related local Markdown candidates",
+            "",
+            "Candidate matching is discovery, not semantic equivalence. Snapshot and archive paths are references only and are not rewritten as active documentation.",
+            "",
+        ])
+        for item in related_documents:
+            encoded = quote(item["path"], safe="/._-")
+            categories = ", ".join(item["categories"])
+            lines.append(
+                f"- [{item['path']}]({encoded}) — scope `{item['scope']}`, categories `{categories}`, status `{item['status']}`."
+            )
+        lines.extend([
+            "",
+            "### Research and verification status",
+            "",
+            "- Upstream request: [QQUANTUM.md item 13](QQUANTUM.md#L118) requires this Qhost inventory and the refreshed `ALLMDFILESREFS.md`; mission phase tracking is recorded under `PH02`, `PH12`, `PH13`, `PH14`, and `PH18`.",
+            "- External-source retrieval: `NOT_VISITED`; no provider APIs, pricing, legal requirements, availability, or QPU access are asserted by this inventory.",
+            "- Cross-repository source and remote SHA comparison: `NOT_PERFORMED` in this local documentation refresh.",
+            "- QAUDITS gate status remains `NOT_VERIFIED` until each gate has specific evidence; generated indexes do not satisfy implementation, provider, security, deployment, or production gates.",
+            "- `ALLMDFILESREFS.md` is refreshed by the same Markdown inventory operation; its local category index does not include inaccessible remote repository history.",
+            "- QQUANTUM item 14 names `TRANSIONQ.md`, which is absent in this checkout; `TRANSION.md` is a distinct existing source and is not assumed equivalent.",
+        ])
+        _upsert_managed_markdown_section(
+            qhost_path,
+            "Qhost.md",
+            "qhost-documentation-map",
+            "\n".join(lines),
+        )
+        return {
+            "status": inventory["status"],
+            "source_sha256": source_sha256,
+            "related_markdown_count": len(related_documents),
+            "logical_target_count": len(target_map),
+            "missing_logical_target_count": sum(item["status"] == "MISSING_NO_LOCAL_MATCH" for item in target_map),
+            "numbered_section_count": len(section_records),
+            "implementation_phase_count": len(phase_records),
+            "qaudit_gate_count": len(gate_records),
+            "requirement_line_count": len(requirement_line_records),
+            "implementation_candidate_count": len(code_candidates),
+            "live_peer_repository_checkout_present": (target.parent / "qmoi-enhanced").is_dir(),
+            "artifact_path": artifact_path.relative_to(target).as_posix(),
+            "document_path": qhost_path.relative_to(target).as_posix(),
+            "remote_verified": False,
+        }
+
     def refresh_hosting_quantum_ui_documents(
         self,
         root: Path | str | None = None,
@@ -10290,6 +10854,13 @@ All timestamps use UTC ISO-8601 format.
             )
             documents[filename] = path
 
+        markdown_catalog = self.refresh_markdown_category_index(target)
+        documents["Qhost.md"] = target / "Qhost.md"
+        documents["ALLMDFILESREFS.md"] = target / "ALLMDFILESREFS.md"
+        documents["qhost_documentation_inventory.json"] = (
+            target / "ollamatracks" / "qhost_documentation_inventory.json"
+        )
+
         return {
             "documents": documents,
             "hosting_features": list(QMOI_HOSTING_FEATURES),
@@ -10300,6 +10871,8 @@ All timestamps use UTC ISO-8601 format.
             "clone_platforms": list(QMOI_CLONED_PLATFORM_UI_FEATURES),
             "clone_platform_ui_coverage": clone_ui_coverage,
             "client_platforms": list(PLATFORMS),
+            "qhost_documentation": markdown_catalog.get("qhost_documentation", {}),
+            "markdown_index_status": markdown_catalog.get("status", "UNKNOWN"),
             "implementation_verified": False,
             "master_access_verified": False,
         }
@@ -13473,6 +14046,11 @@ def main(
             str(root / "ollamatracks" / "financial_claim_inventory.json"),
         )
         styles_universals = feature_coverage.get("styles_universals_coverage", {})
+        qhost_documentation = markdown_catalog.get("qhost_documentation", {})
+        qhost_artifact = _local_artifact_integrity(
+            root,
+            str(root / "ollamatracks" / "qhost_documentation_inventory.json"),
+        )
         result = {
             "command": "audit-inventory",
             "root": str(root),
@@ -13492,6 +14070,10 @@ def main(
                 "markdown_file_count": len(markdown_catalog.get("all_markdown_files", [])),
                 "category_count": len(markdown_catalog.get("category_map", {})),
                 "updated_files": markdown_catalog.get("updated_files", []),
+            },
+            "qhost_documentation": {
+                **qhost_documentation,
+                "artifact_integrity": qhost_artifact,
             },
             "financial_manager_catalog": {
                 "status": financial_catalog.get("status", "UNKNOWN"),
@@ -13590,6 +14172,7 @@ def main(
                 "artifact_refs": {
                     "repository_surface_audit": surface_artifact,
                     "financial_claim_inventory": financial_artifact,
+                    "qhost_documentation_inventory": qhost_artifact,
                 },
                 "metrics": {
                     "instruction_files_read": instructions.get("files_read", 0),
@@ -13620,6 +14203,17 @@ def main(
                         "status", "UNKNOWN"
                     ),
                     "markdown_category_count": len(markdown_catalog.get("category_map", {})),
+                    "qhost_logical_target_count": qhost_documentation.get("logical_target_count", 0),
+                    "qhost_numbered_section_count": qhost_documentation.get("numbered_section_count", 0),
+                    "qhost_requirement_line_count": qhost_documentation.get("requirement_line_count", 0),
+                    "qhost_requirement_line_inventory_complete": qhost_documentation.get("requirement_line_inventory_complete", False),
+                    "qhost_requirement_line_semantic_review_complete": qhost_documentation.get("requirement_line_semantic_review_complete", False),
+                    "qhost_implementation_candidate_count": qhost_documentation.get("implementation_candidate_count", 0),
+                    "qhost_live_peer_checkout_present": qhost_documentation.get("live_peer_repository_checkout_present", False),
+                    "qhost_implementation_phase_count": qhost_documentation.get("implementation_phase_count", 0),
+                    "qhost_qaudit_gate_count": qhost_documentation.get("qaudit_gate_count", 0),
+                    "qhost_related_markdown_count": qhost_documentation.get("related_markdown_count", 0),
+                    "qhost_inventory_sha256": qhost_artifact.get("sha256"),
                     "uis_section_count": universal_intelligence_plan.get("section_count", 0),
                     "uis_requirement_count": universal_intelligence_plan.get("requirement_count", 0),
                     "uis_requirements_with_verified_implementation": universal_intelligence_plan.get(

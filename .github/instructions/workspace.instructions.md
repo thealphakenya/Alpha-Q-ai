@@ -1,4 +1,4 @@
-Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+Mission alignment: follow the canonical [latest mission](../../latest%20mission.md), synchronized byte-for-byte to [MISSION.md](../../MISSION.md) and its instruction-directory mirror. Mission phases are `PH01`-`PH18`; legacy requirement task buckets `M01`-`M16` remain distinct. This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
 
 # Workspace instructions
 
@@ -49,7 +49,9 @@ Use a verified, bounded sequence from developer input through Copilot planning a
 
 ## Two-hour mission monitoring
 
-- Track all 16 mission sections by stable IDs `M01`–`M16`; record actual UTC start/finish and elapsed time for phases/tasks, status, retries, evidence, blockers, dependencies, and next actions in the latest checkpoint.
+- Track all 18 canonical mission phases by stable IDs `PH01`-`PH18`; retain `M01`-`M16` as separate requirement-task IDs. Record actual UTC start/finish and elapsed time, status, retries, evidence, blockers, dependencies, and next actions in the latest checkpoint.
+- Index every authored nonblank line in `latest mission.md` in the canonical task ledger by source line and SHA-256; retain semantic review as pending until mapped to acceptance evidence, and never treat line counts as completion.
+- Use `python -m scripts.mission_task_ledger sync-mission` only when intentionally adopting `latest mission.md`; use `refresh-metrics` to rebuild the phase catalog and paired dashboards from the verified mirror set.
 - Update `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and append-only `remote-evidence-ledger.jsonl` together through the supported writer using one correlation ID. Record when monotonic timing is unavailable after restart.
 - Use `python -m scripts.mission_task_ledger ...` to atomically maintain the canonical 16-section ledger and synchronize each phase/task transition with correlated evidence.
 - At the 120-minute deadline, report measured outcomes and preserve the resumable queue. Do not claim completion or automatic continuation without the required implementation and independent execution evidence.

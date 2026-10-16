@@ -60,7 +60,7 @@
     "mode": "bounded_proposals_with_tests_and_rollback",
     "self_modifying_policy": false
   },
-  "generated_at": "2026-10-13T18:36:56.119434Z",
+  "generated_at": "2026-10-15T23:30:31.929776Z",
   "implementation_plan": [
     {
       "acceptance_criteria": [
@@ -235,7 +235,7 @@
     }
   ],
   "repository": "Alpha-Q-ai",
-  "requirement_count": 22,
+  "requirement_count": 41,
   "requirements_with_verified_implementation": 0,
   "research_policy": {
     "default_external_fetch": false,
@@ -540,6 +540,139 @@
           "id": "UIS-07-R02",
           "source_line": 40,
           "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "<!-- BEGIN QMOI MANAGED: repository-surface-audit -->",
+          "evidence_refs": [],
+          "id": "UIS-07-R03",
+          "source_line": 43,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "## Agent-managed repository surface audit",
+          "evidence_refs": [],
+          "id": "UIS-07-R04",
+          "source_line": 44,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.",
+          "evidence_refs": [],
+          "id": "UIS-07-R05",
+          "source_line": 46,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.",
+          "evidence_refs": [],
+          "id": "UIS-07-R06",
+          "source_line": 47,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.",
+          "evidence_refs": [],
+          "id": "UIS-07-R07",
+          "source_line": 48,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.",
+          "evidence_refs": [],
+          "id": "UIS-07-R08",
+          "source_line": 49,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.",
+          "evidence_refs": [],
+          "id": "UIS-07-R09",
+          "source_line": 50,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.",
+          "evidence_refs": [],
+          "id": "UIS-07-R10",
+          "source_line": 51,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.",
+          "evidence_refs": [],
+          "id": "UIS-07-R11",
+          "source_line": 52,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.",
+          "evidence_refs": [],
+          "id": "UIS-07-R12",
+          "source_line": 53,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.",
+          "evidence_refs": [],
+          "id": "UIS-07-R13",
+          "source_line": 54,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.",
+          "evidence_refs": [],
+          "id": "UIS-07-R14",
+          "source_line": 55,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.",
+          "evidence_refs": [],
+          "id": "UIS-07-R15",
+          "source_line": 56,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.",
+          "evidence_refs": [],
+          "id": "UIS-07-R16",
+          "source_line": 57,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.",
+          "evidence_refs": [],
+          "id": "UIS-07-R17",
+          "source_line": 58,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.",
+          "evidence_refs": [],
+          "id": "UIS-07-R18",
+          "source_line": 59,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.",
+          "evidence_refs": [],
+          "id": "UIS-07-R19",
+          "source_line": 60,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.",
+          "evidence_refs": [],
+          "id": "UIS-07-R20",
+          "source_line": 61,
+          "status": "PENDING_EVIDENCE"
+        },
+        {
+          "description": "<!-- END QMOI MANAGED: repository-surface-audit -->",
+          "evidence_refs": [],
+          "id": "UIS-07-R21",
+          "source_line": 62,
+          "status": "PENDING_EVIDENCE"
         }
       ],
       "status": "PENDING_EVIDENCE"
@@ -548,6 +681,6 @@
   "source_contents_recorded": true,
   "source_hash_basis": "UTF-8 authored text with the generated section removed and trailing whitespace normalized to one newline.",
   "source_path": "QMOIUNIVERSALINTELLIGENCESYSTEM.md",
-  "source_sha256": "9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e",
+  "source_sha256": "42d9d49ddf96655ffa62edc3ecc5fe8da434c49da995305d4ad44640141cd531",
   "status": "NEEDS_REVIEW"
 }

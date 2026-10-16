@@ -1,4 +1,4 @@
-Mission alignment: follow the canonical mission in [NEWMISSION.md](../../NEWMISSION.md), [MISSIONNEWEST.md](../../MISSIONNEWEST.md), [MISSIONNEW.md](../../MISSIONNEW.md), and [MISSION.md](../../MISSION.md). This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
+Mission alignment: follow the canonical [latest mission](../../latest%20mission.md), synchronized byte-for-byte to [MISSION.md](../../MISSION.md) and its instruction-directory mirror. Mission phases are `PH01`-`PH18`; legacy requirement task buckets `M01`-`M16` remain distinct. This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
 
 # Security instructions
 
@@ -34,7 +34,7 @@ The autonomous agent may collect read-only diagnostics and propose bounded remed
 
 ## Two-hour mission monitoring
 
-- Record section `M01`–`M16` status, UTC timing, retries, security evidence, unresolved findings, blockers, and next actions without storing secrets or sensitive source content.
+- Record `PH01`-`PH18` status, UTC timing, retries, security evidence, unresolved findings, blockers, and next actions without storing secrets or sensitive source content; keep `M01`-`M16` as distinct requirement-task IDs.
 - Use the mission-ledger updater to record security-task start/finish and evidence references; do not mark a finding verified complete without remediation evidence and required checks.
 - Keep the time budget independent of security approval. Unresolved or unknown security state remains visible and blocks protected completion regardless of elapsed time or local test results.
 - Preserve unfinished safe work at the deadline; do not downgrade, suppress, or mark a finding resolved to meet the window.

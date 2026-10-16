@@ -42,9 +42,9 @@ Start now. Do not stop after producing a plan or a report. Implement the highest
 <!-- BEGIN QMOI MANAGED: universal-intelligence-execution-plan -->
 ## Agent-managed Universal Intelligence execution plan
 
-- Refreshed by the bounded agent lifecycle at: `2026-10-13T18:36:56.119434Z`.
-- Authored-source SHA-256 (managed block excluded): `9852d2516dc4e3f720c2e859ee7c806c255160813504edf86742a31e485a792e`.
-- Scope: `8` workstreams, `22` source-line requirements; `22` remain `PENDING_EVIDENCE`.
+- Refreshed by the bounded agent lifecycle at: `2026-10-15T23:30:31.929776Z`.
+- Authored-source SHA-256 (managed block excluded): `42d9d49ddf96655ffa62edc3ecc5fe8da434c49da995305d4ad44640141cd531`.
+- Scope: `8` workstreams, `41` source-line requirements; `41` remain `PENDING_EVIDENCE`.
 - Dependency plan: `UIS-PLAN-01` inventory → `UIS-PLAN-02` identity/privacy → `UIS-PLAN-03` orchestration → authorized modules/model/interfaces → verification → authority-gated delivery.
 - Capability matrix: copilot/voice/multimodal, vision/OCR, cited OSINT, geospatial, authorized sensors, cases/defensive security, RAG/model, and accessible dashboards remain individually pending evidence.
 - Every autonomous/continuation cycle refreshes this plan; refresh is not proof of implementation or external research.
@@ -57,3 +57,24 @@ Start now. Do not stop after producing a plan or a report. Implement the highest
 - Location: explicit, visible, time-limited, revocable subject opt-in only; no covert, device-less, offline, or consent-bypassing location discovery.
 - Status: `NEEDS_REVIEW`; no UIS feature is marked implemented or verified by this plan.
 <!-- END QMOI MANAGED: universal-intelligence-execution-plan -->
+
+<!-- BEGIN QMOI MANAGED: repository-surface-audit -->
+## Agent-managed repository surface audit
+
+- Status: `NEEDS_REVIEW`; materialized files: `10955`; directories: `1284`; Markdown: `2440`.
+- API/endpoint candidates: `962`; route candidates: `737`; components: `1384`; automation/event candidates: `554`.
+- Managed-document family candidates: `app_platform=2174, build_download_install=2130, disability_accessibility=285, orchestration=2081, qteam_accountability=2069, release_tag_publish=2110, tree_inventory=2018`.
+- Project/autoproject registry documents discovered: `4`; coverage refreshes these docs and model-card headings, but discovery is not implementation or completion proof.
+- Active-root Markdown refresh targets combine stable core names, `ALL*` names, and content/path family matches for app/platform, build/download/install, release/tag/publish, QTeam/accountability, orchestration, and repository-tree documentation. Historical/archive candidates are audited but never rewritten as active docs.
+- `TREE.md` is the canonical full indexed path tree: directories, every indexed file path and scope/status, plus skipped/unavailable path reasons. It is local materialized scope only; ignored roots, inaccessible paths, Git-history trees, and remote refs remain explicit limitations.
+- Markdown structural checks passed: `2229`; needs review: `203`; metric candidate lines: `53076`; percentage occurrences: `22283`.
+- Markdown word count: `2485`; heuristic sentence count: `395`; sentence records indexed: `395`; sentence records beyond the bound: `0`.
+- Sentence review candidates: `8` metric claims; `15` completion claims; `8` metric and `14` completion claims lack an inline reference marker. Reference markers are candidates, not proof.
+- Word-integrity candidates: `4` adjacent-repeat candidates; sentence and normalized word-sequence hashes are stored without source prose. Grammar and semantic truth remain unverified.
+- Formula/calculation candidate lines: `13476`; percentage aggregates are grouped per source file and explicitly unclassified, not model-comparison proof.
+- Surface manifest and source hashes: `ollamatracks/repository_surface_audit.json`; the generated report is excluded from its own digest.
+- Instruction candidates: `40920` lines in `3729` files; each requires semantic requirement-to-code/test/workflow mapping.
+- Production-gap candidates: `319`; status `NEEDS_REVIEW`; automatic replacement authorized: `False`.
+- Checks cover encoding, headings, fences, unresolved markers, local links, hashes, paths, and metric locations. They do not prove sentence semantics, feature truth, benchmark superiority, or production readiness.
+- Local roots/refs are not proof of all remote repositories, PRs, or intermediate commit trees. Production candidates remain review items; no bulk replacement is authorized.
+<!-- END QMOI MANAGED: repository-surface-audit -->
