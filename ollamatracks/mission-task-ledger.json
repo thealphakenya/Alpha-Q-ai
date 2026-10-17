@@ -139,7 +139,7 @@
       }
     ]
   },
-  "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
+  "correlation_id": "0c9f5ab4-33ee-4ff3-9199-276cb61dc440",
   "current_phase": "PH01",
   "inventory_coverage": {
     "instruction_files_discovered_and_read": 9,
@@ -637,15 +637,15 @@
     "weighted_completion_percent": null,
     "weighting_method": "Not calculated until measurable acceptance evidence and defensible per-requirement weights are established; section counts are tracking only."
   },
-  "ledger_id": "newmission-120-minute-2026-10-17-590f381a",
+  "ledger_id": "newmission-120-minute-2026-10-17-0c9f5ab4",
   "ledger_type": "canonical_mission_section_execution_ledger",
   "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
   "mission_clock": {
     "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
     "clock_source": "explicit_user_authorized_new_run",
-    "deadline_at": "2026-10-17T06:22:14.561431Z",
+    "deadline_at": "2026-10-17T20:26:01.983661Z",
     "monotonic_continuity_available": false,
-    "started_at": "2026-10-17T04:22:14.561431Z"
+    "started_at": "2026-10-17T18:26:01.983661Z"
   },
   "mission_phase_catalog": {
     "phase_count": 18,
@@ -10320,8 +10320,8 @@
     "reviewed": 0
   },
   "mission_run_authorization": {
-    "authorized_at": "2026-10-17T04:22:14.561431Z",
-    "reference": "user-continue-2026-10-17T0421Z",
+    "authorized_at": "2026-10-17T18:26:01.983661Z",
+    "reference": "continue-request-2026-10-17",
     "scope": "local and read-only continuation; protected and remote actions remain gated",
     "source": "explicit_user_request"
   },
@@ -10383,6 +10383,39 @@
       "started_at": "2026-10-17T02:14:54.448196Z",
       "superseded_by_correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
       "superseded_by_ledger_id": "newmission-120-minute-2026-10-17-590f381a",
+      "task_status_counts": {
+        "blocked": 3,
+        "failed": 0,
+        "in_progress": 0,
+        "partially_complete": 7,
+        "pending": 5,
+        "verified_complete": 1
+      }
+    },
+    {
+      "archived_at": "2026-10-17T18:26:01.983661Z",
+      "authorization_ref": "continue-request-2026-10-17",
+      "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
+      "deadline_at": "2026-10-17T06:22:14.561431Z",
+      "ledger_id": "newmission-120-minute-2026-10-17-590f381a",
+      "mission_clock": {
+        "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
+        "clock_source": "explicit_user_authorized_new_run",
+        "deadline_at": "2026-10-17T06:22:14.561431Z",
+        "monotonic_continuity_available": false,
+        "started_at": "2026-10-17T04:22:14.561431Z"
+      },
+      "phase_status_counts": {
+        "BLOCKED": 0,
+        "FAILED": 0,
+        "IN_PROGRESS": 0,
+        "PARTIALLY_COMPLETE": 5,
+        "PASS": 0,
+        "PENDING": 13
+      },
+      "started_at": "2026-10-17T04:22:14.561431Z",
+      "superseded_by_correlation_id": "0c9f5ab4-33ee-4ff3-9199-276cb61dc440",
+      "superseded_by_ledger_id": "newmission-120-minute-2026-10-17-0c9f5ab4",
       "task_status_counts": {
         "blocked": 3,
         "failed": 0,
@@ -11320,7 +11353,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-17T05:10:34.820705Z",
+  "updated_at": "2026-10-17T19:59:51.833988Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

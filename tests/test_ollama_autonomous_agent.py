@@ -156,6 +156,21 @@ class TestAutonomousContinuation:
         assert continue_stage["details"]["retry_limit_respected"] is True
         assert continue_stage["details"]["qaudit_precondition"]["source_manifest_sha256"] == continue_stage["details"]["source_manifest_sha256"]
 
+    def test_run_continue_cycle_refreshes_metrics_when_cycle_raises(self, tmp_path, monkeypatch):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        metric_refreshes = []
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
+
+        with patch.object(agent, "_run_continue_cycle", side_effect=RuntimeError("cycle failed")):
+            with pytest.raises(RuntimeError, match="cycle failed"):
+                agent.run_continue_cycle()
+
+        assert metric_refreshes == [tmp_path]
+        assert agent.results["mission_metrics_refresh"] == {"status": "REFRESHED"}
+
     def test_run_continue_cycle_pauses_expired_clock_before_side_effects(self, tmp_path, monkeypatch):
         source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
         target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"

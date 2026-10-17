@@ -47,6 +47,15 @@ TERMINAL_TASK_STATUSES = {
     "BLOCKED",
     "FAILED",
 }
+REQUIREMENT_COVERAGE_FIELDS = (
+    "owner_refs",
+    "implementation_refs",
+    "test_refs",
+    "security_refs",
+    "documentation_refs",
+    "integration_refs",
+    "remote_evidence_refs",
+)
 
 
 class LedgerError(RuntimeError):
@@ -161,6 +170,14 @@ def validate_ledger(ledger: Any) -> dict[str, Any]:
                 raise LedgerError(f"{item.get('id')} has an invalid source-line hash")
             if not isinstance(item.get("semantic_reviewed"), bool):
                 raise LedgerError(f"{item.get('id')} has an invalid semantic-review state")
+            coverage_refs = item.get("coverage_refs")
+            if coverage_refs is not None:
+                if not isinstance(coverage_refs, dict) or set(coverage_refs) != set(REQUIREMENT_COVERAGE_FIELDS):
+                    raise LedgerError(f"{item.get('id')} has an invalid requirement-coverage mapping")
+                for field in REQUIREMENT_COVERAGE_FIELDS:
+                    refs = coverage_refs[field]
+                    if not isinstance(refs, list) or any(not isinstance(ref, str) or not ref.strip() for ref in refs):
+                        raise LedgerError(f"{item.get('id')} has invalid {field}")
     run_history = ledger.get("mission_run_history", [])
     if not isinstance(run_history, list):
         raise LedgerError("Mission run history must be a list")
@@ -310,6 +327,10 @@ def sync_mission_phase_catalog(ledger: dict[str, Any], mission_text: str) -> lis
             "status": previous.get("status", "NOT_REVIEWED"),
             "semantic_reviewed": bool(previous.get("semantic_reviewed", False)),
             "acceptance_refs": list(previous.get("acceptance_refs", [])),
+            "coverage_refs": {
+                field: list(previous.get("coverage_refs", {}).get(field, []))
+                for field in REQUIREMENT_COVERAGE_FIELDS
+            },
         })
     for phase in phases:
         phase["requirement_line_count"] = sum(
@@ -407,24 +428,74 @@ def build_resume_plan(
     phase_records = []
     for phase in ledger.get("mission_phase_metrics", []):
         requirements = records_by_phase.get(phase["id"], [])
+        unreviewed_requirements = [
+            record for record in requirements
+            if not record.get("semantic_reviewed", False)
+        ]
+        reviewed_unmapped_requirements = [
+            record for record in requirements
+            if record.get("semantic_reviewed", False) and not record.get("acceptance_refs")
+        ]
+        acceptance_mapped_requirements = [
+            record for record in requirements
+            if record.get("semantic_reviewed", False) and record.get("acceptance_refs")
+        ]
+        unmapped_coverage = {
+            field: [
+                record for record in requirements
+                if not record.get("coverage_refs", {}).get(field)
+            ]
+            for field in REQUIREMENT_COVERAGE_FIELDS
+        }
+        local_pass_gate_blockers = []
+        if phase.get("status") != "IN_PROGRESS":
+            local_pass_gate_blockers.append("phase_not_in_progress")
+        if not requirements:
+            local_pass_gate_blockers.append("no_indexed_requirement_lines")
+        if unreviewed_requirements:
+            local_pass_gate_blockers.append(
+                f"{len(unreviewed_requirements)}_unreviewed_requirement_lines"
+            )
+        if reviewed_unmapped_requirements:
+            local_pass_gate_blockers.append(
+                f"{len(reviewed_unmapped_requirements)}_reviewed_lines_without_acceptance_refs"
+            )
+        local_pass_gate_blockers.extend(
+            f"{len(records)}_unmapped_{field}"
+            for field, records in unmapped_coverage.items()
+            if records
+        )
+        if not phase.get("evidence_refs"):
+            local_pass_gate_blockers.append("no_phase_evidence_refs")
+        coverage_mapped_counts = {
+            field: len(requirements) - len(records)
+            for field, records in unmapped_coverage.items()
+        }
         phase_records.append({
             "id": phase["id"],
             "status": phase["status"],
             "source_ref": phase.get("source_ref"),
             "requirement_line_count": len(requirements),
+            "reviewed_requirement_line_count": len(requirements) - len(unreviewed_requirements),
+            "acceptance_mapped_requirement_line_count": len(acceptance_mapped_requirements),
+            "reviewed_unmapped_requirement_line_count": len(reviewed_unmapped_requirements),
+            "coverage_mapped_counts": coverage_mapped_counts,
+            "coverage_unmapped_counts": {
+                field: len(records) for field, records in unmapped_coverage.items()
+            },
+            "acceptance_mapped_requirement_line_ids": [
+                record["id"] for record in acceptance_mapped_requirements
+            ],
+            "local_pass_gate_ready": not local_pass_gate_blockers,
+            "local_pass_gate_blockers": local_pass_gate_blockers,
             "reviewed_requirement_line_ids": [
                 record["id"]
                 for record in requirements
                 if record.get("semantic_reviewed", False)
             ],
-            "unreviewed_requirement_line_count": sum(
-                not record.get("semantic_reviewed", False)
-                for record in requirements
-            ),
+            "unreviewed_requirement_line_count": len(unreviewed_requirements),
             "unreviewed_requirement_line_ids": [
-                record["id"]
-                for record in requirements
-                if not record.get("semantic_reviewed", False)
+                record["id"] for record in unreviewed_requirements
             ],
         })
 
@@ -452,6 +523,18 @@ def build_resume_plan(
             not record.get("semantic_reviewed", False)
             for record in requirement_records
         ),
+        "acceptance_mapped_requirement_line_count": sum(
+            record.get("semantic_reviewed", False) and bool(record.get("acceptance_refs"))
+            for record in requirement_records
+        ),
+        "reviewed_unmapped_requirement_line_count": sum(
+            record.get("semantic_reviewed", False) and not record.get("acceptance_refs")
+            for record in requirement_records
+        ),
+        "requirement_coverage_mapped_counts": {
+            field: sum(bool(record.get("coverage_refs", {}).get(field)) for record in requirement_records)
+            for field in REQUIREMENT_COVERAGE_FIELDS
+        },
         "unassigned_requirement_line_count": len(unassigned_records),
         "unassigned_reviewed_requirement_line_ids": [
             record["id"]
@@ -508,19 +591,34 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
         f"- Legacy task status counts (M01-M16): verified_complete={task_counts['verified_complete']}; in_progress={task_counts['in_progress']}; partially_complete={task_counts['partially_complete']}; blocked={task_counts['blocked']}; failed={task_counts['failed']}; pending={task_counts['pending']}.",
         f"- Mission clock: status `{mission_clock_status}`; started `{mission_clock['started_at']}`; deadline `{mission_clock['deadline_at']}`; UTC wall elapsed={mission_elapsed:.3f}s; remaining={mission_remaining:.3f}s; process-active monotonic time `NOT_MEASURED`.",
         f"- Mission authored content-line candidates indexed: {ledger.get('mission_requirement_line_count', 0)}; semantic review complete: {ledger.get('mission_requirement_line_review_counts', {}).get('reviewed', 0)}; review pending: {ledger.get('mission_requirement_line_review_counts', {}).get('not_reviewed', 0)}. Counts are line locators, not semantic requirement completion.",
+        f"- Acceptance mapping: {resume_plan['acceptance_mapped_requirement_line_count']} lines mapped to acceptance references; {resume_plan['reviewed_unmapped_requirement_line_count']} reviewed lines still unmapped. This is local ledger metadata, not semantic or test proof.",
+        "- Requirement coverage refs mapped / indexed: " + "; ".join(
+            f"{field.removesuffix('_refs')} {count}/{resume_plan['requirement_line_count']}"
+            for field, count in resume_plan["requirement_coverage_mapped_counts"].items()
+        ) + ". Missing refs remain unmapped and do not imply missing or present implementations.",
         f"- Resume planner: `{resume_plan['status']}`; dependency-ready task IDs: `{', '.join(resume_plan['dependency_ready_task_ids']) or 'none'}`; next candidate: `{resume_plan['next_task_id'] or 'none'}`; source-line candidates tracked / unreviewed / not assigned to a phase: {resume_plan['requirement_line_count']} / {resume_plan['unreviewed_requirement_line_count']} / {resume_plan['unassigned_requirement_line_count']}; planner authorizes execution: `False`.",
-        "- Completion percentage is not inferred from phase count; only evidence-backed `PASS` is terminal success. Remote verification remains `False` until independently proven.",
+        "- Completion percentage is not inferred from phase count; local PASS preconditions require indexed, reviewed, acceptance-mapped lines, per-dimension coverage refs, and phase evidence. These refs do not prove semantic truth or remote completion. Remote verification remains `False` until independently proven.",
         "",
-        "| Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / pending review | Evidence refs | Blockers | Next action |",
-        "|---|---|---:|---|---:|---:|---:|---:|---|---|",
+        "| Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / acceptance-mapped / pending review | Coverage refs mapped / indexed (owner/implementation/test/security/docs/integration/remote) | Local PASS preconditions | Evidence refs | Blockers | Next action |",
+        "|---|---|---:|---|---:|---:|---:|---|---|---:|---|---|",
     ]
+    resume_phases = {phase["id"]: phase for phase in resume_plan["phases"]}
     for phase in phases:
         safe = lambda value: str(value or "").replace("|", "\\|").replace("\n", " ").strip()
         attempts = phase.get("attempt_history", [])
+        phase_plan = resume_phases[phase["id"]]
+        local_gate = (
+            "READY" if phase_plan["local_pass_gate_ready"] else
+            "BLOCKED: " + "; ".join(phase_plan["local_pass_gate_blockers"])
+        )
+        coverage_summary = "; ".join(
+            f"{field.removesuffix('_refs')} {count}/{phase_plan['requirement_line_count']}"
+            for field, count in phase_plan["coverage_mapped_counts"].items()
+        )
         lines.append(
             f"| {phase['id']} | {safe(phase.get('heading'))} | {phase.get('source_line_start')}-{phase.get('source_line_end')} | {phase['status']} | "
-            f"{_phase_elapsed_seconds(phase, instant):.3f} | {len(attempts)} | {phase.get('requirement_line_count', 0)} / {phase.get('unreviewed_requirement_line_count', 0)} pending | "
-            f"{len(phase.get('evidence_refs', []))} | {safe('; '.join(phase.get('blockers', [])) or 'None recorded')} | "
+            f"{_phase_elapsed_seconds(phase, instant):.3f} | {len(attempts)} | {phase_plan['requirement_line_count']} / {phase_plan['acceptance_mapped_requirement_line_count']} / {phase_plan['unreviewed_requirement_line_count']} pending | "
+            f"{safe(coverage_summary)} | {safe(local_gate)} | {len(phase.get('evidence_refs', []))} | {safe('; '.join(phase.get('blockers', [])) or 'None recorded')} | "
             f"{safe(phase.get('next_action') or 'Start phase and record evidence')} |"
         )
     lines.extend(["", MISSION_PHASE_END])
@@ -1086,6 +1184,41 @@ def finish_phase(
         raise LedgerError(f"Cannot finish phase {phase_id}; it is not in progress")
     if status == "PASS" and not evidence_refs:
         raise LedgerError("A passed phase requires evidence references")
+    if status == "PASS" and re.fullmatch(r"PH\d{2}", phase_id):
+        requirement_records = [
+            record
+            for record in ledger.get("mission_requirement_line_records", [])
+            if record.get("phase_id") == phase_id
+        ]
+        if not requirement_records:
+            raise LedgerError(f"Cannot pass {phase_id}; no indexed requirement lines are available")
+        unreviewed_count = sum(not record.get("semantic_reviewed", False) for record in requirement_records)
+        if unreviewed_count:
+            raise LedgerError(
+                f"Cannot pass {phase_id}; {unreviewed_count} unreviewed requirement lines remain"
+            )
+        unmapped_count = sum(not record.get("acceptance_refs") for record in requirement_records)
+        if unmapped_count:
+            raise LedgerError(
+                f"Cannot pass {phase_id}; {unmapped_count} reviewed requirement lines lack acceptance references"
+            )
+        unmapped_coverage = {
+            field: sum(
+                not record.get("coverage_refs", {}).get(field)
+                for record in requirement_records
+            )
+            for field in REQUIREMENT_COVERAGE_FIELDS
+        }
+        missing_coverage = [
+            f"{count} {field}"
+            for field, count in unmapped_coverage.items()
+            if count
+        ]
+        if missing_coverage:
+            raise LedgerError(
+                f"Cannot pass {phase_id}; requirement lines lack coverage references: "
+                + ", ".join(missing_coverage)
+            )
     if status != "PASS" and not next_action.strip():
         raise LedgerError("An incomplete phase requires a concrete next action")
     timestamp = now or utc_now()

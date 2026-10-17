@@ -19,6 +19,7 @@ This repository follows the remote-first completion and evidence model described
 - Before planning protected work, inventory and read root `AGENTS.md`, this file, and all files under `.github/instructions`; report relative paths, scopes, hashes, and unreadable files without storing instruction text in telemetry.
 - The autonomous agent may refresh generated evidence and run safe local/read-only tasks, but must not rewrite or weaken policy instructions, self-authorize protected actions, or convert a queued action into completion without terminal evidence.
 - The autonomous continuation contract is: keep working through every remaining safe local mission task without ignoring, forgetting, or silently deferring an in-scope item, and update the mission/checkpoint/ledger as each task is completed or blocked.
+- For `continue` requests, inspect actual remaining time in the mission ledger, prioritize bounded critical-path work, and avoid idle pauses while independent safe work remains. Do not sleep/busy-poll or launch duplicate work; use completion notifications. At a deadline or exhausted/blocked safe queue, checkpoint and yield with the next action. Time pressure never authorizes skipping validation, restarting clocks, bypassing gates, or claiming success.
 - If external authority is required for a remote/protected action, record the exact blocker and continue with the next local-safe task instead of stopping progress or declaring the mission complete.
 
 ## Conceptual execution architecture

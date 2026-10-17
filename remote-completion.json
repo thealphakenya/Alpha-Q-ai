@@ -72,6 +72,7 @@
     "Authenticated GitHub identity/policy, branch protection, write authority, terminal exact-SHA/tree proof remain unavailable; no dispatch or remote mutation occurred.",
     "Authenticated GitHub policy/write authority and exact remote SHA/tree evidence remain unavailable; no dispatch or remote mutation occurred.",
     "Authenticated GitHub policy/write authority and terminal exact-SHA/tree proof remain unavailable; no remote mutation was performed.",
+    "Authenticated actor has push but not admin/maintain; legacy branch-protection GET returns 403 for both repos. Repository rulesets are observed, but effective org-level policy and owner-authorized branch-protection evidence remain unavailable.",
     "Authenticated actor lacks admin and maintain permission",
     "Authenticated issue/PR and provider/deployment state remain unknown.",
     "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
@@ -95,6 +96,7 @@
     "Branch protection was last denied with HTTP 403; current rules and protected-write authority remain unknown.",
     "Branch protection/write authority remain unknown after HTTP 403.",
     "Branch-protection GET returned HTTP 403 for both repositories; current rules and protected-write authority remain unknown.",
+    "Branch-protection and effective ruleset policy are not readable with the current authenticated role; obtain owner/admin-authorized read-only policy evidence or approved access.",
     "Branch-protection endpoints return HTTP 403 and authenticated actor lacks admin/maintain access",
     "Branch-protection reads remain HTTP 403 and authenticated actor lacks admin/maintain permission",
     "Broad repository tests and authenticated remote evidence remain pending.",
@@ -178,6 +180,7 @@
     "M02 semantic requirement reconciliation and M10 workflow/continuation audit remain incomplete; M11 remains partial.",
     "M02 semantic requirement-to-task reconciliation remains incomplete.",
     "M02 semantic review of directive candidates, operation payloads, and additional referenced sources remains incomplete.",
+    "M02/M05 acceptance mapping dependencies are incomplete; M06 defect work must not be transitioned yet.",
     "M02_dependency_M01_not_verified_complete",
     "M08 queue handoff and independently verified hosted resume remain unresolved",
     "M08 workflows do not consume the canonical task ledger or demonstrate independent mission-task resume.",
@@ -215,6 +218,7 @@
     "No live Ollama inference or remote terminal exact-SHA evidence was observed.",
     "No live metric endpoint or runtime sample was read by this inventory.",
     "No local v1.2.3 tag exists; remote tag/release/artifact retrieval, signatures, installs, and current exact-SHA provenance were not verified.",
+    "No package-signing provider or real artifact is available locally.",
     "No physical experiment or instrument-backed calibration evidence was available in this operation.",
     "No raw logs were fetched; root cause remains unknown",
     "No remote tree parity or overall completion proof was obtained.",
@@ -381,6 +385,7 @@
     "authorized target-owned remote ref/tree/workflow evidence is unavailable",
     "authorized_exact_sha_remote_completion_proof_unavailable",
     "autonomous_agent_suite_has_three_existing_failures_and_one_headless_skip",
+    "autonomous_agent_test_module_failed_or_environment_blocked",
     "both_repositories_have_failed_vercel_status_contexts",
     "both_repositories_have_main_autosync_backup_divergence",
     "bounded_shard_run_not_terminal",
@@ -488,6 +493,7 @@
     "local_ollama_runtime_unavailable",
     "local_ollama_runtime_unavailable_no_inference_measured",
     "local_ollama_runtime_unavailable_no_live_inference_measured",
+    "local_ollama_runtime_unavailable_or_incomplete",
     "local_validation_is_not_remote_completion",
     "local_worktree_dirty_and_head_differs_from_both_remote_main_refs",
     "local_worktree_dirty_and_not_equal_to_remote_main_shas",
@@ -501,6 +507,7 @@
     "master_and_qmoi_refs_not_advertised",
     "master_and_qmoi_refs_not_advertised_in_read_only_git_ls_remote",
     "master_and_qmoi_refs_were_not_advertised_by_git_ls_remote",
+    "master_orchestrator_regression_failed",
     "metric_and_completion_claims_require_semantic_source_test_review",
     "mission_120_minute_window_expired",
     "mission_clock_expired_task_transitions_paused",
@@ -534,6 +541,7 @@
     "optimized_full_audit_inventory_not_terminal",
     "original_qmoi_enhanced_source_history_unavailable",
     "original_source_commit_and_sync_workflow_evidence_not_mapped_for_every_candidate",
+    "owner_authorized_branch_protection_evidence_unavailable",
     "path_hash_shard_skips_require_scope_review:18",
     "physical_experiment_and_instrument_evidence_not_performed",
     "previous_partial_manifest_not_reusable_after_resumability_fix",
@@ -545,6 +553,7 @@
     "protection_endpoints_HTTP_403_both_repositories",
     "provider-specific verification not performed",
     "pylance_test_module_scripts_path_imports_unresolved;pytest_runtime_imports_passed",
+    "pytest_runtime_unavailable",
     "pytest_unavailable_in_selected_interpreters",
     "pytest_unavailable_in_selected_python_environments",
     "q_version_finalization_requires_all_lifecycle_and_remote_gates",
@@ -555,9 +564,11 @@
     "qmoi_enhanced_codeql_run_38017104002_was_in_progress_at_last_read",
     "qmoi_enhanced_codeql_run_not_terminal",
     "qmoi_enhanced_vercel_statuses_failed",
+    "qmoi_masks_local_regression_failed",
     "qmoi_vercel_statuses_failed",
     "qseed_and_priority_queue_changes_are_uncommitted_and_not_fully_validated",
     "qseed_routing_test_unavailable_cryptography_dependency_missing",
+    "qteam_workflow_evidence_validation_failed",
     "reference_audit_is_stale_and_incomplete_local_scope_only",
     "remote_branch_protection_HTTP_403_both_repositories",
     "remote_codeql_and_cross_repository_security_evidence_not_observed",
@@ -638,18 +649,18 @@
     "worktree_dirty_preserved",
     "worktree_user_changes_preserved"
   ],
-  "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
+  "correlation_id": "0c9f5ab4-33ee-4ff3-9199-276cb61dc440",
   "current_local_checkpoint": {
-    "artifact_bytes": 420783,
+    "artifact_bytes": 422061,
     "artifact_path": "ollamatracks/mission-task-ledger.json",
     "artifact_refs": {
       "mission_task_ledger": {
-        "bytes": 420783,
+        "bytes": 422061,
         "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49"
+        "sha256": "a6d0571473dbd49ff5b083d659baad1aeea472d49d2c63cfe379112df0ca9e2c"
       }
     },
-    "artifact_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
+    "artifact_sha256": "a6d0571473dbd49ff5b083d659baad1aeea472d49d2c63cfe379112df0ca9e2c",
     "blockers": [
       "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
       "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
@@ -660,8 +671,8 @@
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
-    "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
-    "generated_at": "2026-10-17T05:10:34.952379Z",
+    "correlation_id": "0c9f5ab4-33ee-4ff3-9199-276cb61dc440",
+    "generated_at": "2026-10-17T19:59:52.000727Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -671,11 +682,11 @@
         "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea"
       },
       {
-        "bytes": 9338,
+        "bytes": 9794,
         "path": ".github/copilot-instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": "repository-root",
-        "sha256": "ecc4afab4cd6f2df0286dab46d261b9f15489539613cc54f8b525d593e49ba9e"
+        "sha256": "9d7fc27ae2a7d74619511c10d20b2214d99fd5b672049baad8439fb796d2553a"
       },
       {
         "bytes": 38391,
@@ -685,25 +696,25 @@
         "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
       },
       {
-        "bytes": 13468,
+        "bytes": 13881,
         "path": ".github/instructions/agent-autonomy.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "c590788bdf1a1c14be6ea40b1414af8584bcd7948ceb8153b6d94eb633cb184f"
+        "sha256": "747ed41d1fe9b91e66d9aa31ecd0496df82c23bfc7b099d796b796e85eaff4ec"
       },
       {
-        "bytes": 5795,
+        "bytes": 6899,
         "path": ".github/instructions/continue.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "bf554e6c179740243dbe0eba1c634c308db183c9e09f03b3164a0c92443ea440"
+        "sha256": "0a2ffa4c8d09d2a260cba67f1a33e7860a5067f997e98f11da09ccae966f39dc"
       },
       {
-        "bytes": 1555,
+        "bytes": 1816,
         "path": ".github/instructions/continueinstructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "f32cfaec369ba9c833c15a2fae60a0182fe0929e27545f9ffee9e0049cac926e"
+        "sha256": "6091fd74c86bf554da8a0de8a343dd51da5abad9dab4a7d4338bb2de566d2525"
       },
       {
         "bytes": 8706,
@@ -734,25 +745,25 @@
         "sha256": "b02dda5824acfb9e1fcd1421d6585d8ce5015af90f6762245585b60980693982"
       },
       {
-        "bytes": 10471,
+        "bytes": 10928,
         "path": ".github/instructions/workspace.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "9af5434081f15946b29b2d0c40e122c27ce27264cf7c44b70f68784bcb66d5ba"
+        "sha256": "8be120ab4b90bddcd3cdfc785f219c0864d8a5dff38c0f19643c690df5f0c18b"
       }
     ],
-    "instruction_inventory_sha256": "7f33e8dbae5065cfa49725649367aa38cfc6c9369d2e422948b65c0961ed7387",
-    "local_head_sha": "c974e679b2f982cd6c260b10a812d3b6119cc8ba",
-    "local_tree_sha": "10a48a3963d05bb3f61c4bf538a21b06bbf09b4f",
+    "instruction_inventory_sha256": "0c0a96b6fe13e352f2ac561f7d22559b7bb77b0d28b9a564204dad989908e95d",
+    "local_head_sha": "75574b2ff9a58260977e258ec08762c117cfb3c2",
+    "local_tree_sha": "afaaa68caa762f865e5f177152ecb4d429d20683",
     "metrics": {
       "active_phase_id": "PH01",
       "active_task_id": null,
       "active_task_status": null,
-      "checkpoint_utc": "2026-10-17T05:10:34.845848+00:00",
-      "deadline_utc": "2026-10-17T06:22:14.561431Z",
-      "elapsed_seconds": 2900.284,
-      "ledger_id": "newmission-120-minute-2026-10-17-590f381a",
-      "ledger_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
+      "checkpoint_utc": "2026-10-17T19:59:51.856241+00:00",
+      "deadline_utc": "2026-10-17T20:26:01.983661Z",
+      "elapsed_seconds": 5629.873,
+      "ledger_id": "newmission-120-minute-2026-10-17-0c9f5ab4",
+      "ledger_sha256": "a6d0571473dbd49ff5b083d659baad1aeea472d49d2c63cfe379112df0ca9e2c",
       "ledger_version": "1.0",
       "mission_phase_count": 18,
       "mission_phase_metrics": [
@@ -920,6 +931,7 @@
         "reviewed": 0
       },
       "mission_resume_plan": {
+        "acceptance_mapped_requirement_line_count": 0,
         "deadline_expired": false,
         "dependency_ready_task_ids": [
           "M01",
@@ -930,9 +942,18 @@
         "phase_count": 18,
         "phases": [
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH01",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "28_unreviewed_requirement_lines"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 28,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L34-L71",
             "status": "PARTIALLY_COMPLETE",
             "unreviewed_requirement_line_count": 28,
@@ -968,9 +989,18 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH02",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "33_unreviewed_requirement_lines"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 33,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L72-L115",
             "status": "PARTIALLY_COMPLETE",
             "unreviewed_requirement_line_count": 33,
@@ -1011,9 +1041,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH03",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "39_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 39,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L116-L165",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 39,
@@ -1060,9 +1100,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH04",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "29_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 29,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L166-L205",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 29,
@@ -1099,9 +1149,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH05",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "36_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 36,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L206-L255",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 36,
@@ -1145,9 +1205,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH06",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "41_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 41,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L256-L308",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 41,
@@ -1196,9 +1266,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH07",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "31_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 31,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L309-L350",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 31,
@@ -1237,9 +1317,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH08",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "31_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 31,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L351-L389",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 31,
@@ -1278,9 +1368,18 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH09",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "47_unreviewed_requirement_lines"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 47,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L390-L446",
             "status": "PARTIALLY_COMPLETE",
             "unreviewed_requirement_line_count": 47,
@@ -1335,9 +1434,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH10",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "19_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 19,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L447-L475",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 19,
@@ -1364,9 +1473,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH11",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "25_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 25,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L476-L512",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 25,
@@ -1399,9 +1518,18 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH12",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "21_unreviewed_requirement_lines"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 21,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L513-L541",
             "status": "PARTIALLY_COMPLETE",
             "unreviewed_requirement_line_count": 21,
@@ -1430,9 +1558,18 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH13",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "24_unreviewed_requirement_lines"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 24,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L542-L573",
             "status": "PARTIALLY_COMPLETE",
             "unreviewed_requirement_line_count": 24,
@@ -1464,9 +1601,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH14",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "27_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 27,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L574-L608",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 27,
@@ -1501,9 +1648,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH15",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "31_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 31,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L609-L648",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 31,
@@ -1542,9 +1699,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH16",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "17_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 17,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L649-L676",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 17,
@@ -1569,9 +1736,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH17",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "200_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 200,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L677-L943",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 200,
@@ -1779,9 +1956,19 @@
             ]
           },
           {
+            "acceptance_mapped_requirement_line_count": 0,
+            "acceptance_mapped_requirement_line_ids": [],
             "id": "PH18",
+            "local_pass_gate_blockers": [
+              "phase_not_in_progress",
+              "59_unreviewed_requirement_lines",
+              "no_phase_evidence_refs"
+            ],
+            "local_pass_gate_ready": false,
             "requirement_line_count": 59,
+            "reviewed_requirement_line_count": 0,
             "reviewed_requirement_line_ids": [],
+            "reviewed_unmapped_requirement_line_count": 0,
             "source_ref": "latest mission.md#L944-L1047",
             "status": "PENDING",
             "unreviewed_requirement_line_count": 59,
@@ -1851,6 +2038,7 @@
         "remote_mutation_performed": false,
         "remote_verified": false,
         "requirement_line_count": 760,
+        "reviewed_unmapped_requirement_line_count": 0,
         "status": "READY_FOR_AUTHORIZED_EXECUTOR",
         "task_transitions_performed": false,
         "tasks": [
@@ -2131,7 +2319,7 @@
         ],
         "unreviewed_requirement_line_count": 760
       },
-      "mission_start_utc": "2026-10-17T04:22:14.561431Z",
+      "mission_start_utc": "2026-10-17T18:26:01.983661Z",
       "mission_status_counts": {
         "blocked": 3,
         "failed": 0,
@@ -2141,15 +2329,15 @@
         "verified_complete": 1
       },
       "monotonic_duration_available": false,
-      "remaining_seconds": 4299.716,
+      "remaining_seconds": 1570.127,
       "remote_verified": false,
       "task_elapsed_seconds": null
     },
     "next_action": "Resume the highest-priority dependency-ready mission task.",
     "operation": "mission-metrics-refresh",
     "paired_document_sha256": {
-      "oe2.txt": "1ee2d93ff7157f17bcbbf58e0acb46437e033cfdfafa72430ca99641daaa64ba",
-      "remotecompletion.md": "5ac3bbb50dbe7508a004024daa9642e2fd59d870ec3852f3d345247d2404571e"
+      "oe2.txt": "0fe42294b8f7d1f4c7c5c5173f01563277dc060c56121debcbe54d490ef8188a",
+      "remotecompletion.md": "90238372d58e2790c63f532c0ffe0ee0ef48a2ae2c2cee2e4eb7138099ddaa62"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -2174,7 +2362,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-17T05:10:34.952379Z",
+  "generated_at": "2026-10-17T19:59:52.000727Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -2505,16 +2693,16 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 420783,
+      "artifact_bytes": 422061,
       "artifact_path": "ollamatracks/mission-task-ledger.json",
       "artifact_refs": {
         "mission_task_ledger": {
-          "bytes": 420783,
+          "bytes": 422061,
           "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49"
+          "sha256": "a6d0571473dbd49ff5b083d659baad1aeea472d49d2c63cfe379112df0ca9e2c"
         }
       },
-      "artifact_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
+      "artifact_sha256": "a6d0571473dbd49ff5b083d659baad1aeea472d49d2c63cfe379112df0ca9e2c",
       "blockers": [
         "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
         "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
@@ -2525,8 +2713,8 @@
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
-      "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
-      "generated_at": "2026-10-17T05:10:34.952379Z",
+      "correlation_id": "0c9f5ab4-33ee-4ff3-9199-276cb61dc440",
+      "generated_at": "2026-10-17T19:59:52.000727Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -2536,11 +2724,11 @@
           "sha256": "a8a0b56b1fbeac37b933808fee186b626596a7e26dcf72f78e5aa046bccb06ea"
         },
         {
-          "bytes": 9338,
+          "bytes": 9794,
           "path": ".github/copilot-instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": "repository-root",
-          "sha256": "ecc4afab4cd6f2df0286dab46d261b9f15489539613cc54f8b525d593e49ba9e"
+          "sha256": "9d7fc27ae2a7d74619511c10d20b2214d99fd5b672049baad8439fb796d2553a"
         },
         {
           "bytes": 38391,
@@ -2550,25 +2738,25 @@
           "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
         },
         {
-          "bytes": 13468,
+          "bytes": 13881,
           "path": ".github/instructions/agent-autonomy.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "c590788bdf1a1c14be6ea40b1414af8584bcd7948ceb8153b6d94eb633cb184f"
+          "sha256": "747ed41d1fe9b91e66d9aa31ecd0496df82c23bfc7b099d796b796e85eaff4ec"
         },
         {
-          "bytes": 5795,
+          "bytes": 6899,
           "path": ".github/instructions/continue.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "bf554e6c179740243dbe0eba1c634c308db183c9e09f03b3164a0c92443ea440"
+          "sha256": "0a2ffa4c8d09d2a260cba67f1a33e7860a5067f997e98f11da09ccae966f39dc"
         },
         {
-          "bytes": 1555,
+          "bytes": 1816,
           "path": ".github/instructions/continueinstructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "f32cfaec369ba9c833c15a2fae60a0182fe0929e27545f9ffee9e0049cac926e"
+          "sha256": "6091fd74c86bf554da8a0de8a343dd51da5abad9dab4a7d4338bb2de566d2525"
         },
         {
           "bytes": 8706,
@@ -2599,25 +2787,25 @@
           "sha256": "b02dda5824acfb9e1fcd1421d6585d8ce5015af90f6762245585b60980693982"
         },
         {
-          "bytes": 10471,
+          "bytes": 10928,
           "path": ".github/instructions/workspace.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "9af5434081f15946b29b2d0c40e122c27ce27264cf7c44b70f68784bcb66d5ba"
+          "sha256": "8be120ab4b90bddcd3cdfc785f219c0864d8a5dff38c0f19643c690df5f0c18b"
         }
       ],
-      "instruction_inventory_sha256": "7f33e8dbae5065cfa49725649367aa38cfc6c9369d2e422948b65c0961ed7387",
-      "local_head_sha": "c974e679b2f982cd6c260b10a812d3b6119cc8ba",
-      "local_tree_sha": "10a48a3963d05bb3f61c4bf538a21b06bbf09b4f",
+      "instruction_inventory_sha256": "0c0a96b6fe13e352f2ac561f7d22559b7bb77b0d28b9a564204dad989908e95d",
+      "local_head_sha": "75574b2ff9a58260977e258ec08762c117cfb3c2",
+      "local_tree_sha": "afaaa68caa762f865e5f177152ecb4d429d20683",
       "metrics": {
         "active_phase_id": "PH01",
         "active_task_id": null,
         "active_task_status": null,
-        "checkpoint_utc": "2026-10-17T05:10:34.845848+00:00",
-        "deadline_utc": "2026-10-17T06:22:14.561431Z",
-        "elapsed_seconds": 2900.284,
-        "ledger_id": "newmission-120-minute-2026-10-17-590f381a",
-        "ledger_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
+        "checkpoint_utc": "2026-10-17T19:59:51.856241+00:00",
+        "deadline_utc": "2026-10-17T20:26:01.983661Z",
+        "elapsed_seconds": 5629.873,
+        "ledger_id": "newmission-120-minute-2026-10-17-0c9f5ab4",
+        "ledger_sha256": "a6d0571473dbd49ff5b083d659baad1aeea472d49d2c63cfe379112df0ca9e2c",
         "ledger_version": "1.0",
         "mission_phase_count": 18,
         "mission_phase_metrics": [
@@ -2785,6 +2973,7 @@
           "reviewed": 0
         },
         "mission_resume_plan": {
+          "acceptance_mapped_requirement_line_count": 0,
           "deadline_expired": false,
           "dependency_ready_task_ids": [
             "M01",
@@ -2795,9 +2984,18 @@
           "phase_count": 18,
           "phases": [
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH01",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "28_unreviewed_requirement_lines"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 28,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L34-L71",
               "status": "PARTIALLY_COMPLETE",
               "unreviewed_requirement_line_count": 28,
@@ -2833,9 +3031,18 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH02",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "33_unreviewed_requirement_lines"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 33,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L72-L115",
               "status": "PARTIALLY_COMPLETE",
               "unreviewed_requirement_line_count": 33,
@@ -2876,9 +3083,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH03",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "39_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 39,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L116-L165",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 39,
@@ -2925,9 +3142,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH04",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "29_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 29,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L166-L205",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 29,
@@ -2964,9 +3191,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH05",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "36_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 36,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L206-L255",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 36,
@@ -3010,9 +3247,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH06",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "41_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 41,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L256-L308",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 41,
@@ -3061,9 +3308,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH07",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "31_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 31,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L309-L350",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 31,
@@ -3102,9 +3359,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH08",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "31_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 31,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L351-L389",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 31,
@@ -3143,9 +3410,18 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH09",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "47_unreviewed_requirement_lines"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 47,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L390-L446",
               "status": "PARTIALLY_COMPLETE",
               "unreviewed_requirement_line_count": 47,
@@ -3200,9 +3476,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH10",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "19_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 19,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L447-L475",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 19,
@@ -3229,9 +3515,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH11",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "25_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 25,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L476-L512",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 25,
@@ -3264,9 +3560,18 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH12",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "21_unreviewed_requirement_lines"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 21,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L513-L541",
               "status": "PARTIALLY_COMPLETE",
               "unreviewed_requirement_line_count": 21,
@@ -3295,9 +3600,18 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH13",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "24_unreviewed_requirement_lines"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 24,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L542-L573",
               "status": "PARTIALLY_COMPLETE",
               "unreviewed_requirement_line_count": 24,
@@ -3329,9 +3643,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH14",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "27_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 27,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L574-L608",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 27,
@@ -3366,9 +3690,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH15",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "31_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 31,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L609-L648",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 31,
@@ -3407,9 +3741,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH16",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "17_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 17,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L649-L676",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 17,
@@ -3434,9 +3778,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH17",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "200_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 200,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L677-L943",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 200,
@@ -3644,9 +3998,19 @@
               ]
             },
             {
+              "acceptance_mapped_requirement_line_count": 0,
+              "acceptance_mapped_requirement_line_ids": [],
               "id": "PH18",
+              "local_pass_gate_blockers": [
+                "phase_not_in_progress",
+                "59_unreviewed_requirement_lines",
+                "no_phase_evidence_refs"
+              ],
+              "local_pass_gate_ready": false,
               "requirement_line_count": 59,
+              "reviewed_requirement_line_count": 0,
               "reviewed_requirement_line_ids": [],
+              "reviewed_unmapped_requirement_line_count": 0,
               "source_ref": "latest mission.md#L944-L1047",
               "status": "PENDING",
               "unreviewed_requirement_line_count": 59,
@@ -3716,6 +4080,7 @@
           "remote_mutation_performed": false,
           "remote_verified": false,
           "requirement_line_count": 760,
+          "reviewed_unmapped_requirement_line_count": 0,
           "status": "READY_FOR_AUTHORIZED_EXECUTOR",
           "task_transitions_performed": false,
           "tasks": [
@@ -3996,7 +4361,7 @@
           ],
           "unreviewed_requirement_line_count": 760
         },
-        "mission_start_utc": "2026-10-17T04:22:14.561431Z",
+        "mission_start_utc": "2026-10-17T18:26:01.983661Z",
         "mission_status_counts": {
           "blocked": 3,
           "failed": 0,
@@ -4006,15 +4371,15 @@
           "verified_complete": 1
         },
         "monotonic_duration_available": false,
-        "remaining_seconds": 4299.716,
+        "remaining_seconds": 1570.127,
         "remote_verified": false,
         "task_elapsed_seconds": null
       },
       "next_action": "Resume the highest-priority dependency-ready mission task.",
       "operation": "mission-metrics-refresh",
       "paired_document_sha256": {
-        "oe2.txt": "1ee2d93ff7157f17bcbbf58e0acb46437e033cfdfafa72430ca99641daaa64ba",
-        "remotecompletion.md": "5ac3bbb50dbe7508a004024daa9642e2fd59d870ec3852f3d345247d2404571e"
+        "oe2.txt": "0fe42294b8f7d1f4c7c5c5173f01563277dc060c56121debcbe54d490ef8188a",
+        "remotecompletion.md": "90238372d58e2790c63f532c0ffe0ee0ef48a2ae2c2cee2e4eb7138099ddaa62"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -4098,7 +4463,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "c974e679b2f982cd6c260b10a812d3b6119cc8ba",
+    "local_head_sha": "75574b2ff9a58260977e258ec08762c117cfb3c2",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

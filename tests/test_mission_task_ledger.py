@@ -244,8 +244,28 @@ def test_resume_plan_indexes_all_phases_and_selects_only_dependency_ready_tasks(
     assert plan["next_task_id"] == "M01"
     assert plan["phase_count"] == 18
     assert plan["unreviewed_requirement_line_count"] == ledger["mission_requirement_line_count"]
+    assert plan["acceptance_mapped_requirement_line_count"] == 0
+    assert plan["reviewed_unmapped_requirement_line_count"] == 0
+    coverage_fields = (
+        "owner_refs",
+        "implementation_refs",
+        "test_refs",
+        "security_refs",
+        "documentation_refs",
+        "integration_refs",
+        "remote_evidence_refs",
+    )
+    assert plan["requirement_coverage_mapped_counts"] == {field: 0 for field in coverage_fields}
     assert plan["unassigned_requirement_line_count"] == 22
     assert plan["unassigned_unreviewed_requirement_line_count"] == 22
+    phase_18 = next(phase for phase in plan["phases"] if phase["id"] == "PH18")
+    assert phase_18["acceptance_mapped_requirement_line_count"] == 0
+    assert phase_18["coverage_unmapped_counts"] == {
+        field: phase_18["requirement_line_count"] for field in coverage_fields
+    }
+    assert phase_18["local_pass_gate_ready"] is False
+    assert any("unreviewed_requirement_lines" in item for item in phase_18["local_pass_gate_blockers"])
+    assert any("unmapped_implementation_refs" in item for item in phase_18["local_pass_gate_blockers"])
     all_planned_requirement_ids = [
         requirement_id
         for phase in plan["phases"]
@@ -277,6 +297,59 @@ def test_resume_plan_indexes_all_phases_and_selects_only_dependency_ready_tasks(
     assert plan["remote_mutation_performed"] is False
     assert plan["remote_verified"] is False
     assert ledger == original
+
+
+def test_resume_plan_marks_fully_mapped_in_progress_phase_locally_ready():
+    ledger = _ledger()
+    sync_mission_phase_catalog(ledger, (ROOT / "latest mission.md").read_text(encoding="utf-8"))
+    for record in ledger["mission_requirement_line_records"]:
+        if record["phase_id"] == "PH18":
+            record["semantic_reviewed"] = True
+            record["status"] = "REVIEWED"
+            record["acceptance_refs"] = ["tests/test_mission_task_ledger.py"]
+            record["coverage_refs"] = {
+                field: ["tests/test_mission_task_ledger.py"]
+                for field in (
+                    "owner_refs",
+                    "implementation_refs",
+                    "test_refs",
+                    "security_refs",
+                    "documentation_refs",
+                    "integration_refs",
+                    "remote_evidence_refs",
+                )
+            }
+            record["coverage_refs"] = {
+                field: ["tests/test_mission_task_ledger.py"]
+                for field in (
+                    "owner_refs",
+                    "implementation_refs",
+                    "test_refs",
+                    "security_refs",
+                    "documentation_refs",
+                    "integration_refs",
+                    "remote_evidence_refs",
+                )
+            }
+    reviewed_count = sum(
+        record["semantic_reviewed"] for record in ledger["mission_requirement_line_records"]
+    )
+    ledger["mission_requirement_line_review_counts"] = {
+        "not_reviewed": ledger["mission_requirement_line_count"] - reviewed_count,
+        "reviewed": reviewed_count,
+    }
+    phase = start_phase(ledger, "PH18", now="2026-10-13T14:00:00Z")
+    phase["evidence_refs"] = ["tests/test_mission_task_ledger.py"]
+
+    plan = build_resume_plan(ledger)
+    phase_18 = next(item for item in plan["phases"] if item["id"] == "PH18")
+
+    assert phase_18["local_pass_gate_ready"] is True
+    assert phase_18["acceptance_mapped_requirement_line_count"] == phase_18["requirement_line_count"]
+    assert phase_18["reviewed_unmapped_requirement_line_count"] == 0
+    assert phase_18["local_pass_gate_blockers"] == []
+    assert plan["execution_authorized"] is False
+    assert plan["remote_verified"] is False
 
 
 def test_resume_plan_pauses_expired_clock_without_discarding_queue():
@@ -416,6 +489,17 @@ def test_mission_requirement_lines_are_hash_indexed_without_copying_source_text(
     assert all(record["status"] == "NOT_REVIEWED" for record in records)
     assert all(record["semantic_reviewed"] is False for record in records)
     assert all(len(record["line_sha256"]) == 64 for record in records)
+    expected_coverage_fields = {
+        "owner_refs",
+        "implementation_refs",
+        "test_refs",
+        "security_refs",
+        "documentation_refs",
+        "integration_refs",
+        "remote_evidence_refs",
+    }
+    assert all(set(record["coverage_refs"]) == expected_coverage_fields for record in records)
+    assert all(not refs for record in records for refs in record["coverage_refs"].values())
     assert all("text" not in record and "source_text" not in record for record in records)
     assert {record["phase_id"] for record in records if record["phase_id"]} == {
         f"PH{index:02d}" for index in range(1, 19)
@@ -444,6 +528,70 @@ def test_mission_phase_transition_records_elapsed_evidence_and_status():
     assert phase["elapsed_seconds"] == 5
     assert phase["evidence_refs"] == ["tests/test_mission_task_ledger.py"]
     assert mission_phase_status_counts(ledger)["PARTIALLY_COMPLETE"] == partial_before + 1
+
+
+def test_phase_cannot_pass_with_unreviewed_requirement_lines():
+    ledger = _ledger()
+    sync_mission_phase_catalog(ledger, (ROOT / "latest mission.md").read_text(encoding="utf-8"))
+    phase = start_phase(ledger, "PH18", now="2026-10-13T14:00:00Z")
+
+    with pytest.raises(LedgerError, match="unreviewed requirement lines"):
+        finish_phase(
+            ledger,
+            "PH18",
+            "PASS",
+            evidence_refs=["tests/test_mission_task_ledger.py"],
+            next_action="",
+            now="2026-10-13T14:00:05Z",
+        )
+
+    assert phase["status"] == "IN_PROGRESS"
+    assert phase["attempt_history"][-1]["finished_at"] is None
+
+
+def test_phase_cannot_pass_without_acceptance_references():
+    ledger = _ledger()
+    sync_mission_phase_catalog(ledger, (ROOT / "latest mission.md").read_text(encoding="utf-8"))
+    for record in ledger["mission_requirement_line_records"]:
+        if record["phase_id"] == "PH18":
+            record["semantic_reviewed"] = True
+    phase = start_phase(ledger, "PH18", now="2026-10-13T14:00:00Z")
+
+    with pytest.raises(LedgerError, match="lack acceptance references"):
+        finish_phase(
+            ledger,
+            "PH18",
+            "PASS",
+            evidence_refs=["tests/test_mission_task_ledger.py"],
+            next_action="",
+            now="2026-10-13T14:00:05Z",
+        )
+
+    assert phase["status"] == "IN_PROGRESS"
+
+
+def test_phase_cannot_pass_without_coverage_references():
+    ledger = _ledger()
+    sync_mission_phase_catalog(ledger, (ROOT / "latest mission.md").read_text(encoding="utf-8"))
+    for record in ledger["mission_requirement_line_records"]:
+        if record["phase_id"] == "PH18":
+            record["semantic_reviewed"] = True
+            record["status"] = "REVIEWED"
+            record["acceptance_refs"] = ["tests/test_mission_task_ledger.py"]
+    phase = start_phase(ledger, "PH18", now="2026-10-13T14:00:00Z")
+
+    with pytest.raises(LedgerError, match="requirement lines lack coverage references"):
+        finish_phase(
+            ledger,
+            "PH18",
+            "PASS",
+            evidence_refs=["tests/test_mission_task_ledger.py"],
+            next_action="",
+            now="2026-10-13T14:00:05Z",
+        )
+
+    assert phase["status"] == "IN_PROGRESS"
+    assert phase["attempt_history"][-1]["finished_at"] is None
 
 
 def test_dashboard_refresh_replaces_stale_metrics_and_preserves_later_history(tmp_path):
