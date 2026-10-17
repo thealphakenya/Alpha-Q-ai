@@ -13,6 +13,7 @@ from scripts.mission_task_ledger import (
     LedgerError,
     _verify_repository,
     build_resume_plan,
+    begin_new_mission_run,
     finish_phase,
     finish_task,
     load_ledger,
@@ -36,6 +37,23 @@ def _ledger() -> dict:
     return load_ledger(ROOT / "ollamatracks" / "mission-task-ledger.json")
 
 
+def _set_task_state(ledger: dict, task_id: str, status: str) -> dict:
+    task = next(item for item in ledger["tasks"] if item["id"] == task_id)
+    task.update(
+        {
+            "status": status,
+            "started_at": None,
+            "finished_at": None,
+            "last_started_at": None,
+            "elapsed_seconds": None,
+            "retries": 0,
+            "attempt_history": [],
+        }
+    )
+    ledger["status_counts"] = status_counts(ledger)
+    return task
+
+
 def test_ledger_contains_all_sixteen_sections_and_consistent_counts():
     ledger = _ledger()
 
@@ -46,6 +64,7 @@ def test_ledger_contains_all_sixteen_sections_and_consistent_counts():
 
 def test_task_transitions_record_actual_elapsed_time_and_require_evidence():
     ledger = _ledger()
+    _set_task_state(ledger, "M04", "PENDING")
     task = start_task(ledger, "M04", now="2026-10-13T14:00:00Z")
 
     assert task["status"] == "IN_PROGRESS"
@@ -80,6 +99,7 @@ def test_dependency_gate_blocks_work_until_prerequisite_is_verified():
 
 def test_resuming_an_interrupted_task_preserves_attempt_history():
     ledger = _ledger()
+    _set_task_state(ledger, "M04", "PENDING")
     task = start_task(ledger, "M04", now="2026-10-13T14:00:00Z")
     task = start_task(ledger, "M04", now="2026-10-13T14:02:00Z")
 
@@ -119,6 +139,7 @@ def test_resuming_partially_completed_task_preserves_prior_elapsed_time():
 
 def test_finishing_legacy_in_progress_task_records_wall_interval_not_active_time():
     ledger = _ledger()
+    _set_task_state(ledger, "M04", "PENDING")
     task = next(item for item in ledger["tasks"] if item["id"] == "M04")
     task.update(
         {
@@ -149,8 +170,16 @@ def test_finishing_legacy_in_progress_task_records_wall_interval_not_active_time
 
 def test_finishing_legacy_in_progress_task_requires_start_timestamp():
     ledger = _ledger()
+    _set_task_state(ledger, "M04", "PENDING")
     task = next(item for item in ledger["tasks"] if item["id"] == "M04")
-    task.update({"status": "IN_PROGRESS", "started_at": None, "finished_at": None})
+    task.update(
+        {
+            "status": "IN_PROGRESS",
+            "started_at": None,
+            "finished_at": None,
+            "last_started_at": None,
+        }
+    )
     task.pop("attempt_history", None)
 
     with pytest.raises(LedgerError, match="start timestamp is missing"):
@@ -201,6 +230,8 @@ def test_canonical_phase_catalog_indexes_all_eighteen_source_headings():
 
 def test_resume_plan_indexes_all_phases_and_selects_only_dependency_ready_tasks():
     ledger = _ledger()
+    _set_task_state(ledger, "M01", "PARTIALLY_COMPLETE")
+    _set_task_state(ledger, "M04", "PARTIALLY_COMPLETE")
     original = copy.deepcopy(ledger)
     deadline = datetime.fromisoformat(
         ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
@@ -250,6 +281,8 @@ def test_resume_plan_indexes_all_phases_and_selects_only_dependency_ready_tasks(
 
 def test_resume_plan_pauses_expired_clock_without_discarding_queue():
     ledger = _ledger()
+    _set_task_state(ledger, "M01", "PARTIALLY_COMPLETE")
+    _set_task_state(ledger, "M04", "PARTIALLY_COMPLETE")
     deadline = datetime.fromisoformat(
         ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
     )
@@ -266,6 +299,7 @@ def test_resume_plan_pauses_expired_clock_without_discarding_queue():
 
 def test_task_and_phase_transitions_pause_at_expired_clock_without_mutation():
     ledger = _ledger()
+    _set_task_state(ledger, "M04", "PENDING")
     deadline = datetime.fromisoformat(
         ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
     )
@@ -306,6 +340,68 @@ def test_task_and_phase_transitions_pause_at_expired_clock_without_mutation():
             now=deadline_text,
         )
     assert ledger == before_phase_finish
+
+
+def test_new_mission_run_archives_expired_clock_and_preserves_all_statuses():
+    ledger = _ledger()
+    ledger["mission_clock"].update(
+        {
+            "started_at": "2026-10-13T13:50:19.075+00:00",
+            "deadline_at": "2026-10-13T15:50:19.075+00:00",
+        }
+    )
+    old_ledger_id = ledger["ledger_id"]
+    old_correlation_id = ledger["correlation_id"]
+    old_clock = copy.deepcopy(ledger["mission_clock"])
+    old_task_statuses = [task["status"] for task in ledger["tasks"]]
+    old_phase_statuses = [phase["status"] for phase in ledger["mission_phase_metrics"]]
+
+    run = begin_new_mission_run(
+        ledger,
+        authorization_ref="active-user-request-2026-10-17",
+        now="2026-10-17T02:10:00Z",
+    )
+
+    assert run["archived_ledger_id"] == old_ledger_id
+    assert run["archived_correlation_id"] == old_correlation_id
+    assert run["ledger_id"] != old_ledger_id
+    assert run["correlation_id"] != old_correlation_id
+    assert run["mission_clock"]["started_at"] == "2026-10-17T02:10:00Z"
+    assert run["mission_clock"]["deadline_at"] == "2026-10-17T04:10:00Z"
+    assert ledger["mission_run_history"][-1]["started_at"] == old_clock["started_at"]
+    assert ledger["mission_run_history"][-1]["deadline_at"] == old_clock["deadline_at"]
+    assert ledger["mission_run_history"][-1]["mission_clock"] == old_clock
+    assert ledger["mission_run_history"][-1]["authorization_ref"] == "active-user-request-2026-10-17"
+    assert [task["status"] for task in ledger["tasks"]] == old_task_statuses
+    assert [phase["status"] for phase in ledger["mission_phase_metrics"]] == old_phase_statuses
+    assert build_resume_plan(
+        ledger,
+        now=datetime.fromisoformat("2026-10-17T02:10:01+00:00"),
+    )["status"] != "PAUSED_EXPIRED_CLOCK"
+    validate_ledger(ledger)
+
+
+def test_new_mission_run_rejects_early_or_missing_authorization_without_mutation():
+    ledger = _ledger()
+    ledger["mission_clock"].update(
+        {
+            "started_at": "2026-10-17T02:00:00Z",
+            "deadline_at": "2026-10-17T04:00:00Z",
+        }
+    )
+    original = copy.deepcopy(ledger)
+
+    with pytest.raises(LedgerError, match="authorization reference"):
+        begin_new_mission_run(ledger, authorization_ref="", now="2026-10-17T02:10:00Z")
+    assert ledger == original
+
+    with pytest.raises(LedgerError, match="only after the current clock expires"):
+        begin_new_mission_run(
+            ledger,
+            authorization_ref="active-user-request-2026-10-17",
+            now="2026-10-13T14:00:00Z",
+        )
+    assert ledger == original
 
 
 def test_mission_requirement_lines_are_hash_indexed_without_copying_source_text():

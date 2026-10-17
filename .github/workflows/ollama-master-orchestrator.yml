@@ -1228,16 +1228,30 @@ jobs:
         run: |
           set -Eeuo pipefail
 
+          PREFLIGHT_RESULT="${{ needs.pre-flight-checks.result }}"
+          MATRIX_RESULT="${{ needs.comprehensive-validation.result }}"
+          ENHANCED_TEST_RESULT="${{ needs.enhanced-test-execution.result }}"
           TESTS_STATUS="${{ needs.enhanced-test-execution.outputs.tests_passed }}"
+          AGENT_TRIGGER_RESULT="${{ needs.trigger-agent-on-success.result }}"
 
-          if [ "${TESTS_STATUS}" = "true" ]; then
+          if [ "${TESTS_STATUS}" = "true" ] && \
+             [ "${PREFLIGHT_RESULT}" = "success" ] && \
+             [ "${MATRIX_RESULT}" = "success" ] && \
+             [ "${ENHANCED_TEST_RESULT}" = "success" ] && \
+             [ "${AGENT_TRIGGER_RESULT}" = "success" ]; then
             FINAL_STATUS="PASSED"
           else
             FINAL_STATUS="FAILED"
           fi
 
-          echo "final_status=${FINAL_STATUS}" \
-            >> "$GITHUB_OUTPUT"
+          {
+            echo "final_status=${FINAL_STATUS}"
+            echo "preflight_result=${PREFLIGHT_RESULT}"
+            echo "matrix_result=${MATRIX_RESULT}"
+            echo "enhanced_test_result=${ENHANCED_TEST_RESULT}"
+            echo "tests_passed=${TESTS_STATUS:-NOT_REPORTED}"
+            echo "agent_trigger_result=${AGENT_TRIGGER_RESULT}"
+          } >> "$GITHUB_OUTPUT"
 
           echo "Final validation status: ${FINAL_STATUS}"
 
@@ -1255,14 +1269,25 @@ jobs:
 
           REPORT_FILE="VALIDATION_REPORT_$(date +%Y%m%d_%H%M%S).md"
 
-          TESTS_STATUS="${{ needs.enhanced-test-execution.outputs.tests_passed }}"
+          PREFLIGHT_RESULT="${{ steps.final_status.outputs.preflight_result }}"
+          MATRIX_RESULT="${{ steps.final_status.outputs.matrix_result }}"
+          ENHANCED_TEST_RESULT="${{ steps.final_status.outputs.enhanced_test_result }}"
+          TESTS_STATUS="${{ steps.final_status.outputs.tests_passed }}"
+          AGENT_TRIGGER_RESULT="${{ steps.final_status.outputs.agent_trigger_result }}"
+          TEST_COUNT="${{ needs.enhanced-test-execution.outputs.test_count }}"
 
-          if [ "${TESTS_STATUS}" = "true" ]; then
+          if [ -z "${TEST_COUNT}" ]; then
+            TEST_COUNT="NOT_REPORTED"
+          fi
+
+          if [ "${ENHANCED_TEST_RESULT}" = "success" ] && [ "${TESTS_STATUS}" = "true" ]; then
             TEST_STATUS_TEXT="PASSED"
-            AGENT_STATUS_TEXT="TRIGGERED"
-          else
+          elif [ "${ENHANCED_TEST_RESULT}" = "skipped" ]; then
+            TEST_STATUS_TEXT="NOT_REPORTED (enhanced test job skipped)"
+          elif [ "${TESTS_STATUS}" = "false" ]; then
             TEST_STATUS_TEXT="FAILED"
-            AGENT_STATUS_TEXT="NOT TRIGGERED"
+          else
+            TEST_STATUS_TEXT="NOT_REPORTED"
           fi
 
           cat > "${REPORT_FILE}" <<EOF
@@ -1285,16 +1310,18 @@ jobs:
           | Component | Status |
           |-----------|--------|
           | Pre-Flight Checks | ${{ needs.pre-flight-checks.result }} |
-          | Platform Validation | ${{ needs.comprehensive-validation.result }} |
-          | Feature Validation | ${{ needs.comprehensive-validation.result }} |
-          | Comprehensive Test Suite | ${TEST_STATUS_TEXT} |
-          | Autonomous Agent Trigger | ${AGENT_STATUS_TEXT} |
+          | Comprehensive Validation Matrix (aggregate) | ${MATRIX_RESULT} |
+          | Matrix per-type results | See individual matrix check runs |
+          | Enhanced Test Job | ${ENHANCED_TEST_RESULT} |
+          | Enhanced Test Outcome | ${TEST_STATUS_TEXT} |
+          | Autonomous Agent Trigger Job | ${AGENT_TRIGGER_RESULT} |
+          | Final Validation | ${{ steps.final_status.outputs.final_status }} |
 
           ## Test Metrics
 
-          - Total Tests: ${{ needs.enhanced-test-execution.outputs.test_count }}
+          - Total Tests Collected: ${TEST_COUNT}
           - Tests Passed: ${TESTS_STATUS}
-          - Test Job Result: ${{ needs.enhanced-test-execution.result }}
+          - Test Job Result: ${ENHANCED_TEST_RESULT}
 
           ## Auto-Healing
 
@@ -1356,19 +1383,25 @@ jobs:
         run: |
           set -Eeuo pipefail
 
-          TESTS_STATUS="${{ needs.enhanced-test-execution.outputs.tests_passed }}"
+          PREFLIGHT_RESULT="${{ steps.final_status.outputs.preflight_result }}"
+          MATRIX_RESULT="${{ steps.final_status.outputs.matrix_result }}"
+          ENHANCED_TEST_RESULT="${{ steps.final_status.outputs.enhanced_test_result }}"
+          TESTS_STATUS="${{ steps.final_status.outputs.tests_passed }}"
+          TEST_COUNT="${{ needs.enhanced-test-execution.outputs.test_count }}"
 
-          if [ "${TESTS_STATUS}" = "true" ]; then
+          if [ -z "${TEST_COUNT}" ]; then
+            TEST_COUNT="NOT_REPORTED"
+
+          if [ "${TESTS_STATUS}" = "true" ] && \
+             [ "${PREFLIGHT_RESULT}" = "success" ] && \
+             [ "${MATRIX_RESULT}" = "success" ] && \
+             [ "${ENHANCED_TEST_RESULT}" = "success" ]; then
 
             TEST_STATUS="PASSED"
-
-            AGENT_STATUS="AUTONOMOUS AGENT TRIGGERED"
 
           else
 
             TEST_STATUS="FAILED"
-
-            AGENT_STATUS="AUTONOMOUS AGENT NOT TRIGGERED"
 
           fi
 
@@ -1380,16 +1413,17 @@ jobs:
           | Component | Result |
           |---|---|
           | Pre-Flight Checks | ${{ needs.pre-flight-checks.result }} |
-          | Platform Validation | ${{ needs.comprehensive-validation.result }} |
-          | Feature Validation | ${{ needs.comprehensive-validation.result }} |
+          | Comprehensive Validation Matrix (aggregate) | ${MATRIX_RESULT} |
+          | Matrix per-type results | See individual matrix check runs |
+          | Enhanced Test Job | ${ENHANCED_TEST_RESULT} |
           | Test Suite | ${TEST_STATUS} |
-          | Agent Trigger | ${AGENT_STATUS} |
+          | Final Validation | ${{ steps.final_status.outputs.final_status }} |
 
           ## Test Details
 
-          - Total collected: ${{ needs.enhanced-test-execution.outputs.test_count }}
+          - Total collected: ${TEST_COUNT}
           - Tests passed: ${TESTS_STATUS}
-          - Test job: ${{ needs.enhanced-test-execution.result }}
+          - Test job: ${ENHANCED_TEST_RESULT}
 
           ## Auto-Healing
 
@@ -1424,11 +1458,19 @@ jobs:
         run: |
           set -Eeuo pipefail
 
+          PREFLIGHT_RESULT="${{ needs.pre-flight-checks.result }}"
+          MATRIX_RESULT="${{ needs.comprehensive-validation.result }}"
+          ENHANCED_TEST_RESULT="${{ needs.enhanced-test-execution.result }}"
           TESTS_STATUS="${{ needs.enhanced-test-execution.outputs.tests_passed }}"
+           AGENT_TRIGGER_RESULT="${{ needs.trigger-agent-on-success.result }}"
 
-          if [ "${TESTS_STATUS}" != "true" ]; then
+          if [ "${TESTS_STATUS}" != "true" ] || \
+             [ "${PREFLIGHT_RESULT}" != "success" ] || \
+             [ "${MATRIX_RESULT}" != "success" ] || \
+             [ "${ENHANCED_TEST_RESULT}" != "success" ] || \
+             [ "${AGENT_TRIGGER_RESULT}" != "success" ]; then
 
-            echo "::error::Final validation failed because the enhanced test suite did not pass."
+            echo "::error::Final validation failed because one or more required validation jobs did not succeed."
 
             exit 1
 

@@ -34,9 +34,11 @@ The autonomous agent may collect read-only diagnostics and propose bounded remed
 
 ## Two-hour mission monitoring
 
+- On every mission continuation, refresh the complete PH01-PH18 dashboard and all feature metrics supported by current evidence in both `oe2.txt` and `remotecompletion.md` through the supported checkpoint writer; record unavailable metrics as `NOT_MEASURED` and correlate machine evidence. A metrics refresh cannot resolve findings, complete phases, or restart an expired clock.
 - Record `PH01`-`PH18` status, UTC timing, retries, security evidence, unresolved findings, blockers, and next actions without storing secrets or sensitive source content; keep `M01`-`M16` as distinct requirement-task IDs.
 - Use the mission-ledger updater to record security-task start/finish and evidence references; do not mark a finding verified complete without remediation evidence and required checks.
 - Keep the time budget independent of security approval. Unresolved or unknown security state remains visible and blocks protected completion regardless of elapsed time or local test results.
+- When a security or alert-visibility gate is unresolved, preserve it as a blocker and continue only independent safe local/read-only tasks; do not suppress the finding, self-approve it, or claim the blocked operation succeeded.
 - Preserve unfinished safe work at the deadline; do not downgrade, suppress, or mark a finding resolved to meet the window.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->

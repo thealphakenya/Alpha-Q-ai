@@ -49,6 +49,7 @@ Use a verified, bounded sequence from developer input through Copilot planning a
 
 ## Two-hour mission monitoring
 
+- On every mission continuation, refresh the complete PH01-PH18 dashboard and all feature metrics supported by current evidence in both `oe2.txt` and `remotecompletion.md` through the supported checkpoint writer; record unavailable metrics as `NOT_MEASURED` and correlate machine evidence. Do not infer phase completion or restart an expired clock from refreshed metrics.
 - Track all 18 canonical mission phases by stable IDs `PH01`-`PH18`; retain `M01`-`M16` as separate requirement-task IDs. Record actual UTC start/finish and elapsed time, status, retries, evidence, blockers, dependencies, and next actions in the latest checkpoint.
 - Index every authored nonblank line in `latest mission.md` in the canonical task ledger by source line and SHA-256; retain semantic review as pending until mapped to acceptance evidence, and never treat line counts as completion.
 - Use `python -m scripts.mission_task_ledger sync-mission` only when intentionally adopting `latest mission.md`; use `refresh-metrics` to rebuild the phase catalog and paired dashboards from the verified mirror set.

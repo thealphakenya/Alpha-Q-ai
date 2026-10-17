@@ -139,7 +139,7 @@
       }
     ]
   },
-  "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
+  "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
   "current_phase": "PH01",
   "inventory_coverage": {
     "instruction_files_discovered_and_read": 9,
@@ -637,15 +637,15 @@
     "weighted_completion_percent": null,
     "weighting_method": "Not calculated until measurable acceptance evidence and defensible per-requirement weights are established; section counts are tracking only."
   },
-  "ledger_id": "newmission-120-minute-2026-10-13",
+  "ledger_id": "newmission-120-minute-2026-10-17-590f381a",
   "ledger_type": "canonical_mission_section_execution_ledger",
   "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
   "mission_clock": {
     "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
-    "clock_source": "active request timestamp",
-    "deadline_at": "2026-10-13T15:50:19.075+00:00",
+    "clock_source": "explicit_user_authorized_new_run",
+    "deadline_at": "2026-10-17T06:22:14.561431Z",
     "monotonic_continuity_available": false,
-    "started_at": "2026-10-13T13:50:19.075+00:00"
+    "started_at": "2026-10-17T04:22:14.561431Z"
   },
   "mission_phase_catalog": {
     "phase_count": 18,
@@ -10319,6 +10319,80 @@
     "not_reviewed": 760,
     "reviewed": 0
   },
+  "mission_run_authorization": {
+    "authorized_at": "2026-10-17T04:22:14.561431Z",
+    "reference": "user-continue-2026-10-17T0421Z",
+    "scope": "local and read-only continuation; protected and remote actions remain gated",
+    "source": "explicit_user_request"
+  },
+  "mission_run_history": [
+    {
+      "archived_at": "2026-10-17T02:14:54.448196Z",
+      "authorization_ref": "active-user-request-2026-10-17",
+      "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
+      "deadline_at": "2026-10-13T15:50:19.075+00:00",
+      "ledger_id": "newmission-120-minute-2026-10-13",
+      "mission_clock": {
+        "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
+        "clock_source": "active request timestamp",
+        "deadline_at": "2026-10-13T15:50:19.075+00:00",
+        "monotonic_continuity_available": false,
+        "started_at": "2026-10-13T13:50:19.075+00:00"
+      },
+      "phase_status_counts": {
+        "BLOCKED": 0,
+        "FAILED": 0,
+        "IN_PROGRESS": 0,
+        "PARTIALLY_COMPLETE": 5,
+        "PASS": 0,
+        "PENDING": 13
+      },
+      "started_at": "2026-10-13T13:50:19.075+00:00",
+      "superseded_by_correlation_id": "1a2b5c00-18a8-4331-af16-9e58cb14b8db",
+      "superseded_by_ledger_id": "newmission-120-minute-2026-10-17-1a2b5c00",
+      "task_status_counts": {
+        "blocked": 2,
+        "failed": 0,
+        "in_progress": 0,
+        "partially_complete": 9,
+        "pending": 5,
+        "verified_complete": 0
+      }
+    },
+    {
+      "archived_at": "2026-10-17T04:22:14.561431Z",
+      "authorization_ref": "user-continue-2026-10-17T0421Z",
+      "correlation_id": "1a2b5c00-18a8-4331-af16-9e58cb14b8db",
+      "deadline_at": "2026-10-17T04:14:54.448196Z",
+      "ledger_id": "newmission-120-minute-2026-10-17-1a2b5c00",
+      "mission_clock": {
+        "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
+        "clock_source": "explicit_user_authorized_new_run",
+        "deadline_at": "2026-10-17T04:14:54.448196Z",
+        "monotonic_continuity_available": false,
+        "started_at": "2026-10-17T02:14:54.448196Z"
+      },
+      "phase_status_counts": {
+        "BLOCKED": 0,
+        "FAILED": 0,
+        "IN_PROGRESS": 0,
+        "PARTIALLY_COMPLETE": 5,
+        "PASS": 0,
+        "PENDING": 13
+      },
+      "started_at": "2026-10-17T02:14:54.448196Z",
+      "superseded_by_correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
+      "superseded_by_ledger_id": "newmission-120-minute-2026-10-17-590f381a",
+      "task_status_counts": {
+        "blocked": 3,
+        "failed": 0,
+        "in_progress": 0,
+        "partially_complete": 7,
+        "pending": 5,
+        "verified_complete": 1
+      }
+    }
+  ],
   "observed_local_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
   "phase_history": [
     {
@@ -10368,12 +10442,12 @@
   "schema_version": "1.0",
   "status": "IN_PROGRESS",
   "status_counts": {
-    "blocked": 2,
+    "blocked": 3,
     "failed": 0,
     "in_progress": 0,
-    "partially_complete": 9,
+    "partially_complete": 7,
     "pending": 5,
-    "verified_complete": 0
+    "verified_complete": 1
   },
   "target_branch": "codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
   "target_branch_matches_local": true,
@@ -10394,34 +10468,44 @@
           "finished_at": "2026-10-13T22:15:11.296194Z",
           "outcome": "PARTIALLY_COMPLETE",
           "started_at": "2026-10-13T22:15:11.101784Z"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 89.921,
+          "finished_at": "2026-10-17T02:16:48.336752Z",
+          "outcome": "BLOCKED",
+          "started_at": "2026-10-17T02:15:18.416105Z"
         }
       ],
       "blockers": [
-        "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified."
+        "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
+        "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown."
       ],
       "dependencies": [],
-      "elapsed_seconds": 156.119,
+      "elapsed_seconds": 246.04,
       "estimated_duration_minutes": null,
       "evidence_refs": [
-        "remote-evidence-ledger.jsonl:correlation_id=b57e7caf-9994-4400-bdad-96a066b8a14e"
+        "remote-evidence-ledger.jsonl:correlation_id=b57e7caf-9994-4400-bdad-96a066b8a14e",
+        "remote-evidence-ledger.jsonl#github-readonly-preflight:1a2b5c00-18a8-4331-af16-9e58cb14b8db",
+        "remotecompletion.md#github-readonly-preflight:2026-10-17T02:15:59.221652Z"
       ],
       "failure_history": [],
-      "finished_at": "2026-10-13T22:15:11.296194Z",
+      "finished_at": "2026-10-17T02:16:48.336752Z",
       "heading": "Verify the target before changing anything",
       "id": "M01",
       "implementation_sha": null,
-      "last_started_at": "2026-10-13T22:15:11.101784Z",
-      "next_action": "Verify GitHub identity and branch policy through an authorized read-only path if access becomes available.",
+      "last_started_at": "2026-10-17T02:15:18.416105Z",
+      "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
       "owner": "Current mission execution; remote authority remains external.",
       "priority": "P0",
       "remote_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
-      "result": "Corrected required branch binding to the exact checked-out/upstream origin ref; fresh git ls-remote observed the remote branch at the same SHA as local HEAD. M01 remains partial because authenticated identity, branch protection, write authority, and terminal workflow evidence are unavailable.",
-      "retries": 1,
+      "result": "GitHub CLI identity victorisalpha verified via read-only /user; both target repos are public with main default; protection policy remains UNKNOWN after HTTP 403.",
+      "retries": 2,
       "risk": "HIGH",
       "section": 1,
       "source_line": 18,
       "started_at": "2026-10-13T13:50:19.075+00:00",
-      "status": "PARTIALLY_COMPLETE",
+      "status": "BLOCKED",
       "test_results": [],
       "workflow_evidence": []
     },
@@ -10558,32 +10642,42 @@
           "outcome": "PARTIALLY_COMPLETE",
           "started_at": "2026-10-13T13:50:19.075+00:00",
           "timing_basis": "utc_wall_interval_process_activity_unknown"
+        },
+        {
+          "active_time_known": false,
+          "elapsed_seconds": 15.879,
+          "finished_at": "2026-10-17T02:16:33.744301Z",
+          "outcome": "VERIFIED_COMPLETE",
+          "started_at": "2026-10-17T02:16:17.865480Z"
         }
       ],
       "blockers": [],
       "dependencies": [],
-      "elapsed_seconds": 282916.719,
+      "elapsed_seconds": 282932.598,
       "estimated_duration_minutes": null,
       "evidence_refs": [
         "ollamatracks/mission-task-ledger.json",
         "oe2.txt",
-        "remotecompletion.md"
+        "remotecompletion.md",
+        "remote-evidence-ledger.jsonl#mission-new-run:1a2b5c00-18a8-4331-af16-9e58cb14b8db",
+        "tests/test_mission_task_ledger.py::test_new_mission_run_archives_expired_clock_and_preserves_all_statuses"
       ],
       "failure_history": [],
-      "finished_at": "2026-10-16T20:25:35.794293Z",
+      "finished_at": "2026-10-17T02:16:33.744301Z",
       "heading": "Start a strict two-hour execution clock",
       "id": "M04",
       "implementation_sha": null,
-      "next_action": "Preserve this expired clock; do not restart or extend it. Record any future authorized mission run under a new explicit clock and correlation ID.",
+      "last_started_at": "2026-10-17T02:16:17.865480Z",
+      "next_action": "Continue with the next dependency-ready safe task; protected and remote actions remain independently gated.",
       "priority": "P0",
       "remote_sha": null,
-      "result": "The 120-minute deadline and UTC elapsed/remaining metrics are enforced and reported; elapsed process-active time is unavailable and the existing run expired.",
-      "retries": 0,
+      "result": "Archived the expired mission clock and prior correlation without changing task or phase statuses; established a distinct user-authorized local run with a fresh correlation and fixed 120-minute deadline.",
+      "retries": 1,
       "risk": "MEDIUM",
       "section": 4,
       "source_line": 128,
       "started_at": "2026-10-13T13:50:19.075+00:00",
-      "status": "PARTIALLY_COMPLETE",
+      "status": "VERIFIED_COMPLETE",
       "test_results": [],
       "workflow_evidence": []
     },
@@ -11226,7 +11320,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-17T01:35:48.466114Z",
+  "updated_at": "2026-10-17T05:10:34.820705Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

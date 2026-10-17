@@ -1,6 +1,6 @@
 # QMOI Ollama Autonomous Agent - Complete Enhancement Guide
 
-**Last Updated:** 2026-08-13  
+**Last Updated:** 2026-10-17  
 **Status:** Full Multi-Platform Implementation  
 **Scope:** Comprehensive automated testing, validation, and deployment
 
@@ -45,6 +45,13 @@ Required setup flow:
 14. Only print success messages when the runtime proof, model proof, inference proof, validation proof, and checkpoint proof all pass.
 
 This setup contract is the official source for GitHub-hosted execution and must be preserved in every run, CI workflow, and documentation update.
+
+### Validation report integrity
+
+- Report a matrix job as an aggregate result; do not repeat it as if it proved separate platform and feature outcomes. Link or refer to the individual matrix checks for per-type status.
+- If a job is skipped or its output is empty, report `NOT_REPORTED`; never infer test counts or a pass from missing outputs.
+- The master-orchestrator final status is `PASSED` only when pre-flight, the comprehensive-validation matrix, enhanced tests with `tests_passed=true`, and the authorized agent-trigger job all succeed. Otherwise report `FAILED` and retain the individual job results.
+- Local workflow validation is evidence about the checked-out workflow files only; it does not prove that the target-owned remote workflow contains the same revision or passed on an exact SHA.
 
 ### Key Responsibilities
 
@@ -730,7 +737,7 @@ The QMOI Ollama Autonomous Agent provides:
 ---
 
 **Maintained by:** QMOI Development Team  
-**Last Updated:** 2026-08-13  
+**Last Updated:** 2026-10-17  
 **Status:** Production Ready
 
 <!-- BEGIN QMOI MANAGED: ollama-reference-audit-gate -->

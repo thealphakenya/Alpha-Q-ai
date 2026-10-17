@@ -8,6 +8,7 @@ Includes autonomous self-healing and timeout protection contracts.
 import json
 import subprocess
 import pytest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
 from unittest.mock import patch, MagicMock
@@ -109,8 +110,10 @@ class TestAutonomousContinuation:
         target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
         target_ledger.parent.mkdir(parents=True)
         ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
-        ledger["mission_clock"]["started_at"] = "2099-01-01T00:00:00Z"
-        ledger["mission_clock"]["deadline_at"] = "2099-01-01T02:00:00Z"
+        started = datetime.now(timezone.utc)
+        deadline = started + timedelta(minutes=120)
+        ledger["mission_clock"]["started_at"] = started.isoformat().replace("+00:00", "Z")
+        ledger["mission_clock"]["deadline_at"] = deadline.isoformat().replace("+00:00", "Z")
         target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         agent = OllamaAutonomousAgent(base_path=tmp_path)
         metric_refreshes = []
@@ -157,7 +160,13 @@ class TestAutonomousContinuation:
         source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
         target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
         target_ledger.parent.mkdir(parents=True)
-        target_ledger.write_text(source_ledger.read_text(encoding="utf-8"), encoding="utf-8")
+        ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
+        deadline = datetime.now(timezone.utc) - timedelta(minutes=1)
+        ledger["mission_clock"]["started_at"] = (
+            deadline - timedelta(minutes=120)
+        ).isoformat().replace("+00:00", "Z")
+        ledger["mission_clock"]["deadline_at"] = deadline.isoformat().replace("+00:00", "Z")
+        target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         agent = OllamaAutonomousAgent(base_path=tmp_path)
         metric_refreshes = []
         monkeypatch.setattr(
@@ -186,7 +195,13 @@ class TestAutonomousContinuation:
         source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
         target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
         target_ledger.parent.mkdir(parents=True)
-        target_ledger.write_text(source_ledger.read_text(encoding="utf-8"), encoding="utf-8")
+        ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
+        deadline = datetime.now(timezone.utc) - timedelta(minutes=1)
+        ledger["mission_clock"]["started_at"] = (
+            deadline - timedelta(minutes=120)
+        ).isoformat().replace("+00:00", "Z")
+        ledger["mission_clock"]["deadline_at"] = deadline.isoformat().replace("+00:00", "Z")
+        target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         monkeypatch.setattr(
             "ollama_autonomous_agent.refresh_mission_metrics",
             lambda root: {"status": "REFRESHED"},
@@ -682,6 +697,10 @@ class TestAuditInventoryCommand:
             OllamaAutonomousAgent,
             "run_autonomous_loop",
             run_autonomous_loop,
+        )
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: {"status": "REFRESHED"},
         )
 
         assert original_main([

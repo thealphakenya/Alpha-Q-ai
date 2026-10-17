@@ -39,9 +39,11 @@ The conceptual Copilot -> local bridge -> Ollama loop may perform bounded local 
 
 ## Two-hour mission monitoring
 
+- On every mission continuation, refresh the complete PH01-PH18 dashboard and all feature metrics supported by current evidence in both `oe2.txt` and `remotecompletion.md` through the supported checkpoint writer; record unavailable metrics as `NOT_MEASURED` and correlate machine evidence. Refreshing metrics is not a phase transition, workflow result, authorization, or remote proof, and must not restart an expired clock.
 - Track phases `PH01`-`PH18` and task durations with real UTC events and one correlation ID across the paired documents and machine evidence; preserve `M01`-`M16` as requirement-task IDs.
 - Invoke the mission-ledger updater only from the verified target checkout; its checkpoint is local evidence unless a later authorized hosted run records terminal exact-SHA results.
 - Distinguish a configured schedule, accepted dispatch, running workflow, terminal conclusion, and independently verified remote state. The two-hour target does not replace any workflow or SHA gate.
+- A queued, running, skipped, or failed workflow remains non-terminal/incomplete as appropriate. Continue independent safe local/read-only work, retain a concrete next action for the blocked workflow, and never launch a duplicate dispatch to make progress appear continuous.
 - Leave unfinished actions durable at the deadline. Mark continuation verified only after a distinct run demonstrably restores the checkpoint and executes the next eligible task.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->

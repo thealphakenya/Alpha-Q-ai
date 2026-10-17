@@ -33,7 +33,9 @@
     "760_requirement_lines_pending_semantic_review",
     "77_of_85_operation_names_have_no_literal_hit_in_the_bounded_selected_code_test_scan_without_proving_absence_of_implementation",
     "79 normalized artifact paths exist locally but their contents were not rehashed; referenced payload size is about 1.2 GB.",
+    "ALLVALIDATIONS.md is generator-owned and its generator overwrites the whole file; historical entries were preserved rather than rewritten",
     "APP_MANIFEST and build_manifest disagree on checksums for all 10 shared binary filenames; release_assets_manifest contains only 3 assets and its 3 absolute paths are absent in this workspace.",
+    "Actor lacks admin and maintain permission; dispatch is not authorized",
     "Additional dirty paths have unclassified origin and were not modified.",
     "Additional pre-existing dirty paths have unclassified origin and were not modified.",
     "Additional referenced requirement sources and remote issues/PRs are not fully inventoried; remote state is unauthenticated/unverified.",
@@ -41,11 +43,26 @@
     "All 208 indexed topics remain unmeasured because zero eligible individual evidence files exist.",
     "All 85 identifiers appear in tracking artifacts, but 15 oversized/unreadable tracking inputs totaling 664554029 bytes were skipped.",
     "Alpha JavaScript/TypeScript analysis remains in progress; no overall terminal result is claimed.",
+    "Alpha and QMOI main/autosync-backup commit refs remain divergent",
+    "Alpha current-main Pages checks failed; branch protection and required checks remain unknown after HTTP 403",
+    "Alpha current-main checks include three failed Pages deployments and one analysis still in progress",
+    "Alpha current-main exact-SHA checks include three failed Pages deployments",
+    "Alpha current-main exact-SHA checks include three failed Pages deployments and one analysis in progress",
     "Alpha has five failed current-SHA checks including a new Realtime Ollama + PR Reconciliation failure and three Deploy failed Pages checks.",
+    "Alpha main and autosync-backup commit/tree differ",
+    "Alpha main and autosync-backup commit/tree diverge",
+    "Alpha main and autosync-backup refs differ",
     "Alpha main and autosync-backup refs differ; three deployment checks failed and one analysis remains in progress.",
+    "Alpha main still has three failed Pages checks; remote main/backup diverge",
     "Alpha-Q-ai main-protection GET returned HTTP 403; protected-branch policy is not verified. qmoi-enhanced protection was not freshly checked in this observation.",
+    "Alpha_active_main_ruleset_prohibits_deletion_and_non_fast_forward;_other_requirements_unverified",
+    "Alpha_active_ruleset_only_exposes_deletion_and_non_fast_forward_rules;_required_checks_unknown",
+    "Alpha_and_QMOI_autosync_backup_refs_differ",
     "Alpha_and_QMOI_main_and_autosync_backup_refs_diverge",
     "Alpha_and_QMOI_main_and_autosync_backup_refs_do_not_match",
+    "Alpha_and_QMOI_main_commits_differ_and_are_not_available_as_counterpart_objects",
+    "Alpha_current_main_SHA_has_three_failed_Netlify_Pages_checks",
+    "Alpha_main_branch_protection_endpoint_returns_HTTP_403",
     "At current Alpha main 3643ef79b72a6637dcf7bb8c92c516b20fa728ab, autosync run 36941265326 failed at Run guarded cross-repository sync; cause not yet established from sanitized report evidence.",
     "At published SHA d9fadae929f5fd9be95d7dfded766ce3359eb678, Markdown Inventory Refresh run 36643553772 failed before inventory execution because requests was not installed; the requirements-install repair remains local and needs publication plus a terminal rerun.",
     "At the same SHA, cross-repository autosync run 36643553762 failed because the source commit object was unavailable in the target checkout. A local preflight/reporting repair passes 3 focused tests but needs publication and a fresh target-owned run.",
@@ -55,20 +72,31 @@
     "Authenticated GitHub identity/policy, branch protection, write authority, terminal exact-SHA/tree proof remain unavailable; no dispatch or remote mutation occurred.",
     "Authenticated GitHub policy/write authority and exact remote SHA/tree evidence remain unavailable; no dispatch or remote mutation occurred.",
     "Authenticated GitHub policy/write authority and terminal exact-SHA/tree proof remain unavailable; no remote mutation was performed.",
+    "Authenticated actor lacks admin and maintain permission",
     "Authenticated issue/PR and provider/deployment state remain unknown.",
+    "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
     "Authenticated user lacks admin/maintain permissions on both repositories; push permission alone does not authorize protected changes.",
     "Authoritative QENGINEER.md feature source is missing or unreadable.",
     "Automatic cross-repository/default-branch write behaviors remain owner/policy review items; they were not dispatched or exercised.",
+    "Autonomous agent trigger was skipped/not triggered after validation failure",
     "Autosync report proves applied=false because Alpha commit 3643ef79b72a6637dcf7bb8c92c516b20fa728ab is unavailable in the QMOI target and QMOI commit 767cb450e171c0a26f44231e40fe92899951bb5f is unavailable in Alpha; both directions are non-fast-forward/unavailable pending object transfer by an authorized safe workflow.",
     "Bitget credentials are not verified as working; provider returned HTTP 400 code 40085, and no account balance snapshot is available.",
     "Both branch-protection GETs returned HTTP 403; rules and protected-write authority remain unknown.",
+    "Both cross-repository directions lack counterpart commit objects and fast-forward ancestry",
     "Both current-main-SHA bidirectional autosync runs failed at the guarded-sync step; cause is not exposed by step metadata and remains unknown.",
+    "Both direction source commit objects are unavailable in counterpart checkouts; fast-forward is false",
+    "Both main branch-protection GETs returned HTTP 403; policy remains unknown.",
     "Both repositories main and autosync-backup refs differ; no sync was attempted.",
     "Branch Sync Monitor & Auto-Update was skipped at the current main SHA in both repositories.",
+    "Branch protection and required checks remain unknown after HTTP 403",
+    "Branch protection previously returned HTTP 403 and actor lacks admin/maintain permission",
+    "Branch protection remains unavailable by HTTP 403 and owner authority is not present",
     "Branch protection remains unknown because both GET requests returned HTTP 403.",
     "Branch protection was last denied with HTTP 403; current rules and protected-write authority remain unknown.",
     "Branch protection/write authority remain unknown after HTTP 403.",
     "Branch-protection GET returned HTTP 403 for both repositories; current rules and protected-write authority remain unknown.",
+    "Branch-protection endpoints return HTTP 403 and authenticated actor lacks admin/maintain access",
+    "Branch-protection reads remain HTTP 403 and authenticated actor lacks admin/maintain permission",
     "Broad repository tests and authenticated remote evidence remain pending.",
     "Canonical mission ledger task selection and independent recovery are not wired into the reviewed workflows.",
     "CodeQL check runs are successful but alert visibility/triage was not checked; do not infer a clean security result.",
@@ -77,14 +105,19 @@
     "CodeQL_alert_visibility_unknown",
     "Credential scanning is pattern-based and limited to available materialized trees and local refs; future/unfetched/private histories and external stores are not covered.",
     "Cross-repository autosync on parent SHA was safely blocked because source commit objects were unavailable in the counterpart object databases; peer and backup parity remain unproven.",
+    "Cross-repository refs diverge and required branch policy remains unknown after HTTP 403",
+    "Cross-repository sync remains blocked because QMOI source commit is unavailable in Alpha target checkout",
     "Current push response reports 51 vulnerabilities (28 high, 19 moderate, 4 low); main-protection and Dependabot details remain inaccessible with HTTP 403.",
     "Current-SHA failed checks include autosync in both repositories and three Alpha Pages checks.",
     "Directive and operation counts are heuristic inventory signals; full semantic requirement mapping remains incomplete.",
     "Earlier broad-test failure traceback is unavailable; isolated test results do not establish the original failure cause.",
     "Exact target-owned remote SHA/tree evidence and branch-policy authority remain unavailable.",
+    "Exact-SHA QMOI orchestrator run 38999923937 completed failure",
+    "Exact-SHA test failure cause remains unknown; raw logs were not fetched",
     "Existing six-hour/twelve-hour workflows check out the default branch; their connection to this mission ledger and independent resume behavior are not verified.",
     "Expired mission clock intentionally pauses autonomous continuation until a separately authorized mission run is established.",
     "Feature/test-hook, security, workflow, semantic, and historical coverage remain incomplete.",
+    "Final-validation artifact conflicts with job metadata by reporting platform/features failure although corresponding job checks succeeded",
     "Full current agent tests and complete repo/history/PR/release/UI/API/auth/hooks/tracks and low-bandwidth audits remain pending.",
     "Further requirement sources referenced by historical logs remain to be inventoried and reconciled.",
     "GitHub API identity, branch protection, write authority, issues/PRs, and remote checks remain unverified.",
@@ -119,8 +152,15 @@
     "Local Ollama service and authorized hosted inference remain unavailable or untested.",
     "Local Ollama service is unavailable; hosted inference remains untested.",
     "Local main is 0 ahead/56 behind and has user/generated modifications; whole-worktree publication is unsafe.",
+    "Local master-orchestrator report fix and guide are not present on QMOI current main SHA",
+    "Local master-orchestrator report fix is not published to QMOI current main SHA",
+    "Local report correction is not present on QMOI current main SHA 8fa29ea66e632e99c41636ca7206b54ad86d6f2f",
     "Local syntax/policy checks are not remote workflow execution or exact-SHA evidence.",
+    "Local workflow report fix is not present at QMOI current main SHA",
+    "M01 branch-policy and remote-divergence evidence remains owner-gated",
+    "M01 remains blocked because both branch-protection reads returned HTTP 403 and write authority is unknown.",
     "M01 remains blocked by HTTP 403 branch-protection reads and absent admin/maintain authority; M02 depends on M01.",
+    "M01 remains blocked by divergent repository refs, missing effective branch-policy access, and failed remote checks",
     "M02 depends on M01 and the mission clock is expired; no task or phase transition was performed.",
     "M02 depends on M01 and the mission clock is expired; no task transition is authorized.",
     "M02 depends on M01, which remains PARTIALLY_COMPLETE because authenticated GitHub identity and required remote policy evidence are unavailable.",
@@ -142,6 +182,8 @@
     "M08 queue handoff and independently verified hosted resume remain unresolved",
     "M08 workflows do not consume the canonical task ledger or demonstrate independent mission-task resume.",
     "Main protection and Dependabot alert reads returned HTTP 403; current branch rules and vulnerability totals are unknown.",
+    "Main/backup branch and tree refs diverge; master refs are absent in both repositories",
+    "Main/backup divergence, absent master refs, and branch authorization blockers remain",
     "Master-authenticated credential add/edit/remove/rotation API/UI is not implemented or independently verified.",
     "Materialized local paths do not establish ignored, historical-ref, peer-repository, or remote coverage.",
     "Matrix app totals conflict internally: executive count says 10 while eight app sections and the app-type summary enumerate eight.",
@@ -161,7 +203,9 @@
     "Netlify_deployment_architecture_and_logs_unavailable",
     "Netlify_provider_logs_and_intended_site_architecture_unavailable",
     "Netlify_root_publish_missing_index_html_and_functions_directory",
+    "No admin or maintain permission is available for the authenticated actor",
     "No authenticated remote identity, terminal exact-SHA workflow result, or live Ollama inference was verified.",
+    "No dependency-ready local task can be transitioned through the supported ledger while the clock is expired.",
     "No exact-SHA remote tree/check or branch-policy proof is available.",
     "No exact-SHA terminal workflow/tree evidence was requested or obtained.",
     "No exact-SHA terminal workflow/tree verification was performed.",
@@ -172,6 +216,7 @@
     "No live metric endpoint or runtime sample was read by this inventory.",
     "No local v1.2.3 tag exists; remote tag/release/artifact retrieval, signatures, installs, and current exact-SHA provenance were not verified.",
     "No physical experiment or instrument-backed calibration evidence was available in this operation.",
+    "No raw logs were fetched; root cause remains unknown",
     "No remote tree parity or overall completion proof was obtained.",
     "No remote tree, cross-repository parity, or complete terminal check proof exists.",
     "No remote tree, required-check policy, or cross-repository parity proof was obtained.",
@@ -211,13 +256,30 @@
     "QLion checks were local candidate-universe tests only; remote exact-SHA validation is absent",
     "QLion_compiler_not_implemented",
     "QMOI Bidirectional Cross-Repository Autosync failed at the current main SHA in both repositories.",
+    "QMOI current-main exact-SHA validation test job failed; annotations only state process exit code 1 and do not identify failing tests",
+    "QMOI current-main orchestrator run 38999923937 failed test validation and final status",
+    "QMOI current-main response contains four successful checks but completeness of required checks is unknown",
+    "QMOI current-main response contains four successful checks but required-check completeness is unknown",
+    "QMOI exact-SHA master-orchestrator run 38999923937 failed tests and final status; report disagreed with job metadata",
+    "QMOI exact-SHA workflow response shows four successful checks only; required-check policy is unknown",
+    "QMOI final validation and status report job remains in progress; no terminal workflow conclusion",
     "QMOI guarded autosync failed on its current main SHA; cause remains unknown.",
     "QMOI has one failed current-SHA guarded autosync check; its cause remains unknown.",
+    "QMOI main and autosync-backup commit/tree differ",
+    "QMOI main and autosync-backup commit/tree diverge",
+    "QMOI main and autosync-backup refs differ",
     "QMOI main and autosync-backup refs differ; guarded autosync remains failed with unknown cause.",
+    "QMOI main source commit is unavailable in Alpha target checkout; run 38998076692 blocked before apply",
+    "QMOI report fix remains local and absent from current QMOI main SHA",
+    "QMOI source commit is unavailable in Alpha target checkout; target-owned run 38998076692 refused before apply",
+    "QMOI_autosync_ruleset_disabled;_other_rules_and_required_checks_unverified",
+    "QMOI_autosync_ruleset_is_disabled;_scope_not_generalized_to_other_rulesets_or_branches",
+    "QMOI_current_main_SHA_guarded_cross_repository_sync_failed_cause_unknown",
     "QMOI_main_CodeQL_JavaScript_TypeScript_in_progress",
     "QMOI_main_CodeQL_JavaScript_TypeScript_is_in_progress",
     "QMOI_main_CodeQL_JavaScript_TypeScript_job_in_progress",
     "QMOI_main_CodeQL_JavaScript_TypeScript_job_is_in_progress",
+    "QMOI_main_source_commit_unavailable_in_Alpha_target_checkout; guarded_sync_refused_before_apply",
     "QQUANTUM item 14 names TRANSIONQ.md, which is absent; TRANSION.md and TRANSITION.md are the existing near-name documents.",
     "QSEED_second_repository_live_checkout_and_remote_parity_not_verified",
     "QStats values are derived local counts and are not production health or balance evidence",
@@ -228,12 +290,15 @@
     "Read-only ref equality does not establish authenticated identity, branch-protection state, write authorization, terminal workflow success, required artifacts, or full remote completion.",
     "Remote GitHub identity, policy, and exact-SHA terminal evidence remain unavailable.",
     "Remote authentication, branch policies, exact-SHA hosted results, and production parity remain unverified.",
+    "Remote branch protection and required checks remain unknown after HTTP 403",
     "Remote completion remains blocked until independently verified target-owned terminal exact-SHA and tree evidence is recorded.",
     "Remote completion, GitHub protection/authority, Ollama inference, and independent hosted resume remain unverified.",
     "Remote policy and exact-SHA completion evidence remain unavailable.",
+    "Remote required-check completeness and cross-repository parity remain unverified",
     "Remote target ref and write authority are not verified; worktree contains existing user changes.",
     "Remote verification is unavailable to this local planner.",
     "Repository-wide lint remains non-clean on pre-existing diagnostics; the new shared metrics helper passes Ruff.",
+    "Required-check completeness remains unknown despite successful observed QMOI checks",
     "Ruff reports pre-existing diagnostics across the larger edited files; only the new shared helper is clean under the full Ruff default check.",
     "Semantic reconciliation of historical operation payloads and directive candidates remains incomplete.",
     "Semantic review of remaining operation payloads, directive candidates, and 15 unreviewed workflows is incomplete.",
@@ -242,8 +307,11 @@
     "Static source timestamps are not evidence of metric freshness or service health.",
     "Successful CodeQL check runs do not establish alert visibility or a clean security result.",
     "TRANSION.md requires fresh QAUDITS, lineage, tests, authorization, and exact-SHA evidence; completion is not proven.",
+    "Target-owned run 38998076692 refused before apply because source QMOI commit is unavailable in Alpha target checkout",
+    "Test job 117300845275 failed; annotation only says process exit code 1 and test counts are unavailable",
     "Tests do not exercise the cross-repo-autosync workflow-level counterpart contract push; its authorization alignment remains a policy review item.",
     "The 85-operation count applies only to checkpoint sections timestamped at or before the recorded 2026-10-13T23:24:41.113138Z cutoff; the same Git snapshot contains 6 later sections and 91 operation names overall.",
+    "The authenticated CLI user session is not GitHub App authentication; App rotation remains unverified.",
     "The bounded literal scan found 8 of the 85 operation labels in the selected implementation/test files and none in the two selected workflow files; 77 absent literal matches are not proof of missing semantic implementation.",
     "The canonical mission ledger is not consumed by any of the 17 reviewed GitHub workflow files; independent hosted resume remains unverified.",
     "The canonical mission ledger is not consumed by the reviewed workflows, so independent hosted ledger resume remains unverified.",
@@ -270,6 +338,8 @@
     "The ledger test fixture reads persisted M04 elapsed/retry state and two existing assertions fail independently of the new deadline guard.",
     "The local agent bridge and independent hosted mission-ledger resume are not verified; the reviewed workflows do not reference the canonical mission ledger.",
     "The mission clock is expired; no task or phase transition was made.",
+    "The recorded 120-minute mission deadline expired; no phase/task transition or clock reset is permitted.",
+    "The recorded mission deadline expired; phase/task transitions remain paused until a separately authorized run is established.",
     "The recorded mission time window has expired; no in-window completion claim is made.",
     "The repo security panel remains a separate remote blocker and must be treated as an outstanding issue until the flow proves otherwise.",
     "The requested chattracks.md instructions are unavailable in the checkout, accessible workspace trees, and locally available refs.",
@@ -279,8 +349,10 @@
     "Untracked atoz.md contains unverified financial/account/credential-like details and is excluded from publication pending review and redaction.",
     "Workflow findings require owner/policy reconciliation before any changes to automatic synchronization or merge behavior.",
     "Worktree contains pre-existing and current user changes; no broad staging or publication is safe.",
+    "Write authority is not established; no remote mutation was attempted.",
     "actions_side_rotated_app_key_configuration_unverified",
     "active_optimized_qaudit_inventory_not_terminal",
+    "actor_has_push_but_not_admin_or_maintain_permission_on_either_repository",
     "alpha_current_main_codeql_run_not_terminal",
     "alpha_current_main_sha_0b0ad3e4266e1d2455f5c51d6ac86970c030c4a8_codeql_still_in_progress_at_last_read",
     "alpha_current_main_sha_is_newer_than_local_and_codeql_not_terminal",
@@ -299,6 +371,10 @@
     "audit_inventory_remaining_catalog_instruction_memory_and_legacy_phases_not_terminal",
     "audit_inventory_run_interrupted_before_terminal_checkpoint",
     "audit_inventory_shards_remaining",
+    "authenticated actor has push but not admin or maintain permission",
+    "authenticated_actor_has_no_admin_or_maintain_permission",
+    "authenticated_actor_lacks_admin_and_maintain_permission",
+    "authenticated_actor_lacks_admin_and_maintain_permissions_on_both_repositories",
     "authoritative_QENGINEER_source_missing_or_unverified",
     "authoritative_qengineer_source_missing_or_unverified",
     "authorized remote completion gate remains blocked",
@@ -308,6 +384,8 @@
     "both_repositories_have_failed_vercel_status_contexts",
     "both_repositories_have_main_autosync_backup_divergence",
     "bounded_shard_run_not_terminal",
+    "branch protection and required checks remain unknown; branch-protection endpoints returned HTTP 403",
+    "branch_protected_false_fields_and_empty_effective_rules_response_do_not_override_active_or_external_ruleset_evidence",
     "branch_protection_and_code_scanning_alert_reads_denied_or_unavailable",
     "branch_protection_and_code_scanning_alert_reads_http_403",
     "branch_protection_and_rulesets_unverified",
@@ -319,6 +397,7 @@
     "branch_protection_reads_HTTP_403_for_both_repositories",
     "branch_protection_reads_return_http_403_for_both_repositories",
     "branch_protection_reads_returned_HTTP_403_for_both_repositories",
+    "branch_protection_required_checks_and_review_policy_remain_unknown_after_HTTP_403",
     "branch_protection_status_unavailable_http_403",
     "branch_protection_unavailable_for_both_repositories",
     "broader_autonomous_agent_suite_has_three_failures_and_one_headless_skip",
@@ -342,13 +421,16 @@
     "cross_repository_main_and_backup_SHA_parity_unverified",
     "cross_repository_main_and_backup_SHAs_diverge",
     "cross_repository_main_backup_and_restore_branch_parity_unverified",
+    "cross_repository_tree_parity_and_terminal_completion_not_verified",
     "current_authenticated_target_owned_exact_sha_remote_proof_unavailable",
     "current_remote_branch_protection_and_code_scanning_alert_apis_return_http_403",
     "default_branch_preflight_used_MY_CUSTOM_TOKEN_or_github.token_not_app",
     "dependency_scan_scope_limited_to_root_requirements",
+    "exact_remote_tree_and_cross_repository_parity_not_verified",
     "exact_sha_remote_completion_proof_unavailable",
     "existing_audit_inventory_not_terminal",
     "external_research_not_visited",
+    "failed_deployment_and_guarded_sync_checks_remain_unresolved",
     "failed_vercel_and_alpha_autosync_checks",
     "failed_vercel_statuses_and_alpha_autosync_workflow",
     "feature_hook_mapping_pending",
@@ -410,7 +492,12 @@
     "local_worktree_dirty_and_head_differs_from_both_remote_main_refs",
     "local_worktree_dirty_and_not_equal_to_remote_main_shas",
     "main_and_autosync_backup_shas_differ_in_both_repositories",
+    "main_branch_protection_GET_returned_HTTP_403_for_both_repositories",
+    "main_protection_endpoints_return_HTTP_403;_required_checks_and_reviews_unknown",
     "managed_document_and_sentence_audit_artifacts_may_be_stale_after_local_changes",
+    "master ref is absent in both repositories",
+    "master refs are absent in both repositories",
+    "master refs remain absent in both repositories",
     "master_and_qmoi_refs_not_advertised",
     "master_and_qmoi_refs_not_advertised_in_read_only_git_ls_remote",
     "master_and_qmoi_refs_were_not_advertised_by_git_ls_remote",
@@ -438,6 +525,8 @@
     "ofca_local_scan_incomplete_and_remote_history_unavailable",
     "ofca_remote_history_scan_incomplete",
     "official_release_sources_are_planned_but_not_fetched_or_verified",
+    "ollama_API_127.0.0.1_11434_connection_refused",
+    "ollama_executable_not_found_in_current_PATH",
     "ollama_inference_not_performed_by_local_document_refresh",
     "ollama_runtime_and_model_unavailable",
     "ollama_workflows_do_not_load_the_canonical_mission_ledger_or_task_queue",
@@ -472,6 +561,7 @@
     "reference_audit_is_stale_and_incomplete_local_scope_only",
     "remote_branch_protection_HTTP_403_both_repositories",
     "remote_codeql_and_cross_repository_security_evidence_not_observed",
+    "remote_completion_and_cross_repository_tree_parity_unverified",
     "remote_completion_authority_and_exact_sha_proof_unavailable",
     "remote_completion_gates_remain_blocked_by_denied_permissions_and_failed_required_statuses",
     "remote_completion_not_verified",
@@ -548,19 +638,21 @@
     "worktree_dirty_preserved",
     "worktree_user_changes_preserved"
   ],
-  "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
+  "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
   "current_local_checkpoint": {
-    "artifact_bytes": 416923,
+    "artifact_bytes": 420783,
     "artifact_path": "ollamatracks/mission-task-ledger.json",
     "artifact_refs": {
       "mission_task_ledger": {
-        "bytes": 416923,
+        "bytes": 420783,
         "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "3aa497a73efd72d7382607f0e9e1985c0c801f31d6bfff0210e04741b6e56c06"
+        "sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49"
       }
     },
-    "artifact_sha256": "3aa497a73efd72d7382607f0e9e1985c0c801f31d6bfff0210e04741b6e56c06",
+    "artifact_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
     "blockers": [
+      "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
+      "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
       "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
       "No independent mission-ledger resume has been demonstrated.",
       "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial.",
@@ -568,8 +660,8 @@
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
-    "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-    "generated_at": "2026-10-17T01:35:48.585188Z",
+    "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
+    "generated_at": "2026-10-17T05:10:34.952379Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -593,74 +685,74 @@
         "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
       },
       {
-        "bytes": 13048,
+        "bytes": 13468,
         "path": ".github/instructions/agent-autonomy.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "69634299ba6992935b1fbe10f24fa28d906733c6a21f05918a3126fe3f27b048"
+        "sha256": "c590788bdf1a1c14be6ea40b1414af8584bcd7948ceb8153b6d94eb633cb184f"
       },
       {
-        "bytes": 4738,
+        "bytes": 5795,
         "path": ".github/instructions/continue.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "ddee6e251fe067d0ec438191fe39fa1db87af8f21ab28526809df2a901cfad6e"
+        "sha256": "bf554e6c179740243dbe0eba1c634c308db183c9e09f03b3164a0c92443ea440"
       },
       {
-        "bytes": 1042,
+        "bytes": 1555,
         "path": ".github/instructions/continueinstructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "d51f264ffca9e033dff666477eb766968b24ca90141d16f342c2c8407144fb5c"
+        "sha256": "f32cfaec369ba9c833c15a2fae60a0182fe0929e27545f9ffee9e0049cac926e"
       },
       {
-        "bytes": 8004,
+        "bytes": 8706,
         "path": ".github/instructions/github-api.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "d824b10554a2b9184c6dfd92a5f893bb36b5579f1c1ae293b72602b46cb425c1"
+        "sha256": "6d1cbca78bc503f2d9fe18d0e2278857f988323f254bd8bcb9487da671d1ac6d"
       },
       {
-        "bytes": 7040,
+        "bytes": 7637,
         "path": ".github/instructions/release.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "6ddeb4f4707c75c0ff4214a81fc1a8970924942f545c658e78b8d422411827e1"
+        "sha256": "18a9d95e225ccf80dcc592f7d46dbdce18f2c7e0f4801384a3b8385196e57494"
       },
       {
-        "bytes": 8230,
+        "bytes": 8838,
         "path": ".github/instructions/security.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "8f909cf308bc241e4dcc3c66f1a80892bd851cd5dd91e62cc8e687c9ad6e9231"
+        "sha256": "5aa75b885b17d918edf819d687dc97ec71fbf67eff9076e60b3f2103ab86ba98"
       },
       {
-        "bytes": 8523,
+        "bytes": 9222,
         "path": ".github/instructions/workflows.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "9f6d04b83713d98f407a6a403e96445ef0343f0e5630ba3d73481a6b6211ce31"
+        "sha256": "b02dda5824acfb9e1fcd1421d6585d8ce5015af90f6762245585b60980693982"
       },
       {
-        "bytes": 10099,
+        "bytes": 10471,
         "path": ".github/instructions/workspace.instructions.md",
         "read_parse": "read_utf8; syntax_not_parsed",
         "scope": ".github/instructions/**",
-        "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
+        "sha256": "9af5434081f15946b29b2d0c40e122c27ce27264cf7c44b70f68784bcb66d5ba"
       }
     ],
-    "instruction_inventory_sha256": "e060befb12b78ad96c039e338681155a2f97f71cd10ae2f83a46df0d729aec46",
-    "local_head_sha": "1652c90056ec3af6ff4ad06ea6b04a8879bdf668",
-    "local_tree_sha": "350219bb7a5f21ed872a79ae3b451d41421e8bd6",
+    "instruction_inventory_sha256": "7f33e8dbae5065cfa49725649367aa38cfc6c9369d2e422948b65c0961ed7387",
+    "local_head_sha": "c974e679b2f982cd6c260b10a812d3b6119cc8ba",
+    "local_tree_sha": "10a48a3963d05bb3f61c4bf538a21b06bbf09b4f",
     "metrics": {
       "active_phase_id": "PH01",
       "active_task_id": null,
       "active_task_status": null,
-      "checkpoint_utc": "2026-10-17T01:35:48.502966+00:00",
-      "deadline_utc": "2026-10-13T15:50:19.075+00:00",
-      "elapsed_seconds": 301529.428,
-      "ledger_id": "newmission-120-minute-2026-10-13",
-      "ledger_sha256": "3aa497a73efd72d7382607f0e9e1985c0c801f31d6bfff0210e04741b6e56c06",
+      "checkpoint_utc": "2026-10-17T05:10:34.845848+00:00",
+      "deadline_utc": "2026-10-17T06:22:14.561431Z",
+      "elapsed_seconds": 2900.284,
+      "ledger_id": "newmission-120-minute-2026-10-17-590f381a",
+      "ledger_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
       "ledger_version": "1.0",
       "mission_phase_count": 18,
       "mission_phase_metrics": [
@@ -828,7 +920,7 @@
         "reviewed": 0
       },
       "mission_resume_plan": {
-        "deadline_expired": true,
+        "deadline_expired": false,
         "dependency_ready_task_ids": [
           "M01",
           "M04"
@@ -1759,16 +1851,16 @@
         "remote_mutation_performed": false,
         "remote_verified": false,
         "requirement_line_count": 760,
-        "status": "PAUSED_EXPIRED_CLOCK",
+        "status": "READY_FOR_AUTHORIZED_EXECUTOR",
         "task_transitions_performed": false,
         "tasks": [
           {
-            "blocker_count": 1,
+            "blocker_count": 2,
             "dependencies": [],
             "dependency_ready": true,
             "id": "M01",
             "priority": "P0",
-            "status": "PARTIALLY_COMPLETE",
+            "status": "BLOCKED",
             "unmet_dependencies": []
           },
           {
@@ -1803,7 +1895,7 @@
             "dependency_ready": true,
             "id": "M04",
             "priority": "P0",
-            "status": "PARTIALLY_COMPLETE",
+            "status": "VERIFIED_COMPLETE",
             "unmet_dependencies": []
           },
           {
@@ -1849,8 +1941,7 @@
             "status": "PARTIALLY_COMPLETE",
             "unmet_dependencies": [
               "M01",
-              "M03",
-              "M04"
+              "M03"
             ]
           },
           {
@@ -1957,7 +2048,6 @@
             "priority": "P1",
             "status": "PARTIALLY_COMPLETE",
             "unmet_dependencies": [
-              "M04",
               "M05",
               "M11"
             ]
@@ -2003,7 +2093,6 @@
               "M01",
               "M02",
               "M03",
-              "M04",
               "M07",
               "M11",
               "M12",
@@ -2042,25 +2131,25 @@
         ],
         "unreviewed_requirement_line_count": 760
       },
-      "mission_start_utc": "2026-10-13T13:50:19.075+00:00",
+      "mission_start_utc": "2026-10-17T04:22:14.561431Z",
       "mission_status_counts": {
-        "blocked": 2,
+        "blocked": 3,
         "failed": 0,
         "in_progress": 0,
-        "partially_complete": 9,
+        "partially_complete": 7,
         "pending": 5,
-        "verified_complete": 0
+        "verified_complete": 1
       },
       "monotonic_duration_available": false,
-      "remaining_seconds": 0.0,
+      "remaining_seconds": 4299.716,
       "remote_verified": false,
       "task_elapsed_seconds": null
     },
     "next_action": "Resume the highest-priority dependency-ready mission task.",
     "operation": "mission-metrics-refresh",
     "paired_document_sha256": {
-      "oe2.txt": "e4eaf6b317f40d6236b5548492c367a0c2d0cd7097e75856d4023321a30026cd",
-      "remotecompletion.md": "ccb7c61fe57acb53bd4b13740a6440830e3e93699a68decc128b9934b36d2605"
+      "oe2.txt": "1ee2d93ff7157f17bcbbf58e0acb46437e033cfdfafa72430ca99641daaa64ba",
+      "remotecompletion.md": "5ac3bbb50dbe7508a004024daa9642e2fd59d870ec3852f3d345247d2404571e"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -2085,7 +2174,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-17T01:35:48.585188Z",
+  "generated_at": "2026-10-17T05:10:34.952379Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -2416,17 +2505,19 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 416923,
+      "artifact_bytes": 420783,
       "artifact_path": "ollamatracks/mission-task-ledger.json",
       "artifact_refs": {
         "mission_task_ledger": {
-          "bytes": 416923,
+          "bytes": 420783,
           "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "3aa497a73efd72d7382607f0e9e1985c0c801f31d6bfff0210e04741b6e56c06"
+          "sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49"
         }
       },
-      "artifact_sha256": "3aa497a73efd72d7382607f0e9e1985c0c801f31d6bfff0210e04741b6e56c06",
+      "artifact_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
       "blockers": [
+        "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
+        "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
         "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
         "No independent mission-ledger resume has been demonstrated.",
         "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial.",
@@ -2434,8 +2525,8 @@
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
-      "correlation_id": "b57e7caf-9994-4400-bdad-96a066b8a14e",
-      "generated_at": "2026-10-17T01:35:48.585188Z",
+      "correlation_id": "590f381a-011d-4051-bea9-8f6d759250f5",
+      "generated_at": "2026-10-17T05:10:34.952379Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -2459,74 +2550,74 @@
           "sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662"
         },
         {
-          "bytes": 13048,
+          "bytes": 13468,
           "path": ".github/instructions/agent-autonomy.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "69634299ba6992935b1fbe10f24fa28d906733c6a21f05918a3126fe3f27b048"
+          "sha256": "c590788bdf1a1c14be6ea40b1414af8584bcd7948ceb8153b6d94eb633cb184f"
         },
         {
-          "bytes": 4738,
+          "bytes": 5795,
           "path": ".github/instructions/continue.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "ddee6e251fe067d0ec438191fe39fa1db87af8f21ab28526809df2a901cfad6e"
+          "sha256": "bf554e6c179740243dbe0eba1c634c308db183c9e09f03b3164a0c92443ea440"
         },
         {
-          "bytes": 1042,
+          "bytes": 1555,
           "path": ".github/instructions/continueinstructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "d51f264ffca9e033dff666477eb766968b24ca90141d16f342c2c8407144fb5c"
+          "sha256": "f32cfaec369ba9c833c15a2fae60a0182fe0929e27545f9ffee9e0049cac926e"
         },
         {
-          "bytes": 8004,
+          "bytes": 8706,
           "path": ".github/instructions/github-api.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "d824b10554a2b9184c6dfd92a5f893bb36b5579f1c1ae293b72602b46cb425c1"
+          "sha256": "6d1cbca78bc503f2d9fe18d0e2278857f988323f254bd8bcb9487da671d1ac6d"
         },
         {
-          "bytes": 7040,
+          "bytes": 7637,
           "path": ".github/instructions/release.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "6ddeb4f4707c75c0ff4214a81fc1a8970924942f545c658e78b8d422411827e1"
+          "sha256": "18a9d95e225ccf80dcc592f7d46dbdce18f2c7e0f4801384a3b8385196e57494"
         },
         {
-          "bytes": 8230,
+          "bytes": 8838,
           "path": ".github/instructions/security.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "8f909cf308bc241e4dcc3c66f1a80892bd851cd5dd91e62cc8e687c9ad6e9231"
+          "sha256": "5aa75b885b17d918edf819d687dc97ec71fbf67eff9076e60b3f2103ab86ba98"
         },
         {
-          "bytes": 8523,
+          "bytes": 9222,
           "path": ".github/instructions/workflows.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "9f6d04b83713d98f407a6a403e96445ef0343f0e5630ba3d73481a6b6211ce31"
+          "sha256": "b02dda5824acfb9e1fcd1421d6585d8ce5015af90f6762245585b60980693982"
         },
         {
-          "bytes": 10099,
+          "bytes": 10471,
           "path": ".github/instructions/workspace.instructions.md",
           "read_parse": "read_utf8; syntax_not_parsed",
           "scope": ".github/instructions/**",
-          "sha256": "596f43b53fac339269c9bd064c2edb2a1f204b602981b35e47c88018fb2db50d"
+          "sha256": "9af5434081f15946b29b2d0c40e122c27ce27264cf7c44b70f68784bcb66d5ba"
         }
       ],
-      "instruction_inventory_sha256": "e060befb12b78ad96c039e338681155a2f97f71cd10ae2f83a46df0d729aec46",
-      "local_head_sha": "1652c90056ec3af6ff4ad06ea6b04a8879bdf668",
-      "local_tree_sha": "350219bb7a5f21ed872a79ae3b451d41421e8bd6",
+      "instruction_inventory_sha256": "7f33e8dbae5065cfa49725649367aa38cfc6c9369d2e422948b65c0961ed7387",
+      "local_head_sha": "c974e679b2f982cd6c260b10a812d3b6119cc8ba",
+      "local_tree_sha": "10a48a3963d05bb3f61c4bf538a21b06bbf09b4f",
       "metrics": {
         "active_phase_id": "PH01",
         "active_task_id": null,
         "active_task_status": null,
-        "checkpoint_utc": "2026-10-17T01:35:48.502966+00:00",
-        "deadline_utc": "2026-10-13T15:50:19.075+00:00",
-        "elapsed_seconds": 301529.428,
-        "ledger_id": "newmission-120-minute-2026-10-13",
-        "ledger_sha256": "3aa497a73efd72d7382607f0e9e1985c0c801f31d6bfff0210e04741b6e56c06",
+        "checkpoint_utc": "2026-10-17T05:10:34.845848+00:00",
+        "deadline_utc": "2026-10-17T06:22:14.561431Z",
+        "elapsed_seconds": 2900.284,
+        "ledger_id": "newmission-120-minute-2026-10-17-590f381a",
+        "ledger_sha256": "fce2c6bb8893f2da085cfa073349f6eddd2b8a871b271221d53f4381c579cc49",
         "ledger_version": "1.0",
         "mission_phase_count": 18,
         "mission_phase_metrics": [
@@ -2694,7 +2785,7 @@
           "reviewed": 0
         },
         "mission_resume_plan": {
-          "deadline_expired": true,
+          "deadline_expired": false,
           "dependency_ready_task_ids": [
             "M01",
             "M04"
@@ -3625,16 +3716,16 @@
           "remote_mutation_performed": false,
           "remote_verified": false,
           "requirement_line_count": 760,
-          "status": "PAUSED_EXPIRED_CLOCK",
+          "status": "READY_FOR_AUTHORIZED_EXECUTOR",
           "task_transitions_performed": false,
           "tasks": [
             {
-              "blocker_count": 1,
+              "blocker_count": 2,
               "dependencies": [],
               "dependency_ready": true,
               "id": "M01",
               "priority": "P0",
-              "status": "PARTIALLY_COMPLETE",
+              "status": "BLOCKED",
               "unmet_dependencies": []
             },
             {
@@ -3669,7 +3760,7 @@
               "dependency_ready": true,
               "id": "M04",
               "priority": "P0",
-              "status": "PARTIALLY_COMPLETE",
+              "status": "VERIFIED_COMPLETE",
               "unmet_dependencies": []
             },
             {
@@ -3715,8 +3806,7 @@
               "status": "PARTIALLY_COMPLETE",
               "unmet_dependencies": [
                 "M01",
-                "M03",
-                "M04"
+                "M03"
               ]
             },
             {
@@ -3823,7 +3913,6 @@
               "priority": "P1",
               "status": "PARTIALLY_COMPLETE",
               "unmet_dependencies": [
-                "M04",
                 "M05",
                 "M11"
               ]
@@ -3869,7 +3958,6 @@
                 "M01",
                 "M02",
                 "M03",
-                "M04",
                 "M07",
                 "M11",
                 "M12",
@@ -3908,25 +3996,25 @@
           ],
           "unreviewed_requirement_line_count": 760
         },
-        "mission_start_utc": "2026-10-13T13:50:19.075+00:00",
+        "mission_start_utc": "2026-10-17T04:22:14.561431Z",
         "mission_status_counts": {
-          "blocked": 2,
+          "blocked": 3,
           "failed": 0,
           "in_progress": 0,
-          "partially_complete": 9,
+          "partially_complete": 7,
           "pending": 5,
-          "verified_complete": 0
+          "verified_complete": 1
         },
         "monotonic_duration_available": false,
-        "remaining_seconds": 0.0,
+        "remaining_seconds": 4299.716,
         "remote_verified": false,
         "task_elapsed_seconds": null
       },
       "next_action": "Resume the highest-priority dependency-ready mission task.",
       "operation": "mission-metrics-refresh",
       "paired_document_sha256": {
-        "oe2.txt": "e4eaf6b317f40d6236b5548492c367a0c2d0cd7097e75856d4023321a30026cd",
-        "remotecompletion.md": "ccb7c61fe57acb53bd4b13740a6440830e3e93699a68decc128b9934b36d2605"
+        "oe2.txt": "1ee2d93ff7157f17bcbbf58e0acb46437e033cfdfafa72430ca99641daaa64ba",
+        "remotecompletion.md": "5ac3bbb50dbe7508a004024daa9642e2fd59d870ec3852f3d345247d2404571e"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -4010,7 +4098,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "1652c90056ec3af6ff4ad06ea6b04a8879bdf668",
+    "local_head_sha": "c974e679b2f982cd6c260b10a812d3b6119cc8ba",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

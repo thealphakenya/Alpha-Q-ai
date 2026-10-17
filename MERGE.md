@@ -1,5 +1,15 @@
 # MERGE.md - Merge Procedures and Guidelines
 
+## Current read-only remote checkpoint — 2026-10-17T05:00:42Z
+
+- Correlation ID: `590f381a-011d-4051-bea9-8f6d759250f5`; this is a read-only observation. No remote mutation or completion claim was made.
+- Alpha-Q-ai `main=9e5a88d264bff344ece13b75df21417e5e174269`, `autosync-backup=6d925c33f0093035755772137d863618b3818ab0`; QMOI `main=397c28521474987ff3dee188034d212ab75b29b1`, `autosync-backup=d371de28f77b3ebea0244ccc1c13793a2654c395`. Main and backup refs differ in both repositories; `master` is absent in both.
+- On Alpha's observed main SHA, 13 checks were returned: 8 success and 4 failure, including the guarded cross-repository sync and three Pages checks. On QMOI's observed main SHA, 7 checks were returned: 6 success; required-check completeness remains unknown.
+- Both branch-protection GETs returned HTTP 403. The authenticated user has push but not admin/maintain permission; effective required checks and mutation authority remain unknown.
+- QMOI run `38999923937` failed on test validation at SHA `8fa29ea66e632e99c41636ca7206b54ad86d6f2f`; its final report artifact conflicts with job metadata. The local report-accuracy correction is not present on QMOI's current main SHA.
+- The guarded sync report for run `38998076692` showed the QMOI source commit unavailable in Alpha's target checkout and `applied=false`. The full local `tests/test_cross_repo_sync.py` module passed 18 tests, including the missing-object refusal/no-mutation case.
+- Remote tree/parity verification remains false. Resolve divergence and policy through an owner-authorized target workflow; do not force-push or infer authorization from branch metadata.
+
 ## Requested Codespaces branch reconciliation — 2026-10-05
 
 - Correlation ID: `ab2c9c5a-1a43-424a-b973-8af06f7b5ce4`.

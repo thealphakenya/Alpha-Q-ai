@@ -161,6 +161,30 @@ def validate_ledger(ledger: Any) -> dict[str, Any]:
                 raise LedgerError(f"{item.get('id')} has an invalid source-line hash")
             if not isinstance(item.get("semantic_reviewed"), bool):
                 raise LedgerError(f"{item.get('id')} has an invalid semantic-review state")
+    run_history = ledger.get("mission_run_history", [])
+    if not isinstance(run_history, list):
+        raise LedgerError("Mission run history must be a list")
+    for run in run_history:
+        if not isinstance(run, dict):
+            raise LedgerError("Mission run history contains a malformed record")
+        archived_clock = run.get("mission_clock")
+        if not isinstance(archived_clock, dict):
+            raise LedgerError("Mission run history is missing the archived clock")
+        run_started = _parse_utc(run.get("started_at"))
+        run_deadline = _parse_utc(run.get("deadline_at"))
+        if (
+            run_started != _parse_utc(archived_clock.get("started_at"))
+            or run_deadline != _parse_utc(archived_clock.get("deadline_at"))
+        ):
+            raise LedgerError("Archived mission clock does not match its indexed timestamps")
+        _parse_utc(run.get("archived_at"))
+        if run_deadline - run_started != timedelta(minutes=120):
+            raise LedgerError("Archived mission runs must retain their original 120-minute clock")
+        for field in ("ledger_id", "correlation_id", "superseded_by_ledger_id", "superseded_by_correlation_id"):
+            if not isinstance(run.get(field), str) or not run[field]:
+                raise LedgerError(f"Mission run history has an invalid {field}")
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,119}", str(run.get("authorization_ref", ""))):
+            raise LedgerError("Mission run history has an invalid authorization reference")
     for task in tasks:
         if task.get("status") not in MISSION_STATUSES:
             raise LedgerError(f"{task['id']} has an unsupported status")
@@ -333,10 +357,12 @@ def build_resume_plan(
     deadline_expired = instant >= deadline
     priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
     status_order = {
-        "IN_PROGRESS": 0,
-        "PARTIALLY_COMPLETE": 1,
-        "FAILED": 2,
-        "PENDING": 3,
+        "BLOCKED": 0,
+        "IN_PROGRESS": 1,
+        "PARTIALLY_COMPLETE": 2,
+        "FAILED": 3,
+        "VERIFIED_COMPLETE": 4,
+        "PENDING": 5,
     }
     requirement_records = ledger.get("mission_requirement_line_records", [])
     records_by_phase: dict[str, list[dict[str, Any]]] = {}
@@ -365,7 +391,7 @@ def build_resume_plan(
             "blocker_count": len(task.get("blockers", [])),
         })
 
-    resumable_statuses = set(status_order)
+    resumable_statuses = {"BLOCKED", "IN_PROGRESS", "PARTIALLY_COMPLETE", "FAILED", "PENDING", "VERIFIED_COMPLETE"}
     candidates = [
         task
         for task in task_records
@@ -736,6 +762,96 @@ def refresh_mission_metrics(root: Path) -> dict[str, Any]:
             "resume_plan": build_resume_plan(ledger),
             "checkpoint_timestamp": checkpoint["generated_at"],
             "remote_verified": False,
+        }
+    finally:
+        lock.release(invocation_id)
+
+
+def begin_new_mission_run(
+    ledger: dict[str, Any],
+    *,
+    authorization_ref: str,
+    now: str | None = None,
+) -> dict[str, Any]:
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,119}", authorization_ref):
+        raise LedgerError("A short, non-secret authorization reference is required")
+    timestamp = now or utc_now()
+    instant = _parse_utc(timestamp)
+    previous_clock = ledger["mission_clock"]
+    previous_deadline = _parse_utc(previous_clock["deadline_at"])
+    if instant < previous_deadline:
+        raise LedgerError("A new mission run can start only after the current clock expires")
+
+    previous_ledger_id = ledger["ledger_id"]
+    previous_correlation_id = ledger["correlation_id"]
+    new_correlation_id = str(uuid.uuid4())
+    new_ledger_id = f"newmission-120-minute-{instant.date().isoformat()}-{new_correlation_id[:8]}"
+    history = ledger.setdefault("mission_run_history", [])
+    history.append(
+        {
+            "ledger_id": previous_ledger_id,
+            "correlation_id": previous_correlation_id,
+            "started_at": previous_clock["started_at"],
+            "deadline_at": previous_clock["deadline_at"],
+            "mission_clock": dict(previous_clock),
+            "archived_at": instant.isoformat().replace("+00:00", "Z"),
+            "phase_status_counts": mission_phase_status_counts(ledger),
+            "task_status_counts": status_counts(ledger),
+            "superseded_by_ledger_id": new_ledger_id,
+            "superseded_by_correlation_id": new_correlation_id,
+            "authorization_ref": authorization_ref,
+        }
+    )
+    ledger["ledger_id"] = new_ledger_id
+    ledger["correlation_id"] = new_correlation_id
+    ledger["mission_run_authorization"] = {
+        "source": "explicit_user_request",
+        "reference": authorization_ref,
+        "authorized_at": instant.isoformat().replace("+00:00", "Z"),
+        "scope": "local and read-only continuation; protected and remote actions remain gated",
+    }
+    ledger["mission_clock"] = {
+        "started_at": instant.isoformat().replace("+00:00", "Z"),
+        "deadline_at": (instant + timedelta(minutes=120)).isoformat().replace("+00:00", "Z"),
+        "clock_source": "explicit_user_authorized_new_run",
+        "monotonic_continuity_available": False,
+        "checkpoint_cadence": previous_clock.get(
+            "checkpoint_cadence",
+            "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
+        ),
+    }
+    return {
+        "ledger_id": new_ledger_id,
+        "correlation_id": new_correlation_id,
+        "mission_clock": ledger["mission_clock"],
+        "archived_ledger_id": previous_ledger_id,
+        "archived_correlation_id": previous_correlation_id,
+        "phase_status_counts": mission_phase_status_counts(ledger),
+        "task_status_counts": status_counts(ledger),
+    }
+
+
+def start_new_mission_run(root: Path, *, authorization_ref: str) -> dict[str, Any]:
+    ledger_path = root / LEDGER_RELATIVE_PATH
+    ledger = load_ledger(ledger_path)
+    _verify_repository(root, ledger)
+    invocation_id = str(uuid.uuid4())
+    lock = ExecutionLock(root, "mission-task-ledger", stale_after=900)
+    lock.acquire(invocation_id)
+    try:
+        ledger = load_ledger(ledger_path)
+        _verify_repository(root, ledger)
+        run = begin_new_mission_run(ledger, authorization_ref=authorization_ref)
+        ledger["updated_at"] = utc_now()
+        validate_ledger(ledger)
+        _atomic_write(ledger_path, ledger)
+        checkpoint = _record_checkpoint(root, ledger_path, ledger, "mission-new-run", None)
+        return {
+            **run,
+            "checkpoint_timestamp": checkpoint["generated_at"],
+            "ledger_sha256": hashlib.sha256(ledger_path.read_bytes()).hexdigest(),
+            "remote_verified": False,
+            "remote_mutation_performed": False,
         }
     finally:
         lock.release(invocation_id)
@@ -1228,6 +1344,11 @@ def _parser() -> argparse.ArgumentParser:
     finish.add_argument("--next-action", default="")
     finish.add_argument("--blocker")
     finish.add_argument("--result")
+    new_run = subparsers.add_parser(
+        "new-run",
+        help="Start a separately authorized 120-minute run after expiry, preserving the previous run and statuses.",
+    )
+    new_run.add_argument("--authorization-ref", required=True, help="Short non-secret reference to the active user authorization.")
     phase_start = subparsers.add_parser("phase-start", help="Start or resume a mission phase.")
     phase_start.add_argument("phase_id")
     phase_finish = subparsers.add_parser("phase-finish", help="Record a mission phase outcome.")
@@ -1333,6 +1454,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.operation == "refresh-metrics":
             result = refresh_mission_metrics(root)
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 0
+        if args.operation == "new-run":
+            result = start_new_mission_run(root, authorization_ref=args.authorization_ref)
             print(json.dumps(result, indent=2, sort_keys=True))
             return 0
         if args.operation in {"start", "finish"}:

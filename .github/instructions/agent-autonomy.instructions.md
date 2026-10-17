@@ -80,6 +80,7 @@ Mission alignment: follow the canonical [latest mission](../../latest%20mission.
 
 ## Two-hour mission monitoring
 
+- On every mission continuation, refresh the complete PH01-PH18 dashboard and all feature metrics supported by current evidence in both `oe2.txt` and `remotecompletion.md` through the supported checkpoint writer; use `NOT_MEASURED` for unavailable feature metrics and keep one correlation ID across machine evidence. A refresh never changes phase status or proves completion, and an expired clock must not be restarted.
 - Use stable phase IDs `PH01`-`PH18` for the canonical mission and retain `M01`-`M16` only for the existing requirement-task ledger. Track phase status, actual UTC start/finish, elapsed seconds, retries, acceptance evidence, blockers, dependencies, and next action in the latest machine checkpoint.
 - Record phase/task transitions using the same correlation ID in `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl` via the supported checkpoint writer. Use monotonic timing only while the process is live; mark continuity unavailable after restarts.
 - Use `python -m scripts.mission_task_ledger phase-start PHASE_ID`, `phase-finish PHASE_ID`, `start Mxx`, and `finish Mxx` for task/phase transitions; the helper enforces ledger schema, branch matching, dependency readiness, bounded locks, and evidence-backed completion.

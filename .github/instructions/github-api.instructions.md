@@ -4,13 +4,16 @@ Mission alignment: follow the canonical [latest mission](../../latest%20mission.
 
 ## Required approach
 
-- Verify authenticated identity before any mutation.
-- Inspect branch protection and rulesets before merge or dispatch.
-- Classify HTTP 400/401/403/404/409/422/429/5xx separately.
-- Treat 403 and 404 as ambiguous until verified against auth and repo state.
-- Use repository dispatch or target-owned workflow triggers only when explicitly authorized.
-- Never claim success from a dispatch acceptance alone.
-- The autonomous agent must apply these identity, protection, authorization, and terminal-evidence checks to each remote operation; an access preflight is not mutation authority or parity evidence.
+For each remote operation, perform these checks in order:
+
+1. Verify authenticated identity before any mutation.
+2. Inspect branch protection and rulesets before merge or dispatch.
+3. Classify HTTP 400/401/403/404/409/422/429/5xx separately.
+4. For 403 or 404, proceed with caution and verify auth and repo state before taking further action.
+5. Use repository dispatch or target-owned workflow triggers only when explicitly authorized.
+6. Require terminal evidence before claiming success; dispatch acceptance alone is not success.
+7. Apply these checks to each remote operation. An access preflight is not mutation authority or parity evidence.
+
 - The Copilot-to-local-bridge-to-Ollama loop is a local execution path, not a GitHub credential path. Keep tokens and private keys out of structured payloads, model context, diffs, and return summaries; request remote work only through authorized least-privilege integrations and report its exact terminal evidence separately.
 
 ## Evidence requirements
@@ -42,8 +45,10 @@ Record:
 
 ## Two-hour mission monitoring
 
+- On every mission continuation, refresh the complete PH01-PH18 dashboard and all feature metrics supported by current evidence in both `oe2.txt` and `remotecompletion.md` through the supported checkpoint writer; record unavailable metrics as `NOT_MEASURED` and correlate machine evidence. This is local bookkeeping only: it does not complete phases, restart an expired clock, or change remote verification.
 - Track mission phases `PH01`-`PH18` with actual UTC phase times; keep `M01`-`M16` as the separate legacy requirement-task IDs. Correlate status, retries, evidence, blockers, and next actions across the paired Markdown checkpoint, machine state, and append-only event through the supported writer.
 - Keep the mission deadline separate from remote verification. Record identity, exact ref/SHA, endpoint response, and terminal evidence as observed; missing authentication or remote evidence remains blocked and must not be inferred from local elapsed-time metrics.
+- When identity, policy, or an endpoint blocks a remote operation, keep that operation queued with its owner/prerequisite and continue independent safe local or read-only work. Never convert the blocker into authorization, a dispatch, or completion.
 - Use the mission-ledger updater for local task/phase timing and retain its correlated remote-verification=false result until authenticated exact-SHA evidence is independently available.
 - Preserve unfinished work at the deadline. A scheduled trigger or dispatch is not proof that continuation executed or resumed.
 

@@ -8,7 +8,9 @@ Mission alignment: follow the canonical [latest mission](../../latest%20mission.
 - Install and runtime verification must happen before publication claims.
 - Keep failed artifacts and successful artifacts separate in evidence.
 - Retain release provenance and do not delete evidence to hide a failed attempt.
-- Autonomous release planning may run without supervision, but tag, publish, or deploy operations remain blocked until all release gates and explicit authority are verified.
+- Autonomous release planning may run without supervision. Before any tag, publish, or deploy operation:
+  1. Verify all release gates.
+  2. Confirm explicit authority.
 - Copilot/bridge/Ollama may prepare and locally validate bounded release work only. Return its diff and test evidence for review; do not let a local result initiate or imply a tag, publish, signing, deployment, or release approval.
 
 ## Required evidence
@@ -35,8 +37,10 @@ Mission alignment: follow the canonical [latest mission](../../latest%20mission.
 
 ## Two-hour mission monitoring
 
+- On every mission continuation, refresh the complete PH01-PH18 dashboard and all feature metrics supported by current evidence in both `oe2.txt` and `remotecompletion.md` through the supported checkpoint writer; record unavailable metrics as `NOT_MEASURED` and correlate machine evidence. This does not complete phases, restart an expired clock, or authorize release or deployment.
 - Track phases `PH01`-`PH18` and their task/phase elapsed time in the correlated mission checkpoint; keep release preparation distinct from publish/deploy evidence and retain `M01`-`M16` as requirement-task IDs.
 - Record phase/task transitions with `python -m scripts.mission_task_ledger ...`; keep release, signing, and deployment steps blocked until their separate authority and provenance gates pass.
+- A blocked release or deployment gate does not stop unrelated safe local mission work. Keep the gated action queued with its exact missing authority/evidence and never treat local preparation as permission to publish.
 - At the deadline, preserve release-related blockers, required approvals, exact source SHA, and the next safe action. Never use elapsed time or a completed local task to bypass release authority or provenance gates.
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->

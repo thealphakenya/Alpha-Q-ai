@@ -111,3 +111,52 @@ def test_realtime_monitor_reports_tracking_persistence_failures():
     assert "git rebase --abort || true" in conflict_path
     assert "exit 1" in conflict_path
     assert script.rstrip().endswith("exit 1")
+
+
+def test_master_orchestrator_report_does_not_invent_validation_results():
+    workflow_path = (
+        Path(__file__).resolve().parents[1]
+        / ".github/workflows/ollama-master-orchestrator.yml"
+    )
+    workflow = workflow_validator.load_workflow(workflow_path)
+
+    assert isinstance(workflow, dict)
+    steps = {
+        step.get("name"): step
+        for step in workflow["jobs"]["final-status-report"]["steps"]
+    }
+    status_script = steps["Determine final validation status"]["run"]
+    report_script = steps["Compile comprehensive report"]["run"]
+    summary_script = steps["Post final summary"]["run"]
+    final_gate = steps["Enforce final validation result"]["run"]
+
+    assert "Comprehensive Validation Matrix (aggregate)" in report_script
+    assert "Platform Validation | ${{ needs.comprehensive-validation.result }}" not in report_script
+    assert "Feature Validation | ${{ needs.comprehensive-validation.result }}" not in report_script
+    assert "NOT_REPORTED" in report_script
+    assert "| Final Validation | ${{ steps.final_status.outputs.final_status }} |" in report_script
+    assert "Comprehensive Validation Matrix (aggregate)" in summary_script
+    assert "Platform Validation | ${{ needs.comprehensive-validation.result }}" not in summary_script
+    assert "Feature Validation | ${{ needs.comprehensive-validation.result }}" not in summary_script
+    assert "| Final Validation | ${{ steps.final_status.outputs.final_status }} |" in summary_script
+    for script in (report_script, summary_script):
+        assert 'TEST_COUNT="${{ needs.enhanced-test-execution.outputs.test_count }}"' in script
+        assert 'TEST_COUNT="NOT_REPORTED"' in script
+
+    for condition in (
+        '[ "${TESTS_STATUS}" = "true" ]',
+        '[ "${PREFLIGHT_RESULT}" = "success" ]',
+        '[ "${MATRIX_RESULT}" = "success" ]',
+        '[ "${ENHANCED_TEST_RESULT}" = "success" ]',
+        '[ "${AGENT_TRIGGER_RESULT}" = "success" ]',
+    ):
+        assert condition in status_script
+
+    for condition in (
+        '[ "${TESTS_STATUS}" != "true" ]',
+        '[ "${PREFLIGHT_RESULT}" != "success" ]',
+        '[ "${MATRIX_RESULT}" != "success" ]',
+        '[ "${ENHANCED_TEST_RESULT}" != "success" ]',
+        '[ "${AGENT_TRIGGER_RESULT}" != "success" ]',
+    ):
+        assert condition in final_gate

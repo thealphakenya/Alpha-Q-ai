@@ -1,6 +1,6 @@
 # QTEAM: Development & QA Workflow
 
-**Last Updated:** 2026-08-13  
+**Last Updated:** 2026-10-17  
 **Status:** Comprehensive Team Collaboration Guide  
 **Scope:** Development, Testing, QA, Release Management
 
@@ -16,7 +16,7 @@ The current repo remains in a fail-closed feature/test mapping state. The active
 
 - Local registry discovery is allowed and useful, but it is not implementation proof.
 - A feature remains `unmapped` until its implementation, tests, owner, and behavior contract are recorded.
-- The latest local validation pass is evidence only: 16 focused PASS checks were recorded in the current bounded audit run, while remote verification remains `false` and final completion is still blocked.
+- Latest workflow-report validation evidence: `pytest -q tests/test_validate_workflows.py` -> 8 passed; `python scripts/validate_workflows.py` -> 17 valid workflow files. These checks do not establish per-feature coverage or remote completion; remote verification remains `false`.
 - No feature or doc update may be promoted to remote completion without target-owned workflow evidence and a matching exact repository/ref/SHA.
 
 ---
@@ -27,9 +27,9 @@ The current repo remains in a fail-closed feature/test mapping state. The active
 - **Responsibilities:**
   - ✓ Automatic code compilation for all platforms
   - ✓ Run comprehensive test suites (unit, integration, e2e)
-  - ✓ Validate file handlers and feature completeness
-  - ✓ Check accessibility compliance
-  - ✓ Verify platform-specific requirements
+  - [ ] Validate file handlers and feature completeness
+  - [ ] Check accessibility compliance
+  - [ ] Verify platform-specific requirements
   - ✓ Generate signed packages for all platforms
   - ✓ Run performance benchmarks
   - ✓ Monitor code quality metrics
@@ -647,7 +647,7 @@ Crash/Data Loss → Page on-call engineer immediately
 
 ---
 
-**Last Updated:** 2026-08-13  
+**Last Updated:** 2026-10-17  
 **Team Size:** 15-20 people  
 **Contact:** team@qmoi.com
 
