@@ -321,6 +321,129 @@ def mission_phase_status_counts(ledger: dict[str, Any]) -> dict[str, int]:
     return counts
 
 
+def build_resume_plan(
+    ledger: dict[str, Any],
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    """Describe dependency-ready work without changing mission state or authorizing execution."""
+    validate_ledger(ledger)
+    instant = now or datetime.now(timezone.utc)
+    deadline = _parse_utc(ledger["mission_clock"]["deadline_at"])
+    deadline_expired = instant >= deadline
+    priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+    status_order = {
+        "IN_PROGRESS": 0,
+        "PARTIALLY_COMPLETE": 1,
+        "FAILED": 2,
+        "PENDING": 3,
+    }
+    requirement_records = ledger.get("mission_requirement_line_records", [])
+    records_by_phase: dict[str, list[dict[str, Any]]] = {}
+    unassigned_records = []
+    for record in requirement_records:
+        phase_id = record.get("phase_id")
+        if isinstance(phase_id, str):
+            records_by_phase.setdefault(phase_id, []).append(record)
+        else:
+            unassigned_records.append(record)
+
+    task_records = []
+    for task in ledger["tasks"]:
+        unmet_dependencies = [
+            dependency
+            for dependency in task["dependencies"]
+            if _task(ledger, dependency)["status"] != "VERIFIED_COMPLETE"
+        ]
+        task_records.append({
+            "id": task["id"],
+            "priority": task["priority"],
+            "status": task["status"],
+            "dependencies": list(task["dependencies"]),
+            "unmet_dependencies": unmet_dependencies,
+            "dependency_ready": not unmet_dependencies,
+            "blocker_count": len(task.get("blockers", [])),
+        })
+
+    resumable_statuses = set(status_order)
+    candidates = [
+        task
+        for task in task_records
+        if task["dependency_ready"] and task["status"] in resumable_statuses
+    ]
+    candidates.sort(
+        key=lambda task: (
+            priority_order.get(task["priority"], len(priority_order)),
+            status_order[task["status"]],
+            task["id"],
+        )
+    )
+    phase_records = []
+    for phase in ledger.get("mission_phase_metrics", []):
+        requirements = records_by_phase.get(phase["id"], [])
+        phase_records.append({
+            "id": phase["id"],
+            "status": phase["status"],
+            "source_ref": phase.get("source_ref"),
+            "requirement_line_count": len(requirements),
+            "reviewed_requirement_line_ids": [
+                record["id"]
+                for record in requirements
+                if record.get("semantic_reviewed", False)
+            ],
+            "unreviewed_requirement_line_count": sum(
+                not record.get("semantic_reviewed", False)
+                for record in requirements
+            ),
+            "unreviewed_requirement_line_ids": [
+                record["id"]
+                for record in requirements
+                if not record.get("semantic_reviewed", False)
+            ],
+        })
+
+    if deadline_expired:
+        status = "PAUSED_EXPIRED_CLOCK"
+    elif candidates:
+        status = "READY_FOR_AUTHORIZED_EXECUTOR"
+    else:
+        status = "BLOCKED_NO_DEPENDENCY_READY_TASK"
+
+    return {
+        "status": status,
+        "deadline_expired": deadline_expired,
+        "task_transitions_performed": False,
+        "execution_authorized": False,
+        "remote_mutation_performed": False,
+        "remote_verified": False,
+        "dependency_ready_task_ids": [task["id"] for task in candidates],
+        "next_task_id": candidates[0]["id"] if candidates else None,
+        "tasks": task_records,
+        "phases": phase_records,
+        "phase_count": len(phase_records),
+        "requirement_line_count": len(requirement_records),
+        "unreviewed_requirement_line_count": sum(
+            not record.get("semantic_reviewed", False)
+            for record in requirement_records
+        ),
+        "unassigned_requirement_line_count": len(unassigned_records),
+        "unassigned_reviewed_requirement_line_ids": [
+            record["id"]
+            for record in unassigned_records
+            if record.get("semantic_reviewed", False)
+        ],
+        "unassigned_unreviewed_requirement_line_ids": [
+            record["id"]
+            for record in unassigned_records
+            if not record.get("semantic_reviewed", False)
+        ],
+        "unassigned_unreviewed_requirement_line_count": sum(
+            not record.get("semantic_reviewed", False)
+            for record in unassigned_records
+        ),
+    }
+
+
 def _phase_elapsed_seconds(phase: dict[str, Any], now: datetime) -> float:
     elapsed = sum(
         float(attempt["elapsed_seconds"])
@@ -342,6 +465,7 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
     counts = mission_phase_status_counts(ledger)
     task_counts = status_counts(ledger)
     source = ledger.get("mission_phase_metric_source", {})
+    resume_plan = build_resume_plan(ledger, now=instant)
     mission_clock = ledger["mission_clock"]
     mission_started = _parse_utc(mission_clock["started_at"])
     mission_deadline = _parse_utc(mission_clock["deadline_at"])
@@ -358,6 +482,7 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
         f"- Legacy task status counts (M01-M16): verified_complete={task_counts['verified_complete']}; in_progress={task_counts['in_progress']}; partially_complete={task_counts['partially_complete']}; blocked={task_counts['blocked']}; failed={task_counts['failed']}; pending={task_counts['pending']}.",
         f"- Mission clock: status `{mission_clock_status}`; started `{mission_clock['started_at']}`; deadline `{mission_clock['deadline_at']}`; UTC wall elapsed={mission_elapsed:.3f}s; remaining={mission_remaining:.3f}s; process-active monotonic time `NOT_MEASURED`.",
         f"- Mission authored content-line candidates indexed: {ledger.get('mission_requirement_line_count', 0)}; semantic review complete: {ledger.get('mission_requirement_line_review_counts', {}).get('reviewed', 0)}; review pending: {ledger.get('mission_requirement_line_review_counts', {}).get('not_reviewed', 0)}. Counts are line locators, not semantic requirement completion.",
+        f"- Resume planner: `{resume_plan['status']}`; dependency-ready task IDs: `{', '.join(resume_plan['dependency_ready_task_ids']) or 'none'}`; next candidate: `{resume_plan['next_task_id'] or 'none'}`; source-line candidates tracked / unreviewed / not assigned to a phase: {resume_plan['requirement_line_count']} / {resume_plan['unreviewed_requirement_line_count']} / {resume_plan['unassigned_requirement_line_count']}; planner authorizes execution: `False`.",
         "- Completion percentage is not inferred from phase count; only evidence-backed `PASS` is terminal success. Remote verification remains `False` until independently proven.",
         "",
         "| Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / pending review | Evidence refs | Blockers | Next action |",
@@ -608,6 +733,7 @@ def refresh_mission_metrics(root: Path) -> dict[str, Any]:
             "status": "REFRESHED",
             "phase_count": len(ledger["mission_phase_metrics"]),
             "phase_status_counts": mission_phase_status_counts(ledger),
+            "resume_plan": build_resume_plan(ledger),
             "checkpoint_timestamp": checkpoint["generated_at"],
             "remote_verified": False,
         }
@@ -629,9 +755,16 @@ def _mission_phase(ledger: dict[str, Any], phase_id: str) -> dict[str, Any] | No
     )
 
 
+def _ensure_mission_clock_open(ledger: dict[str, Any], timestamp: str) -> None:
+    deadline = _parse_utc(ledger["mission_clock"]["deadline_at"])
+    if _parse_utc(timestamp) >= deadline:
+        raise LedgerError("Mission clock expired; task and phase transitions are paused")
+
+
 def start_task(ledger: dict[str, Any], task_id: str, *, now: str | None = None) -> dict[str, Any]:
     task = _task(ledger, task_id)
     timestamp = now or utc_now()
+    _ensure_mission_clock_open(ledger, timestamp)
     instant = _parse_utc(timestamp)
     prior_status = task["status"]
     attempts = task.setdefault("attempt_history", [])
@@ -715,6 +848,7 @@ def finish_task(
     if status != "VERIFIED_COMPLETE" and not next_action.strip():
         raise LedgerError("Partial, blocked, and failed tasks require a concrete next action")
     timestamp = now or utc_now()
+    _ensure_mission_clock_open(ledger, timestamp)
     instant = _parse_utc(timestamp)
     attempts = task.get("attempt_history", [])
     legacy_attempt_recovered = False
@@ -785,6 +919,7 @@ def start_phase(ledger: dict[str, Any], phase_id: str, *, now: str | None = None
     if phase is None:
         raise LedgerError(f"Unknown mission phase ID: {phase_id}")
     timestamp = now or utc_now()
+    _ensure_mission_clock_open(ledger, timestamp)
     instant = _parse_utc(timestamp)
     attempts = phase.setdefault("attempt_history", [])
     if phase.get("status") == "IN_PROGRESS" and attempts and attempts[-1].get("finished_at") is None:
@@ -838,6 +973,7 @@ def finish_phase(
     if status != "PASS" and not next_action.strip():
         raise LedgerError("An incomplete phase requires a concrete next action")
     timestamp = now or utc_now()
+    _ensure_mission_clock_open(ledger, timestamp)
     instant = _parse_utc(timestamp)
     attempts = phase.get("attempt_history", [])
     if not attempts or attempts[-1].get("finished_at") is not None:
@@ -947,6 +1083,7 @@ def _record_checkpoint(
                 }
                 for phase in mission_phases
             ],
+            "mission_resume_plan": build_resume_plan(ledger, now=now),
             "active_task_id": task_id,
             "active_task_status": active["status"] if active else None,
             "task_elapsed_seconds": active["elapsed_seconds"] if active else None,
@@ -1178,6 +1315,7 @@ def main(argv: list[str] | None = None) -> int:
                     "mission_phase_count": len(ledger.get("mission_phase_metrics", [])),
                     "mission_requirement_line_count": ledger.get("mission_requirement_line_count", 0),
                     "mission_requirement_line_review_counts": ledger.get("mission_requirement_line_review_counts", {}),
+                    "mission_resume_plan": build_resume_plan(ledger, now=now),
                     "active_duration_basis": "UTC wall-clock interval; process-active monotonic time unavailable",
                     "remote_verified": False,
                 },

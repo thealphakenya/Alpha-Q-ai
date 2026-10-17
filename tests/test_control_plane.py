@@ -12,6 +12,7 @@ from scripts.autonomous_completion_engine import (
     REQUIRED_GATES,
     audit_instruction_files,
     audit_ollama_reference_files,
+    topic_metrics,
 )
 from scripts.checkpoint_manager import CheckpointManager
 from scripts.execution_lock import ExecutionLock
@@ -948,6 +949,8 @@ def test_completion_is_fail_closed_and_writes_topic_metrics(tmp_path):
     metrics = json.loads((root / "ollamatracks" / "topic_metrics.json").read_text(encoding="utf-8"))
     assert metrics["master_plan_topics"] == 2
     assert metrics["fully_completed"] == 0
+    assert metrics["in_progress"] == 0
+    assert metrics["unmeasured"] == 2
     current_state = json.loads((root / "ollamatracks" / "current_state.json").read_text(encoding="utf-8"))
     assert current_state["execution_id"] == "execution-1"
     assert current_state["pending_actions"]
@@ -955,6 +958,101 @@ def test_completion_is_fail_closed_and_writes_topic_metrics(tmp_path):
     inventory = json.loads((root / "ollamatracks" / "instruction_inventory.json").read_text(encoding="utf-8"))
     assert inventory["status"] == "PASS"
     assert inventory["source_contents_recorded"] is False
+
+
+def test_topic_metrics_separates_active_execution_from_missing_evidence(tmp_path):
+    root = make_root(tmp_path)
+    evidence = root / "Q.0.0.N" / "evidence" / "topics"
+    evidence.mkdir(parents=True)
+    (evidence / "topic-001.json").write_text(
+        json.dumps({"status": "IN_PROGRESS", "evidence_complete": False}),
+        encoding="utf-8",
+    )
+
+    metrics = topic_metrics(root)
+
+    assert metrics["evidence_records"] == 1
+    assert metrics["in_progress"] == 1
+    assert metrics["unmeasured"] == 1
+    assert metrics["status_sum_matches_inventory"] is True
+
+
+def test_topic_metrics_quarantine_duplicate_and_malformed_evidence(tmp_path):
+    root = make_root(tmp_path)
+    evidence = root / "Q.0.0.N" / "evidence" / "topics"
+    evidence.mkdir(parents=True)
+    (evidence / "topic-001.json").write_text(
+        json.dumps({"status": "SUCCESS", "evidence_complete": True}),
+        encoding="utf-8",
+    )
+    (evidence / "topic_001.json").write_text(
+        json.dumps({"status": "BLOCKED", "evidence_complete": False}),
+        encoding="utf-8",
+    )
+    (evidence / "topic-002.json").write_text("{malformed", encoding="utf-8")
+
+    from scripts.ollama_autonomous_agent import CrossRepositoryAutonomyManager
+
+    engine_metrics = topic_metrics(root)
+    agent_metrics = CrossRepositoryAutonomyManager().build_topic_execution_metrics(root)
+
+    for metrics in (engine_metrics, agent_metrics):
+        assert metrics["evidence_files_scanned"] == 3
+        assert metrics["evidence_records"] == 0
+        assert metrics["evidence_coverage_percent"] == 0.0
+        assert metrics["duplicate_evidence_topics"] == [1]
+        assert metrics["ambiguous_evidence_topics"] == [1, 2]
+        assert metrics["invalid_evidence_files"] == [
+            "Q.0.0.N/evidence/topics/topic-002.json"
+        ]
+        assert metrics["fully_completed"] == 0
+        assert metrics["blocked"] == 0
+        assert metrics["unmeasured"] == 2
+        assert metrics["status_sum_matches_inventory"] is True
+
+    comparable = set(engine_metrics) - {"generated"}
+    assert {key: engine_metrics[key] for key in comparable} == {
+        key: agent_metrics[key] for key in comparable
+    }
+
+
+def test_topic_metrics_report_missing_plan_inputs(tmp_path):
+    root = make_root(tmp_path)
+    (root / "ollama_master_topic_index.txt").unlink()
+
+    from scripts.ollama_autonomous_agent import CrossRepositoryAutonomyManager
+
+    engine_metrics = topic_metrics(root)
+    agent_metrics = CrossRepositoryAutonomyManager().build_topic_execution_metrics(root)
+
+    for metrics in (engine_metrics, agent_metrics):
+        assert metrics["source_errors"] == ["topic index unavailable: FileNotFoundError"]
+        assert metrics["topic_index_matches_plan"] is False
+        assert metrics["fully_completed"] == 0
+        assert metrics["unmeasured"] == 2
+        assert metrics["status_sum_matches_inventory"] is True
+
+
+def test_topic_metrics_require_boolean_completion_evidence(tmp_path):
+    root = make_root(tmp_path)
+    evidence = root / "Q.0.0.N" / "evidence" / "topics"
+    evidence.mkdir(parents=True)
+    (evidence / "topic-001.json").write_text(
+        json.dumps({"status": "SUCCESS", "evidence_complete": "false"}),
+        encoding="utf-8",
+    )
+
+    from scripts.ollama_autonomous_agent import CrossRepositoryAutonomyManager
+
+    engine_metrics = topic_metrics(root)
+    agent_metrics = CrossRepositoryAutonomyManager().build_topic_execution_metrics(root)
+
+    for metrics in (engine_metrics, agent_metrics):
+        assert metrics["fully_completed"] == 0
+        assert metrics["invalid_evidence_complete_topics"] == [1]
+        assert metrics["incomplete_success_topics"] == [1]
+        assert metrics["unmeasured"] == 2
+        assert metrics["status_sum_matches_inventory"] is True
 
 
 def test_completion_refreshes_current_state_and_keeps_remote_actions_gated(tmp_path):
@@ -1764,9 +1862,21 @@ def test_qaudit_refreshes_style_universal_and_transition_docs_from_one_manifest(
         "UNIVERSAL.md",
         "TRANSION.md",
         "TRANSITION.md",
+        "QVIRTUALLAB.md",
+        "QVIRTUALLABS.md",
+        "TRANSIONQ.md",
+        "QVILLAGE.md",
+        "Qvillageevolutions.md",
     )
     for filename in documents:
-        (tmp_path / filename).write_text(f"# {filename}\n\nAuthored content.\n", encoding="utf-8")
+        content = f"# {filename}\n\nAuthored content.\n"
+        if filename == "QVIRTUALLABS.md":
+            content += (
+                "<!-- BEGIN QMOI MANAGED: qvirtual-lab-domain-inventory -->\n"
+                "1. **Robotics** — candidate domain.\n"
+                "<!-- END QMOI MANAGED: qvirtual-lab-domain-inventory -->\n"
+            )
+        (tmp_path / filename).write_text(content, encoding="utf-8")
     universe = {
         "correlation_id": "audit-correlation-123",
         "generated_at": "2026-10-08T00:00:00Z",
@@ -1793,25 +1903,50 @@ def test_qaudit_refreshes_style_universal_and_transition_docs_from_one_manifest(
     repeated = agent.refresh_qaudit_governance_documents(tmp_path, universe)
 
     assert result["status"] == "UPDATED"
-    assert result["updated_documents"] == list(documents)
+    assert result["updated_documents"] == [*documents[:6], "QVILLAGE.md"]
     assert result["accessibility_markdown_candidate_count"] == 1
     assert result["evolution_plan_artifact"] == "ollamatracks/qaudits_evolution_plan.json"
     plan = json.loads((tmp_path / result["evolution_plan_artifact"]).read_text(encoding="utf-8"))
     assert plan["qstats"]["source_manifest_sha256"] == "a" * 64
+    assert plan["qvirtual_labs"]["metrics"]["starter_domain_candidate_count"] == 1
+    assert result["qvirtual_labs"]["plan_status"] == "BLOCKED_SOURCE_RECONCILIATION"
+    assert result["qvirtual_labs"]["metrics"]["remote_verified"] is False
+    qvirtual_plan = json.loads(
+        (tmp_path / result["qvirtual_labs"]["plan_artifact"]).read_text(encoding="utf-8")
+    )
+    assert qvirtual_plan["metrics"]["physical_experiment_records_verified_count"] == 0
+    assert result["qvirtual_labs"]["updated_documents"] == [
+        "QVIRTUALLAB.md",
+        "QVIRTUALLABS.md",
+        "QAUDITS.md",
+        "TRANSION.md",
+        "TRANSIONQ.md",
+        "TRANSITION.md",
+        "QVILLAGE.md",
+        "Qvillageevolutions.md",
+    ]
     assert result["qlion"] == {
         "variation_candidate_count": 3,
         "registered_extension_count": 2,
         "remote_verified": False,
     }
     assert repeated["status"] == "UPDATED"
+    assert repeated["qvirtual_labs"]["plan_sha256"] == result["qvirtual_labs"]["plan_sha256"]
     for filename in documents:
         content = (tmp_path / filename).read_text(encoding="utf-8")
         assert "Authored content." in content
+    for filename in documents[:6]:
+        content = (tmp_path / filename).read_text(encoding="utf-8")
         assert content.count("BEGIN QMOI MANAGED: qaudit-style-universal-accessibility-coverage") == 1
         assert "audit-correlation-123" in content
         assert "disability is inferred" in content
         assert "QStats:" in content
         assert "QLion:" in content
+    for filename in result["qvirtual_labs"]["updated_documents"]:
+        content = (tmp_path / filename).read_text(encoding="utf-8")
+        assert content.count("BEGIN QMOI MANAGED: qaudit-qvirtual-labs-coverage") == 1
+        assert "audit-correlation-123" in content
+        assert "physical experiment records / calibration correlations" in content
 
 
 def test_external_research_allowlist_rejects_credentials_and_unapproved_domains():

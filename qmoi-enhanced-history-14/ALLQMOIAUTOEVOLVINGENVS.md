@@ -1,7 +1,7 @@
 ---
 title: "ALL QMOI Auto-Evolving Environments - Universal Programming Language Support"
 qmoi_validation_frontmatter: true
----
+---        should contain all evolution features of qmoi 
 
 <!-- LION_VALIDATION_START -->
 

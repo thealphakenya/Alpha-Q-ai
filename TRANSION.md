@@ -6,6 +6,8 @@ This document defines the transition plan for the active QMOI styles and univers
 
 The correctly spelled entry point is [TRANSITION.md](TRANSITION.md). This established file remains the detailed plan to avoid maintaining two competing migration bodies.
 
+QVirtualLabs engineering coverage is tracked by [QVIRTUALLABS.md](QVIRTUALLABS.md) and indexed through [TRANSIONQ.md](TRANSIONQ.md). QENGINEER source reconciliation, simulation, physical evidence, UI, project integration, and QVillage research must remain separate transition gates.
+
 ## Canonical style/universal replacement catalog
 
 The style and universal layer is the shared contract for the active repository, historical sources, cloned platforms, and cross-repo product surfaces. Planned and candidate coverage includes the primary documents and directories below.
@@ -33,6 +35,8 @@ The style and universal layer is the shared contract for the active repository, 
 - [ALLPORTS.md](ALLPORTS.md)
 - [INTERNALRESEARCH.md](INTERNALRESEARCH.md)
 - [EXTERNALRESEARCH.md](EXTERNALRESEARCH.md)
+- [QVIRTUALLABS.md](QVIRTUALLABS.md)
+- [TRANSIONQ.md](TRANSIONQ.md)
 
 ### Directories and registry paths participating in the transition
 
@@ -91,6 +95,9 @@ The exact counts below are local discovery baselines and must be regenerated and
 20. Apply content-addressed cache entries only when repo/ref/source SHA, schema/tool version, policy version, and expiry match; stale or ambiguous cache data triggers refresh.
 21. Expand finance/Qtrade audit mapping to require fresh source timestamps, units/currency, account/venue scope, costs, risk measures, no-trade decision quality, reconciliation, and explicit blocked states for unavailable values.
 22. Add audit determinism, large-file, symlink, unreadable-path, worker-failure, missing/duplicate-shard, cache-expiry, and resume-after-interruption regression cases.
+23. Add a QVirtualLabs gate for canonical QENGINEER source reconciliation, stable engineering-domain IDs, implementation/test mappings, solver validation, uncertainty, physical calibration, research provenance, accessible UI transitions, and project/preview integration.
+24. Keep simulation results distinct from measured physical results; require operator, instrument, calibration, protocol, safety, and raw-data provenance before counting a physical correlation.
+25. Report candidate, mapped, tested, simulated, physically correlated, and remote-verified metrics separately in the shared QAUDITS plan and QVillage/transition documents.
 
 ## Transition execution plan
 
@@ -100,6 +107,7 @@ The exact counts below are local discovery baselines and must be regenerated and
 4. Add `TRANSION.md` to the canonical documentation set and reference it from every relevant managed section.
 5. Require a QAUDITS pass before every additional step and record the missing items as blockers rather than treating them as resolved.
 6. Validate generated path trees, hashes, and cross-refs before any replacement is approved.
+7. Reconcile [QVIRTUALLABS.md](QVIRTUALLABS.md) with the canonical QENGINEER source before marking any engineering requirement understood or implemented.
 7. Generate the verified replacement ledger only when tests, rollback, authorization, and remote evidence are present.
 8. Run the target suite and record the exact result before marking a step complete.
 9. Re-read the branch- and repo-level evidence and update the local evidence artifacts after each step.
@@ -176,3 +184,25 @@ This section is refreshed from the same local QAUDITS universe on every invocati
 - Missing, stale, or provider-unverified health/oxygen values remain `UNKNOWN`; dashboard balances and account values require authorized provider evidence and are not inferred from prose.
 - Updating this managed section never rewrites historical/archive documents, policy instructions, or Q-version artifacts.
 <!-- END QMOI MANAGED: qaudit-style-universal-accessibility-coverage -->
+
+<!-- BEGIN QMOI MANAGED: qaudit-qvirtual-labs-coverage -->
+## Agent-managed QVirtualLabs engineering coverage
+
+Generated from the local QVirtualLabs source inventory; a full QAUDITS universe manifest is included only when supplied by that inventory refresh. These are candidate-plan metrics, not implementation, experiment, physical-lab, or remote-completion evidence.
+- Status: `BLOCKED_SOURCE_RECONCILIATION`; correlation ID: `231b915c-d2b9-45e5-baaa-1a02ef7b2209`; source manifest SHA-256: `ac35b2d4e2cc91f1395e1dd85f01183b6adbc2cb40411ef2194f6ab0e69a20ba`.
+- QAUDITS universe manifest SHA-256: `unavailable`; QVirtualLabs source-manifest scope: `qvirtual_labs_source_files`.
+- Plan artifact: `ollamatracks/qvirtual_labs_plan.json`; plan SHA-256: `b01b3fe497df8a44e3bd5965ac9f34336042d092199d3fe16ce0537118122773`; scope: `materialized_local_only`.
+- Starter engineering-domain candidates: `14`; cross-cutting gate candidates: `19`; total starter-plan requirements: `33`.
+- Authoritative QENGINEER requirements: `UNKNOWN`; QENGINEER source status: `missing_or_unsafe`.
+- Requirement-to-implementation / focused-test mappings: `0` / `0`.
+- Verified simulations / benchmark validations: `0` / `0`; physical experiment records / calibration correlations: `0` / `0`.
+- Convergence cases / uncertainty reports / accuracy claims verified: `0` / `0` / `0`; safety protocols reviewed: `0`.
+- Official research sources checked / date-fresh observations / stale observations: `8` / `8` / `0`; exact retrieval times not captured: `8`; verified evolution cycles: `0`.
+- Recommended architecture: `one bounded, auditable adapter contract with specialist solvers; no monolithic all-domain solver selected`; first pilot candidate: `ngspice circuit reference case`; Ollama inference: `NOT_MEASURED` by this inventory.
+- Tool recommendation rationale: `domain fit from official documentation, implementation isolation, and a bounded first regression; not a comparative performance benchmark`; selected tool: `NONE`; tool candidates: `6`.
+- Public QENGINEER probe: `UNKNOWN_NOT_FOUND_OR_PRIVATE`; a public 404 is ambiguous without authenticated repository read access.
+- UI/accessibility mappings / project, auto-project, and preview integrations: `0` / `0`; remote verified: `False`.
+- Simulation output is never counted as physical evidence. Physical correlation requires an authorized protocol, human operator, traceable instruments/calibration, and reviewed raw-data provenance.
+- Historical reference: `qmoi-enhanced-history-14/QVIRTUALLABS.md`; scope `historical_snapshot_candidate`; not authoritative.
+- The planner does not run a solver, retrieve external research, invoke hardware, or infer that an unlinked implementation is absent.
+<!-- END QMOI MANAGED: qaudit-qvirtual-labs-coverage -->

@@ -1,11 +1,19 @@
 # QVILLAGE.md
 
 QVillage is the live QMOI community, model, and knowledge coordination surface. It is treated as the master-only QMOI community layer that stays synchronized with GitHub, Hugging Face, and the live autonomous agent.
-
+Qmoi should not interact with, watch, make or work on pornographic content unless when instructed by master. qmoi should always just automatically ignore pornographic content. The same for content that may be disturbing uness instructed by master
 ## Active automation
 - QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.
 - memory, model, and runtime state are synchronized across repo docs and platform references.
 - the live state is refreshed automatically as the repository evolves.
+
+## QVirtualLabs research and evolution
+
+QVillage can curate source-backed engineering research, reviewed experiment proposals, and validated QVirtualLabs results. A discovery or Ollama-generated hypothesis is not a verified finding: retain source URL/hash/time, license and freshness, experiment configuration, baseline, result provenance, limitations, reviewer, and status.
+
+The QVirtualLabs lifecycle and simulation/physical distinction are defined in [QVIRTUALLABS.md](./QVIRTUALLABS.md). Physical results require authorized human-operated tests and traceable instrument records; simulated outputs must never be presented as if a physical experiment occurred. QVillage must keep candidate, tested, accepted, and deployed evolution states separate and preserve rollback evidence.
+
+Research retrieval, live Ollama inference, and physical instrumentation are not verified merely by this document or by local candidate metrics.
 
 ## Language and QLion research
 
@@ -96,3 +104,25 @@ measured live service metrics.
 - `prMergeIncluded` is required before merge activity. Unverified remote refs, pull requests, peer roots, and intermediate commit trees remain blockers.
 - Next action: Run an authorized target-owned audit for both repositories covering all refs, PRs, and intermediate commit trees; attach terminal exact-SHA evidence before Q-version finalization.
 <!-- END QMOI MANAGED: ollama-full-coverage-audit-status -->
+
+<!-- BEGIN QMOI MANAGED: qaudit-qvirtual-labs-coverage -->
+## Agent-managed QVirtualLabs engineering coverage
+
+Generated from the local QVirtualLabs source inventory; a full QAUDITS universe manifest is included only when supplied by that inventory refresh. These are candidate-plan metrics, not implementation, experiment, physical-lab, or remote-completion evidence.
+- Status: `BLOCKED_SOURCE_RECONCILIATION`; correlation ID: `231b915c-d2b9-45e5-baaa-1a02ef7b2209`; source manifest SHA-256: `ac35b2d4e2cc91f1395e1dd85f01183b6adbc2cb40411ef2194f6ab0e69a20ba`.
+- QAUDITS universe manifest SHA-256: `unavailable`; QVirtualLabs source-manifest scope: `qvirtual_labs_source_files`.
+- Plan artifact: `ollamatracks/qvirtual_labs_plan.json`; plan SHA-256: `b01b3fe497df8a44e3bd5965ac9f34336042d092199d3fe16ce0537118122773`; scope: `materialized_local_only`.
+- Starter engineering-domain candidates: `14`; cross-cutting gate candidates: `19`; total starter-plan requirements: `33`.
+- Authoritative QENGINEER requirements: `UNKNOWN`; QENGINEER source status: `missing_or_unsafe`.
+- Requirement-to-implementation / focused-test mappings: `0` / `0`.
+- Verified simulations / benchmark validations: `0` / `0`; physical experiment records / calibration correlations: `0` / `0`.
+- Convergence cases / uncertainty reports / accuracy claims verified: `0` / `0` / `0`; safety protocols reviewed: `0`.
+- Official research sources checked / date-fresh observations / stale observations: `8` / `8` / `0`; exact retrieval times not captured: `8`; verified evolution cycles: `0`.
+- Recommended architecture: `one bounded, auditable adapter contract with specialist solvers; no monolithic all-domain solver selected`; first pilot candidate: `ngspice circuit reference case`; Ollama inference: `NOT_MEASURED` by this inventory.
+- Tool recommendation rationale: `domain fit from official documentation, implementation isolation, and a bounded first regression; not a comparative performance benchmark`; selected tool: `NONE`; tool candidates: `6`.
+- Public QENGINEER probe: `UNKNOWN_NOT_FOUND_OR_PRIVATE`; a public 404 is ambiguous without authenticated repository read access.
+- UI/accessibility mappings / project, auto-project, and preview integrations: `0` / `0`; remote verified: `False`.
+- Simulation output is never counted as physical evidence. Physical correlation requires an authorized protocol, human operator, traceable instruments/calibration, and reviewed raw-data provenance.
+- Historical reference: `qmoi-enhanced-history-14/QVIRTUALLABS.md`; scope `historical_snapshot_candidate`; not authoritative.
+- The planner does not run a solver, retrieve external research, invoke hardware, or infer that an unlinked implementation is absent.
+<!-- END QMOI MANAGED: qaudit-qvirtual-labs-coverage -->

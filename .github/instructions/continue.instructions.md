@@ -24,6 +24,8 @@ When the user says `continue`, resume safe work in this repository. A continuati
 
 ## Evidence And Handoff
 
+- The Ollama `autonomous`, `audit-first`, and `continue` CLI paths refresh the canonical PH01-PH18 metrics after each agent cycle through `scripts.mission_task_ledger`; a refresh failure fails the invocation rather than being reported as success. This refresh does not mark phases complete, restart an expired mission clock, or prove remote completion.
+- Before resuming, `continue` records a read-only plan of all 18 phases, all M01-M16 dependency states, and every indexed mission line, including lines not assigned to a phase. The plan may rank a candidate but never authorizes execution or changes status; an expired clock pauses task transitions until a separately authorized mission run is established.
 - Refresh the phase dashboard with `python -m scripts.mission_task_ledger --root . refresh-metrics` after mission-catalog changes. Record operations through the supported QAUDITS/checkpoint writer so `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl` stay correlated.
 - Record actual commands, pass/fail/skip counts, durations, artifact paths and hashes, scope, exclusions, blockers, deadline state, and next action. Keep `remote_verified` false until target-owned terminal evidence independently proves the exact repository, ref, SHA, and tree.
 - Before changing an instruction or mission source, inspect its current worktree diff and preserve authored/user content. Instruction policy changes require an explicit user request; generated status updates do not justify weakening policy.

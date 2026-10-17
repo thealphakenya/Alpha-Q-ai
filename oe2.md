@@ -20,11 +20,12 @@ Status: local continuity work is in progress and remote completion remains block
 ## Mission Phase Metrics
 
 - Canonical source: `latest mission.md`; SHA-256: `f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662`.
-- Generated at: `2026-10-16T20:51:46.009995Z`; ledger correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`.
+- Generated at: `2026-10-17T01:35:48.505953Z`; ledger correlation ID: `b57e7caf-9994-4400-bdad-96a066b8a14e`.
 - Phase count: 18; PASS: 0; in progress: 0; partial: 5; blocked: 0; failed: 0; pending: 13.
 - Legacy task status counts (M01-M16): verified_complete=0; in_progress=0; partially_complete=9; blocked=2; failed=0; pending=5.
-- Mission clock: status `EXPIRED`; started `2026-10-13T13:50:19.075+00:00`; deadline `2026-10-13T15:50:19.075+00:00`; UTC wall elapsed=284486.935s; remaining=0.000s; process-active monotonic time `NOT_MEASURED`.
+- Mission clock: status `EXPIRED`; started `2026-10-13T13:50:19.075+00:00`; deadline `2026-10-13T15:50:19.075+00:00`; UTC wall elapsed=301529.431s; remaining=0.000s; process-active monotonic time `NOT_MEASURED`.
 - Mission authored content-line candidates indexed: 760; semantic review complete: 0; review pending: 760. Counts are line locators, not semantic requirement completion.
+- Resume planner: `PAUSED_EXPIRED_CLOCK`; dependency-ready task IDs: `M01, M04`; next candidate: `M01`; source-line candidates tracked / unreviewed / not assigned to a phase: 760 / 760 / 22; planner authorizes execution: `False`.
 - Completion percentage is not inferred from phase count; only evidence-backed `PASS` is terminal success. Remote verification remains `False` until independently proven.
 
 | Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / pending review | Evidence refs | Blockers | Next action |

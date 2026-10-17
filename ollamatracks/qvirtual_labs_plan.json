@@ -1,0 +1,645 @@
+{
+  "active_source_files": [
+    {
+      "bytes": 13346,
+      "hash_scope": "authored_content_excluding_qvirtual_metrics",
+      "path": "QVIRTUALLABS.md",
+      "sha256": "44fde5237262331090c40bff63a31e1d2a44222e324094ad2f2775fd1be19758",
+      "status": "observed_local"
+    },
+    {
+      "bytes": null,
+      "path": "QENGINEER.md",
+      "sha256": null,
+      "status": "missing_or_unsafe"
+    }
+  ],
+  "blockers": [
+    "Authoritative QENGINEER.md feature source is missing or unreadable.",
+    "No requirement-to-implementation, owner, or focused-test mappings are recorded by this plan.",
+    "No simulation, benchmark, calibration, or physical experiment was run by this plan.",
+    "Ollama inference, QVillage external research, and UI/project integration are not measured by this plan.",
+    "Remote verification is unavailable to this local planner."
+  ],
+  "domains": [
+    {
+      "id": "QVLAB-DOM-01",
+      "name": "Computer-aided engineering",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-02",
+      "name": "Finite-element analysis",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-03",
+      "name": "Computational fluid dynamics",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-04",
+      "name": "Electrical circuits",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-05",
+      "name": "Electromagnetic fields",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-06",
+      "name": "Mechanical motion",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-07",
+      "name": "Chemical processes",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-08",
+      "name": "Aerospace systems",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-09",
+      "name": "Automotive systems",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-10",
+      "name": "Robotics",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-11",
+      "name": "Electronic boards",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-12",
+      "name": "Power systems",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-13",
+      "name": "System and control modeling",
+      "status": "candidate_unmapped"
+    },
+    {
+      "id": "QVLAB-DOM-14",
+      "name": "Multiphysics",
+      "status": "candidate_unmapped"
+    }
+  ],
+  "historical_reference": {
+    "bytes": 10315,
+    "hash_scope": "full_file",
+    "not_authoritative": true,
+    "path": "qmoi-enhanced-history-14/QVIRTUALLABS.md",
+    "scope": "historical_snapshot_candidate",
+    "sha256": "828b2999b3a1fe735932af72794eb17c7b6fdb44f7c9cd80e7e2f0c79faaf055",
+    "status": "observed_local"
+  },
+  "metrics": {
+    "accuracy_claims_verified_count": 0,
+    "autonomous_evolution_cycles_verified_count": 0,
+    "benchmark_validations_verified_count": 0,
+    "cross_cutting_gate_candidate_count": 19,
+    "fresh_external_research_observations_count": 8,
+    "interpretation": "plan_and_candidate_inventory_only_not_implementation_or_execution_evidence",
+    "official_research_retrieval_time_not_captured_count": 8,
+    "official_research_source_count": 8,
+    "physical_calibration_correlations_verified_count": 0,
+    "physical_experiment_records_verified_count": 0,
+    "project_autoproject_preview_integrations_verified_count": 0,
+    "remote_verified": false,
+    "requirements_mapped_to_implementation_count": 0,
+    "requirements_mapped_to_tests_count": 0,
+    "safety_protocols_reviewed_count": 0,
+    "simulation_runs_verified_count": 0,
+    "solver_convergence_cases_verified_count": 0,
+    "source_manifest_scope": "qvirtual_labs_source_files",
+    "source_manifest_sha256": "ac35b2d4e2cc91f1395e1dd85f01183b6adbc2cb40411ef2194f6ab0e69a20ba",
+    "source_requirement_count": null,
+    "stale_external_research_observations_count": 0,
+    "starter_domain_candidate_count": 14,
+    "starter_plan_requirement_count": 33,
+    "ui_accessibility_mappings_verified_count": 0,
+    "uncertainty_reports_verified_count": 0
+  },
+  "next_action": "Restore or identify the authoritative QENGINEER.md, reconcile every source requirement, then map owners, implementations, focused tests, simulation evidence, and physical-validation gates.",
+  "plan_sha256": "b01b3fe497df8a44e3bd5965ac9f34336042d092199d3fe16ce0537118122773",
+  "public_qengineer_probe": {
+    "interpretation": "A public raw URL returning 404 without authenticated repository access cannot distinguish a missing path from a private repo, ref mismatch, or inaccessible source.",
+    "observed_http_status": 404,
+    "retrieval_time_status": "NOT_CAPTURED",
+    "retrieved_at_utc": null,
+    "retrieved_date_utc": "2026-10-16",
+    "source_url": "https://raw.githubusercontent.com/thealphakenya/qmoi-enhanced/main/QENGINEER.md",
+    "status": "UNKNOWN_NOT_FOUND_OR_PRIVATE"
+  },
+  "recommended_adapter_stack": {
+    "architecture": "one bounded, auditable adapter contract with specialist solvers; no monolithic all-domain solver selected",
+    "decision_basis": "domain fit from official documentation, implementation isolation, and a bounded first regression; not a comparative performance benchmark",
+    "initial_pilot": "ngspice circuit reference case",
+    "requirements_dependent": true,
+    "tool_candidates": [
+      {
+        "decision": "PILOT_CANDIDATE",
+        "domain": "electrical circuits",
+        "fit": "Dedicated SPICE circuit simulation; best first bounded adapter pilot, subject to a local reference-case test.",
+        "tool": "ngspice"
+      },
+      {
+        "decision": "DOMAIN_ADAPTER_CANDIDATE",
+        "domain": "finite-element analysis",
+        "fit": "Dedicated structural FEA with documented static, dynamic, thermal, and nonlinear capabilities.",
+        "tool": "CalculiX"
+      },
+      {
+        "decision": "DOMAIN_ADAPTER_CANDIDATE",
+        "domain": "computational fluid dynamics",
+        "fit": "Broad CFD capability; defer until isolated resource-bounded worker and solver validation exist.",
+        "tool": "OpenFOAM"
+      },
+      {
+        "decision": "DOMAIN_ADAPTER_CANDIDATE",
+        "domain": "robotics",
+        "fit": "3D robotics simulation with headless server operation and SDF-described worlds.",
+        "tool": "Gazebo Sim"
+      },
+      {
+        "decision": "DOMAIN_ADAPTER_CANDIDATE",
+        "domain": "chemical processes",
+        "fit": "Open-source process-simulation option; verify the exact edition, automation interface, and license before integration.",
+        "tool": "DWSIM"
+      },
+      {
+        "decision": "OPTIONAL_GEOMETRY_ADAPTER_CANDIDATE",
+        "domain": "CAD and geometry authoring",
+        "fit": "Open-source CAD/design surface; treat as geometry authoring, not as a universal physics solver.",
+        "tool": "FreeCAD"
+      }
+    ]
+  },
+  "requirements": [
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-01",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Computer-aided engineering",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-02",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Finite-element analysis",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-03",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Computational fluid dynamics",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-04",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Electrical circuits",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-05",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Electromagnetic fields",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-06",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Mechanical motion",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-07",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Chemical processes",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-08",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Aerospace systems",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-09",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Automotive systems",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-10",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Robotics",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-11",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Electronic boards",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-12",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Power systems",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-13",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "System and control modeling",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "engineering_domain_candidate",
+      "id": "QVLAB-DOM-14",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Multiphysics",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-01",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Requirement, owner, implementation, test, and source lineage",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-02",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Role boundaries, consent, privacy, and protected invention access",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-03",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Geometry, materials, boundary conditions, units, and dimensional validation",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-04",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Solver and model selection with documented applicability limits",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-05",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Numerical stability, mesh or resolution convergence, and repeatability",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-06",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Versioned inputs, solver/model versions, seeds, environment, and result hashes",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-07",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Sensitivity analysis, uncertainty bounds, and assumptions",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-08",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Independent reference cases and regression baselines",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-09",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Calibration and correlation to traceable physical measurements",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-10",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Human-reviewed risk assessment and approved physical test protocol",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-11",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Instrument identity, calibration status, operator, time, and raw-data hash",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-12",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Unambiguous simulated, measured, inferred, and unknown result labels",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-13",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Sandboxing, resource limits, bounded jobs, and network restrictions",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-14",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Cancellation, timeout, retry, partial-result, and recovery behavior",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-15",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Accessible progress, empty, running, success, failure, stale, and cancelled states",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-16",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Shared design tokens, responsive layouts, keyboard access, and assistive technology",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-17",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Project, auto-project, and preview-window integrations with permission checks",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-18",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Source-backed QVillage discovery, review, experiments, and evolution history",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    },
+    {
+      "category": "cross_cutting_gate",
+      "id": "QVLAB-CORE-19",
+      "implementation_evidence": "NOT_MAPPED",
+      "name": "Independent regression review, rollback plan, and authorized promotion",
+      "physical_evidence": "NOT_VERIFIED",
+      "simulation_evidence": "NOT_RUN",
+      "status": "candidate_unmapped",
+      "test_evidence": "NOT_MAPPED"
+    }
+  ],
+  "research": {
+    "collector_version": "manual-official-document-review/1",
+    "freshness_deadline": "2026-10-30",
+    "interpretation": "official capability documentation review_not_independent_benchmark_or_performance_validation",
+    "observations": [
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official project describes linear/nonlinear static, dynamic, and thermal finite-element analyses.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 9839,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "771c31efba047f9a70685d9232398c3c39390cac3bcea681747395b8f072d6dd",
+        "source_url": "https://www.calculix.de/",
+        "subject": "CalculiX finite-element analysis"
+      },
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official project identifies ngspice as an open-source SPICE circuit simulator.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 7948,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "ec33b25455c0267bebf487f13be7ff64b8aa1aae2923d3f8a7942b360013d3a5",
+        "source_url": "https://ngspice.sourceforge.io/",
+        "subject": "ngspice circuit simulation"
+      },
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official feature page lists CFD models including RAS, LES, multiphase, reacting flow, dynamic meshes, and parallel processing.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 98952,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "8c7f75b9e56e333d666d87eac7ed51963b1c1fd05ae1b80f6441046a2b742461",
+        "source_url": "https://cfd.direct/openfoam/features/",
+        "subject": "OpenFOAM computational fluid dynamics"
+      },
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official guide documents Gazebo Sim as a 3D robotics simulator with server-only headless mode, SDF worlds, and separate user/developer workflows.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 41843,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "7f21d9fa5aaacd2b849351a93a647f6e712b07b452a4c4a1b74cd88c5e268cad",
+        "source_url": "https://gazebosim.org/docs/latest/getstarted/",
+        "subject": "Gazebo robotics simulation"
+      },
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official project describes the standard process-simulator release as free and open source; separately offered editions may have different capabilities.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 245468,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "c33f1edcd3f0191978e958a9642f4210182455a5a06c215e141d6c0a1c6c8fe0",
+        "source_url": "https://dwsim.org/",
+        "subject": "DWSIM chemical process simulation"
+      },
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official project presents FreeCAD as an open-source CAD design application; CAD authoring does not itself validate a physics solver.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 45200,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "3825726c8e40c316f9680edbd85e8ab435e728e65b8c87bcdeff34c345561346",
+        "source_url": "https://www.freecad.org/",
+        "subject": "FreeCAD geometry authoring"
+      },
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official API documentation distinguishes local-server inference from cloud API requests that require an API key.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 270032,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "4cdff4e784bf13edeeeccdcf5a04d811311ea9d35800d421f8c028737c5f6428",
+        "source_url": "https://docs.ollama.com/api/introduction",
+        "subject": "Ollama runtime/API boundary"
+      },
+      {
+        "collector_version": "manual-official-document-review/1",
+        "freshness_deadline": "2026-10-30",
+        "http_status": 200,
+        "observed_fact": "Official docs describe schema-constrained JSON responses and validating them against an application schema; cloud structured outputs are currently unsupported.",
+        "result_status": "OBSERVED_DATE_ONLY",
+        "retrieval_time_status": "NOT_CAPTURED",
+        "retrieved_at_utc": null,
+        "retrieved_bytes": 366050,
+        "retrieved_date_utc": "2026-10-16",
+        "source_sha256": "5c8d318dba75d40cf7d1ee0bc8c1a6a13413b2418feab1822ec46c131158b3b3",
+        "source_url": "https://docs.ollama.com/capabilities/structured-outputs",
+        "subject": "Ollama structured outputs"
+      }
+    ],
+    "retrieval_time_status": "NOT_CAPTURED",
+    "retrieved_at_utc": null,
+    "retrieved_date_utc": "2026-10-16",
+    "status": "OBSERVED_DATE_ONLY"
+  },
+  "schema_version": 1,
+  "source_scope": "materialized_local_only",
+  "status": "BLOCKED_SOURCE_RECONCILIATION"
+}

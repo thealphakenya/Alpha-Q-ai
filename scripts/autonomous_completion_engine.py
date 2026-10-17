@@ -19,6 +19,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from scripts.topic_metrics import build_topic_execution_metrics
+
 try:
     from .checkpoint_manager import CheckpointManager
     from .live_activity_events import LiveActivity
@@ -458,54 +460,7 @@ def discover_q_version(root: Path) -> str | None:
 
 def topic_metrics(root: Path) -> dict[str, Any]:
     """Compute plan/index parity and evidence-backed topic counts."""
-    plan = root / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md"
-    index = root / "ollama_master_topic_index.txt"
-    heading_pattern = re.compile(r"^##\s+(\d+)\.\s+(.+?)\s*$")
-    topics = {
-        int(match.group(1)): match.group(2)
-        for line in plan.read_text(encoding="utf-8").splitlines()
-        if plan.is_file() and (match := heading_pattern.match(line))
-    } if plan.is_file() else {}
-    indexed = [
-        int(match.group(1))
-        for line in index.read_text(encoding="utf-8").splitlines()
-        if index.is_file() and (match := re.match(r"^(\d+)\.\s+", line))
-    ] if index.is_file() else []
-    records: dict[int, dict[str, Any]] = {}
-    evidence = root / "Q.0.0.N" / "evidence" / "topics"
-    for path in sorted(evidence.glob("topic-*.json")) if evidence.is_dir() else ():
-        match = re.match(r"topic-(\d+)\.json$", path.name)
-        if not match:
-            continue
-        try:
-            record = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            continue
-        number = int(match.group(1))
-        if number in topics and isinstance(record, dict):
-            records[number] = record
-    complete = sum(
-        str(item.get("status", "")).upper() in {"SUCCESS", "FULLY_COMPLETED"}
-        and bool(item.get("evidence_complete"))
-        for item in records.values()
-    )
-    blocked = sum(str(item.get("status", "")).upper() in {"BLOCKED", "FAILED"} for item in records.values())
-    not_started = sum(str(item.get("status", "")).upper() == "NOT_STARTED" for item in records.values())
-    active = max(len(topics) - complete - blocked - not_started, 0)
-    return {
-        "generated": utc_now(),
-        "master_plan_topics": len(topics),
-        "topic_index_entries": len(indexed),
-        "topic_index_matches_plan": sorted(topics) == indexed,
-        "missing_index_numbers": sorted(set(topics) - set(indexed)),
-        "duplicate_index_numbers": sorted(number for number in set(indexed) if indexed.count(number) > 1),
-        "evidence_records": len(records),
-        "fully_completed": complete,
-        "blocked": blocked,
-        "not_started": not_started,
-        "in_progress": active,
-        "status_sum_matches_inventory": complete + blocked + not_started + active == len(topics),
-    }
+    return build_topic_execution_metrics(root)
 
 
 @dataclass

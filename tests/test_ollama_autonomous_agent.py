@@ -69,8 +69,55 @@ class TestResumeFileTracking:
 
 
 class TestAutonomousContinuation:
-    def test_run_continue_cycle_auto_continues_until_success(self, tmp_path):
+    def test_audit_first_cli_refreshes_mission_metrics_after_agent_cycle(self, tmp_path, monkeypatch):
+        metric_refreshes = []
+        monkeypatch.setattr("ollama_autonomous_agent.main", lambda argv: 0)
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
+        monkeypatch.setattr(
+            OllamaAutonomousAgent,
+            "run_autonomous_loop",
+            lambda self: {"final_status": "SUCCESS"},
+        )
+
+        exit_code = autonomous_agent_main(["audit-first", "--base-path", str(tmp_path)])
+
+        assert exit_code == 0
+        assert metric_refreshes == [tmp_path]
+
+    def test_autonomous_cli_refreshes_mission_metrics_after_run(self, tmp_path, monkeypatch):
+        metric_refreshes = []
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
+        monkeypatch.setattr(
+            OllamaAutonomousAgent,
+            "run_autonomous_loop",
+            lambda self: {"final_status": "NEEDS_REVIEW"},
+        )
+
+        exit_code = autonomous_agent_main(["autonomous", "--base-path", str(tmp_path)])
+
+        assert exit_code == 1
+        assert metric_refreshes == [tmp_path]
+
+    def test_run_continue_cycle_auto_continues_until_success(self, tmp_path, monkeypatch):
+        source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger.parent.mkdir(parents=True)
+        ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
+        ledger["mission_clock"]["started_at"] = "2099-01-01T00:00:00Z"
+        ledger["mission_clock"]["deadline_at"] = "2099-01-01T02:00:00Z"
+        target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         agent = OllamaAutonomousAgent(base_path=tmp_path)
+        metric_refreshes = []
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
         lifecycle = QVersionManager(tmp_path)
         execution_id = "continue-cycle-success"
         lifecycle.record_lifecycle_stage(
@@ -94,6 +141,10 @@ class TestAutonomousContinuation:
 
         assert exit_code == 0
         assert run_loop.call_count == 1
+        assert metric_refreshes == [tmp_path]
+        assert agent.results["mission_metrics_refresh"] == {"status": "REFRESHED"}
+        assert agent.results["mission_resume_plan"]["status"] == "READY_FOR_AUTHORIZED_EXECUTOR"
+        assert agent.results["mission_resume_plan"]["dependency_ready_task_ids"] == ["M01", "M04"]
         audit = lifecycle.audit_lifecycle(execution_id)
         assert audit["stage_sequence"] == ["MERGE_START", "AUTO_CONTINUE_LOOP"]
         continue_stage = audit["stage_records"][-1]
@@ -102,8 +153,68 @@ class TestAutonomousContinuation:
         assert continue_stage["details"]["retry_limit_respected"] is True
         assert continue_stage["details"]["qaudit_precondition"]["source_manifest_sha256"] == continue_stage["details"]["source_manifest_sha256"]
 
+    def test_run_continue_cycle_pauses_expired_clock_before_side_effects(self, tmp_path, monkeypatch):
+        source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger.parent.mkdir(parents=True)
+        target_ledger.write_text(source_ledger.read_text(encoding="utf-8"), encoding="utf-8")
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        metric_refreshes = []
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
+        agent.refresh_managed_surface_documents = MagicMock()
+        agent.load_checkpoint = MagicMock()
+        agent.record_tracker_event = MagicMock()
+        agent.update_resume_checkpoint = MagicMock()
+
+        with patch.object(OllamaAutonomousAgent, "run_autonomous_loop") as run_loop:
+            exit_code = agent.run_continue_cycle()
+
+        assert exit_code == 2
+        assert agent.results["mission_resume_plan"]["status"] == "PAUSED_EXPIRED_CLOCK"
+        assert agent.results["continuation_status"] == "PAUSED_EXPIRED_CLOCK"
+        assert metric_refreshes == [tmp_path]
+        agent.refresh_managed_surface_documents.assert_not_called()
+        agent.load_checkpoint.assert_not_called()
+        agent.record_tracker_event.assert_not_called()
+        agent.update_resume_checkpoint.assert_not_called()
+        run_loop.assert_not_called()
+
+    def test_continue_cli_reports_expired_clock_pause(self, tmp_path, monkeypatch, capsys):
+        source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger.parent.mkdir(parents=True)
+        target_ledger.write_text(source_ledger.read_text(encoding="utf-8"), encoding="utf-8")
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: {"status": "REFRESHED"},
+        )
+        for method_name in (
+            "refresh_managed_surface_documents",
+            "record_tracker_event",
+            "update_resume_checkpoint",
+            "run_autonomous_loop",
+        ):
+            monkeypatch.setattr(
+                OllamaAutonomousAgent,
+                method_name,
+                MagicMock(side_effect=AssertionError(f"{method_name} must not run")),
+            )
+
+        exit_code = autonomous_agent_main(["continue", "--base-path", str(tmp_path)])
+
+        assert exit_code == 2
+        assert "PAUSED_EXPIRED_CLOCK" in capsys.readouterr().out
+
     def test_ready_checkpoint_does_not_bypass_success_contract(self, tmp_path, monkeypatch):
         agent = OllamaAutonomousAgent(base_path=tmp_path)
+        metric_refreshes = []
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
         monkeypatch.setenv("AUTO_CONTINUE_MAX", "1")
         agent.refresh_managed_surface_documents = MagicMock(return_value={"status": "ready"})
         agent.load_checkpoint = MagicMock(return_value={"status": "ready", "completed_steps": []})
@@ -114,6 +225,7 @@ class TestAutonomousContinuation:
             exit_code = agent.run_continue_cycle()
 
         assert exit_code == 1
+        assert metric_refreshes == [tmp_path]
         assert run_loop.call_count == 1
         assert agent.update_resume_checkpoint.call_args_list[-1].kwargs["status"] == "continuation_exhausted"
 
@@ -687,6 +799,10 @@ class TestRestorePointMemoryAndLegacyInventory:
         repo.mkdir()
         agent = OllamaAutonomousAgent(base_path=repo)
         monkeypatch.setenv("AUTO_CONTINUE_MAX", "2")
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: {"status": "REFRESHED"},
+        )
         lifecycle = QVersionManager(repo)
         execution_id = "continue-cycle-exhausted"
         lifecycle.record_lifecycle_stage(
@@ -716,6 +832,7 @@ class TestRestorePointMemoryAndLegacyInventory:
         assert continue_stage["stage_status"] == "NEEDS_REVIEW"
         assert continue_stage["details"]["iteration_count"] == 2
         assert continue_stage["details"]["termination_reason"] == "retry_limit_reached"
+        assert agent.results["mission_metrics_refresh"] == {"status": "REFRESHED"}
 
     def test_local_completion_report_does_not_allocate_q_version(self, tmp_path):
         repo = tmp_path / "repo"
@@ -805,10 +922,10 @@ class TestCrossRepositoryAutonomyManager:
 
     def test_topic_execution_metrics_require_individual_evidence(self, tmp_path):
         (tmp_path / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md").write_text(
-            "## 1. First\n## 2. Second\n## 3. Third\n", encoding="utf-8"
+            "## 1. First\n## 2. Second\n## 3. Third\n## 4. Fourth\n", encoding="utf-8"
         )
         (tmp_path / "ollama_master_topic_index.txt").write_text(
-            "1. First\n2. Second\n3. Third\n", encoding="utf-8"
+            "1. First\n2. Second\n3. Third\n4. Fourth\n", encoding="utf-8"
         )
         evidence = tmp_path / "Q.0.0.N" / "evidence" / "topics"
         evidence.mkdir(parents=True)
@@ -818,16 +935,20 @@ class TestCrossRepositoryAutonomyManager:
         (evidence / "topic-002.json").write_text(
             json.dumps({"status": "BLOCKED", "evidence_complete": False}), encoding="utf-8"
         )
+        (evidence / "topic-003.json").write_text(
+            json.dumps({"status": "IN_PROGRESS", "evidence_complete": False}), encoding="utf-8"
+        )
 
         metrics = CrossRepositoryAutonomyManager().build_topic_execution_metrics(tmp_path)
 
-        assert metrics["master_plan_topics"] == 3
+        assert metrics["master_plan_topics"] == 4
         assert metrics["topic_index_matches_plan"] is True
-        assert metrics["evidence_records"] == 2
-        assert metrics["evidence_coverage_percent"] == 66.67
+        assert metrics["evidence_records"] == 3
+        assert metrics["evidence_coverage_percent"] == 75.0
         assert metrics["fully_completed"] == 1
         assert metrics["blocked"] == 1
         assert metrics["in_progress"] == 1
+        assert metrics["unmeasured"] == 1
         assert metrics["status_sum_matches_inventory"] is True
 
     def test_execute_merge_records_premerge_inventory_as_first_operation(self, tmp_path):

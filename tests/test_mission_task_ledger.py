@@ -12,6 +12,7 @@ import pytest
 from scripts.mission_task_ledger import (
     LedgerError,
     _verify_repository,
+    build_resume_plan,
     finish_phase,
     finish_task,
     load_ledger,
@@ -198,6 +199,115 @@ def test_canonical_phase_catalog_indexes_all_eighteen_source_headings():
     assert sum(mission_phase_status_counts(ledger).values()) == 18
 
 
+def test_resume_plan_indexes_all_phases_and_selects_only_dependency_ready_tasks():
+    ledger = _ledger()
+    original = copy.deepcopy(ledger)
+    deadline = datetime.fromisoformat(
+        ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
+    )
+
+    plan = build_resume_plan(ledger, now=deadline - timedelta(seconds=1))
+
+    assert plan["status"] == "READY_FOR_AUTHORIZED_EXECUTOR"
+    assert plan["dependency_ready_task_ids"] == ["M01", "M04"]
+    assert plan["next_task_id"] == "M01"
+    assert plan["phase_count"] == 18
+    assert plan["unreviewed_requirement_line_count"] == ledger["mission_requirement_line_count"]
+    assert plan["unassigned_requirement_line_count"] == 22
+    assert plan["unassigned_unreviewed_requirement_line_count"] == 22
+    all_planned_requirement_ids = [
+        requirement_id
+        for phase in plan["phases"]
+        for requirement_id in (
+            phase["reviewed_requirement_line_ids"]
+            + phase["unreviewed_requirement_line_ids"]
+        )
+    ] + plan["unassigned_reviewed_requirement_line_ids"] + plan[
+        "unassigned_unreviewed_requirement_line_ids"
+    ]
+    expected_requirement_ids = [
+        record["id"] for record in ledger["mission_requirement_line_records"]
+    ]
+    assert len(all_planned_requirement_ids) == len(expected_requirement_ids)
+    assert set(all_planned_requirement_ids) == set(expected_requirement_ids)
+    planned_unreviewed_requirement_ids = {
+        requirement_id
+        for phase in plan["phases"]
+        for requirement_id in phase["unreviewed_requirement_line_ids"]
+    } | set(plan["unassigned_unreviewed_requirement_line_ids"])
+    assert planned_unreviewed_requirement_ids == {
+        record["id"]
+        for record in ledger["mission_requirement_line_records"]
+        if not record.get("semantic_reviewed", False)
+    }
+    assert all(phase["unreviewed_requirement_line_count"] >= 0 for phase in plan["phases"])
+    assert plan["task_transitions_performed"] is False
+    assert plan["execution_authorized"] is False
+    assert plan["remote_mutation_performed"] is False
+    assert plan["remote_verified"] is False
+    assert ledger == original
+
+
+def test_resume_plan_pauses_expired_clock_without_discarding_queue():
+    ledger = _ledger()
+    deadline = datetime.fromisoformat(
+        ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
+    )
+
+    plan = build_resume_plan(ledger, now=deadline)
+
+    assert plan["status"] == "PAUSED_EXPIRED_CLOCK"
+    assert plan["deadline_expired"] is True
+    assert plan["dependency_ready_task_ids"] == ["M01", "M04"]
+    assert plan["next_task_id"] == "M01"
+    assert plan["task_transitions_performed"] is False
+    assert plan["remote_verified"] is False
+
+
+def test_task_and_phase_transitions_pause_at_expired_clock_without_mutation():
+    ledger = _ledger()
+    deadline = datetime.fromisoformat(
+        ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
+    )
+    deadline_text = deadline.isoformat()
+
+    before_task_start = copy.deepcopy(ledger)
+    with pytest.raises(LedgerError, match="Mission clock expired"):
+        start_task(ledger, "M04", now=deadline_text)
+    assert ledger == before_task_start
+
+    start_task(ledger, "M04", now=(deadline - timedelta(seconds=30)).isoformat())
+    before_task_finish = copy.deepcopy(ledger)
+    with pytest.raises(LedgerError, match="Mission clock expired"):
+        finish_task(
+            ledger,
+            "M04",
+            "PARTIALLY_COMPLETE",
+            evidence_refs=["test://expired-task"],
+            next_action="Resume in an authorized mission run.",
+            now=deadline_text,
+        )
+    assert ledger == before_task_finish
+
+    before_phase_start = copy.deepcopy(ledger)
+    with pytest.raises(LedgerError, match="Mission clock expired"):
+        start_phase(ledger, "PH03", now=deadline_text)
+    assert ledger == before_phase_start
+
+    start_phase(ledger, "PH03", now=(deadline - timedelta(seconds=30)).isoformat())
+    before_phase_finish = copy.deepcopy(ledger)
+    with pytest.raises(LedgerError, match="Mission clock expired"):
+        finish_phase(
+            ledger,
+            "PH03",
+            "PARTIALLY_COMPLETE",
+            evidence_refs=["test://expired-phase"],
+            next_action="Resume in an authorized mission run.",
+            now=deadline_text,
+        )
+    assert ledger == before_phase_finish
+
+
 def test_mission_requirement_lines_are_hash_indexed_without_copying_source_text():
     ledger = _ledger()
     mission_text = (ROOT / "latest mission.md").read_text(encoding="utf-8")
@@ -225,14 +335,14 @@ def test_mission_phase_transition_records_elapsed_evidence_and_status():
     sync_mission_phase_catalog(ledger, (ROOT / "latest mission.md").read_text(encoding="utf-8"))
     partial_before = mission_phase_status_counts(ledger)["PARTIALLY_COMPLETE"]
 
-    phase = start_phase(ledger, "PH18", now="2026-10-15T14:00:00Z")
+    phase = start_phase(ledger, "PH18", now="2026-10-13T14:00:00Z")
     phase = finish_phase(
         ledger,
         "PH18",
         "PARTIALLY_COMPLETE",
         evidence_refs=["tests/test_mission_task_ledger.py"],
         next_action="Continue the remaining final deliverables.",
-        now="2026-10-15T14:00:05Z",
+        now="2026-10-13T14:00:05Z",
     )
 
     assert phase["elapsed_seconds"] == 5

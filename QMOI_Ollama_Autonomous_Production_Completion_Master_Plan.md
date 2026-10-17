@@ -103,14 +103,16 @@ The live continuity tasks remaining from `oe2.txt` are also tracked as
 obligations that must be reconciled with this 208-topic plan before any
 final success claim is made.
 
-The live ledger records mutually exclusive topic metrics. Until individual
-evidence envelopes prove every required gate for a topic, that topic remains
-`IN PROGRESS`; aggregate tests or documentation do not count as full
-completion. The current snapshot records 208 discovered topics, 0 fully
-proven topics, and 208 active topics, with remote merge, authorization, and
-security conditions tracked as separate blockers. The autonomous merge-audit
-path computes plan/index parity, evidence coverage, unproven-topic lists, and
-status-count integrity, and writes the machine-readable result to
+The live ledger records mutually exclusive topic metrics. Only a topic with
+an explicit active status is `IN PROGRESS`; absent, malformed, or unknown
+topic evidence is `UNMEASURED`, never inferred as execution or completion.
+Individual evidence envelopes must prove every required gate for a topic;
+aggregate tests or documentation do not count as full completion. The current
+local snapshot has 208 discovered topics, 0 evidence records, 0 fully proven
+topics, and 208 unmeasured topics. Remote merge, authorization, and security
+conditions remain separate blockers. The autonomous merge-audit path computes
+plan/index parity, evidence coverage, unproven-topic lists, and status-count
+integrity, and writes the machine-readable result to
 `ollamatracks/topic_metrics.json`.
 
 The model responsibility extension is part of the same gate: Ollama and QMOI

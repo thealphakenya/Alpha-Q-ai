@@ -4,7 +4,7 @@
 
 The QAUDITS layer must perform a full step-level audit before any style, universal, release, or Q-version action advances. The required gate includes app/platform coverage, access-mode classification, UI styling and token coverage, universal capability mapping, test and hook coverage, release/build/install/download/deploy evidence, QAUDITS category membership from [ALLMDFILESREFS.md](ALLMDFILESREFS.md), and exact-SHA validation. A discovered candidate is never treated as implemented or replaced without a verified lineage record.
 
-The transition plan is documented in [TRANSION.md](TRANSION.md). This plan includes the same naming crosswalk, directory/file inventory, source/destination lineage, and metrics model used by QAUDITS and the style/universal layer so that no file, directory, or category is silently omitted.
+The transition plan is documented in [TRANSION.md](TRANSION.md). This plan includes the same naming crosswalk, directory/file inventory, source/destination lineage, and metrics model used by QAUDITS and the style/universal layer so that no file, directory, or category is silently omitted. QVirtualLabs engineering and simulation coverage is tracked separately in [QVIRTUALLABS.md](QVIRTUALLABS.md), with the secondary index in [TRANSIONQ.md](TRANSIONQ.md).
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
@@ -48,6 +48,7 @@ Every audit result must identify the repository, ref, exact source SHA (when Git
 | Security and privacy | Dependency/code/secrets scan status, finding counts by severity and source, authorization boundaries, secret-safe logging, unresolved findings, and externally blocked checks. Unknown or denied remote results remain unknown; they are not zero findings. |
 | Reliability and operations | Workflow terminal states, queue depth/age, bounded retries, checkpoint freshness, error/recovery rates, heartbeat freshness, telemetry validity, stale inputs, availability windows, and incident/rollback evidence. |
 | Automatic audit selection | Deterministic risk rules, score/reason per path, complete indexed-path denominator, pending/selected/reviewed states, queue/source-manifest hashes, policy version, and stable tie ordering. Selection must rank risk without omitting lower-priority paths or treating a model suggestion as a result. |
+| QVirtualLabs and QEngineer | Source requirement count and missing-source state; candidate engineering domains; requirement-to-owner/implementation/test mappings; solver convergence, uncertainty, accuracy claims, safety review, simulation, benchmark, calibration, physical-experiment, source-backed research URL/hash/freshness/retrieval-time completeness, evolution, UI/accessibility, project/preview, and remote-verification evidence. Simulation output and physical measurements must be distinct; unknown or uncalibrated results remain unknown. |
 | QSeed and protected memory | Seed parent/source/ref/SHA lineage, encrypted artifact counts and ciphertext hashes, key availability as a value-free state, decrypt/restore test outcomes, overwrite/symlink/permission checks, and explicit missing-key or integrity blockers. Never decrypt content during inventory or store plaintext, keys, recovery phrases, credential values, or source text in evidence. |
 | Finance, projects, and Qtrade | Source and freshness of actual account/market/execution data; reasoning/signal/regime and confidence calibration; entry/exit/position sizing/strategy and no-trade accuracy; gross/net and realized/unrealized P&L, ROC/ROE, win/loss counts, average win/loss, reward-risk, expectancy per trade/risked dollar, profit factor, compounding and period/asset/strategy/venue returns; fees/taxes/funding/spread/slippage/implementation shortfall; exposure, leverage, concentration, liquidation distance, stop/take-profit performance, drawdown magnitude/duration, VaR/expected shortfall, Sharpe/Sortino/Calmar and return-to-drawdown; data quality, historical/out-of-sample/walk-forward/backtest/paper/live degradation and bias controls; exchange authentication/data/order/cancel/modify/fill/reconciliation/rate-limit/outage/kill-switch reliability; capital utilization/reserves/diversification; transfer authorization/whitelists/limits/audit trail; and platform/account security. Project budget, actual spend, revenue, liabilities, reconciliation, and owner authorization must be separately evidenced. Never infer financial values from prose or treat a high win rate as profitability. |
 
@@ -300,6 +301,10 @@ This section is refreshed from the same local QAUDITS universe on every invocati
 - Updating this managed section never rewrites historical/archive documents, policy instructions, or Q-version artifacts.
 <!-- END QMOI MANAGED: qaudit-style-universal-accessibility-coverage -->
 
+## QVirtualLabs evidence boundary
+
+The local planner records an initial domain inventory and the missing engineering-source blocker. It does not execute simulations, conduct physical research, fetch live external sources, or prove that QMOI implements any candidate. Each report must keep source requirements, implementation mappings, focused tests, simulation runs, physical measurements, calibration correlations, research observations, UI/project integrations, and remote checks as separate denominators. See [QVIRTUALLABS.md](./QVIRTUALLABS.md) for the acceptance and accuracy contract.
+
 <!-- BEGIN QMOI MANAGED: tracking-and-live-metric-inventory -->
 ## Tracking and live-metric inventory
 
@@ -315,3 +320,25 @@ The same refresh updates [QMOITACKS.md](QMOITACKS.md), canonical [QMOITRACKS.md]
 - Preserve public/authenticated/master access boundaries, data minimization, styles/universal transition requirements, feature ownership, monitoring tests, failure/recovery states, and explicit blockers.
 - The inventory does not automatically install telemetry or make broad UI/access changes; per-feature monitoring and master/backend authorization require reviewed implementation and tests.
 <!-- END QMOI MANAGED: tracking-and-live-metric-inventory -->
+
+<!-- BEGIN QMOI MANAGED: qaudit-qvirtual-labs-coverage -->
+## Agent-managed QVirtualLabs engineering coverage
+
+Generated from the local QVirtualLabs source inventory; a full QAUDITS universe manifest is included only when supplied by that inventory refresh. These are candidate-plan metrics, not implementation, experiment, physical-lab, or remote-completion evidence.
+- Status: `BLOCKED_SOURCE_RECONCILIATION`; correlation ID: `231b915c-d2b9-45e5-baaa-1a02ef7b2209`; source manifest SHA-256: `ac35b2d4e2cc91f1395e1dd85f01183b6adbc2cb40411ef2194f6ab0e69a20ba`.
+- QAUDITS universe manifest SHA-256: `unavailable`; QVirtualLabs source-manifest scope: `qvirtual_labs_source_files`.
+- Plan artifact: `ollamatracks/qvirtual_labs_plan.json`; plan SHA-256: `b01b3fe497df8a44e3bd5965ac9f34336042d092199d3fe16ce0537118122773`; scope: `materialized_local_only`.
+- Starter engineering-domain candidates: `14`; cross-cutting gate candidates: `19`; total starter-plan requirements: `33`.
+- Authoritative QENGINEER requirements: `UNKNOWN`; QENGINEER source status: `missing_or_unsafe`.
+- Requirement-to-implementation / focused-test mappings: `0` / `0`.
+- Verified simulations / benchmark validations: `0` / `0`; physical experiment records / calibration correlations: `0` / `0`.
+- Convergence cases / uncertainty reports / accuracy claims verified: `0` / `0` / `0`; safety protocols reviewed: `0`.
+- Official research sources checked / date-fresh observations / stale observations: `8` / `8` / `0`; exact retrieval times not captured: `8`; verified evolution cycles: `0`.
+- Recommended architecture: `one bounded, auditable adapter contract with specialist solvers; no monolithic all-domain solver selected`; first pilot candidate: `ngspice circuit reference case`; Ollama inference: `NOT_MEASURED` by this inventory.
+- Tool recommendation rationale: `domain fit from official documentation, implementation isolation, and a bounded first regression; not a comparative performance benchmark`; selected tool: `NONE`; tool candidates: `6`.
+- Public QENGINEER probe: `UNKNOWN_NOT_FOUND_OR_PRIVATE`; a public 404 is ambiguous without authenticated repository read access.
+- UI/accessibility mappings / project, auto-project, and preview integrations: `0` / `0`; remote verified: `False`.
+- Simulation output is never counted as physical evidence. Physical correlation requires an authorized protocol, human operator, traceable instruments/calibration, and reviewed raw-data provenance.
+- Historical reference: `qmoi-enhanced-history-14/QVIRTUALLABS.md`; scope `historical_snapshot_candidate`; not authoritative.
+- The planner does not run a solver, retrieve external research, invoke hardware, or infer that an unlinked implementation is absent.
+<!-- END QMOI MANAGED: qaudit-qvirtual-labs-coverage -->

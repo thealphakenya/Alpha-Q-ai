@@ -124,10 +124,20 @@ from scripts.qaudit_tracking import (
     render_tracking_markdown,
 )
 from scripts.qaudit_universe import write_qaudit_artifacts
-from scripts.qaudits_evolution_planner import build_evolution_plan
+from scripts.qaudits_evolution_planner import (
+    build_evolution_plan,
+    build_qvirtual_labs_plan,
+)
 from scripts.qaudit_shard_runner import run_bounded_audit_shards
 from scripts.qaudits_parallel_auditor import run_parallel_merge_audit
 from scripts.language_strategy import LANGUAGE_PROFILES
+from scripts.mission_task_ledger import (
+    LedgerError,
+    build_resume_plan,
+    load_ledger,
+    refresh_mission_metrics,
+)
+from scripts.topic_metrics import build_topic_execution_metrics
 
 try:
     from scripts.live_activity_stream import (
@@ -3580,84 +3590,7 @@ class CrossRepositoryAutonomyManager:
     ) -> dict[str, Any]:
         """Compute evidence-backed, mutually exclusive master-plan metrics."""
         repository_root = Path(root).resolve() if root is not None else Path(__file__).resolve().parent.parent
-        plan_path = repository_root / "QMOI_Ollama_Autonomous_Production_Completion_Master_Plan.md"
-        index_path = repository_root / "ollama_master_topic_index.txt"
-        topic_pattern = re.compile(r"^##\s+(\d+)\.\s+(.+?)\s*$")
-        topics = {
-            int(match.group(1)): match.group(2)
-            for line in plan_path.read_text(encoding="utf-8").splitlines()
-            if (match := topic_pattern.match(line))
-        } if plan_path.is_file() else {}
-        index_numbers = [
-            int(match.group(1))
-            for line in index_path.read_text(encoding="utf-8").splitlines()
-            if (match := re.match(r"^(\d+)\.\s+", line))
-        ] if index_path.is_file() else []
-        evidence_root = repository_root / "Q.0.0.N" / "evidence"
-        evidence_records: dict[int, dict[str, Any]] = {}
-        evidence_paths = sorted(evidence_root.rglob("*.json")) if evidence_root.is_dir() else []
-        for path in evidence_paths:
-            match = re.search(r"(?:topic[-_]?|/)(\d{1,3})(?:\.json|/|$)", path.as_posix())
-            if not match:
-                continue
-            number = int(match.group(1))
-            if number not in topics:
-                continue
-            try:
-                payload = json.loads(path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
-                continue
-            if isinstance(payload, dict):
-                evidence_records[number] = {
-                    "path": str(path.relative_to(repository_root)),
-                    "status": str(payload.get("status", "")).upper(),
-                    "evidence_complete": bool(payload.get("evidence_complete")),
-                }
-
-        fully_completed = sum(
-            record["status"] in {"SUCCESS", "FULLY_COMPLETED"}
-            and record["evidence_complete"]
-            for record in evidence_records.values()
-        )
-        blocked = sum(
-            record["status"] in {"BLOCKED", "FAILED", "FAILED_AT"}
-            for record in evidence_records.values()
-        )
-        not_started = sum(
-            record["status"] in {"NOT_STARTED", "NOT_APPLICABLE"}
-            for record in evidence_records.values()
-        )
-        active = max(len(topics) - fully_completed - blocked - not_started, 0)
-        proven_numbers = {
-            number for number, record in evidence_records.items()
-            if record["status"] in {"SUCCESS", "FULLY_COMPLETED"}
-            and record["evidence_complete"]
-        }
-        return {
-            "generated": utc_iso(),
-            "plan_path": str(plan_path),
-            "index_path": str(index_path),
-            "master_plan_topics": len(topics),
-            "topic_index_entries": len(index_numbers),
-            "topic_index_matches_plan": sorted(topics) == index_numbers,
-            "duplicate_index_numbers": sorted(
-                number for number in set(index_numbers) if index_numbers.count(number) > 1
-            ),
-            "missing_index_numbers": sorted(set(topics) - set(index_numbers)),
-            "evidence_records": len(evidence_records),
-            "evidence_coverage_percent": round(
-                len(evidence_records) / len(topics) * 100, 2
-            ) if topics else 0.0,
-            "fully_completed": fully_completed,
-            "in_progress": active,
-            "not_started": not_started,
-            "blocked": blocked,
-            "unproven_topics": sorted(set(topics) - proven_numbers),
-            "evidence_records_by_topic": evidence_records,
-            "status_sum_matches_inventory": (
-                fully_completed + active + not_started + blocked == len(topics)
-            ),
-        }
+        return build_topic_execution_metrics(repository_root)
 
     def build_feature_discovery_plan(self) -> dict[str, Any]:
         """Define evidence gates before proposing new cross-repository features."""
@@ -8448,6 +8381,92 @@ All timestamps use UTC ISO-8601 format.
         safe_json_write(target / "ollamatracks" / "bank_automation_status.json", report)
         return report
 
+    def refresh_qvirtual_labs_documents(
+        self,
+        root: Path | str,
+        *,
+        source_manifest_sha256: str | None = None,
+        qaudit_source_manifest_sha256: str | None = None,
+        correlation_id: str | None = None,
+        plan: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Refresh QVirtualLabs metrics without turning plans into execution evidence."""
+        target = Path(root).resolve()
+        lab_plan = dict(plan) if plan is not None else build_qvirtual_labs_plan(
+            target,
+            source_manifest_sha256=source_manifest_sha256,
+        )
+        artifact = target / "ollamatracks" / "qvirtual_labs_plan.json"
+        safe_json_write(artifact, lab_plan)
+        metrics = lab_plan.get("metrics", {})
+        qengineer = next(
+            (
+                item for item in lab_plan.get("active_source_files", [])
+                if item.get("path") == "QENGINEER.md"
+            ),
+            {},
+        )
+        requirement_count = metrics.get("source_requirement_count")
+        lines = [
+            "## Agent-managed QVirtualLabs engineering coverage",
+            "",
+            "Generated from the local QVirtualLabs source inventory; a full QAUDITS universe manifest is included only when supplied by that inventory refresh. These are candidate-plan metrics, not implementation, experiment, physical-lab, or remote-completion evidence.",
+            f"- Status: `{lab_plan.get('status', 'NEEDS_REVIEW')}`; correlation ID: `{correlation_id or 'unavailable'}`; source manifest SHA-256: `{metrics.get('source_manifest_sha256') or 'unavailable'}`.",
+            f"- QAUDITS universe manifest SHA-256: `{qaudit_source_manifest_sha256 or 'unavailable'}`; QVirtualLabs source-manifest scope: `{metrics.get('source_manifest_scope', 'unknown')}`.",
+            f"- Plan artifact: `{artifact.relative_to(target).as_posix()}`; plan SHA-256: `{lab_plan.get('plan_sha256', 'unavailable')}`; scope: `{lab_plan.get('source_scope', 'materialized_local_only')}`.",
+            f"- Starter engineering-domain candidates: `{metrics.get('starter_domain_candidate_count', 0)}`; cross-cutting gate candidates: `{metrics.get('cross_cutting_gate_candidate_count', 0)}`; total starter-plan requirements: `{metrics.get('starter_plan_requirement_count', 0)}`.",
+            f"- Authoritative QENGINEER requirements: `{requirement_count if requirement_count is not None else 'UNKNOWN'}`; QENGINEER source status: `{qengineer.get('status', 'missing_or_unreadable')}`.",
+            f"- Requirement-to-implementation / focused-test mappings: `{metrics.get('requirements_mapped_to_implementation_count', 0)}` / `{metrics.get('requirements_mapped_to_tests_count', 0)}`.",
+            f"- Verified simulations / benchmark validations: `{metrics.get('simulation_runs_verified_count', 0)}` / `{metrics.get('benchmark_validations_verified_count', 0)}`; physical experiment records / calibration correlations: `{metrics.get('physical_experiment_records_verified_count', 0)}` / `{metrics.get('physical_calibration_correlations_verified_count', 0)}`.",
+            f"- Convergence cases / uncertainty reports / accuracy claims verified: `{metrics.get('solver_convergence_cases_verified_count', 0)}` / `{metrics.get('uncertainty_reports_verified_count', 0)}` / `{metrics.get('accuracy_claims_verified_count', 0)}`; safety protocols reviewed: `{metrics.get('safety_protocols_reviewed_count', 0)}`.",
+            f"- Official research sources checked / date-fresh observations / stale observations: `{metrics.get('official_research_source_count', 0)}` / `{metrics.get('fresh_external_research_observations_count', 0)}` / `{metrics.get('stale_external_research_observations_count', 0)}`; exact retrieval times not captured: `{metrics.get('official_research_retrieval_time_not_captured_count', 0)}`; verified evolution cycles: `{metrics.get('autonomous_evolution_cycles_verified_count', 0)}`.",
+            f"- Recommended architecture: `{lab_plan.get('recommended_adapter_stack', {}).get('architecture', 'NOT_SELECTED')}`; first pilot candidate: `{lab_plan.get('recommended_adapter_stack', {}).get('initial_pilot', 'NOT_SELECTED')}`; Ollama inference: `NOT_MEASURED` by this inventory.",
+            f"- Tool recommendation rationale: `{lab_plan.get('recommended_adapter_stack', {}).get('decision_basis', 'NOT_RECORDED')}`; selected tool: `NONE`; tool candidates: `{len(lab_plan.get('recommended_adapter_stack', {}).get('tool_candidates', []))}`.",
+            f"- Public QENGINEER probe: `{lab_plan.get('public_qengineer_probe', {}).get('status', 'NOT_CHECKED')}`; a public 404 is ambiguous without authenticated repository read access.",
+            f"- UI/accessibility mappings / project, auto-project, and preview integrations: `{metrics.get('ui_accessibility_mappings_verified_count', 0)}` / `{metrics.get('project_autoproject_preview_integrations_verified_count', 0)}`; remote verified: `{metrics.get('remote_verified', False)}`.",
+            "- Simulation output is never counted as physical evidence. Physical correlation requires an authorized protocol, human operator, traceable instruments/calibration, and reviewed raw-data provenance.",
+            f"- Historical reference: `{lab_plan.get('historical_reference', {}).get('path', 'unavailable')}`; scope `{lab_plan.get('historical_reference', {}).get('scope', 'unknown')}`; not authoritative.",
+            "- The planner does not run a solver, retrieve external research, invoke hardware, or infer that an unlinked implementation is absent.",
+        ]
+        updated: list[str] = []
+        blocked: list[str] = []
+        for filename in (
+            "QVIRTUALLAB.md",
+            "QVIRTUALLABS.md",
+            "QAUDITS.md",
+            "TRANSION.md",
+            "TRANSIONQ.md",
+            "TRANSITION.md",
+            "QVILLAGE.md",
+            "Qvillageevolutions.md",
+        ):
+            path = target / filename
+            if path.is_symlink():
+                blocked.append(f"{filename}:symlink")
+                continue
+            if not path.is_file():
+                blocked.append(f"{filename}:missing")
+                continue
+            _upsert_managed_markdown_section(
+                path,
+                filename,
+                "qaudit-qvirtual-labs-coverage",
+                "\n".join(lines),
+            )
+            updated.append(filename)
+        return {
+            "status": "UPDATED" if not blocked else "NEEDS_REVIEW",
+            "plan_status": lab_plan.get("status", "NEEDS_REVIEW"),
+            "plan_artifact": artifact.relative_to(target).as_posix(),
+            "plan_sha256": lab_plan.get("plan_sha256"),
+            "source_manifest_sha256": metrics.get("source_manifest_sha256"),
+            "correlation_id": correlation_id,
+            "updated_documents": updated,
+            "blocked_documents": blocked,
+            "metrics": metrics,
+            "blockers": list(lab_plan.get("blockers", [])),
+        }
+
     def refresh_qaudit_governance_documents(
         self,
         root: Path | str,
@@ -8465,6 +8484,12 @@ All timestamps use UTC ISO-8601 format.
         )
         evolution_path = target / "ollamatracks" / "qaudits_evolution_plan.json"
         safe_json_write(evolution_path, evolution_plan)
+        qvirtual_labs_report = self.refresh_qvirtual_labs_documents(
+            target,
+            qaudit_source_manifest_sha256=metrics.get("source_manifest_sha256"),
+            correlation_id=universe.get("correlation_id"),
+            plan=evolution_plan.get("qvirtual_labs"),
+        )
         language_research_plan = build_language_research_plan()
         language_research_path = target / "ollamatracks" / "language_research_plan.json"
         safe_json_write(language_research_path, language_research_plan)
@@ -8582,6 +8607,7 @@ All timestamps use UTC ISO-8601 format.
             "correlation_id": universe.get("correlation_id"),
             "accessibility_markdown_candidate_count": len(accessibility_markdown),
             "evolution_plan_artifact": evolution_path.relative_to(target).as_posix(),
+            "qvirtual_labs": qvirtual_labs_report,
             "evolutiono_metrics": evolutiono_metrics,
             "qstats": qstats,
             "language_research_plan": language_research_summary,
@@ -13037,7 +13063,34 @@ All timestamps use UTC ISO-8601 format.
     def run_continue_cycle(
         self,
     ) -> int:
+        try:
+            return self._run_continue_cycle()
+        finally:
+            refresh_result = refresh_mission_metrics(self.root_dir)
+            self.results["mission_metrics_refresh"] = refresh_result
+
+    def _run_continue_cycle(
+        self,
+    ) -> int:
         """Resume safely from the latest checkpoint and keep the autonomous loop going until success or the bounded retry limit is reached."""
+        try:
+            mission_ledger = load_ledger(
+                self.root_dir / "ollamatracks" / "mission-task-ledger.json"
+            )
+            mission_resume_plan = build_resume_plan(mission_ledger)
+        except (LedgerError, OSError) as exc:
+            mission_resume_plan = {
+                "status": "BLOCKED_LEDGER_UNAVAILABLE",
+                "error": f"{type(exc).__name__}: {exc}",
+                "task_transitions_performed": False,
+                "execution_authorized": False,
+                "remote_mutation_performed": False,
+                "remote_verified": False,
+            }
+        self.results["mission_resume_plan"] = mission_resume_plan
+        if mission_resume_plan.get("status") == "PAUSED_EXPIRED_CLOCK":
+            self.results["continuation_status"] = "PAUSED_EXPIRED_CLOCK"
+            return 2
         managed_surface_contract = self.refresh_managed_surface_documents(
             self.root_dir
         )
@@ -13057,6 +13110,7 @@ All timestamps use UTC ISO-8601 format.
                 "completed_steps": completed_steps,
                 "auto_continue": auto_continue,
                 "max_iterations": max_iterations,
+                "mission_resume_plan": mission_resume_plan,
             },
         )
 
@@ -13068,6 +13122,7 @@ All timestamps use UTC ISO-8601 format.
                 "runtime": os.getenv("GITHUB_ACTIONS", "false"),
                 "auto_continue": auto_continue,
                 "max_iterations": max_iterations,
+                "mission_resume_plan": mission_resume_plan,
             },
         )
 
@@ -14431,10 +14486,13 @@ def main(
         if audit_exit_code != 0:
             return audit_exit_code
         try:
-            contract = agent.run_autonomous_loop()
+            try:
+                contract = agent.run_autonomous_loop()
+            finally:
+                agent.results["mission_metrics_refresh"] = refresh_mission_metrics(root)
             print(json.dumps(contract, indent=2))
             return 0 if contract.get("final_status") == "SUCCESS" else 1
-        except (OllamaRuntimeError, OSError, ValueError) as exc:
+        except (OllamaRuntimeError, OSError, RuntimeError, ValueError) as exc:
             print(f"QAUDITS-first autonomous execution failed: {exc}", file=sys.stderr)
             return 1
 
@@ -14462,19 +14520,29 @@ def main(
 
     if args.command == "autonomous":
         try:
-            contract = agent.run_autonomous_loop()
+            try:
+                contract = agent.run_autonomous_loop()
+            finally:
+                agent.results["mission_metrics_refresh"] = refresh_mission_metrics(agent.root_dir)
             print(json.dumps(contract, indent=2))
             return 0 if contract.get("final_status") == "SUCCESS" else 1
-        except (OllamaRuntimeError, OSError, ValueError) as exc:
+        except (OllamaRuntimeError, OSError, RuntimeError, ValueError) as exc:
             print(f"Autonomous execution failed: {exc}", file=sys.stderr)
             return 1
 
     if args.command == "continue":
         try:
             exit_code = agent.run_continue_cycle()
-            print(f"Continuation cycle status: {exit_code}")
+            continuation_status = agent.results.get("continuation_status")
+            if continuation_status == "PAUSED_EXPIRED_CLOCK":
+                print(
+                    "Continuation cycle paused: PAUSED_EXPIRED_CLOCK; "
+                    "no mission task or phase transition was performed."
+                )
+            else:
+                print(f"Continuation cycle status: {exit_code}")
             return exit_code
-        except (OllamaRuntimeError, OSError, ValueError) as exc:
+        except (OllamaRuntimeError, OSError, RuntimeError, ValueError) as exc:
             print(f"Autonomous continuation failed: {exc}", file=sys.stderr)
             return 1
 
