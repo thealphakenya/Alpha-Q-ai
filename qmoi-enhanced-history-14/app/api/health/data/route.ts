@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import authService from "@/lib/auth/service";
+import { db } from "@/lib/db/prisma";
 
 interface ErrorItem {
   id: number;
@@ -41,6 +43,33 @@ const DATA_DIR = path.join(process.cwd(), "data");
 const ERRORS_FILE = path.join(DATA_DIR, "errors.json");
 const FIXES_FILE = path.join(DATA_DIR, "fixes.json");
 const GITHUB_STATUS_FILE = path.join(DATA_DIR, "github-status.json");
+
+async function authorizeMaster(request: NextRequest): Promise<NextResponse | null> {
+  const authorization = request.headers.get("authorization");
+  if (!authorization?.startsWith("Bearer ")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let decoded: { userId?: string };
+  try {
+    decoded = authService.verifyToken(authorization.slice(7)) as {
+      userId?: string;
+    };
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!decoded?.userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = await db.userService.findById(String(decoded.userId));
+  if (!user || user.role !== "master") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  return null;
+}
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
@@ -396,10 +425,13 @@ async function fixRuntimeErrors(error: ErrorItem): Promise<boolean> {
 }
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type");
-
   try {
+    const authorizationError = await authorizeMaster(request);
+    if (authorizationError) return authorizationError;
+
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get("type");
+
     switch (type) {
       case "errors": {
         // Collect real errors from logs and stored data
@@ -459,6 +491,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const authorizationError = await authorizeMaster(request);
+    if (authorizationError) return authorizationError;
+
     const body = await request.json();
     const { action, errorId } = body;
 

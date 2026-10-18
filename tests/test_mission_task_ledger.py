@@ -11,6 +11,7 @@ import pytest
 
 from scripts.mission_task_ledger import (
     LedgerError,
+    _record_checkpoint,
     _verify_repository,
     build_resume_plan,
     begin_new_mission_run,
@@ -21,6 +22,8 @@ from scripts.mission_task_ledger import (
     refresh_paired_mission_phase_metrics,
     render_mission_phase_metrics,
     refresh_mission_source_hash,
+    summarize_action_plan,
+    main,
     start_phase,
     start_task,
     status_counts,
@@ -318,6 +321,188 @@ def test_resume_plan_marks_blocked_and_completed_ready_tasks_as_no_safe_work():
     assert plan["blocked_dependency_ready_task_ids"] == ["M01"]
     assert plan["completed_dependency_ready_task_ids"] == ["M04"]
     assert plan["safe_execution_authorized"] is False
+
+
+def test_resume_plan_recommends_blocked_task_next_action_without_authorizing_it():
+    ledger = _ledger()
+    blocked_task = _set_task_state(ledger, "M01", "BLOCKED")
+    blocked_task["next_action"] = "Obtain owner-authorized branch-policy evidence."
+    _set_task_state(ledger, "M04", "VERIFIED_COMPLETE")
+
+    plan = build_resume_plan(ledger)
+    blocked_action = next(action for action in plan["action_queue"] if action["task_id"] == "M01")
+
+    assert plan["recommended_task_id"] == "M01"
+    assert plan["recommended_next_action"] == blocked_task["next_action"]
+    assert blocked_action["queue_status"] == "BLOCKED"
+    assert blocked_action["blockers"] == blocked_task["blockers"]
+    assert plan["safe_execution_authorized"] is False
+    assert plan["task_transitions_performed"] is False
+
+
+def test_resume_plan_routes_dependency_wait_to_blocking_prerequisite():
+    ledger = _ledger()
+    prerequisite = _set_task_state(ledger, "M01", "BLOCKED")
+    prerequisite["next_action"] = "Obtain owner-authorized branch-policy evidence."
+    dependent = _set_task_state(ledger, "M02", "PARTIALLY_COMPLETE")
+    dependent["next_action"] = "Continue requirements reconciliation."
+    _set_task_state(ledger, "M04", "VERIFIED_COMPLETE")
+
+    plan = build_resume_plan(ledger)
+    waiting_action = next(action for action in plan["action_queue"] if action["task_id"] == "M02")
+
+    assert waiting_action["queue_status"] == "WAITING_DEPENDENCY"
+    assert waiting_action["unmet_dependencies"] == ["M01"]
+    assert waiting_action["blocking_task_ids"] == ["M01"]
+    assert waiting_action["dependency_blockers"] == [
+        {
+            "task_id": "M01",
+            "blockers": prerequisite["blockers"],
+            "next_action": prerequisite["next_action"],
+        }
+    ]
+    assert plan["recommended_task_id"] == "M01"
+    assert plan["recommended_next_action"] == prerequisite["next_action"]
+    assert plan["safe_execution_task_ids"] == []
+    assert plan["safe_execution_authorized"] is False
+    action_ids = [action["task_id"] for action in plan["action_queue"]]
+    assert action_ids.index("M10") < action_ids.index("M09")
+
+
+def test_resume_plan_rolls_up_blocker_impact_without_inventing_owners():
+    ledger = _ledger()
+    root_blocker = _set_task_state(ledger, "M01", "BLOCKED")
+    root_blocker["blockers"] = ["branch policy unavailable", "write authority unknown"]
+    root_blocker["next_action"] = "Obtain owner-authorized policy evidence."
+    _set_task_state(ledger, "M04", "VERIFIED_COMPLETE")
+
+    plan = build_resume_plan(ledger)
+    m01_blockers = [item for item in plan["blocker_rollup"] if item["task_id"] == "M01"]
+
+    assert len(m01_blockers) == 2
+    assert all(item["blocker_id"].startswith("M01-B-") for item in m01_blockers)
+    assert all(item["owner_status"] == "NOT_MAPPED" for item in m01_blockers)
+    assert all(item["status"] == "OPEN" for item in m01_blockers)
+    assert all(item["next_action"] == root_blocker["next_action"] for item in m01_blockers)
+    assert all({"M02", "M03"}.issubset(item["affected_task_ids"]) for item in m01_blockers)
+    assert all(item["execution_authorized"] is False for item in m01_blockers)
+    m02_blockers = [item for item in plan["blocker_rollup"] if item["task_id"] == "M02"]
+    assert len(m02_blockers) == 1
+    assert m02_blockers[0]["task_status"] == "PARTIALLY_COMPLETE"
+    assert m02_blockers[0]["blocks_task_execution"] is False
+    assert m02_blockers[0]["status"] == "RECORDED_OPEN"
+    blocker_ids = {item["blocker_fingerprint"]: item["blocker_id"] for item in m01_blockers}
+
+    root_blocker["blockers"].reverse()
+    root_blocker["blockers"].append("  BRANCH   policy unavailable  ")
+    reordered_plan = build_resume_plan(ledger)
+    reordered_m01_blockers = [
+        item for item in reordered_plan["blocker_rollup"] if item["task_id"] == "M01"
+    ]
+    reordered_ids = {
+        item["blocker_fingerprint"]: item["blocker_id"]
+        for item in reordered_m01_blockers
+    }
+    assert reordered_ids == blocker_ids
+    assert sorted(item["duplicate_count"] for item in reordered_m01_blockers) == [1, 2]
+
+
+def test_action_summary_is_compact_read_only_and_keeps_authorization_gates():
+    ledger = _ledger()
+    original = copy.deepcopy(ledger)
+    deadline = datetime.fromisoformat(
+        ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
+    )
+
+    summary = summarize_action_plan(
+        ledger,
+        now=deadline - timedelta(seconds=1),
+    )
+
+    assert len(summary["action_queue"]) == 16
+    assert summary["recommended_task_id"] == "M01"
+    assert summary["safe_execution_authorized"] is False
+    assert summary["execution_authorized"] is False
+    assert summary["remote_verified"] is False
+    assert "phases" not in summary
+    assert "unreviewed_requirement_line_ids" not in json.dumps(summary)
+    assert ledger == original
+
+
+def test_actions_cli_outputs_read_only_plan(capsys):
+    ledger_path = ROOT / "ollamatracks" / "mission-task-ledger.json"
+    before = hashlib.sha256(ledger_path.read_bytes()).hexdigest()
+    result = main(["--root", str(ROOT), "actions"])
+
+    summary = json.loads(capsys.readouterr().out)
+    after = hashlib.sha256(ledger_path.read_bytes()).hexdigest()
+    assert result == 0
+    assert after == before
+    assert summary["ledger_id"] == _ledger()["ledger_id"]
+    assert summary["recommended_task_id"] == "M01"
+    assert summary["recommended_action_status"] == "BLOCKED_ON_TASK"
+    assert summary["safe_execution_authorized"] is False
+    assert summary["remote_mutation_performed"] is False
+    assert len(summary["action_queue"]) == 16
+
+
+def test_resume_plan_recommends_safe_task_and_pauses_recommendation_at_expiry():
+    ledger = _ledger()
+    first_task = _set_task_state(ledger, "M01", "PARTIALLY_COMPLETE")
+    first_task["next_action"] = "Reconcile the remaining M01 requirements."
+    second_task = _set_task_state(ledger, "M04", "PARTIALLY_COMPLETE")
+    second_task["next_action"] = "Continue M04 validation."
+    deadline = datetime.fromisoformat(
+        ledger["mission_clock"]["deadline_at"].replace("Z", "+00:00")
+    )
+
+    active_plan = build_resume_plan(ledger, now=deadline - timedelta(seconds=1))
+    expired_plan = build_resume_plan(ledger, now=deadline)
+
+    assert active_plan["recommended_task_id"] == "M01"
+    assert active_plan["recommended_next_action"] == (
+        "M01: Reconcile the remaining M01 requirements."
+    )
+    assert expired_plan["recommended_task_id"] is None
+    assert expired_plan["recommended_action_status"] == "PAUSED_EXPIRED_CLOCK"
+    assert "explicit authorization" in expired_plan["recommended_next_action"]
+    assert expired_plan["safe_execution_status"] == "PAUSED_EXPIRED_CLOCK"
+    assert expired_plan["safe_execution_task_ids"] == ["M01", "M04"]
+    assert expired_plan["safe_execution_authorized"] is False
+
+
+def test_checkpoint_uses_planner_recommendation_without_authorizing_execution(tmp_path, monkeypatch):
+    ledger = _ledger()
+    blocked_task = _set_task_state(ledger, "M01", "BLOCKED")
+    blocked_task["next_action"] = "Obtain owner-authorized branch-policy evidence."
+    _set_task_state(ledger, "M04", "VERIFIED_COMPLETE")
+    ledger_path = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+    ledger_path.parent.mkdir(parents=True)
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+    captured = {}
+
+    monkeypatch.setattr(
+        "scripts.mission_task_ledger.refresh_paired_mission_phase_metrics",
+        lambda *_args, **_kwargs: None,
+    )
+
+    def capture_checkpoint(_root, _operation, evidence, *, correlation_id):
+        captured["evidence"] = evidence
+        captured["correlation_id"] = correlation_id
+        return {"generated_at": "2026-10-18T00:00:00Z"}
+
+    monkeypatch.setattr(
+        "scripts.mission_task_ledger.record_qaudit_checkpoint",
+        capture_checkpoint,
+    )
+
+    _record_checkpoint(tmp_path, ledger_path, ledger, "test-checkpoint", None)
+
+    assert captured["evidence"]["next_action"] == blocked_task["next_action"]
+    assert captured["evidence"]["metrics"]["mission_resume_plan"]["recommended_task_id"] == "M01"
+    assert captured["evidence"]["metrics"]["mission_resume_plan"]["execution_authorized"] is False
+    assert captured["evidence"]["remote_verified"] is False
+    assert captured["correlation_id"] == ledger["correlation_id"]
 
 
 def test_resume_plan_marks_fully_mapped_in_progress_phase_locally_ready():
@@ -661,6 +846,14 @@ def test_mission_metrics_include_task_counts_and_elapsed_deadline_state():
 
     assert expected_task_counts in active
     assert f"Safe local task queue: status `{build_resume_plan(ledger, now=clock_start + timedelta(minutes=30))['safe_execution_status']}`" in active
+    active_plan = build_resume_plan(ledger, now=clock_start + timedelta(minutes=30))
+    assert f"Recommended next action: status `{active_plan['recommended_action_status']}`; task `{active_plan['recommended_task_id']}`;" in active
+    assert active_plan["recommended_next_action"] in active
+    assert "Blocker impact rollup:" in active
+    assert all(item["blocker_id"] in active for item in active_plan["blocker_rollup"])
+    hard_blocker_count = sum(item["blocks_task_execution"] for item in active_plan["blocker_rollup"])
+    assert f"hard task blocks={hard_blocker_count}" in active
+    assert f"recorded on partial tasks={len(active_plan['blocker_rollup']) - hard_blocker_count}" in active
     assert "Mission clock: status `ACTIVE`" in active
     assert "UTC wall elapsed=1800.000s; remaining=5400.000s" in active
     assert "process-active monotonic time `NOT_MEASURED`" in active

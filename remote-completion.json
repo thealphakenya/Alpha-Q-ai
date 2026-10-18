@@ -104,6 +104,7 @@
     "Branch protection was last denied with HTTP 403; current rules and protected-write authority remain unknown.",
     "Branch protection/write authority remain unknown after HTTP 403.",
     "Branch-protection GET returned HTTP 403 for both repositories; current rules and protected-write authority remain unknown.",
+    "Branch-protection GET returned HTTP 403 for both repositories; no protected-action authority is established.",
     "Branch-protection and effective ruleset policy are not readable with the current authenticated role; obtain owner/admin-authorized read-only policy evidence or approved access.",
     "Branch-protection endpoints return HTTP 403 and authenticated actor lacks admin/maintain access",
     "Branch-protection reads remain HTTP 403 and authenticated actor lacks admin/maintain permission",
@@ -167,10 +168,18 @@
     "Local report correction is not present on QMOI current main SHA 8fa29ea66e632e99c41636ca7206b54ad86d6f2f",
     "Local syntax/policy checks are not remote workflow execution or exact-SHA evidence.",
     "Local workflow report fix is not present at QMOI current main SHA",
+    "M01 and M08 remain hard-blocked; owner mapping is unknown.",
     "M01 branch-policy and remote-divergence evidence remains owner-gated",
+    "M01 branch-policy authority remains unknown; latest read-only branch-protection GETs returned HTTP 403 for both repositories",
+    "M01 branch-policy authority remains unknown; prior branch-protection GETs returned HTTP 403",
+    "M01 branch-protection authority remains unknown; prior GET returned HTTP 403",
     "M01 remains blocked because both branch-protection reads returned HTTP 403 and write authority is unknown.",
     "M01 remains blocked by HTTP 403 branch-protection reads and absent admin/maintain authority; M02 depends on M01.",
     "M01 remains blocked by divergent repository refs, missing effective branch-policy access, and failed remote checks",
+    "M01 remains blocked pending owner-authorized read-only branch-protection evidence for both repositories.",
+    "M01 remains blocked: owner-authorized read-only branch-protection evidence is unavailable; prior main protection GETs returned HTTP 403 for both repositories.",
+    "M01, M08, and M13 remain blocked with six blocker candidates; owners are not mapped.",
+    "M01, M08, and M13 remain blocked; blocker owner mapping remains unknown.",
     "M01_branch_policy_visibility_and_owner_authority_missing",
     "M01_branch_policy_visibility_and_owner_authority_unavailable",
     "M01_branch_policy_visibility_missing",
@@ -184,7 +193,12 @@
     "M02 depends on M01 and the mission clock is expired; no task or phase transition was performed.",
     "M02 depends on M01 and the mission clock is expired; no task transition is authorized.",
     "M02 depends on M01, which remains PARTIALLY_COMPLETE because authenticated GitHub identity and required remote policy evidence are unavailable.",
+    "M02 depends on M01; M03 and later tasks depend on unresolved prerequisites",
+    "M02 depends on M01; all remaining mission tasks are blocked by unresolved prerequisites",
     "M02 depends on M01; mission clock expired and task transitions remain paused.",
+    "M02 depends on M01; planner authorizes no safe mission task transitions.",
+    "M02 depends on M01; planner authorizes no safe task transitions",
+    "M02 depends on M01; remaining work is not dependency-ready",
     "M02 depends on M01; the mission clock is expired. No task or phase transitions were performed.",
     "M02 remains dependency-blocked by M01, and the mission deadline is expired; no task transition was performed.",
     "M02 remains dependent on M01 and the mission clock is expired.",
@@ -198,6 +212,7 @@
     "M02 semantic requirement reconciliation and M10 workflow/continuation audit remain incomplete; M11 remains partial.",
     "M02 semantic requirement-to-task reconciliation remains incomplete.",
     "M02 semantic review of directive candidates, operation payloads, and additional referenced sources remains incomplete.",
+    "M02, M09, M10, M11, and M15 retain blocker candidates while partially complete; these are not all hard task blocks.",
     "M02/M05 acceptance mapping dependencies are incomplete; M06 defect work must not be transitioned yet.",
     "M02_dependency_M01_not_verified_complete",
     "M08 queue handoff and independently verified hosted resume remain unresolved",
@@ -218,7 +233,11 @@
     "Mission deadline remains expired; no task or phase transition was made.",
     "Mission ledger target spelling codespace-sturdy-fishstick-69wx9rjjgw5pfrq65 has no observed origin ref; checked-out/upstream ref codespace-sturdy-fishstick-69wxr9jjgw5pfrq65 exists at the local HEAD. Do not rewrite the mission target binding without owner confirmation.",
     "Mission resume plan is PAUSED_EXPIRED_CLOCK; M01 is PARTIALLY_COMPLETE and M02 depends on M01. No task or phase transition was performed.",
+    "Mission task transitions remain blocked by M01 branch-policy authorization; this local fix does not satisfy that dependency.",
+    "Mission task transitions remain blocked: M01 authorization evidence is unresolved; no mission requirement was marked complete.",
     "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
+    "Nested project TypeScript/test execution was unavailable because its compiler and dependencies are not installed locally.",
+    "Nested runtime/build tests are unavailable because dependencies are not installed locally.",
     "Netlify_TOML_syntax_fix_unpublished",
     "Netlify_deploy_logs_and_intended_site_architecture_unavailable",
     "Netlify_deployment_architecture_and_logs_unavailable",
@@ -228,6 +247,9 @@
     "No admin or maintain permission is available for the authenticated actor",
     "No authenticated remote identity, terminal exact-SHA workflow result, or live Ollama inference was verified.",
     "No dependency-ready local task can be transitioned through the supported ledger while the clock is expired.",
+    "No dependency-ready safe task exists.",
+    "No dependency-ready safe task exists; M01 branch-policy evidence is required before M02 and dependent work.",
+    "No dependency-ready safe task exists; M02 through M16 remain gated by unresolved prerequisites.",
     "No exact-SHA remote tree/check or branch-policy proof is available.",
     "No exact-SHA terminal workflow/tree evidence was requested or obtained.",
     "No exact-SHA terminal workflow/tree verification was performed.",
@@ -273,6 +295,7 @@
     "PR_54_has_three_failed_Netlify_deploy_checks_and_GitHub_summaries_only_link_provider_logs",
     "PR_54_netlify_deployment_failed_three_contexts_and_provider_logs_unavailable",
     "Per-feature monitoring signals and access assignments have not been independently mapped or verified.",
+    "Planner automation cannot authorize task transitions or protected/remote actions.",
     "Published evidence SHA 9fd17feeecf2d7c9942633f1138b4f11e5a1f790 has terminal checks still pending; do not claim remote completion.",
     "Q-version finalization remains blocked by lifecycle, security, authorization, and exact-SHA gates",
     "QLion checks are local candidate-universe tests only; remote exact-SHA validation is absent",
@@ -316,6 +339,9 @@
     "Remote branch protection and required checks remain unknown after HTTP 403",
     "Remote completion remains blocked until independently verified target-owned terminal exact-SHA and tree evidence is recorded.",
     "Remote completion, GitHub protection/authority, Ollama inference, and independent hosted resume remain unverified.",
+    "Remote deployment and exact-SHA verification were not performed.",
+    "Remote exact-SHA/tree proof and protected-action authorization remain unavailable.",
+    "Remote exact-SHA/tree proof remains unavailable.",
     "Remote policy and exact-SHA completion evidence remain unavailable.",
     "Remote required-check completeness and cross-repository parity remain unverified",
     "Remote target ref and write authority are not verified; worktree contains existing user changes.",
@@ -335,6 +361,7 @@
     "Tests do not exercise the cross-repo-autosync workflow-level counterpart contract push; its authorization alignment remains a policy review item.",
     "The 85-operation count applies only to checkpoint sections timestamped at or before the recorded 2026-10-13T23:24:41.113138Z cutoff; the same Git snapshot contains 6 later sections and 91 operation names overall.",
     "The authenticated CLI user session is not GitHub App authentication; App rotation remains unverified.",
+    "The authenticated GitHub CLI user can read/write repository content but cannot administer; effective main branch policy is unknown.",
     "The bounded literal scan found 8 of the 85 operation labels in the selected implementation/test files and none in the two selected workflow files; 77 absent literal matches are not proof of missing semantic implementation.",
     "The canonical mission ledger is not consumed by any of the 17 reviewed GitHub workflow files; independent hosted resume remains unverified.",
     "The canonical mission ledger is not consumed by the reviewed workflows, so independent hosted ledger resume remains unverified.",
@@ -367,6 +394,7 @@
     "The repo security panel remains a separate remote blocker and must be treated as an outstanding issue until the flow proves otherwise.",
     "The requested chattracks.md instructions are unavailable in the checkout, accessible workspace trees, and locally available refs.",
     "The requested historical CREDENTIALS_ROTATION_PLAYBOOK.md is unavailable in the local materialization and queried remote QMOI main tree; new canonical playbook parity is unverified.",
+    "The safe execution queue remains blocked pending M01 owner-authorized branch-policy evidence.",
     "Three Alpha Pages deployment checks failed on the current main SHA.",
     "Unclassified dirty paths remain untouched.",
     "Untracked atoz.md contains unverified financial/account/credential-like details and is excluded from publication pending review and redaction.",
@@ -488,6 +516,7 @@
     "existing_alpha_main_push_run_nonterminal",
     "existing_alpha_push_on_main_run_nonterminal",
     "existing_audit_inventory_not_terminal",
+    "explicit_authorization_for_a_distinct_new_run_not_received",
     "external_research_not_visited",
     "failed_deployment_and_guarded_sync_checks_remain_unresolved",
     "failed_vercel_and_alpha_autosync_checks",
@@ -568,6 +597,7 @@
     "master_orchestrator_regression_failed",
     "metric_and_completion_claims_require_semantic_source_test_review",
     "mission_120_minute_window_expired",
+    "mission_clock_expired_at_2026-10-18T01:39:58.082596Z",
     "mission_clock_expired_task_transitions_paused",
     "mission_clock_expired_with_unfinished_sections",
     "mission_deadline_expired; do not restart or extend it",
@@ -612,6 +642,8 @@
     "owner_authorized_policy_evidence_required_before_protected_action",
     "path_hash_shard_skips_require_scope_review:18",
     "physical_experiment_and_instrument_evidence_not_performed",
+    "planner authorizes no safe task transitions",
+    "planner reports no authorized safe task transitions",
     "previous_partial_manifest_not_reusable_after_resumability_fix",
     "prior_audit_inventory_run_interrupted_and_not_terminal",
     "prior_exact_sha_failures_remain_unresolved",
@@ -708,6 +740,7 @@
     "target_owned_terminal_exact_SHA_and_independent_remote_tree_evidence_unavailable",
     "target_owned_terminal_exact_sha_and_tree_evidence_unavailable",
     "target_owned_terminal_remote_exact_SHA_and_independent_remote_tree_evidence_unavailable",
+    "target_owned_terminal_remote_exact_sha_tree_evidence_unavailable",
     "target_owned_terminal_remote_sha_and_tree_evidence_unavailable",
     "target_owned_terminal_remote_sha_and_tree_proof_unavailable",
     "target_owned_terminal_remote_sha_proof_unavailable",
@@ -737,35 +770,33 @@
     "worktree_dirty_preserved",
     "worktree_user_changes_preserved"
   ],
-  "correlation_id": "9f1795b6-2d8e-4139-8e68-7521d91fce8f",
+  "correlation_id": "7efbdf6d-0021-4f9a-9897-160d8635dc65",
   "current_local_checkpoint": {
-    "artifact_bytes": 614669,
-    "artifact_path": "ollamatracks/mission-task-ledger.json",
+    "artifact_bytes": 86180,
+    "artifact_path": "scripts/mission_task_ledger.py",
     "artifact_refs": {
-      "feature_manifest": {
-        "bytes": 2216162,
-        "path": "ollamatracks/qaudits_all_features/feature_manifest.json",
-        "sha256": "2f55263616cb28b914427a084c1257ea97d638a5128ed84e197af2788c30f31c"
+      "scripts/mission_task_ledger.py": {
+        "bytes": 86180,
+        "path": "scripts/mission_task_ledger.py",
+        "sha256": "49b5b17d6ceba2a91bd6547b4d08d81c38c24ed0834e6f2ebccbde8125f429bc"
       },
-      "mission_task_ledger": {
-        "bytes": 614669,
-        "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "a0ef9ffb1bbea2f2b3f299d421de393d001a970a4e4d86a8e098aaf938f50859"
+      "tests/test_mission_task_ledger.py": {
+        "bytes": 40272,
+        "path": "tests/test_mission_task_ledger.py",
+        "sha256": "c32907bf8ee9a435f939788df12d27a720f58fa93c1069427bfdd161644467c7"
       }
     },
-    "artifact_sha256": "a0ef9ffb1bbea2f2b3f299d421de393d001a970a4e4d86a8e098aaf938f50859",
+    "artifact_sha256": "49b5b17d6ceba2a91bd6547b4d08d81c38c24ed0834e6f2ebccbde8125f429bc",
     "blockers": [
-      "M01_branch_policy_visibility_and_owner_authority_missing",
-      "alpha_three_exact_sha_checks_failed",
-      "branch_backups_diverge_from_mains",
-      "feature_manifest_needs_review",
-      "qmoi_main_push_and_one_exact_sha_check_nonterminal",
-      "safe_dependency_ready_task_queue_empty",
+      "M01 and M08 remain hard-blocked; owner mapping is unknown.",
+      "M02, M09, M10, M11, and M15 retain blocker candidates while partially complete; these are not all hard task blocks.",
+      "Remote exact-SHA/tree proof and protected-action authorization remain unavailable.",
+      "The safe execution queue remains blocked pending M01 owner-authorized branch-policy evidence.",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
-    "correlation_id": "9f1795b6-2d8e-4139-8e68-7521d91fce8f",
-    "generated_at": "2026-10-18T01:24:16.303749Z",
+    "correlation_id": "7efbdf6d-0021-4f9a-9897-160d8635dc65",
+    "generated_at": "2026-10-18T03:09:19.227408Z",
     "instruction_inventory": [
       {
         "bytes": 7047,
@@ -846,38 +877,277 @@
       }
     ],
     "instruction_inventory_sha256": "0c0a96b6fe13e352f2ac561f7d22559b7bb77b0d28b9a564204dad989908e95d",
-    "local_head_sha": "09569cde9f24d96aaff3ea181e22568b3693731a",
-    "local_tree_sha": "4fc9fe702de769da948ac5395536424255ccccd2",
+    "local_head_sha": "ffc0efd6b3f9b6f05face7a744d1bdc8cc3a48f5",
+    "local_tree_sha": "9ed95b15cbb96191388119e3d57ef074c23a3e41",
     "metrics": {
-      "M01_status": "BLOCKED",
-      "alpha": {
-        "check_count": 12,
-        "failed_checks": 3,
-        "main_sha": "794e0e53c703ce168159b058639b09a38faee189",
-        "nonterminal_checks": 0,
-        "push_conclusion": "success",
-        "push_run_id": 39083466490,
-        "push_status": "completed",
-        "tree_sha": "8b16f9dc0a0ef74dd746fbfa331a612121e3078d"
-      },
-      "blocked_dependency_ready_task_ids": [
-        "M01"
+      "blocker_classification": "CANDIDATE_ONLY_NO_SEMANTIC_CLASSIFICATION",
+      "blocker_rollup": [
+        {
+          "affected_task_ids": [
+            "M02",
+            "M03",
+            "M05",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "36939745432b",
+          "blocker_id": "M01-B-36939745432b",
+          "blocks_task_execution": true,
+          "duplicate_count": 1,
+          "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+          "owner_status": "NOT_MAPPED",
+          "status": "OPEN",
+          "task_id": "M01",
+          "task_status": "BLOCKED"
+        },
+        {
+          "affected_task_ids": [
+            "M02",
+            "M03",
+            "M05",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "954ba25a5b3c",
+          "blocker_id": "M01-B-954ba25a5b3c",
+          "blocks_task_execution": true,
+          "duplicate_count": 1,
+          "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+          "owner_status": "NOT_MAPPED",
+          "status": "OPEN",
+          "task_id": "M01",
+          "task_status": "BLOCKED"
+        },
+        {
+          "affected_task_ids": [
+            "M03",
+            "M05",
+            "M06",
+            "M07",
+            "M08",
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "8b686c129512",
+          "blocker_id": "M02-B-8b686c129512",
+          "blocks_task_execution": false,
+          "duplicate_count": 1,
+          "next_action": "Continue M02 by reconciling the 85 named operations and indexed QMOI/Ollama topics against the master index, current plans, workflows, tests, tracking artifacts, and historical logs; map every remaining requirement to an owner, implementation, acceptance test, and evidence or blocker without upgrading candidate counts to completion.",
+          "owner_status": "NOT_MAPPED",
+          "status": "RECORDED_OPEN",
+          "task_id": "M02",
+          "task_status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "affected_task_ids": [
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "294d9b284158",
+          "blocker_id": "M08-B-294d9b284158",
+          "blocks_task_execution": true,
+          "duplicate_count": 1,
+          "next_action": "Design and test a non-mutating local queue handoff that validates the ledger, selects only dependency-ready tasks, and preserves default-branch and remote authorization policies before considering any hosted integration.",
+          "owner_status": "NOT_MAPPED",
+          "status": "OPEN",
+          "task_id": "M08",
+          "task_status": "BLOCKED"
+        },
+        {
+          "affected_task_ids": [
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "8a4b2284204a",
+          "blocker_id": "M08-B-8a4b2284204a",
+          "blocks_task_execution": true,
+          "duplicate_count": 1,
+          "next_action": "Design and test a non-mutating local queue handoff that validates the ledger, selects only dependency-ready tasks, and preserves default-branch and remote authorization policies before considering any hosted integration.",
+          "owner_status": "NOT_MAPPED",
+          "status": "OPEN",
+          "task_id": "M08",
+          "task_status": "BLOCKED"
+        },
+        {
+          "affected_task_ids": [
+            "M09",
+            "M10",
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "d44670c535c3",
+          "blocker_id": "M08-B-d44670c535c3",
+          "blocks_task_execution": true,
+          "duplicate_count": 1,
+          "next_action": "Design and test a non-mutating local queue handoff that validates the ledger, selects only dependency-ready tasks, and preserves default-branch and remote authorization policies before considering any hosted integration.",
+          "owner_status": "NOT_MAPPED",
+          "status": "OPEN",
+          "task_id": "M08",
+          "task_status": "BLOCKED"
+        },
+        {
+          "affected_task_ids": [
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "d0f9aab5f088",
+          "blocker_id": "M11-B-d0f9aab5f088",
+          "blocks_task_execution": false,
+          "duplicate_count": 1,
+          "next_action": "Continue bounded targeted validation without assuming the interrupted broad-run failure was fully explained; rerun broader relevant coverage only after classifying the original failure or preserving a new complete failure report, and keep remote proof separate.",
+          "owner_status": "NOT_MAPPED",
+          "status": "RECORDED_OPEN",
+          "task_id": "M11",
+          "task_status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "affected_task_ids": [
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "e13fccab78ac",
+          "blocker_id": "M11-B-e13fccab78ac",
+          "blocks_task_execution": false,
+          "duplicate_count": 1,
+          "next_action": "Continue bounded targeted validation without assuming the interrupted broad-run failure was fully explained; rerun broader relevant coverage only after classifying the original failure or preserving a new complete failure report, and keep remote proof separate.",
+          "owner_status": "NOT_MAPPED",
+          "status": "RECORDED_OPEN",
+          "task_id": "M11",
+          "task_status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "affected_task_ids": [
+            "M16"
+          ],
+          "blocker_fingerprint": "576bd4f54692",
+          "blocker_id": "M13-B-576bd4f54692",
+          "blocks_task_execution": true,
+          "duplicate_count": 1,
+          "next_action": "Keep changes local until authenticated identity, exact target ref, policy, and authorization are verified.",
+          "owner_status": "NOT_MAPPED",
+          "status": "OPEN",
+          "task_id": "M13",
+          "task_status": "BLOCKED"
+        },
+        {
+          "affected_task_ids": [
+            "M16"
+          ],
+          "blocker_fingerprint": "450d6ac9bc80",
+          "blocker_id": "M15-B-450d6ac9bc80",
+          "blocks_task_execution": false,
+          "duplicate_count": 1,
+          "next_action": "Exercise a disposable non-destructive resume on the supported runner when authorized.",
+          "owner_status": "NOT_MAPPED",
+          "status": "RECORDED_OPEN",
+          "task_id": "M15",
+          "task_status": "PENDING"
+        },
+        {
+          "affected_task_ids": [
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "238872ae2242",
+          "blocker_id": "M10-B-238872ae2242",
+          "blocks_task_execution": false,
+          "duplicate_count": 1,
+          "next_action": "After M08 defines a tested non-mutating queue handoff and owner authority is verified, adapt the target-owned workflow to the approved mission ref and checkpoint loader; then exercise an independent hosted resume and verify terminal run/ref/tree evidence. Do not dispatch or mutate remotely before those gates.",
+          "owner_status": "NOT_MAPPED",
+          "status": "RECORDED_OPEN",
+          "task_id": "M10",
+          "task_status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "affected_task_ids": [
+            "M11",
+            "M12",
+            "M13",
+            "M14",
+            "M15",
+            "M16"
+          ],
+          "blocker_fingerprint": "f5d4cb8d47fd",
+          "blocker_id": "M10-B-f5d4cb8d47fd",
+          "blocks_task_execution": false,
+          "duplicate_count": 1,
+          "next_action": "After M08 defines a tested non-mutating queue handoff and owner authority is verified, adapt the target-owned workflow to the approved mission ref and checkpoint loader; then exercise an independent hosted resume and verify terminal run/ref/tree evidence. Do not dispatch or mutate remotely before those gates.",
+          "owner_status": "NOT_MAPPED",
+          "status": "RECORDED_OPEN",
+          "task_id": "M10",
+          "task_status": "PARTIALLY_COMPLETE"
+        },
+        {
+          "affected_task_ids": [],
+          "blocker_fingerprint": "b8197c7c13c7",
+          "blocker_id": "M09-B-b8197c7c13c7",
+          "blocks_task_execution": false,
+          "duplicate_count": 1,
+          "next_action": "Verify model availability and real inference only on the authorized hosted execution path.",
+          "owner_status": "NOT_MAPPED",
+          "status": "RECORDED_OPEN",
+          "task_id": "M09",
+          "task_status": "PARTIALLY_COMPLETE"
+        }
       ],
-      "branch_protection": "UNKNOWN_HTTP_403_both",
-      "capability_count": 162,
-      "completed_dependency_ready_task_ids": [
-        "M04"
-      ],
-      "dependency_ready_task_ids": [
-        "M01",
-        "M04"
-      ],
+      "blocker_rollup_count": 13,
+      "checkpoint_utc": "2026-10-18T03:09:19.227265+00:00",
+      "deadline_utc": "2026-10-18T04:12:08.043920Z",
       "execution_authorized": false,
-      "feature_manifest_status": "NEEDS_REVIEW",
-      "mapped_local_feature_count": 139,
-      "ollama_runtime": "NOT_MEASURED",
-      "phase_count": 18,
-      "phase_status_counts": {
+      "hard_block_count": 6,
+      "ledger_id": "newmission-120-minute-2026-10-18-7efbdf6d",
+      "mission_phase_count": 18,
+      "mission_phase_status_counts": {
         "BLOCKED": 0,
         "FAILED": 0,
         "IN_PROGRESS": 0,
@@ -885,28 +1155,12 @@
         "PASS": 0,
         "PENDING": 13
       },
-      "qmoi": {
-        "backup_sha": "d371de28f77b3ebea0244ccc1c13793a2654c395",
-        "check_count": 4,
-        "failed_checks": 0,
-        "main_sha": "75615e562d4d4e643eed910877e20b10e2d9aa98",
-        "nonterminal_check": {
-          "id": 117550391495,
-          "name": "Analyze (javascript-typescript)",
-          "status": "in_progress"
-        },
-        "push_run_id": 39085277223,
-        "push_status": "in_progress",
-        "successful_checks": 3,
-        "tree_sha": "594da8c5578c032091d3f6f35654fdd05d20c0b7"
+      "mission_requirement_line_count": 760,
+      "mission_requirement_line_review_counts": {
+        "not_reviewed": 760,
+        "reviewed": 0
       },
-      "registered_feature_count": 139,
-      "remaining_seconds": 941.8,
-      "remote_verified": false,
-      "safe_execution_status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
-      "safe_execution_task_ids": [],
-      "semantic_truth_verified": "NOT_MEASURED",
-      "task_status_counts": {
+      "mission_status_counts": {
         "blocked": 3,
         "failed": 0,
         "in_progress": 0,
@@ -914,22 +1168,37 @@
         "pending": 5,
         "verified_complete": 1
       },
-      "unreviewed_requirement_lines": 760,
-      "viewer_permissions": "WRITE_both; viewerCanAdminister false"
+      "monotonic_duration_available": false,
+      "recommended_action_status": "BLOCKED_ON_TASK",
+      "recommended_next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+      "recommended_task_id": "M01",
+      "recorded_partial_blocker_count": 7,
+      "remaining_seconds": 3768.816655,
+      "remote_mutation_performed": false,
+      "remote_verified": false,
+      "safe_execution_authorized": false,
+      "safe_execution_status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
+      "task_transitions_performed": false,
+      "validation": {
+        "diff_check": "PASS",
+        "full_mission_task_ledger_suite": "35 passed",
+        "pytest_editor_import": "UNRESOLVED_IN_SELECTED_PYLANCE_INTERPRETER",
+        "script_diagnostics": "PASS"
+      }
     },
-    "next_action": "Await terminal results for the existing qmoi Push on main and JavaScript/TypeScript analysis without repeated polling. Then verify exact refs, trees, and all check conclusions. Continue to require owner-authorized branch-policy evidence and a normal non-force history reconciliation before protected operations.",
-    "operation": "mission-qmoi-main-advance-in-progress",
+    "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+    "operation": "mission-blocker-rollup-expanded",
     "paired_document_sha256": {
-      "oe2.txt": "c1acf5e707dc9f7e75e74b58ae6ae5fd5a3e3ba05d28ba5e0f4e368db32e7dad",
-      "remotecompletion.md": "eec98bdce8f6dbe3448a13cc1126aa96f1ad214796dcab5b744f3179043a1cce"
+      "oe2.txt": "05ea928846a9c94e7adbe4eede3a5d1ea4832fbfc4ce8e8c4c8970dab0b0ff8e",
+      "remotecompletion.md": "70e2b20dff8cbd096a0f4566ead64f00b89a6279c85abbfc71e1c5af5fa83443"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
     "remote_verified": false,
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
-    "source_manifest_sha256": null,
-    "status": "BLOCKED",
+    "source_manifest_sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662",
+    "status": "LOCAL_BLOCKER_ROLLUP_COMPLETE_CANDIDATE_PARTIAL",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": true
   },
@@ -946,7 +1215,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-18T01:24:16.303749Z",
+  "generated_at": "2026-10-18T03:09:19.227408Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -1277,33 +1546,31 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 614669,
-      "artifact_path": "ollamatracks/mission-task-ledger.json",
+      "artifact_bytes": 86180,
+      "artifact_path": "scripts/mission_task_ledger.py",
       "artifact_refs": {
-        "feature_manifest": {
-          "bytes": 2216162,
-          "path": "ollamatracks/qaudits_all_features/feature_manifest.json",
-          "sha256": "2f55263616cb28b914427a084c1257ea97d638a5128ed84e197af2788c30f31c"
+        "scripts/mission_task_ledger.py": {
+          "bytes": 86180,
+          "path": "scripts/mission_task_ledger.py",
+          "sha256": "49b5b17d6ceba2a91bd6547b4d08d81c38c24ed0834e6f2ebccbde8125f429bc"
         },
-        "mission_task_ledger": {
-          "bytes": 614669,
-          "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "a0ef9ffb1bbea2f2b3f299d421de393d001a970a4e4d86a8e098aaf938f50859"
+        "tests/test_mission_task_ledger.py": {
+          "bytes": 40272,
+          "path": "tests/test_mission_task_ledger.py",
+          "sha256": "c32907bf8ee9a435f939788df12d27a720f58fa93c1069427bfdd161644467c7"
         }
       },
-      "artifact_sha256": "a0ef9ffb1bbea2f2b3f299d421de393d001a970a4e4d86a8e098aaf938f50859",
+      "artifact_sha256": "49b5b17d6ceba2a91bd6547b4d08d81c38c24ed0834e6f2ebccbde8125f429bc",
       "blockers": [
-        "M01_branch_policy_visibility_and_owner_authority_missing",
-        "alpha_three_exact_sha_checks_failed",
-        "branch_backups_diverge_from_mains",
-        "feature_manifest_needs_review",
-        "qmoi_main_push_and_one_exact_sha_check_nonterminal",
-        "safe_dependency_ready_task_queue_empty",
+        "M01 and M08 remain hard-blocked; owner mapping is unknown.",
+        "M02, M09, M10, M11, and M15 retain blocker candidates while partially complete; these are not all hard task blocks.",
+        "Remote exact-SHA/tree proof and protected-action authorization remain unavailable.",
+        "The safe execution queue remains blocked pending M01 owner-authorized branch-policy evidence.",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
-      "correlation_id": "9f1795b6-2d8e-4139-8e68-7521d91fce8f",
-      "generated_at": "2026-10-18T01:24:16.303749Z",
+      "correlation_id": "7efbdf6d-0021-4f9a-9897-160d8635dc65",
+      "generated_at": "2026-10-18T03:09:19.227408Z",
       "instruction_inventory": [
         {
           "bytes": 7047,
@@ -1384,38 +1651,277 @@
         }
       ],
       "instruction_inventory_sha256": "0c0a96b6fe13e352f2ac561f7d22559b7bb77b0d28b9a564204dad989908e95d",
-      "local_head_sha": "09569cde9f24d96aaff3ea181e22568b3693731a",
-      "local_tree_sha": "4fc9fe702de769da948ac5395536424255ccccd2",
+      "local_head_sha": "ffc0efd6b3f9b6f05face7a744d1bdc8cc3a48f5",
+      "local_tree_sha": "9ed95b15cbb96191388119e3d57ef074c23a3e41",
       "metrics": {
-        "M01_status": "BLOCKED",
-        "alpha": {
-          "check_count": 12,
-          "failed_checks": 3,
-          "main_sha": "794e0e53c703ce168159b058639b09a38faee189",
-          "nonterminal_checks": 0,
-          "push_conclusion": "success",
-          "push_run_id": 39083466490,
-          "push_status": "completed",
-          "tree_sha": "8b16f9dc0a0ef74dd746fbfa331a612121e3078d"
-        },
-        "blocked_dependency_ready_task_ids": [
-          "M01"
+        "blocker_classification": "CANDIDATE_ONLY_NO_SEMANTIC_CLASSIFICATION",
+        "blocker_rollup": [
+          {
+            "affected_task_ids": [
+              "M02",
+              "M03",
+              "M05",
+              "M06",
+              "M07",
+              "M08",
+              "M09",
+              "M10",
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "36939745432b",
+            "blocker_id": "M01-B-36939745432b",
+            "blocks_task_execution": true,
+            "duplicate_count": 1,
+            "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+            "owner_status": "NOT_MAPPED",
+            "status": "OPEN",
+            "task_id": "M01",
+            "task_status": "BLOCKED"
+          },
+          {
+            "affected_task_ids": [
+              "M02",
+              "M03",
+              "M05",
+              "M06",
+              "M07",
+              "M08",
+              "M09",
+              "M10",
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "954ba25a5b3c",
+            "blocker_id": "M01-B-954ba25a5b3c",
+            "blocks_task_execution": true,
+            "duplicate_count": 1,
+            "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+            "owner_status": "NOT_MAPPED",
+            "status": "OPEN",
+            "task_id": "M01",
+            "task_status": "BLOCKED"
+          },
+          {
+            "affected_task_ids": [
+              "M03",
+              "M05",
+              "M06",
+              "M07",
+              "M08",
+              "M09",
+              "M10",
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "8b686c129512",
+            "blocker_id": "M02-B-8b686c129512",
+            "blocks_task_execution": false,
+            "duplicate_count": 1,
+            "next_action": "Continue M02 by reconciling the 85 named operations and indexed QMOI/Ollama topics against the master index, current plans, workflows, tests, tracking artifacts, and historical logs; map every remaining requirement to an owner, implementation, acceptance test, and evidence or blocker without upgrading candidate counts to completion.",
+            "owner_status": "NOT_MAPPED",
+            "status": "RECORDED_OPEN",
+            "task_id": "M02",
+            "task_status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "affected_task_ids": [
+              "M09",
+              "M10",
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "294d9b284158",
+            "blocker_id": "M08-B-294d9b284158",
+            "blocks_task_execution": true,
+            "duplicate_count": 1,
+            "next_action": "Design and test a non-mutating local queue handoff that validates the ledger, selects only dependency-ready tasks, and preserves default-branch and remote authorization policies before considering any hosted integration.",
+            "owner_status": "NOT_MAPPED",
+            "status": "OPEN",
+            "task_id": "M08",
+            "task_status": "BLOCKED"
+          },
+          {
+            "affected_task_ids": [
+              "M09",
+              "M10",
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "8a4b2284204a",
+            "blocker_id": "M08-B-8a4b2284204a",
+            "blocks_task_execution": true,
+            "duplicate_count": 1,
+            "next_action": "Design and test a non-mutating local queue handoff that validates the ledger, selects only dependency-ready tasks, and preserves default-branch and remote authorization policies before considering any hosted integration.",
+            "owner_status": "NOT_MAPPED",
+            "status": "OPEN",
+            "task_id": "M08",
+            "task_status": "BLOCKED"
+          },
+          {
+            "affected_task_ids": [
+              "M09",
+              "M10",
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "d44670c535c3",
+            "blocker_id": "M08-B-d44670c535c3",
+            "blocks_task_execution": true,
+            "duplicate_count": 1,
+            "next_action": "Design and test a non-mutating local queue handoff that validates the ledger, selects only dependency-ready tasks, and preserves default-branch and remote authorization policies before considering any hosted integration.",
+            "owner_status": "NOT_MAPPED",
+            "status": "OPEN",
+            "task_id": "M08",
+            "task_status": "BLOCKED"
+          },
+          {
+            "affected_task_ids": [
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "d0f9aab5f088",
+            "blocker_id": "M11-B-d0f9aab5f088",
+            "blocks_task_execution": false,
+            "duplicate_count": 1,
+            "next_action": "Continue bounded targeted validation without assuming the interrupted broad-run failure was fully explained; rerun broader relevant coverage only after classifying the original failure or preserving a new complete failure report, and keep remote proof separate.",
+            "owner_status": "NOT_MAPPED",
+            "status": "RECORDED_OPEN",
+            "task_id": "M11",
+            "task_status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "affected_task_ids": [
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "e13fccab78ac",
+            "blocker_id": "M11-B-e13fccab78ac",
+            "blocks_task_execution": false,
+            "duplicate_count": 1,
+            "next_action": "Continue bounded targeted validation without assuming the interrupted broad-run failure was fully explained; rerun broader relevant coverage only after classifying the original failure or preserving a new complete failure report, and keep remote proof separate.",
+            "owner_status": "NOT_MAPPED",
+            "status": "RECORDED_OPEN",
+            "task_id": "M11",
+            "task_status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "affected_task_ids": [
+              "M16"
+            ],
+            "blocker_fingerprint": "576bd4f54692",
+            "blocker_id": "M13-B-576bd4f54692",
+            "blocks_task_execution": true,
+            "duplicate_count": 1,
+            "next_action": "Keep changes local until authenticated identity, exact target ref, policy, and authorization are verified.",
+            "owner_status": "NOT_MAPPED",
+            "status": "OPEN",
+            "task_id": "M13",
+            "task_status": "BLOCKED"
+          },
+          {
+            "affected_task_ids": [
+              "M16"
+            ],
+            "blocker_fingerprint": "450d6ac9bc80",
+            "blocker_id": "M15-B-450d6ac9bc80",
+            "blocks_task_execution": false,
+            "duplicate_count": 1,
+            "next_action": "Exercise a disposable non-destructive resume on the supported runner when authorized.",
+            "owner_status": "NOT_MAPPED",
+            "status": "RECORDED_OPEN",
+            "task_id": "M15",
+            "task_status": "PENDING"
+          },
+          {
+            "affected_task_ids": [
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "238872ae2242",
+            "blocker_id": "M10-B-238872ae2242",
+            "blocks_task_execution": false,
+            "duplicate_count": 1,
+            "next_action": "After M08 defines a tested non-mutating queue handoff and owner authority is verified, adapt the target-owned workflow to the approved mission ref and checkpoint loader; then exercise an independent hosted resume and verify terminal run/ref/tree evidence. Do not dispatch or mutate remotely before those gates.",
+            "owner_status": "NOT_MAPPED",
+            "status": "RECORDED_OPEN",
+            "task_id": "M10",
+            "task_status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "affected_task_ids": [
+              "M11",
+              "M12",
+              "M13",
+              "M14",
+              "M15",
+              "M16"
+            ],
+            "blocker_fingerprint": "f5d4cb8d47fd",
+            "blocker_id": "M10-B-f5d4cb8d47fd",
+            "blocks_task_execution": false,
+            "duplicate_count": 1,
+            "next_action": "After M08 defines a tested non-mutating queue handoff and owner authority is verified, adapt the target-owned workflow to the approved mission ref and checkpoint loader; then exercise an independent hosted resume and verify terminal run/ref/tree evidence. Do not dispatch or mutate remotely before those gates.",
+            "owner_status": "NOT_MAPPED",
+            "status": "RECORDED_OPEN",
+            "task_id": "M10",
+            "task_status": "PARTIALLY_COMPLETE"
+          },
+          {
+            "affected_task_ids": [],
+            "blocker_fingerprint": "b8197c7c13c7",
+            "blocker_id": "M09-B-b8197c7c13c7",
+            "blocks_task_execution": false,
+            "duplicate_count": 1,
+            "next_action": "Verify model availability and real inference only on the authorized hosted execution path.",
+            "owner_status": "NOT_MAPPED",
+            "status": "RECORDED_OPEN",
+            "task_id": "M09",
+            "task_status": "PARTIALLY_COMPLETE"
+          }
         ],
-        "branch_protection": "UNKNOWN_HTTP_403_both",
-        "capability_count": 162,
-        "completed_dependency_ready_task_ids": [
-          "M04"
-        ],
-        "dependency_ready_task_ids": [
-          "M01",
-          "M04"
-        ],
+        "blocker_rollup_count": 13,
+        "checkpoint_utc": "2026-10-18T03:09:19.227265+00:00",
+        "deadline_utc": "2026-10-18T04:12:08.043920Z",
         "execution_authorized": false,
-        "feature_manifest_status": "NEEDS_REVIEW",
-        "mapped_local_feature_count": 139,
-        "ollama_runtime": "NOT_MEASURED",
-        "phase_count": 18,
-        "phase_status_counts": {
+        "hard_block_count": 6,
+        "ledger_id": "newmission-120-minute-2026-10-18-7efbdf6d",
+        "mission_phase_count": 18,
+        "mission_phase_status_counts": {
           "BLOCKED": 0,
           "FAILED": 0,
           "IN_PROGRESS": 0,
@@ -1423,28 +1929,12 @@
           "PASS": 0,
           "PENDING": 13
         },
-        "qmoi": {
-          "backup_sha": "d371de28f77b3ebea0244ccc1c13793a2654c395",
-          "check_count": 4,
-          "failed_checks": 0,
-          "main_sha": "75615e562d4d4e643eed910877e20b10e2d9aa98",
-          "nonterminal_check": {
-            "id": 117550391495,
-            "name": "Analyze (javascript-typescript)",
-            "status": "in_progress"
-          },
-          "push_run_id": 39085277223,
-          "push_status": "in_progress",
-          "successful_checks": 3,
-          "tree_sha": "594da8c5578c032091d3f6f35654fdd05d20c0b7"
+        "mission_requirement_line_count": 760,
+        "mission_requirement_line_review_counts": {
+          "not_reviewed": 760,
+          "reviewed": 0
         },
-        "registered_feature_count": 139,
-        "remaining_seconds": 941.8,
-        "remote_verified": false,
-        "safe_execution_status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
-        "safe_execution_task_ids": [],
-        "semantic_truth_verified": "NOT_MEASURED",
-        "task_status_counts": {
+        "mission_status_counts": {
           "blocked": 3,
           "failed": 0,
           "in_progress": 0,
@@ -1452,22 +1942,37 @@
           "pending": 5,
           "verified_complete": 1
         },
-        "unreviewed_requirement_lines": 760,
-        "viewer_permissions": "WRITE_both; viewerCanAdminister false"
+        "monotonic_duration_available": false,
+        "recommended_action_status": "BLOCKED_ON_TASK",
+        "recommended_next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+        "recommended_task_id": "M01",
+        "recorded_partial_blocker_count": 7,
+        "remaining_seconds": 3768.816655,
+        "remote_mutation_performed": false,
+        "remote_verified": false,
+        "safe_execution_authorized": false,
+        "safe_execution_status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
+        "task_transitions_performed": false,
+        "validation": {
+          "diff_check": "PASS",
+          "full_mission_task_ledger_suite": "35 passed",
+          "pytest_editor_import": "UNRESOLVED_IN_SELECTED_PYLANCE_INTERPRETER",
+          "script_diagnostics": "PASS"
+        }
       },
-      "next_action": "Await terminal results for the existing qmoi Push on main and JavaScript/TypeScript analysis without repeated polling. Then verify exact refs, trees, and all check conclusions. Continue to require owner-authorized branch-policy evidence and a normal non-force history reconciliation before protected operations.",
-      "operation": "mission-qmoi-main-advance-in-progress",
+      "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
+      "operation": "mission-blocker-rollup-expanded",
       "paired_document_sha256": {
-        "oe2.txt": "c1acf5e707dc9f7e75e74b58ae6ae5fd5a3e3ba05d28ba5e0f4e368db32e7dad",
-        "remotecompletion.md": "eec98bdce8f6dbe3448a13cc1126aa96f1ad214796dcab5b744f3179043a1cce"
+        "oe2.txt": "05ea928846a9c94e7adbe4eede3a5d1ea4832fbfc4ce8e8c4c8970dab0b0ff8e",
+        "remotecompletion.md": "70e2b20dff8cbd096a0f4566ead64f00b89a6279c85abbfc71e1c5af5fa83443"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
       "remote_verified": false,
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
-      "source_manifest_sha256": null,
-      "status": "BLOCKED",
+      "source_manifest_sha256": "f96bb4f998fc2c8445afb44640468149da60361b7a19174f5ada1a331a801662",
+      "status": "LOCAL_BLOCKER_ROLLUP_COMPLETE_CANDIDATE_PARTIAL",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": true
     },
@@ -1543,7 +2048,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "09569cde9f24d96aaff3ea181e22568b3693731a",
+    "local_head_sha": "ffc0efd6b3f9b6f05face7a744d1bdc8cc3a48f5",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

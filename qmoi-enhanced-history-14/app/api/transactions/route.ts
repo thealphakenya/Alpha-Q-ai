@@ -24,9 +24,9 @@ export async function GET(_request: NextRequest) {
     }
 
     const _query = new URL(_request.url);
-    const skip = parseInt(query.searchParams.get("skip") || "0");
-    const take = parseInt(query.searchParams.get("take") || "10");
-    const status = query.searchParams.get("status");
+    const skip = parseInt(_query.searchParams.get("skip") || "0");
+    const take = parseInt(_query.searchParams.get("take") || "10");
+    const status = _query.searchParams.get("status");
 
     // Build query filters
     const filters: Record<string, unknown> = {};

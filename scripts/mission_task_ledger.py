@@ -410,6 +410,8 @@ def build_resume_plan(
             "unmet_dependencies": unmet_dependencies,
             "dependency_ready": not unmet_dependencies,
             "blocker_count": len(task.get("blockers", [])),
+            "blockers": list(task.get("blockers", [])),
+            "next_action": task.get("next_action", ""),
         })
 
     resumable_statuses = {"BLOCKED", "IN_PROGRESS", "PARTIALLY_COMPLETE", "FAILED", "PENDING", "VERIFIED_COMPLETE"}
@@ -524,9 +526,174 @@ def build_resume_plan(
     else:
         safe_execution_status = "BLOCKED_NO_DEPENDENCY_READY_TASK"
 
+    task_records_by_id = {task["id"]: task for task in task_records}
+    def depends_on(task_id: str, target_id: str, visited: set[str] | None = None) -> bool:
+        visited = visited or set()
+        if task_id in visited:
+            return False
+        visited.add(task_id)
+        for dependency in task_records_by_id[task_id]["dependencies"]:
+            if dependency == target_id or depends_on(dependency, target_id, visited):
+                return True
+        return False
+
+    blocker_rollup = []
+    blocker_roots = sorted(
+        (task for task in task_records if task["blockers"]),
+        key=lambda task: (
+            priority_order.get(task["priority"], len(priority_order)),
+            task["id"],
+        ),
+    )
+    for blocked_task in blocker_roots:
+        affected_task_ids = [
+            task["id"]
+            for task in task_records
+            if task["id"] != blocked_task["id"]
+            and task["status"] != "VERIFIED_COMPLETE"
+            and depends_on(task["id"], blocked_task["id"])
+        ]
+        fingerprinted_blockers: dict[str, int] = {}
+        for blocker in blocked_task["blockers"]:
+            normalized_blocker = re.sub(r"\s+", " ", str(blocker).strip()).casefold()
+            fingerprint = hashlib.sha256(
+                f"{blocked_task['id']}\0{normalized_blocker}".encode("utf-8")
+            ).hexdigest()[:12]
+            fingerprinted_blockers[fingerprint] = fingerprinted_blockers.get(fingerprint, 0) + 1
+        for fingerprint, duplicate_count in sorted(fingerprinted_blockers.items()):
+            blocker_rollup.append({
+                "blocker_id": f"{blocked_task['id']}-B-{fingerprint}",
+                "blocker_fingerprint": fingerprint,
+                "duplicate_count": duplicate_count,
+                "task_id": blocked_task["id"],
+                "priority": blocked_task["priority"],
+                "status": "OPEN" if blocked_task["status"] == "BLOCKED" else "RECORDED_OPEN",
+                "task_status": blocked_task["status"],
+                "blocks_task_execution": blocked_task["status"] == "BLOCKED",
+                "owner_status": "NOT_MAPPED",
+                "affected_task_ids": affected_task_ids,
+                "next_action": blocked_task["next_action"] or f"Resolve blocker {fingerprint} for {blocked_task['id']}.",
+                "execution_authorized": False,
+            })
+
+    action_queue = []
+    for task in task_records:
+        if deadline_expired:
+            queue_status = "PAUSED_EXPIRED_CLOCK"
+            next_action = "Wait for explicit authorization before starting a distinct mission run."
+        elif task["status"] == "VERIFIED_COMPLETE":
+            queue_status = "COMPLETE"
+            next_action = "Retain the verified evidence; no task transition is recommended."
+        elif task["status"] == "BLOCKED":
+            queue_status = "BLOCKED"
+            next_action = task["next_action"] or next(iter(task["blockers"]), f"Resolve blockers for {task['id']}.")
+        elif task["unmet_dependencies"]:
+            queue_status = "WAITING_DEPENDENCY"
+            dependency = task["unmet_dependencies"][0]
+            dependency_task = task_records_by_id[dependency]
+            next_action = dependency_task["next_action"] or next(
+                iter(dependency_task["blockers"]),
+                f"Complete prerequisite {dependency} before starting {task['id']}.",
+            )
+        else:
+            queue_status = "READY"
+            next_action = task["next_action"] or f"Start {task['id']} and record evidence."
+        action_queue.append({
+            "task_id": task["id"],
+            "priority": task["priority"],
+            "queue_status": queue_status,
+            "dependencies": task["dependencies"],
+            "unmet_dependencies": task["unmet_dependencies"],
+            "blocking_task_ids": [
+                dependency
+                for dependency in task["unmet_dependencies"]
+                if task_records_by_id[dependency]["status"] == "BLOCKED"
+            ],
+            "dependency_blockers": [
+                {
+                    "task_id": dependency,
+                    "blockers": task_records_by_id[dependency]["blockers"],
+                    "next_action": task_records_by_id[dependency]["next_action"],
+                }
+                for dependency in task["unmet_dependencies"]
+            ],
+            "blockers": task["blockers"],
+            "next_action": next_action,
+            "execution_authorized": False,
+        })
+    action_status_order = {
+        "BLOCKED": 0,
+        "READY": 1,
+        "WAITING_DEPENDENCY": 2,
+        "PAUSED_EXPIRED_CLOCK": 3,
+        "COMPLETE": 4,
+    }
+    action_queue.sort(
+        key=lambda action: (
+            priority_order.get(action["priority"], len(priority_order)),
+            action_status_order[action["queue_status"]],
+            action["task_id"],
+        )
+    )
+
+    recommended_task_id = None
+    recommended_action_status = safe_execution_status
+    if deadline_expired:
+        recommended_next_action = (
+            "Mission clock expired. Preserve this run and wait for explicit authorization from the user "
+            "before starting a distinct run; do not transition tasks."
+        )
+    elif safe_candidates:
+        recommended_task = task_records_by_id[safe_candidates[0]["id"]]
+        recommended_task_id = recommended_task["id"]
+        recommended_action_status = "READY_FOR_LOCAL_TASK"
+        recommended_next_action = (
+            f"{recommended_task_id}: "
+            f"{recommended_task['next_action'] or f'Start {recommended_task_id} and record evidence.'}"
+        )
+    elif blocked_ready_task_ids:
+        blocked_task = task_records_by_id[blocked_ready_task_ids[0]]
+        recommended_task_id = blocked_task["id"]
+        recommended_action_status = "BLOCKED_ON_TASK"
+        recommended_next_action = action_queue[
+            next(index for index, item in enumerate(action_queue) if item["task_id"] == blocked_task["id"])
+        ]["next_action"]
+    else:
+        waiting_tasks = sorted(
+            (task for task in task_records if task["unmet_dependencies"]),
+            key=lambda task: (
+                priority_order.get(task["priority"], len(priority_order)),
+                status_order.get(task["status"], len(status_order)),
+                task["id"],
+            ),
+        )
+        if waiting_tasks:
+            waiting_task = waiting_tasks[0]
+            blocked_dependencies = [
+                dependency
+                for dependency in waiting_task["unmet_dependencies"]
+                if task_records_by_id[dependency]["status"] == "BLOCKED"
+            ]
+            recommended_task_id = blocked_dependencies[0] if blocked_dependencies else waiting_task["unmet_dependencies"][0]
+            recommended_action_status = "BLOCKED_ON_PREREQUISITE" if blocked_dependencies else "WAITING_FOR_PREREQUISITE"
+            recommended_next_action = action_queue[
+                next(index for index, item in enumerate(action_queue) if item["task_id"] == waiting_task["id"])
+            ]["next_action"]
+        else:
+            recommended_action_status = "NO_INCOMPLETE_TASKS"
+            recommended_next_action = (
+                "No incomplete mission task is available; independently verify exact remote "
+                "repository/ref/SHA/tree evidence before claiming remote completion."
+            )
+
     return {
         "status": status,
         "safe_execution_status": safe_execution_status,
+        "action_queue": action_queue,
+        "blocker_rollup": blocker_rollup,
+        "recommended_action_status": recommended_action_status,
+        "recommended_task_id": recommended_task_id,
+        "recommended_next_action": recommended_next_action,
         "safe_execution_authorized": False,
         "safe_execution_task_ids": [task["id"] for task in safe_candidates],
         "next_safe_task_id": safe_candidates[0]["id"] if safe_candidates else None,
@@ -577,6 +744,36 @@ def build_resume_plan(
     }
 
 
+def summarize_action_plan(
+    ledger: dict[str, Any],
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    """Return a compact, read-only task and blocker plan without source-line details."""
+    instant = now or datetime.now(timezone.utc)
+    deadline = _parse_utc(ledger["mission_clock"]["deadline_at"])
+    plan = build_resume_plan(ledger, now=instant)
+    return {
+        "ledger_id": ledger["ledger_id"],
+        "correlation_id": ledger["correlation_id"],
+        "observed_at": instant.isoformat().replace("+00:00", "Z"),
+        "deadline_utc": ledger["mission_clock"]["deadline_at"],
+        "remaining_seconds": round(max(0.0, (deadline - instant).total_seconds()), 3),
+        "planner_status": plan["status"],
+        "safe_execution_status": plan["safe_execution_status"],
+        "recommended_action_status": plan["recommended_action_status"],
+        "recommended_task_id": plan["recommended_task_id"],
+        "recommended_next_action": plan["recommended_next_action"],
+        "action_queue": plan["action_queue"],
+        "blocker_rollup": plan["blocker_rollup"],
+        "safe_execution_authorized": False,
+        "execution_authorized": False,
+        "task_transitions_performed": False,
+        "remote_mutation_performed": False,
+        "remote_verified": False,
+    }
+
+
 def _phase_elapsed_seconds(phase: dict[str, Any], now: datetime) -> float:
     elapsed = sum(
         float(attempt["elapsed_seconds"])
@@ -622,6 +819,8 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
         ) + ". Missing refs remain unmapped and do not imply missing or present implementations.",
         f"- Resume planner: `{resume_plan['status']}`; dependency-ready task IDs: `{', '.join(resume_plan['dependency_ready_task_ids']) or 'none'}`; next candidate: `{resume_plan['next_task_id'] or 'none'}`; source-line candidates tracked / unreviewed / not assigned to a phase: {resume_plan['requirement_line_count']} / {resume_plan['unreviewed_requirement_line_count']} / {resume_plan['unassigned_requirement_line_count']}; planner authorizes execution: `False`.",
         f"- Safe local task queue: status `{resume_plan['safe_execution_status']}`; task IDs: `{', '.join(resume_plan['safe_execution_task_ids']) or 'none'}`; next safe task: `{resume_plan['next_safe_task_id'] or 'none'}`; blocked ready IDs: `{', '.join(resume_plan['blocked_dependency_ready_task_ids']) or 'none'}`; completed ready IDs: `{', '.join(resume_plan['completed_dependency_ready_task_ids']) or 'none'}`; authorization: `False`.",
+        f"- Recommended next action: status `{resume_plan['recommended_action_status']}`; task `{resume_plan['recommended_task_id'] or 'none'}`; {resume_plan['recommended_next_action'].replace('|', '\\|').replace(chr(10), ' ')}",
+        f"- Blocker impact rollup: {len(resume_plan['blocker_rollup'])} open candidates across {len({item['task_id'] for item in resume_plan['blocker_rollup']})} blocker-bearing task roots; hard task blocks={sum(item['blocks_task_execution'] for item in resume_plan['blocker_rollup'])}; recorded on partial tasks={sum(not item['blocks_task_execution'] for item in resume_plan['blocker_rollup'])}; IDs: `{', '.join(item['blocker_id'] for item in resume_plan['blocker_rollup']) or 'none'}`; impacted downstream tasks: `{', '.join(sorted({task_id for item in resume_plan['blocker_rollup'] for task_id in item['affected_task_ids']})) or 'none'}`; blocker owners `NOT_MAPPED`; resolution is not automatic.",
         "- Completion percentage is not inferred from phase count; local PASS preconditions require indexed, reviewed, acceptance-mapped lines, per-dimension coverage refs, and phase evidence. These refs do not prove semantic truth or remote completion. Remote verification remains `False` until independently proven.",
         "",
         "| Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / acceptance-mapped / pending review | Coverage refs mapped / indexed (owner/implementation/test/security/docs/integration/remote) | Local PASS preconditions | Evidence refs | Blockers | Next action |",
@@ -1317,6 +1516,7 @@ def _record_checkpoint(
     mission_phases = ledger.get("mission_phase_metrics", [])
     elapsed = max(0.0, (now - start).total_seconds())
     remaining = max(0.0, (deadline - now).total_seconds())
+    resume_plan = build_resume_plan(ledger, now=now)
     evidence = {
         "status": "IN_PROGRESS",
         "remote_verified": False,
@@ -1357,7 +1557,7 @@ def _record_checkpoint(
                 }
                 for phase in mission_phases
             ],
-            "mission_resume_plan": build_resume_plan(ledger, now=now),
+            "mission_resume_plan": resume_plan,
             "active_task_id": task_id,
             "active_task_status": active["status"] if active else None,
             "task_elapsed_seconds": active["elapsed_seconds"] if active else None,
@@ -1370,7 +1570,8 @@ def _record_checkpoint(
             if task["status"] == "BLOCKED"
             for blocker in task.get("blockers", [])
         ],
-        "next_action": active.get("next_action") if active else "Resume the highest-priority dependency-ready mission task.",
+        "next_action": (active.get("next_action") or resume_plan["recommended_next_action"])
+        if active else resume_plan["recommended_next_action"],
     }
     refresh_paired_mission_phase_metrics(root, ledger)
     return record_qaudit_checkpoint(
@@ -1521,6 +1722,7 @@ def _parser() -> argparse.ArgumentParser:
     subparsers.add_parser("refresh-metrics", help="Refresh the canonical 18-phase catalog and dashboards.")
     subparsers.add_parser("sync-mission", help="Adopt latest mission.md and synchronize its established mirrors.")
     subparsers.add_parser("status", help="Validate and summarize the current ledger.")
+    subparsers.add_parser("actions", help="Print the compact read-only task and blocker action plan.")
     return parser
 
 
@@ -1528,6 +1730,15 @@ def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     root = args.root.resolve()
     try:
+        if args.operation == "actions":
+            ledger = load_ledger(root / LEDGER_RELATIVE_PATH)
+            local_branch = _verify_repository(root, ledger, require_target_branch=False)
+            summary = summarize_action_plan(ledger)
+            summary["local_branch"] = local_branch
+            summary["target_branch"] = ledger["target_branch"]
+            summary["target_branch_matches_local"] = local_branch == ledger["target_branch"]
+            print(json.dumps(summary, indent=2, sort_keys=True))
+            return 0
         if args.operation == "status":
             ledger = load_ledger(root / LEDGER_RELATIVE_PATH)
             local_branch = _verify_repository(root, ledger, require_target_branch=False)

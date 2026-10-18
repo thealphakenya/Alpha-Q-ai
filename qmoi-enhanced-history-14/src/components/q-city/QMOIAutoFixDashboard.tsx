@@ -41,9 +41,16 @@ const QMOIAutoFixDashboard: React.FC<{ isMaster: boolean }> = ({
   const [isRunning, setIsRunning] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>("");
 
+  const getMasterAuthorizationHeaders = () => {
+    const token = sessionStorage.getItem("masterToken");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
   const fetchErrorLog = async () => {
     try {
-      const response = await fetch("/api/health/data?type=errors");
+      const response = await fetch("/api/health/data?type=errors", {
+        headers: getMasterAuthorizationHeaders(),
+      });
       if (response.ok) {
         const realErrors = await response.json();
         setErrors(realErrors);
@@ -88,7 +95,9 @@ const QMOIAutoFixDashboard: React.FC<{ isMaster: boolean }> = ({
 
   const fetchFixHistory = async () => {
     try {
-      const response = await fetch("/api/health/data?type=fixes");
+      const response = await fetch("/api/health/data?type=fixes", {
+        headers: getMasterAuthorizationHeaders(),
+      });
       if (response.ok) {
         const realFixes = await response.json();
         setFixes(realFixes);
@@ -133,7 +142,9 @@ const QMOIAutoFixDashboard: React.FC<{ isMaster: boolean }> = ({
 
   const fetchGitHubStatus = async () => {
     try {
-      const response = await fetch("/api/health/data?type=github");
+      const response = await fetch("/api/health/data?type=github", {
+        headers: getMasterAuthorizationHeaders(),
+      });
       if (response.ok) {
         const realStatus = await response.json();
         setGitHubStatus(realStatus);
@@ -173,6 +184,7 @@ const QMOIAutoFixDashboard: React.FC<{ isMaster: boolean }> = ({
       const response = await fetch("/api/health/data", {
         method: "POST",
         headers: {
+          ...getMasterAuthorizationHeaders(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ action: "trigger-autofix" }),
