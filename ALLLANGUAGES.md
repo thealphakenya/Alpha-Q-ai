@@ -114,6 +114,19 @@ extensions and generated/vendor paths follow the scanner's explicit
 classification/exclusion rules. The report does not claim all-world language
 coverage or current release research.
 
+## QVillage and feature-led research
+
+QVillage's local research and evolution plans may use this inventory to map a
+language candidate to an actual feature, platform, test, toolchain, and owner.
+The [QAUDITS feature manifest](ollamatracks/qaudits_all_features/feature_manifest.json)
+provides provenance-backed feature candidates, while
+[QVILLAGE.md](QVILLAGE.md) and
+[Qvillageevolutions.md](Qvillageevolutions.md) define research and promotion
+evidence. A candidate language or feature does not authorize a migration,
+dependency addition, code generation, release, or deployment. Official-source
+release observations remain unknown until the bounded research collector has
+actually fetched and recorded them.
+
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit
 

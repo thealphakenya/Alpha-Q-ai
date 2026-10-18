@@ -1,7 +1,8 @@
 # QVILLAGE.md
 
-QVillage is the live QMOI community, model, and knowledge coordination surface. It is treated as the master-only QMOI community layer that stays synchronized with GitHub, Hugging Face, and the live autonomous agent.
-Qmoi should not interact with, watch, make or work on pornographic content unless when instructed by master. qmoi should always just automatically ignore pornographic content. The same for content that may be disturbing uness instructed by master
+QVillage is intended as the QMOI community, model, and knowledge coordination surface, with authenticated master-only controls where required. This document does not prove a live deployment, identity enforcement, or synchronization with GitHub, Hugging Face, or the autonomous agent.
+
+QMOI should not seek, create, download, or monitor pornographic or disturbing content as a default behavior. A request to handle such material requires lawful, policy-compliant context and appropriate authorization; master identity is not an override for criminal facilitation, platform safeguards, or other safety requirements. Enforcement is not verified by this documentation alone.
 ## Active automation
 - QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.
 - memory, model, and runtime state are synchronized across repo docs and platform references.
@@ -43,6 +44,57 @@ Monitor candidate-source count, fresh/stale/unknown observations, retrieval
 success/failure, latency, retries, content-hash changes, and downstream
 validation outcomes separately. These are monitoring requirements, not
 measured live service metrics.
+
+## Feature discovery and evolution handoff
+
+QVillage research should produce provenance-backed candidates for the shared
+QAUDITS feature ledger, then retain distinct `discovered`, `reviewed`,
+`experimented`, `accepted`, and `deployed` states. Link each candidate to its
+source scope/hash, affected QCity or application surface, language/toolchain,
+owner, focused tests, design/accessibility requirements, monitoring evidence,
+and rollback plan. The local feature catalog is
+[ALLFEATURES.md](ALLFEATURES.md), and the run metrics are in
+[`feature_manifest.json`](ollamatracks/qaudits_all_features/feature_manifest.json).
+
+The local audit discovers declared Markdown and structured memory candidates;
+it does not run scheduled internet research or live Ollama inference. Treat
+Hugging Face, papers, repositories, model cards, memory summaries, and
+generated hypotheses as untrusted input until sources are reviewed and
+experiments are independently validated. See
+[ALLLANGUAGES.md](ALLLANGUAGES.md),
+[QCITY.md](QCITY.md), and
+[ALLQMOIAUTOEVOLVINGENVS.md](ALLQMOIAUTOEVOLVINGENVS.md) for the linked
+language, project-monitoring, and autonomous-evolution contracts.
+
+The canonical `QENGINEER.md` requirements are not present in this active
+checkout. Keep the [QVIRTUALLABS.md](QVIRTUALLABS.md) source-reconciliation
+gate blocked rather than treating historical copies or a public 404 as
+authoritative requirements.
+
+## Model comparison and replacement gate
+
+QVillage model comparisons must bind the incumbent and QMOI candidate to the
+same versioned benchmark suite, dataset, environment, task protocol, and
+canonical feature-registry hash. The QAUDITS plan counts active and historical
+evolution/comparison documents separately and records explicit feature
+declarations and comparison candidates; these counts are discovery evidence,
+not evidence that QMOI is superior.
+
+The comparison must cover every registered feature and the required quality,
+reasoning, coding, factuality, safety, privacy, security, reliability,
+throughput, latency, resource-cost, and offline-independence dimensions with
+adequate samples and confidence bounds. Any missing dimension/feature, tie,
+regression, safety/license failure, untested rollback, or absent independent
+review blocks eligibility. `ELIGIBLE_FOR_INDEPENDENT_REVIEW` is not an
+authorization or replacement. QMOI is not automatically substituted for a
+QVillage incumbent; actual change requires separate approval, rollback
+readiness, and independently verified terminal remote evidence for the exact
+repository/ref/SHA.
+
+See [QAUDITS.md](QAUDITS.md) and the generated
+[`qaudits_evolution_plan.json`](ollamatracks/qaudits_evolution_plan.json) for
+the measured local inventory. Benchmark or remote evidence not present in
+those artifacts remains unknown, not a pass.
 
 
 <!-- BEGIN QMOI MANAGED: restore-point-memory-sync -->

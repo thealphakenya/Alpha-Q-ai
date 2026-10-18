@@ -205,3 +205,117 @@ def test_capability_aliases_are_ledgered_and_allfeatures_is_regenerated(tmp_path
     assert "QCity" in all_features
     assert "file-manager" in all_features
     assert manifest["metrics"]["capability_count"] == len(manifest["capability_catalog"])
+
+
+def test_feature_audit_discovers_review_only_candidates_from_docs_memory_and_skills(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "research").mkdir()
+    (tmp_path / "research" / "ideas.md").write_text(
+        "# Research\n\n## Feature: Master project dashboard\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "memory").mkdir()
+    (tmp_path / "memory" / "qmoi_memory.json").write_text(
+        json.dumps({
+            "features": [
+                "all",
+                {
+                    "name": "Master project dashboard",
+                    "description": "This private narrative must not enter the feature evidence.",
+                },
+                {"feature_id": "remember-project-history"},
+            ]
+        }),
+        encoding="utf-8",
+    )
+    (tmp_path / ".github" / "skills" / "master-dashboard").mkdir(parents=True)
+    (tmp_path / ".github" / "skills" / "master-dashboard" / "SKILL.md").write_text(
+        "# Master dashboard skill\n\nCapability: Accessible dashboard status cards\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "finance").mkdir()
+    (tmp_path / "finance" / "planning.md").write_text(
+        "Feature: Project finance coverage tracker\n",
+        encoding="utf-8",
+    )
+
+    result = run_parallel_feature_audit(
+        tmp_path,
+        shard_size=1,
+        worker_count=2,
+        registry={
+            "qcity": {
+                "name": "QCity",
+                "features": {
+                    "qcity-known-feature": {
+                        "name": "Known Feature",
+                        "description": "Existing capability",
+                        "aliases": ["Known Feature"],
+                    }
+                },
+            }
+        },
+    )
+    manifest = json.loads(result["artifacts"]["feature_manifest"].read_text(encoding="utf-8"))
+    candidates = {
+        item["feature_id"]: item
+        for item in manifest["discovered_feature_candidates"]
+    }
+
+    assert set(candidates) == {
+        "master-project-dashboard",
+        "remember-project-history",
+        "accessible-dashboard-status-cards",
+        "project-finance-coverage-tracker",
+    }
+    dashboard = candidates["master-project-dashboard"]
+    assert dashboard["status"] == "DISCOVERED_REVIEW_REQUIRED"
+    assert dashboard["implementation_status"] == "NOT_VERIFIED"
+    assert dashboard["canonical_registry_updated"] is False
+    assert dashboard["evidence_count"] == 2
+    assert dashboard["source_scopes"] == ["active_materialized"]
+    assert {item["kind"] for item in dashboard["evidence"]} == {
+        "markdown_declaration",
+        "memory_feature_entry",
+    }
+    assert dashboard["source_families"] == ["memory", "research"]
+    assert "master-project-dashboard" not in manifest["features"]
+    assert "private narrative" not in json.dumps(manifest)
+    assert manifest["metrics"]["discovered_feature_candidate_count"] == 4
+    assert manifest["metrics"]["feature_candidate_evidence_count"] == 5
+    assert manifest["metrics"]["feature_candidate_source_kind_counts"] == {
+        "markdown_declaration": 3,
+        "memory_feature_entry": 2,
+    }
+    assert manifest["metrics"]["feature_candidate_source_family_counts"] == {
+        "finance": 1,
+        "memory": 2,
+        "research": 1,
+        "skills": 1,
+    }
+    assert manifest["metrics"]["feature_candidate_source_scope_counts"] == {
+        "active_materialized": 4,
+    }
+    assert result["metrics"]["discovered_feature_candidate_count"] == 4
+    assert result["metrics"]["feature_candidate_evidence_count"] == 5
+    assert result["metrics"]["feature_candidate_source_scope_counts"] == {
+        "active_materialized": 4,
+    }
+    assert result["metrics"]["feature_candidate_scan_warning_count"] == 0
+    all_features = result["artifacts"]["all_features"].read_text(encoding="utf-8")
+    assert "## Auto-discovered feature candidates" in all_features
+    assert "not added to the canonical registry" in all_features
+
+
+def test_feature_audit_reports_bounded_or_invalid_memory_candidates(tmp_path: Path) -> None:
+    memory = tmp_path / "qmoi_memory.json"
+    memory.write_text("{invalid json", encoding="utf-8")
+
+    result = run_parallel_feature_audit(tmp_path, worker_count=1)
+    manifest = json.loads(result["artifacts"]["feature_manifest"].read_text(encoding="utf-8"))
+
+    assert manifest["metrics"]["feature_candidate_scan_warning_count"] == 1
+    assert manifest["feature_candidate_scan_warnings"] == [
+        {"path": "qmoi_memory.json", "reason": "memory_source_is_not_valid_json"}
+    ]

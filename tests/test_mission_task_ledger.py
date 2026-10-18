@@ -242,6 +242,10 @@ def test_resume_plan_indexes_all_phases_and_selects_only_dependency_ready_tasks(
     assert plan["status"] == "READY_FOR_AUTHORIZED_EXECUTOR"
     assert plan["dependency_ready_task_ids"] == ["M01", "M04"]
     assert plan["next_task_id"] == "M01"
+    assert plan["safe_execution_status"] == "SAFE_LOCAL_TASKS_AVAILABLE"
+    assert plan["safe_execution_task_ids"] == ["M01", "M04"]
+    assert plan["next_safe_task_id"] == "M01"
+    assert plan["safe_execution_authorized"] is False
     assert plan["phase_count"] == 18
     assert plan["unreviewed_requirement_line_count"] == ledger["mission_requirement_line_count"]
     assert plan["acceptance_mapped_requirement_line_count"] == 0
@@ -297,6 +301,23 @@ def test_resume_plan_indexes_all_phases_and_selects_only_dependency_ready_tasks(
     assert plan["remote_mutation_performed"] is False
     assert plan["remote_verified"] is False
     assert ledger == original
+
+
+def test_resume_plan_marks_blocked_and_completed_ready_tasks_as_no_safe_work():
+    ledger = _ledger()
+    _set_task_state(ledger, "M01", "BLOCKED")
+    _set_task_state(ledger, "M04", "VERIFIED_COMPLETE")
+
+    plan = build_resume_plan(ledger)
+
+    assert plan["status"] == "READY_FOR_AUTHORIZED_EXECUTOR"
+    assert plan["dependency_ready_task_ids"] == ["M01", "M04"]
+    assert plan["safe_execution_status"] == "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
+    assert plan["safe_execution_task_ids"] == []
+    assert plan["next_safe_task_id"] is None
+    assert plan["blocked_dependency_ready_task_ids"] == ["M01"]
+    assert plan["completed_dependency_ready_task_ids"] == ["M04"]
+    assert plan["safe_execution_authorized"] is False
 
 
 def test_resume_plan_marks_fully_mapped_in_progress_phase_locally_ready():
@@ -639,6 +660,7 @@ def test_mission_metrics_include_task_counts_and_elapsed_deadline_state():
     )
 
     assert expected_task_counts in active
+    assert f"Safe local task queue: status `{build_resume_plan(ledger, now=clock_start + timedelta(minutes=30))['safe_execution_status']}`" in active
     assert "Mission clock: status `ACTIVE`" in active
     assert "UTC wall elapsed=1800.000s; remaining=5400.000s" in active
     assert "process-active monotonic time `NOT_MEASURED`" in active

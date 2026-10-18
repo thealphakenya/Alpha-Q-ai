@@ -31,6 +31,15 @@ EXCLUDED_FILES = {
     "feature_evidence.json",
     "ALLFEATURES.md",
 }
+MARKDOWN_FEATURE_DECLARATION = re.compile(
+    r"^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:feature|capability)\s*[:—-]\s*(?P<name>[^#\r\n]+)",
+    re.IGNORECASE,
+)
+MEMORY_FEATURE_COLLECTIONS = {"features", "capabilities", "featurememory", "featurecandidates"}
+MEMORY_SCAN_MAX_BYTES = 1024 * 1024
+MEMORY_SCAN_MAX_NODES = 10_000
+MEMORY_SCAN_MAX_DEPTH = 8
+GENERIC_FEATURE_NAMES = {"all", "everything", "none", "unknown", "n-a", "na"}
 
 
 def _hash_file(path: Path) -> str:
@@ -131,6 +140,11 @@ def _scan_shard(
             "sha256": digest,
             "bytes": size,
             "status": "SCANNED",
+            "feature_candidates": (
+                _markdown_feature_candidates(content, path=relative, source_sha256=digest)
+                if path.suffix.lower() == ".md"
+                else []
+            ),
             "feature_mentions": sorted(mention_matches),
             "mention_matches": mention_matches,
             "implementation_features": sorted(implementation_features),
@@ -140,6 +154,16 @@ def _scan_shard(
             "test": "test" in path_parts or "tests" in path_parts,
             "setup_or_config": any(part in {"setup", "config", "configs", "workflows", "scripts"} for part in path_parts),
         }
+        if "memory" in path.name.lower() and path.suffix.lower() == ".json":
+            memory_candidates, warning = _memory_feature_candidates(
+                content,
+                path=relative,
+                source_sha256=digest,
+                source_size=size,
+            )
+            evidence["feature_candidates"].extend(memory_candidates)
+            if warning:
+                evidence["feature_candidate_scan_warning"] = warning
         results.append(evidence)
     return {
         "number": shard_number,
@@ -183,6 +207,222 @@ def _feature_search_index(feature_map: dict[str, dict[str, Any]]) -> dict[str, d
             ],
         }
     return search_index
+
+
+def _candidate_source_family(path: str) -> str:
+    normalized = path.lower()
+    families = (
+        ("memory", ("memory", "restore", "checkpoint")),
+        ("skills", ("skill",)),
+        ("finance", ("finance", "financial", "wallet", "bank")),
+        ("styles_universals", ("style", "universal", "accessibility", "ui")),
+        ("parallel_orchestration", ("parallel", "orchestration", "qvs")),
+        ("qmoimasks", ("qmoimask",)),
+        ("qvillage", ("qvillage",)),
+        ("qcity", ("qcity",)),
+        ("projects", ("project", "autoproject")),
+        ("research", ("research",)),
+        ("evolution", ("evolution", "evolve")),
+        ("creativity", ("creativity", "creative")),
+        ("apps_platforms", ("app", "platform")),
+    )
+    for family, markers in families:
+        if any(marker in normalized for marker in markers):
+            return family
+    return "general_documentation"
+
+
+def _candidate_source_scope(path: str) -> str:
+    parts = {part.lower() for part in Path(path).parts}
+    if any("archive" in part for part in parts):
+        return "archive_candidate"
+    if any("history" in part or "backup" in part for part in parts):
+        return "historical_snapshot_candidate"
+    return "active_materialized"
+
+
+def _candidate_record(
+    name: str,
+    *,
+    path: str,
+    source_sha256: str,
+    locator: str,
+    source_kind: str,
+) -> dict[str, str] | None:
+    clean_name = re.sub(r"`+", "", name).strip().strip(" -*_")
+    clean_name = re.sub(r"\s+", " ", clean_name)
+    if not 3 <= len(clean_name) <= 120:
+        return None
+    feature_id = _capability_key(clean_name)
+    if not feature_id or feature_id in GENERIC_FEATURE_NAMES | {
+        "feature", "capability", "features", "capabilities"
+    }:
+        return None
+    return {
+        "feature_id": feature_id,
+        "name": clean_name,
+        "source_path": path,
+        "source_sha256": source_sha256,
+        "locator": locator,
+        "source_kind": source_kind,
+        "source_family": _candidate_source_family(path),
+        "source_scope": _candidate_source_scope(path),
+    }
+
+
+def _markdown_feature_candidates(
+    content: str,
+    *,
+    path: str,
+    source_sha256: str,
+) -> list[dict[str, str]]:
+    candidates = []
+    for line_number, line in enumerate(content.splitlines(), start=1):
+        match = MARKDOWN_FEATURE_DECLARATION.match(line)
+        if match:
+            candidate = _candidate_record(
+                match.group("name"),
+                path=path,
+                source_sha256=source_sha256,
+                locator=f"line:{line_number}",
+                source_kind="markdown_declaration",
+            )
+            if candidate:
+                candidates.append(candidate)
+    return candidates
+
+
+def _memory_feature_candidates(
+    content: str,
+    *,
+    path: str,
+    source_sha256: str,
+    source_size: int,
+) -> tuple[list[dict[str, str]], str | None]:
+    if source_size > MEMORY_SCAN_MAX_BYTES:
+        return [], "memory_source_exceeds_scan_bound"
+    try:
+        document = json.loads(content)
+    except json.JSONDecodeError:
+        return [], "memory_source_is_not_valid_json"
+
+    candidates: list[dict[str, str]] = []
+    pending: list[tuple[Any, str, int, bool]] = [(document, "", 0, False)]
+    visited = 0
+    while pending:
+        value, pointer, depth, in_feature_collection = pending.pop()
+        visited += 1
+        if visited > MEMORY_SCAN_MAX_NODES:
+            return candidates, "memory_source_exceeds_node_bound"
+        if depth > MEMORY_SCAN_MAX_DEPTH:
+            continue
+        if isinstance(value, dict):
+            if in_feature_collection:
+                name = value.get("name") or value.get("feature_name") or value.get("feature_id") or value.get("id")
+                if isinstance(name, str):
+                    candidate = _candidate_record(
+                        name,
+                        path=path,
+                        source_sha256=source_sha256,
+                        locator=f"json:{pointer}",
+                        source_kind="memory_feature_entry",
+                    )
+                    if candidate:
+                        candidates.append(candidate)
+            for key, child in sorted(value.items(), key=lambda item: str(item[0]), reverse=True):
+                escaped_key = str(key).replace("~", "~0").replace("/", "~1")
+                child_pointer = f"{pointer}/{escaped_key}"
+                is_feature_collection = re.sub(r"[^a-z0-9]", "", str(key).lower()) in MEMORY_FEATURE_COLLECTIONS
+                pending.append((
+                    child,
+                    child_pointer,
+                    depth + 1,
+                    is_feature_collection if not in_feature_collection else False,
+                ))
+        elif isinstance(value, list):
+            for index in range(len(value) - 1, -1, -1):
+                pending.append((value[index], f"{pointer}/{index}", depth + 1, in_feature_collection))
+        elif in_feature_collection and isinstance(value, str):
+            candidate = _candidate_record(
+                value,
+                path=path,
+                source_sha256=source_sha256,
+                locator=f"json:{pointer}",
+                source_kind="memory_feature_entry",
+            )
+            if candidate:
+                candidates.append(candidate)
+    return candidates, None
+
+
+def _registered_feature_names(feature_map: dict[str, dict[str, Any]]) -> set[str]:
+    names: set[str] = set()
+    for feature_id, metadata in feature_map.items():
+        names.add(_capability_key(feature_id))
+        names.add(_capability_key(metadata["name"]))
+        names.update(_capability_key(alias) for alias in metadata["aliases"])
+    return names
+
+
+def _aggregate_feature_candidates(
+    records: Iterable[dict[str, Any]],
+    registered_names: set[str],
+) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    scan_warnings: list[dict[str, str]] = []
+    for record in records:
+        path = record.get("path")
+        if not isinstance(path, str):
+            continue
+        candidates = record.get("feature_candidates", [])
+        if not isinstance(candidates, list):
+            continue
+        for candidate in candidates:
+            if not isinstance(candidate, dict) or not isinstance(candidate.get("feature_id"), str):
+                continue
+            feature_id = candidate["feature_id"]
+            if feature_id in registered_names:
+                continue
+            item = grouped.setdefault(feature_id, {
+                "feature_id": feature_id,
+                "name": candidate["name"],
+                "status": "DISCOVERED_REVIEW_REQUIRED",
+                "implementation_status": "NOT_VERIFIED",
+                "canonical_registry_updated": False,
+                "evidence": [],
+                "source_families": [],
+                "source_kinds": [],
+                "source_scopes": [],
+            })
+            evidence = {
+                "path": candidate["source_path"],
+                "sha256": candidate["source_sha256"],
+                "locator": candidate["locator"],
+                "kind": candidate["source_kind"],
+                "scope": candidate["source_scope"],
+            }
+            if evidence not in item["evidence"]:
+                item["evidence"].append(evidence)
+            if candidate["source_family"] not in item["source_families"]:
+                item["source_families"].append(candidate["source_family"])
+            if candidate["source_kind"] not in item["source_kinds"]:
+                item["source_kinds"].append(candidate["source_kind"])
+            if candidate["source_scope"] not in item["source_scopes"]:
+                item["source_scopes"].append(candidate["source_scope"])
+        warning = record.get("feature_candidate_scan_warning")
+        if isinstance(warning, str):
+            scan_warnings.append({"path": path, "reason": warning})
+
+    candidates = []
+    for feature_id, item in sorted(grouped.items()):
+        item["evidence"].sort(key=lambda evidence: (evidence["path"], evidence["locator"]))
+        item["source_families"].sort()
+        item["source_kinds"].sort()
+        item["source_scopes"].sort()
+        item["evidence_count"] = len(item["evidence"])
+        candidates.append(item)
+    scan_warnings.sort(key=lambda warning: warning["path"])
+    return candidates, scan_warnings
 
 
 def _capability_key(value: str) -> str:
@@ -240,6 +480,7 @@ def _render_all_features(
     features: dict[str, dict[str, Any]],
     capability_catalog: dict[str, dict[str, Any]],
     metrics: dict[str, Any],
+    discovered_candidates: list[dict[str, Any]],
 ) -> str:
     lines = [
         "# ALLFEATURES",
@@ -249,6 +490,12 @@ def _render_all_features(
         f"- Source root: `{root}`",
         f"- Registered capability records: {len(capability_catalog)}",
         f"- Canonical feature records: {len(features)}",
+        f"- Discovered feature candidates (review required): {len(discovered_candidates)}",
+        f"- Candidate evidence records: {metrics['feature_candidate_evidence_count']}",
+        f"- Candidate source-family counts: `{json.dumps(metrics['feature_candidate_source_family_counts'], sort_keys=True)}`",
+        f"- Candidate source-kind counts: `{json.dumps(metrics['feature_candidate_source_kind_counts'], sort_keys=True)}`",
+        f"- Candidate source-scope counts: `{json.dumps(metrics['feature_candidate_source_scope_counts'], sort_keys=True)}`",
+        f"- Candidate source scan warnings: {metrics['feature_candidate_scan_warning_count']}",
         f"- Registry feature IDs unique: {metrics['feature_ids_unique']}",
         f"- Remote verification complete: False",
         "",
@@ -282,6 +529,26 @@ def _render_all_features(
             f"- Setup/configuration paths: `{', '.join(feature['setup_or_configuration_paths']) or 'none'}`",
             f"- Status: `{feature['status']}`",
             f"- Remote verification: `{feature['remote_verification']}`",
+            "",
+        ])
+    lines.extend([
+        "## Auto-discovered feature candidates",
+        "",
+        "These entries are provenance-backed discovery candidates only. They are not added to the canonical registry, implemented, or remotely verified without review.",
+        "",
+    ])
+    for candidate in discovered_candidates:
+        lines.extend([
+            f"### `{candidate['feature_id']}`",
+            "",
+            f"- Name: `{candidate['name']}`",
+            f"- Status: `{candidate['status']}`",
+            f"- Source families: `{', '.join(candidate['source_families'])}`",
+            f"- Source scopes: `{', '.join(candidate['source_scopes'])}`",
+            f"- Evidence count: {candidate['evidence_count']}",
+            f"- Evidence paths: `{', '.join(sorted({item['path'] for item in candidate['evidence']}))}`",
+            "- Canonical registry updated: `False`",
+            "- Implementation verified: `False`",
             "",
         ])
     return "\n".join(lines).rstrip() + "\n"
@@ -318,6 +585,7 @@ def build_feature_audit(
     test_paths: dict[str, set[str]] = defaultdict(set)
     setup_paths: dict[str, set[str]] = defaultdict(set)
     skipped: list[dict[str, str]] = []
+    feature_candidate_records: list[dict[str, Any]] = []
     records_by_path = {
         record.get("path"): record
         for record in scanned_records or []
@@ -331,6 +599,7 @@ def build_feature_audit(
             if not record or record.get("status") != "SCANNED" or not record.get("sha256"):
                 skipped.append({"path": relative, "reason": "missing_or_unreadable_shard_record"})
                 continue
+            feature_candidate_records.append(record)
             digest = record["sha256"]
             size = record.get("bytes", 0)
             for feature_id, matched in record.get("mention_matches", {}).items():
@@ -359,6 +628,25 @@ def build_feature_audit(
         lower = content.lower()
         normalized_lower = _normalize(lower)
         path_parts = {part.lower() for part in Path(relative).parts}
+        candidates = _markdown_feature_candidates(
+            content,
+            path=relative,
+            source_sha256=digest,
+        ) if path.suffix.lower() == ".md" else []
+        warning = None
+        if "memory" in Path(relative).name.lower() and path.suffix.lower() == ".json":
+            memory_candidates, warning = _memory_feature_candidates(
+                content,
+                path=relative,
+                source_sha256=digest,
+                source_size=size,
+            )
+            candidates.extend(memory_candidates)
+        feature_candidate_records.append({
+            "path": relative,
+            "feature_candidates": candidates,
+            **({"feature_candidate_scan_warning": warning} if warning else {}),
+        })
         for feature_id, metadata in feature_map.items():
             search = feature_search[feature_id]
             normalized_terms = search["mention_terms"]
@@ -418,6 +706,20 @@ def build_feature_audit(
             feature["status"] = "MAPPED_CANDIDATE"
         features[feature_id] = feature
 
+    discovered_candidates, candidate_scan_warnings = _aggregate_feature_candidates(
+        feature_candidate_records,
+        _registered_feature_names(feature_map),
+    )
+    candidate_source_families: dict[str, int] = defaultdict(int)
+    candidate_source_kinds: dict[str, int] = defaultdict(int)
+    candidate_source_scopes: dict[str, int] = defaultdict(int)
+    for candidate in discovered_candidates:
+        for family in candidate["source_families"]:
+            candidate_source_families[family] += 1
+        for kind in candidate["source_kinds"]:
+            candidate_source_kinds[kind] += 1
+        for scope in candidate["source_scopes"]:
+            candidate_source_scopes[scope] += 1
     capability_catalog = _build_capability_catalog(feature_map, features)
     metrics = {
         "registered_feature_count": len(features),
@@ -427,6 +729,12 @@ def build_feature_audit(
         "mapped_local_feature_count": sum(feature["status"] == "MAPPED_LOCAL" for feature in features.values()),
         "candidate_feature_count": sum(feature["status"] == "MAPPED_CANDIDATE" for feature in features.values()),
         "unmapped_feature_count": sum(feature["status"] == "NEEDS_REVIEW" for feature in features.values()),
+        "discovered_feature_candidate_count": len(discovered_candidates),
+        "feature_candidate_evidence_count": sum(item["evidence_count"] for item in discovered_candidates),
+        "feature_candidate_source_family_counts": dict(sorted(candidate_source_families.items())),
+        "feature_candidate_source_kind_counts": dict(sorted(candidate_source_kinds.items())),
+        "feature_candidate_source_scope_counts": dict(sorted(candidate_source_scopes.items())),
+        "feature_candidate_scan_warning_count": len(candidate_scan_warnings),
     }
     return {
         "schema_version": 1,
@@ -438,6 +746,8 @@ def build_feature_audit(
         "all_feature_ids_unique": len(features) == len(feature_map),
         "capability_catalog": capability_catalog,
         "features": features,
+        "discovered_feature_candidates": discovered_candidates,
+        "feature_candidate_scan_warnings": candidate_scan_warnings,
         "unavailable_sources": sorted(skipped, key=lambda item: item["path"]),
         "metrics": metrics,
         "all_features_document": _render_all_features(
@@ -446,6 +756,7 @@ def build_feature_audit(
             features,
             capability_catalog,
             metrics,
+            discovered_candidates,
         ),
     }
 
@@ -499,6 +810,8 @@ def run_parallel_feature_audit(
         "remote_verification_complete": False,
         "remote_mutation_performed": False,
         "capability_catalog": audit["capability_catalog"],
+        "discovered_feature_candidates": audit["discovered_feature_candidates"],
+        "feature_candidate_scan_warnings": audit["feature_candidate_scan_warnings"],
         "metrics": {
             "shard_count": len(shard_results),
             "files_scanned": sum(shard["file_count"] for shard in shard_results),
@@ -508,6 +821,12 @@ def run_parallel_feature_audit(
             "mapped_local_feature_count": audit["metrics"]["mapped_local_feature_count"],
             "candidate_feature_count": audit["metrics"]["candidate_feature_count"],
             "unmapped_feature_count": audit["metrics"]["unmapped_feature_count"],
+            "discovered_feature_candidate_count": audit["metrics"]["discovered_feature_candidate_count"],
+            "feature_candidate_evidence_count": audit["metrics"]["feature_candidate_evidence_count"],
+            "feature_candidate_source_family_counts": audit["metrics"]["feature_candidate_source_family_counts"],
+            "feature_candidate_source_kind_counts": audit["metrics"]["feature_candidate_source_kind_counts"],
+            "feature_candidate_source_scope_counts": audit["metrics"]["feature_candidate_source_scope_counts"],
+            "feature_candidate_scan_warning_count": audit["metrics"]["feature_candidate_scan_warning_count"],
             "all_feature_ids_unique": audit["all_feature_ids_unique"],
             "all_indexed_paths_ledgered": True,
         },
@@ -552,6 +871,12 @@ def run_parallel_feature_audit(
             "mentioned_feature_count": audit["metrics"]["mentioned_feature_count"],
             "mapped_local_feature_count": audit["metrics"]["mapped_local_feature_count"],
             "candidate_feature_count": audit["metrics"]["candidate_feature_count"],
+            "discovered_feature_candidate_count": audit["metrics"]["discovered_feature_candidate_count"],
+            "feature_candidate_evidence_count": audit["metrics"]["feature_candidate_evidence_count"],
+            "feature_candidate_source_family_counts": audit["metrics"]["feature_candidate_source_family_counts"],
+            "feature_candidate_source_kind_counts": audit["metrics"]["feature_candidate_source_kind_counts"],
+            "feature_candidate_source_scope_counts": audit["metrics"]["feature_candidate_source_scope_counts"],
+            "feature_candidate_scan_warning_count": audit["metrics"]["feature_candidate_scan_warning_count"],
             "remaining_feature_count": audit["metrics"]["unmapped_feature_count"],
             "feature_manifest_sha256": manifest_sha256,
             "feature_evidence_sha256": evidence_sha256,

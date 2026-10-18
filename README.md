@@ -68,6 +68,13 @@ The QMOI Enhanced project includes a sophisticated **Ollama Autonomous Agent** t
 - It validates the voice profile choices tied to QMOI and extends the automation so the selected avatar, voice, and visual style remain synchronized and easy to navigate.
 - It strengthens the UI presentation layer so the avatar window, styles, and live preview experience are built as a complete QMOI identity environment instead of a single static render.
 
+### 6. **QAUDITS Feature Discovery and Master Review**
+- `python scripts/ollama_autonomous_agent.py audit-inventory` refreshes the local feature ledger from the canonical platform registry, explicit Markdown feature declarations, and structured feature collections in memory JSON.
+- [ALLFEATURES.md](ALLFEATURES.md) and [`feature_manifest.json`](ollamatracks/qaudits_all_features/feature_manifest.json) report candidate provenance, source families/scopes, and review-only discovery metrics for documentation, memory, research, skills, projects, finance, and styles/universals.
+- [ALLQMOIAUTOEVOLVINGENVS.md](ALLQMOIAUTOEVOLVINGENVS.md) maps the current QVillage, QCity, language, memory, and QAUDITS discovery/planning path and its unresolved runtime, UI, research, and authorization gates.
+- Discovered items remain unverified review candidates; this audit does not generate or execute application code, provision financial accounts, or establish remote completion.
+- See [QAUDITS.md](QAUDITS.md) for the candidate schema, source bounds, metrics, and authorization/evidence limits.
+
 ## 📁 Repository Structure
 
 ```

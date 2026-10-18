@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,6 +15,18 @@ CONTRACTS = (
     ("autodev", ("AUTODEV.md",)),
     ("model_evolution", ("MODELEVOLUTIONO.md", "MODELEVUTIONO.md")),
     ("qvillage_evolution", ("Qvillageevolutions.md",)),
+    (
+        "auto_evolving_environments",
+        ("ALLQMOIAUTOEVOLVINGENVS.md", "AUTODEV.md", "Qvillageevolutions.md"),
+    ),
+    (
+        "qcity_feature_monitoring",
+        ("QCITY.md", "QCITYUI.md", "ALLFEATURES.md", "ALLTRACKS.md"),
+    ),
+    (
+        "language_capability_research",
+        ("ALLLANGUAGES.md", "ALLLANGUAGESCOMPARE.md", "QLIONPROGRAMMINGLANGUAGE.md", "QVILLAGE.md"),
+    ),
     ("qvirtual_labs", ("QVIRTUALLABS.md", "QENGINEER.md", "Qvillageevolutions.md")),
     ("internal_research", ("INTERNALRESEARCH.md",)),
     ("external_research", ("EXTERNALRESEARCH.md", "EXTERIORRESEARCH.md")),
@@ -39,6 +53,7 @@ CONTRACTS = (
     ("qreplaceo_archive", ("SYNC.md", "MODELEVOLUTIONO.md")),
     ("evolutiono_clean_branch_audit", ("SYNC.md", "scripts/qaudit_universe.py", "scripts/qaudits_evolution_planner.py")),
     ("evolutiono_ofca_metrics", ("MODELEVOLUTIONO.md", "scripts/qaudits_evolution_planner.py", "scripts/q_version_manager.py")),
+    ("model_comparison", ("QAUDITS.md", "QVILLAGE.md", "Qvillageevolutions.md", "QMOI_MODEL_CARD.md", "QMOI_BEST_MODEL_PROOF.md")),
 )
 
 EVOLUTIONO_TRANSITION_DOMAINS = (
@@ -50,6 +65,21 @@ EVOLUTIONO_TRANSITION_DOMAINS = (
 )
 PLAN_TARGETS = {
     "repository_surface_audit": ("QAUDITS.md", "OFCA.md"),
+    "auto_evolving_environments": (
+        "ALLQMOIAUTOEVOLVINGENVS.md",
+        "QAUDITS.md",
+        "ALLFEATURES.md",
+    ),
+    "qcity_feature_monitoring": (
+        "QCITY.md",
+        "QCITYUI.md",
+        "ALLTRACKS.md",
+    ),
+    "language_capability_research": (
+        "ALLLANGUAGES.md",
+        "ALLLANGUAGESCOMPARE.md",
+        "QVILLAGE.md",
+    ),
     "qvirtual_labs": (
         "QVIRTUALLAB.md",
         "QVIRTUALLABS.md",
@@ -61,7 +91,380 @@ PLAN_TARGETS = {
         "Qvillageevolutions.md",
     ),
     "evolutiono_ofca_metrics": ("OFCA.md",),
+    "model_comparison": (
+        "QAUDITS.md",
+        "QVILLAGE.md",
+        "Qvillageevolutions.md",
+        "QMOI_MODEL_CARD.md",
+        "QMOI_BEST_MODEL_PROOF.md",
+    ),
 }
+
+EVOLUTION_MARKER = re.compile(
+    r"\b(?:evol\w*|self[- ]?improv\w*|adapt\w*|capability growth)\b",
+    re.IGNORECASE,
+)
+MODEL_COMPARISON_MARKER = re.compile(
+    r"\b(?:model comparison|compare(?:d|s|ing)? models?|benchmark(?:ing)?|"
+    r"model evaluation|model parity|replace(?:ment)? model)\b",
+    re.IGNORECASE,
+)
+QVILLAGE_MODEL_MARKER = re.compile(
+    r"\b(?:qvillage|qvs)\b.*\b(?:model|evol\w*|benchmark|compar\w*)\b|"
+    r"\b(?:model|evol\w*|benchmark|compar\w*)\b.*\b(?:qvillage|qvs)\b",
+    re.IGNORECASE,
+)
+FEATURE_DECLARATION = re.compile(
+    r"^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:feature|capability)\s*[:—-]",
+    re.IGNORECASE,
+)
+MODEL_COMPARISON_EVIDENCE_PATH = "ollamatracks/model_comparison_evidence.json"
+MODEL_COMPARISON_DIMENSIONS = {
+    "task_quality": "higher",
+    "reasoning": "higher",
+    "coding": "higher",
+    "factuality": "higher",
+    "safety": "higher",
+    "privacy": "higher",
+    "security": "higher",
+    "reliability": "higher",
+    "throughput": "higher",
+    "offline_independence": "higher",
+    "latency": "lower",
+    "resource_cost": "lower",
+}
+MODEL_COMPARISON_HARD_GATES = (
+    "safety_review_passed",
+    "privacy_review_passed",
+    "security_review_passed",
+    "license_review_passed",
+    "offline_test_passed",
+    "regression_suite_passed",
+    "rollback_tested",
+    "independent_reviewer_approved",
+)
+MODEL_INVENTORY_EXCLUDED_DIRS = {
+    ".git", "node_modules", ".venv", "venv", "__pycache__", ".pytest_cache",
+    ".mypy_cache", ".ruff_cache", "dist", "build", "target", "coverage",
+}
+MODEL_INVENTORY_MAX_BYTES = 5_000_000
+
+
+def evaluate_model_comparison_evidence(evidence: Any) -> dict[str, Any]:
+    """Assess reported benchmark completeness; never authorize a model switch."""
+    blockers: list[str] = []
+    if not isinstance(evidence, dict):
+        evidence = {}
+        blockers.append("comparison_evidence_missing_or_not_an_object")
+
+    benchmark = evidence.get("benchmark")
+    benchmark = benchmark if isinstance(benchmark, dict) else {}
+    if evidence.get("schema_version") != 1:
+        blockers.append("unsupported_or_missing_evidence_schema")
+    for field in ("incumbent_model_id", "qmoi_model_id"):
+        value = evidence.get(field)
+        if not isinstance(value, str) or not value.strip():
+            blockers.append(f"missing_{field}")
+    if (
+        isinstance(evidence.get("incumbent_model_id"), str)
+        and evidence.get("incumbent_model_id") == evidence.get("qmoi_model_id")
+    ):
+        blockers.append("incumbent_and_candidate_model_ids_must_differ")
+    if (
+        isinstance(evidence.get("qmoi_model_id"), str)
+        and not evidence["qmoi_model_id"].casefold().startswith("qmoi")
+    ):
+        blockers.append("candidate_model_is_not_identified_as_qmoi")
+    for field in ("suite_id", "suite_sha256", "dataset_sha256", "environment_sha256"):
+        value = benchmark.get(field)
+        if field.endswith("_sha256"):
+            if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+                blockers.append(f"invalid_or_missing_benchmark_{field}")
+        elif not isinstance(value, str) or not value.strip():
+            blockers.append(f"missing_benchmark_{field}")
+    if benchmark.get("matched_protocol") is not True:
+        blockers.append("matched_benchmark_protocol_not_verified")
+    if not isinstance(benchmark.get("replicated_runs"), int) or benchmark["replicated_runs"] < 3:
+        blockers.append("fewer_than_three_replicated_runs")
+
+    dimensions = evidence.get("dimensions")
+    dimensions = dimensions if isinstance(dimensions, dict) else {}
+    missing_dimensions = sorted(set(MODEL_COMPARISON_DIMENSIONS) - set(dimensions))
+    blockers.extend(f"dimension_not_measured:{name}" for name in missing_dimensions)
+    failed_dimensions: list[str] = []
+    for name, direction in MODEL_COMPARISON_DIMENSIONS.items():
+        record = dimensions.get(name)
+        if not isinstance(record, dict):
+            continue
+        incumbent = record.get("incumbent_score")
+        candidate = record.get("qmoi_score")
+        incumbent_ci = record.get("incumbent_confidence_interval")
+        candidate_ci = record.get("qmoi_confidence_interval")
+        sample_count = record.get("sample_count")
+        valid_scores = (
+            isinstance(incumbent, (int, float))
+            and not isinstance(incumbent, bool)
+            and math.isfinite(incumbent)
+            and isinstance(candidate, (int, float))
+            and not isinstance(candidate, bool)
+            and math.isfinite(candidate)
+        )
+        valid_intervals = (
+            isinstance(incumbent_ci, list)
+            and len(incumbent_ci) == 2
+            and isinstance(candidate_ci, list)
+            and len(candidate_ci) == 2
+            and all(isinstance(value, (int, float)) and math.isfinite(value) for value in [*incumbent_ci, *candidate_ci])
+            and incumbent_ci[0] <= incumbent_ci[1]
+            and candidate_ci[0] <= candidate_ci[1]
+        )
+        if (
+            record.get("direction") != direction
+            or not valid_scores
+            or not valid_intervals
+            or not isinstance(sample_count, int)
+            or sample_count < 30
+        ):
+            blockers.append(f"invalid_or_underpowered_dimension_evidence:{name}")
+            continue
+        candidate_clearly_better = (
+            candidate_ci[0] > incumbent_ci[1]
+            if direction == "higher"
+            else candidate_ci[1] < incumbent_ci[0]
+        )
+        if not candidate_clearly_better:
+            failed_dimensions.append(name)
+
+    feature_comparisons = evidence.get("feature_comparisons")
+    if not isinstance(feature_comparisons, list) or not feature_comparisons:
+        blockers.append("feature_level_comparison_missing")
+        feature_comparisons = []
+    canonical_feature_ids = evidence.get("canonical_feature_ids")
+    if (
+        not isinstance(canonical_feature_ids, list)
+        or not canonical_feature_ids
+        or any(not isinstance(item, str) or not item for item in canonical_feature_ids)
+        or len(set(canonical_feature_ids)) != len(canonical_feature_ids)
+    ):
+        blockers.append("canonical_feature_registry_feature_list_missing_or_invalid")
+        canonical_feature_ids = []
+    feature_ids: set[str] = set()
+    failed_features: list[str] = []
+    for feature in feature_comparisons:
+        if not isinstance(feature, dict):
+            blockers.append("malformed_feature_comparison")
+            continue
+        feature_id = feature.get("feature_id")
+        incumbent_score = feature.get("incumbent_score")
+        candidate_score = feature.get("qmoi_score")
+        incumbent_ci = feature.get("incumbent_confidence_interval")
+        candidate_ci = feature.get("qmoi_confidence_interval")
+        direction = feature.get("direction")
+        if (
+            not isinstance(feature_id, str)
+            or not feature_id
+            or feature_id in feature_ids
+            or not isinstance(incumbent_score, (int, float))
+            or isinstance(incumbent_score, bool)
+            or not math.isfinite(incumbent_score)
+            or not isinstance(candidate_score, (int, float))
+            or isinstance(candidate_score, bool)
+            or not math.isfinite(candidate_score)
+            or direction not in {"higher", "lower"}
+            or not isinstance(incumbent_ci, list)
+            or len(incumbent_ci) != 2
+            or not isinstance(candidate_ci, list)
+            or len(candidate_ci) != 2
+            or any(
+                not isinstance(value, (int, float))
+                or isinstance(value, bool)
+                or not math.isfinite(value)
+                for value in [*(incumbent_ci if isinstance(incumbent_ci, list) else []),
+                              *(candidate_ci if isinstance(candidate_ci, list) else [])]
+            )
+            or incumbent_ci[0] > incumbent_ci[1]
+            or candidate_ci[0] > candidate_ci[1]
+            or not isinstance(feature.get("sample_count"), int)
+            or feature["sample_count"] < 30
+        ):
+            blockers.append("invalid_or_duplicate_feature_comparison")
+            continue
+        feature_ids.add(feature_id)
+        feature_improved = (
+            candidate_ci[0] > incumbent_ci[1]
+            if direction == "higher"
+            else candidate_ci[1] < incumbent_ci[0]
+        )
+        score_improved = (
+            candidate_score > incumbent_score
+            if direction == "higher"
+            else candidate_score < incumbent_score
+        )
+        if not score_improved or not feature_improved:
+            failed_features.append(feature_id)
+    if feature_ids != set(canonical_feature_ids):
+        blockers.append("feature_comparison_does_not_cover_canonical_registry")
+    if not isinstance(evidence.get("canonical_feature_registry_sha256"), str) or not re.fullmatch(
+        r"[0-9a-f]{64}", evidence.get("canonical_feature_registry_sha256", "")
+    ):
+        blockers.append("canonical_feature_registry_hash_missing_or_invalid")
+
+    hard_gates = evidence.get("hard_gates")
+    hard_gates = hard_gates if isinstance(hard_gates, dict) else {}
+    failed_hard_gates = [
+        name for name in MODEL_COMPARISON_HARD_GATES if hard_gates.get(name) is not True
+    ]
+    blockers.extend(f"hard_gate_not_passed:{name}" for name in failed_hard_gates)
+    blockers.extend(f"candidate_not_better_on_dimension:{name}" for name in failed_dimensions)
+    blockers.extend(f"candidate_not_better_on_feature:{name}" for name in failed_features)
+
+    evidence_complete = not blockers
+    return {
+        "status": "ELIGIBLE_FOR_INDEPENDENT_REVIEW" if evidence_complete else "NOT_ELIGIBLE",
+        "comparison_evidence_complete": evidence_complete,
+        "required_dimension_count": len(MODEL_COMPARISON_DIMENSIONS),
+        "measured_dimension_count": len(set(MODEL_COMPARISON_DIMENSIONS) & set(dimensions)),
+        "required_feature_comparison_count": len(feature_comparisons),
+        "failed_dimension_count": len(failed_dimensions),
+        "failed_feature_count": len(failed_features),
+        "failed_hard_gate_count": len(failed_hard_gates),
+        "blockers": sorted(set(blockers)),
+        "replacement_status": "NOT_REPLACED",
+        "automatic_replacement_enabled": False,
+        "remote_verified": False,
+        "verification_level": "reported_local_evidence_only",
+        "next_action": (
+            "Obtain independent review and exact-SHA remote proof; replacement still requires separate explicit authorization."
+            if evidence_complete
+            else "Run a matched, reproducible comparison covering every required dimension and canonical feature, then review all blockers."
+        ),
+    }
+
+
+def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
+    """Count evolution and model-comparison documentation without storing prose."""
+    source_root = Path(root).resolve()
+    records: list[dict[str, Any]] = []
+    unavailable: list[dict[str, str]] = []
+    scanned_markdown_count = 0
+    if source_root.is_dir():
+        for current, dirnames, filenames in os.walk(source_root, followlinks=False):
+            current_path = Path(current)
+            dirnames[:] = sorted(
+                name for name in dirnames
+                if name not in MODEL_INVENTORY_EXCLUDED_DIRS
+                and not (current_path / name).is_symlink()
+            )
+            for filename in sorted(filenames):
+                path = current_path / filename
+                if path.suffix.lower() != ".md":
+                    continue
+                relative = path.relative_to(source_root).as_posix()
+                if path.is_symlink():
+                    unavailable.append({"path": relative, "reason": "symlink_not_followed"})
+                    continue
+                try:
+                    metadata = path.stat(follow_symlinks=False)
+                    if metadata.st_size > MODEL_INVENTORY_MAX_BYTES:
+                        unavailable.append({"path": relative, "reason": "oversized_not_parsed"})
+                        continue
+                    data = path.read_bytes()
+                    text = data.decode("utf-8")
+                except UnicodeDecodeError:
+                    unavailable.append({"path": relative, "reason": "invalid_utf8"})
+                    continue
+                except OSError as exc:
+                    unavailable.append({"path": relative, "reason": type(exc).__name__})
+                    continue
+                scanned_markdown_count += 1
+                lines = text.splitlines()
+                evolution_related = bool(EVOLUTION_MARKER.search(relative) or EVOLUTION_MARKER.search(text))
+                qvillage_model = bool(
+                    "qvillage" in relative.lower()
+                    or "qvs" in Path(relative).parts
+                    or QVILLAGE_MODEL_MARKER.search(text)
+                )
+                model_comparison = bool(
+                    MODEL_COMPARISON_MARKER.search(relative)
+                    or MODEL_COMPARISON_MARKER.search(text)
+                )
+                if not (evolution_related or qvillage_model or model_comparison):
+                    continue
+                declarations = sum(bool(FEATURE_DECLARATION.search(line)) for line in lines)
+                records.append({
+                    "path": relative,
+                    "scope": (
+                        "historical_or_archive"
+                        if any(
+                            part.lower().startswith(("alpha-q-ai-2025", "qmoi-enhanced-history"))
+                            or "archive" in part.lower()
+                            for part in Path(relative).parts
+                        )
+                        else "active_materialized"
+                    ),
+                    "bytes": len(data),
+                    "sha256": hashlib.sha256(data).hexdigest(),
+                    "evolution_related": evolution_related,
+                    "qvillage_model_related": qvillage_model,
+                    "model_comparison_related": model_comparison,
+                    "feature_declaration_count": declarations,
+                    "evolution_feature_declaration_count": declarations if evolution_related else 0,
+                    "model_comparison_candidate_line_count": sum(
+                        bool(MODEL_COMPARISON_MARKER.search(line)) for line in lines
+                    ),
+                    "qvillage_model_candidate_line_count": sum(
+                        bool(QVILLAGE_MODEL_MARKER.search(line)) for line in lines
+                    ),
+                    "source_text_recorded": False,
+                })
+    records.sort(key=lambda item: item["path"])
+    manifest = [
+        (item["path"], item["sha256"], item["scope"])
+        for item in records
+    ]
+    evidence_path = source_root / MODEL_COMPARISON_EVIDENCE_PATH
+    evidence: Any = None
+    evidence_status = "NOT_PRESENT"
+    if evidence_path.exists() and not evidence_path.is_symlink():
+        try:
+            if evidence_path.stat().st_size > 1_000_000:
+                evidence_status = "OVERSIZED"
+            else:
+                evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+                evidence_status = "PARSED"
+        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+            evidence_status = "INVALID"
+    assessment = evaluate_model_comparison_evidence(evidence)
+    return {
+        "status": "NEEDS_REVIEW",
+        "source_scope": "materialized_local_markdown_only",
+        "markdown_scan_count": scanned_markdown_count,
+        "evolution_document_count": sum(item["evolution_related"] for item in records),
+        "qvillage_model_document_count": sum(item["qvillage_model_related"] for item in records),
+        "model_comparison_document_count": sum(item["model_comparison_related"] for item in records),
+        "feature_declaration_count": sum(item["feature_declaration_count"] for item in records),
+        "evolution_feature_declaration_count": sum(item["evolution_feature_declaration_count"] for item in records),
+        "model_comparison_candidate_line_count": sum(item["model_comparison_candidate_line_count"] for item in records),
+        "qvillage_model_candidate_line_count": sum(item["qvillage_model_candidate_line_count"] for item in records),
+        "unavailable_document_count": len(unavailable),
+        "unavailable_documents": unavailable,
+        "documents": records,
+        "source_manifest_sha256": hashlib.sha256(
+            json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
+        "comparison_evidence_path": MODEL_COMPARISON_EVIDENCE_PATH,
+        "comparison_evidence_status": evidence_status,
+        "comparison_assessment": assessment,
+        "models_replaced_count": 0,
+        "automatic_replacement_enabled": False,
+        "remote_verified": False,
+        "limitations": [
+            "keyword and explicit Feature/Capability declarations are discovery metrics, not semantic review",
+            "a locally reported benchmark file is not independently verified benchmark or remote evidence",
+            "all candidate dimensions and feature IDs must be reconciled to the canonical feature registry",
+            "model replacement is never performed by QAUDITS; independent review, explicit authorization, rollback, and exact-SHA remote proof are separate gates",
+        ],
+    }
 
 QVIRTUAL_LAB_DOMAIN_MARKERS = (
     "<!-- BEGIN QMOI MANAGED: qvirtual-lab-domain-inventory -->",
@@ -520,6 +923,7 @@ def build_evolution_plan(
         "remote_verification_complete": False,
         "stages": stages,
         "qstats": qstats,
+        "model_comparison": build_model_comparison_inventory(source_root),
         "qvirtual_labs": build_qvirtual_labs_plan(
             source_root,
         ),

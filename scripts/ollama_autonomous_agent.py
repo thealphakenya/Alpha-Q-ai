@@ -113,6 +113,7 @@ from scripts.ollama_research import (
     build_validation_research_matrix,
     audit_repository_surfaces,
     fetch_official_resource,
+    markdown_document_counts,
     record_research_visit,
     write_markdown_sentence_audit,
 )
@@ -8599,14 +8600,47 @@ All timestamps use UTC ISO-8601 format.
                 "\n".join(language_lines),
             )
             updated.append(filename)
+        model_comparison = evolution_plan.get("model_comparison", {})
+        comparison_assessment = model_comparison.get("comparison_assessment", {})
+        comparison_lines = [
+            "## Agent-managed QVillage model-comparison evidence",
+            "",
+            "These are local source-document and reported-benchmark metrics only. The planner never switches a model or marks a remote run verified.",
+            f"- Generated at: `{universe.get('generated_at', 'unavailable')}`; correlation ID: `{universe.get('correlation_id', 'unavailable')}`.",
+            f"- Evolution / QVillage-model / model-comparison candidate documents: `{model_comparison.get('evolution_document_count', 0)}` / `{model_comparison.get('qvillage_model_document_count', 0)}` / `{model_comparison.get('model_comparison_document_count', 0)}`.",
+            f"- Explicit feature declarations in evolution documents: `{model_comparison.get('evolution_feature_declaration_count', 0)}`; evolution/model-comparison candidate lines: `{model_comparison.get('model_comparison_candidate_line_count', 0)}`; source-manifest SHA-256: `{model_comparison.get('source_manifest_sha256', 'unavailable')}`.",
+            f"- Reported comparison evidence: `{model_comparison.get('comparison_evidence_status', 'NOT_PRESENT')}`; assessment: `{comparison_assessment.get('status', 'NOT_ELIGIBLE')}`; blockers: `{len(comparison_assessment.get('blockers', []))}`.",
+            f"- Models replaced: `{model_comparison.get('models_replaced_count', 0)}`; automatic replacement enabled: `{model_comparison.get('automatic_replacement_enabled', False)}`; remote verified: `{model_comparison.get('remote_verified', False)}`.",
+            "- Any model change requires full canonical-feature coverage, superior results on every required dimension with adequate evidence, safety/security/license/regression/rollback gates, independent review, explicit authorization, and exact-SHA remote verification. A plan or local score cannot satisfy these gates.",
+        ]
+        comparison_updated: list[str] = []
+        for filename in (
+            "QAUDITS.md",
+            "QVILLAGE.md",
+            "Qvillageevolutions.md",
+            "QMOI_MODEL_CARD.md",
+            "QMOI_BEST_MODEL_PROOF.md",
+        ):
+            path = target / filename
+            if not path.is_file() or path.is_symlink():
+                continue
+            _upsert_managed_markdown_section(
+                path,
+                filename,
+                "qaudit-model-comparison-coverage",
+                "\n".join(comparison_lines),
+            )
+            comparison_updated.append(filename)
         return {
             "status": "UPDATED" if not blocked else "NEEDS_REVIEW",
             "updated_documents": updated,
+            "model_comparison_updated_documents": comparison_updated,
             "blocked_documents": blocked,
             "source_manifest_sha256": metrics.get("source_manifest_sha256"),
             "correlation_id": universe.get("correlation_id"),
             "accessibility_markdown_candidate_count": len(accessibility_markdown),
             "evolution_plan_artifact": evolution_path.relative_to(target).as_posix(),
+            "model_comparison": model_comparison,
             "qvirtual_labs": qvirtual_labs_report,
             "evolutiono_metrics": evolutiono_metrics,
             "qstats": qstats,
@@ -9575,8 +9609,7 @@ All timestamps use UTC ISO-8601 format.
                 assignments[accessibility_label].append(relative_path)
             markdown_lines = text.splitlines()
             qstats = {
-                "word_count": len(re.findall(r"\b[\w'-]+\b", text, re.UNICODE)),
-                "heading_count": sum(line.lstrip().startswith("#") for line in markdown_lines),
+                **markdown_document_counts(text, relative_path=relative_path),
                 "link_count": len(re.findall(r"!?\[[^\]]*\]\([^)]+\)", text)),
                 "accessibility_candidate": bool(accessibility_content_candidate.search(text)),
                 "source_text_recorded": False,
@@ -9613,6 +9646,20 @@ All timestamps use UTC ISO-8601 format.
             "word_count": sum(item.get("qstats", {}).get("word_count", 0) for item in markdown_metrics),
             "heading_count": sum(item.get("qstats", {}).get("heading_count", 0) for item in markdown_metrics),
             "link_count": sum(item.get("qstats", {}).get("link_count", 0) for item in markdown_metrics),
+            "sentence_count_heuristic": sum(item.get("qstats", {}).get("sentence_count_heuristic", 0) for item in markdown_metrics),
+            "code_block_count": sum(item.get("qstats", {}).get("code_block_count", 0) for item in markdown_metrics),
+            "fenced_code_line_count": sum(item.get("qstats", {}).get("fenced_code_line_count", 0) for item in markdown_metrics),
+            "inline_code_span_count": sum(item.get("qstats", {}).get("inline_code_span_count", 0) for item in markdown_metrics),
+            "command_line_candidate_count": sum(item.get("qstats", {}).get("command_line_candidate_count", 0) for item in markdown_metrics),
+            "instruction_candidate_line_count": sum(item.get("qstats", {}).get("instruction_candidate_line_count", 0) for item in markdown_metrics),
+            "feature_declaration_count": sum(item.get("qstats", {}).get("feature_declaration_count", 0) for item in markdown_metrics),
+            "evolution_document_count": sum(item.get("qstats", {}).get("evolution_related", False) for item in markdown_metrics),
+            "evolution_feature_declaration_count": sum(item.get("qstats", {}).get("evolution_feature_declaration_count", 0) for item in markdown_metrics),
+            "model_comparison_candidate_line_count": sum(item.get("qstats", {}).get("model_comparison_candidate_line_count", 0) for item in markdown_metrics),
+            "qvillage_model_candidate_line_count": sum(item.get("qstats", {}).get("qvillage_model_candidate_line_count", 0) for item in markdown_metrics),
+            "local_link_candidate_count": sum(item.get("qstats", {}).get("local_link_candidate_count", 0) for item in markdown_metrics),
+            "external_link_candidate_count": sum(item.get("qstats", {}).get("external_link_candidate_count", 0) for item in markdown_metrics),
+            "image_candidate_count": sum(item.get("qstats", {}).get("image_candidate_count", 0) for item in markdown_metrics),
             "accessibility_candidate_document_count": sum(
                 item.get("qstats", {}).get("accessibility_candidate", False)
                 for item in markdown_metrics
@@ -9699,7 +9746,16 @@ All timestamps use UTC ISO-8601 format.
             (
                 "QStats (materialized Markdown only): "
                 f"{markdown_qstats['file_count']} files; {markdown_qstats['word_count']} words; "
-                f"{markdown_qstats['heading_count']} headings; {markdown_qstats['link_count']} links; "
+                f"{markdown_qstats['sentence_count_heuristic']} heuristic sentences; "
+                f"{markdown_qstats['heading_count']} headings; {markdown_qstats['link_count']} links "
+                f"({markdown_qstats['local_link_candidate_count']} local, {markdown_qstats['external_link_candidate_count']} external); "
+                f"{markdown_qstats['code_block_count']} fenced blocks; {markdown_qstats['fenced_code_line_count']} fenced code lines; "
+                f"{markdown_qstats['command_line_candidate_count']} command candidates; "
+                f"{markdown_qstats['instruction_candidate_line_count']} instruction candidates; "
+                f"{markdown_qstats['feature_declaration_count']} declared features; "
+                f"{markdown_qstats['evolution_document_count']} evolution-related docs / "
+                f"{markdown_qstats['evolution_feature_declaration_count']} declared evolution features; "
+                f"{markdown_qstats['model_comparison_candidate_line_count']} model-comparison candidate lines; "
                 f"{markdown_qstats['accessibility_candidate_document_count']} accessibility candidate documents; "
                 f"manifest `{markdown_qstats['source_manifest_sha256']}`; remote verified=False."
             ),
@@ -9716,17 +9772,25 @@ All timestamps use UTC ISO-8601 format.
         all_block.extend(f"- {item}" for item in all_category_files)
         all_block.extend([
             "",
-            "Metrics (path | source/ref | bytes | lines | QStats words/headings/links/accessibility candidate | content hash/object id | validation):",
+            "Metrics (path | source/ref | bytes | lines | words/sentences/headings/links | code blocks/lines/commands/instructions | feature/evolution/model-comparison candidates | content hash | validation):",
         ])
         for metric in markdown_metrics:
             digest = metric.get("sha256") or metric.get("object_id") or "unavailable"
+            qstats = metric.get("qstats", {})
             all_block.append(
                 f"- `{metric['path']}` | `{metric.get('source', 'unknown')}` | "
                 f"{metric.get('bytes', 'unknown')} | {metric.get('lines', 'unknown')} | "
-                f"{metric.get('qstats', {}).get('word_count', 'not_materialized')} / "
-                f"{metric.get('qstats', {}).get('heading_count', 'not_materialized')} / "
-                f"{metric.get('qstats', {}).get('link_count', 'not_materialized')} / "
-                f"{metric.get('qstats', {}).get('accessibility_candidate', 'not_materialized')} | "
+                f"{qstats.get('word_count', 'not_materialized')} / "
+                f"{qstats.get('sentence_count_heuristic', 'not_materialized')} / "
+                f"{qstats.get('heading_count', 'not_materialized')} / "
+                f"{qstats.get('link_count', 'not_materialized')} | "
+                f"{qstats.get('code_block_count', 'not_materialized')} / "
+                f"{qstats.get('fenced_code_line_count', 'not_materialized')} / "
+                f"{qstats.get('command_line_candidate_count', 'not_materialized')} / "
+                f"{qstats.get('instruction_candidate_line_count', 'not_materialized')} | "
+                f"{qstats.get('feature_declaration_count', 'not_materialized')} / "
+                f"{qstats.get('evolution_feature_declaration_count', 'not_materialized')} / "
+                f"{qstats.get('model_comparison_candidate_line_count', 'not_materialized')} | "
                 f"`{digest}` | `{metric.get('validation_status', 'unknown')}`"
             )
         all_block.extend([
@@ -14181,6 +14245,24 @@ def main(
                 "candidate_feature_count": feature_audit.get("metrics", {}).get(
                     "candidate_feature_count", 0
                 ),
+                "discovered_feature_candidate_count": feature_audit.get("metrics", {}).get(
+                    "discovered_feature_candidate_count", 0
+                ),
+                "feature_candidate_evidence_count": feature_audit.get("metrics", {}).get(
+                    "feature_candidate_evidence_count", 0
+                ),
+                "feature_candidate_source_family_counts": feature_audit.get("metrics", {}).get(
+                    "feature_candidate_source_family_counts", {}
+                ),
+                "feature_candidate_source_kind_counts": feature_audit.get("metrics", {}).get(
+                    "feature_candidate_source_kind_counts", {}
+                ),
+                "feature_candidate_source_scope_counts": feature_audit.get("metrics", {}).get(
+                    "feature_candidate_source_scope_counts", {}
+                ),
+                "feature_candidate_scan_warning_count": feature_audit.get("metrics", {}).get(
+                    "feature_candidate_scan_warning_count", 0
+                ),
                 "unmapped_feature_count": feature_audit.get("metrics", {}).get(
                     "unmapped_feature_count", 0
                 ),
@@ -14228,6 +14310,18 @@ def main(
                     "repository_surface_audit": surface_artifact,
                     "financial_claim_inventory": financial_artifact,
                     "qhost_documentation_inventory": qhost_artifact,
+                    "feature_manifest": _local_artifact_integrity(
+                        root,
+                        str(feature_audit.get("artifacts", {}).get("feature_manifest", "")),
+                    ),
+                    "feature_evidence": _local_artifact_integrity(
+                        root,
+                        str(feature_audit.get("artifacts", {}).get("feature_evidence", "")),
+                    ),
+                    "all_features": _local_artifact_integrity(
+                        root,
+                        str(feature_audit.get("artifacts", {}).get("all_features", "")),
+                    ),
                 },
                 "metrics": {
                     "instruction_files_read": instructions.get("files_read", 0),
@@ -14239,6 +14333,24 @@ def main(
                     ),
                     "capability_count": feature_audit.get("metrics", {}).get(
                         "capability_count", 0
+                    ),
+                    "discovered_feature_candidate_count": feature_audit.get("metrics", {}).get(
+                        "discovered_feature_candidate_count", 0
+                    ),
+                    "feature_candidate_evidence_count": feature_audit.get("metrics", {}).get(
+                        "feature_candidate_evidence_count", 0
+                    ),
+                    "feature_candidate_source_family_counts": feature_audit.get("metrics", {}).get(
+                        "feature_candidate_source_family_counts", {}
+                    ),
+                    "feature_candidate_source_kind_counts": feature_audit.get("metrics", {}).get(
+                        "feature_candidate_source_kind_counts", {}
+                    ),
+                    "feature_candidate_source_scope_counts": feature_audit.get("metrics", {}).get(
+                        "feature_candidate_source_scope_counts", {}
+                    ),
+                    "feature_candidate_scan_warning_count": feature_audit.get("metrics", {}).get(
+                        "feature_candidate_scan_warning_count", 0
                     ),
                     "unmapped_feature_count": styles_universals.get("unmapped_feature_count"),
                     "legacy_sync_status": legacy_sync_inventory.get("status", "UNKNOWN"),

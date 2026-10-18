@@ -28,6 +28,7 @@ from scripts.ollama_research import (
     build_internal_research_plan,
     build_validation_research_matrix,
     discover_resource_candidates,
+    markdown_document_counts,
     fetch_official_resource,
     record_research_visit,
     write_markdown_sentence_audit,
@@ -1378,6 +1379,11 @@ def test_repository_surface_audit_tracks_markdown_metrics_without_source_text(tm
         "# Qtrade metrics\n\nWin rate: 61%; Sharpe ratio is a metric candidate.\n",
         encoding="utf-8",
     )
+    (tmp_path / "QCITY.md").write_text("# QCity\n", encoding="utf-8")
+    (tmp_path / "ALLLANGUAGES.md").write_text("# Language inventory\n", encoding="utf-8")
+    (tmp_path / "ALLQMOIAUTOEVOLVINGENVS.md").write_text(
+        "# Auto-evolving environments\n", encoding="utf-8"
+    )
     (tmp_path / "projectsandautoprojects.md").write_text(
         "# Master projects\n\nExisting project registry.\n", encoding="utf-8"
     )
@@ -1420,6 +1426,10 @@ def test_repository_surface_audit_tracks_markdown_metrics_without_source_text(tm
     assert report["surface_document_counts"]["comparison"] == 1
     assert report["surface_document_counts"]["trading"] == 1
     assert report["surface_document_counts"]["qvillage_qvs"] == 3
+    assert report["surface_document_counts"]["qcity_platform"] == 1
+    assert report["surface_document_counts"]["language_capabilities"] == 1
+    assert report["surface_document_counts"]["autonomous_evolution"] == 1
+    assert report["surface_document_counts"]["qengineer_requirements"] == 0
     assert report["surface_document_counts"]["projects_autoprojects"] == 1
     assert report["component_source_count"] == 1
     assert report["api_or_endpoint_source_count"] == 1
@@ -1457,6 +1467,12 @@ def test_repository_surface_audit_tracks_markdown_metrics_without_source_text(tm
         "remotecompletion.md",
     ]
     assert "remotecompletion.md" not in {item["path"] for item in root_report["markdown_records"]}
+    readme_metrics = markdown["README.md"]
+    assert readme_metrics["code_block_count"] == 0
+    assert readme_metrics["markdown_link_count"] == 2
+    assert readme_metrics["local_link_candidate_count"] == 2
+    assert readme_metrics["word_count"] > 0
+    assert "feature_declaration_count" in readme_metrics
     for filename in ("oe2.txt", "remotecompletion.md", "remote-completion.json", "remote-evidence-ledger.jsonl"):
         record = next(item for item in report["all_file_records"] if item["path"] == filename)
         assert record["status"] == "self_referential_excluded"
@@ -1467,6 +1483,34 @@ def test_repository_surface_audit_tracks_markdown_metrics_without_source_text(tm
     assert all(item["source_text_recorded"] is False for item in report["instruction_candidates"])
     assert all(len(item["sha256"]) == 64 for item in report["all_file_records"] if item["sha256"])
     assert report["markdown_sentence_records_indexed"] >= 0
+
+
+def test_markdown_document_counts_track_code_commands_evolution_and_model_candidates():
+    metrics = markdown_document_counts(
+        "# QVillage evolution\n"
+        "Feature: research review\n"
+        "Compare models before replacement.\n"
+        "QVillage model benchmark evidence remains local.\n"
+        "[local](guide.md) [external](https://example.invalid) ![image](image.png)\n"
+        "```bash\n"
+        "python -m scripts.audit\n"
+        "```\n"
+        "See `QAUDITS.md`.\n"
+    )
+
+    assert metrics["heading_count"] == 1
+    assert metrics["markdown_link_count"] == 3
+    assert metrics["local_link_candidate_count"] == 2
+    assert metrics["external_link_candidate_count"] == 1
+    assert metrics["image_candidate_count"] == 1
+    assert metrics["code_block_count"] == 1
+    assert metrics["fenced_code_line_count"] == 1
+    assert metrics["inline_code_span_count"] == 1
+    assert metrics["command_line_candidate_count"] == 1
+    assert metrics["feature_declaration_count"] == 1
+    assert metrics["evolution_feature_declaration_count"] == 1
+    assert metrics["model_comparison_candidate_line_count"] == 2
+    assert metrics["qvillage_model_candidate_line_count"] == 1
 
 
 def test_markdown_sentence_evidence_writer_is_compressed_and_source_text_free(tmp_path):
@@ -1521,7 +1565,7 @@ def test_markdown_sentence_evidence_writer_is_compressed_and_source_text_free(tm
     rows = [json.loads(line) for line in gzip.decompress(artifact.read_bytes()).splitlines()]
 
     assert manifest["correlation_id"] == "sentence-audit-test"
-    assert manifest["schema_version"] == 4
+    assert manifest["schema_version"] == 5
     assert manifest["totals"]["sentence_records_indexed"] == 1
     assert manifest["remote_verified"] is False
     assert manifest["source_text_recorded"] is False

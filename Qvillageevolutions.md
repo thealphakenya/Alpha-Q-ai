@@ -1,3 +1,26 @@
+## Active checkout integration and evidence boundary
+
+The active checkout connects QVillage research and evolution planning to
+[`scripts/ollama_research.py`](scripts/ollama_research.py),
+[`scripts/qaudits_evolution_planner.py`](scripts/qaudits_evolution_planner.py),
+and the feature-wide QAUDITS command in
+[`scripts/ollama_autonomous_agent.py`](scripts/ollama_autonomous_agent.py).
+Use [ALLQMOIAUTOEVOLVINGENVS.md](ALLQMOIAUTOEVOLVINGENVS.md) as the concise
+active-runtime contract, [ALLLANGUAGES.md](ALLLANGUAGES.md) for the maintained
+language inventory, [QCITY.md](QCITY.md) for project/platform monitoring, and
+[QVILLAGE.md](QVILLAGE.md) for the research handoff.
+
+The current local audit produces review-only feature candidates with source
+hashes and active/historical/archive scope. It does not continuously retrieve
+external research, run experiments, invoke Ollama, change application code,
+or promote a candidate. The QENGINEER requirements file is absent from the
+active checkout, so QVirtualLabs remains blocked on source reconciliation.
+Consult [QAUDITS.md](QAUDITS.md) and the generated feature manifest for
+measured local metrics; never infer completed research, implementation, or
+remote verification from a plan or a historical document.
+
+---
+
 Yes. In fact, I would design QMOI so that research and evolution are themselves permanent QMOI capabilities, rather than something you manually ask it to do.
 The important distinction is this:
 QMOI should not automatically copy every new Hugging Face idea. It should continuously discover → understand → test → compare → verify → recommend → integrate → measure → learn.
@@ -650,3 +673,30 @@ Generated from the local QVirtualLabs source inventory; a full QAUDITS universe 
 - Historical reference: `qmoi-enhanced-history-14/QVIRTUALLABS.md`; scope `historical_snapshot_candidate`; not authoritative.
 - The planner does not run a solver, retrieve external research, invoke hardware, or infer that an unlinked implementation is absent.
 <!-- END QMOI MANAGED: qaudit-qvirtual-labs-coverage -->
+
+## QAUDITS evolution and model-comparison evidence
+
+The supported audit records per-Markdown-document word/sentence/heading/link,
+code/command/instruction, feature-declaration, and evolution/model-comparison
+candidate metrics. The evolution plan groups active, historical, and archive
+documents separately and binds candidate counts to source hashes. Phrase and
+feature counts locate review work; they do not establish semantic coverage,
+successful evolution cycles, or model superiority.
+
+QVillage must compare an incumbent with the exact QMOI model artifact across a
+matched benchmark, dataset, environment, task suite, and the complete
+canonical feature registry before proposing substitution. All required
+capability dimensions and individual features must show statistically
+supported improvement with no safety, privacy, security, license, reliability,
+offline-capability, or resource regression. Missing coverage, evidence,
+independent review, rollback testing, authorization, or exact-SHA remote proof
+keeps the replacement blocked. Even a complete local assessment only advances
+to independent review; QAUDITS does not select or replace models.
+
+Content safety must remain a separate gate from evolution metrics. QMOI should
+not proactively seek, create, download, or monitor pornographic or disturbing
+material. It must not facilitate criminal conduct for any user, including a
+user claiming master status. The current document inventory does not prove
+runtime moderation; classifier coverage, refusal tests, false-positive and
+false-negative review, identity authorization, and appeals remain
+`NOT_MEASURED` until implemented and independently tested.

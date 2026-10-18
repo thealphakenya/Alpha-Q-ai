@@ -219,6 +219,10 @@ SURFACE_DOCUMENTS = {
     "styles": ("STYLES.md",),
     "universals": ("UNIVERSALS.md", "UNIVERSAL.md"),
     "qvillage_qvs": ("QVILLAGE.md", "Qvillageevolutions.md", "QVS.md", "ENHANCEDQVS.md"),
+    "qcity_platform": ("QCITY.md", "QCITYUI.md"),
+    "language_capabilities": ("ALLLANGUAGES.md", "ALLLANGUAGESCOMPARE.md", "QLIONPROGRAMMINGLANGUAGE.md"),
+    "autonomous_evolution": ("ALLQMOIAUTOEVOLVINGENVS.md", "AUTODEV.md", "MODELEVOLUTIONO.md", "Qvillageevolutions.md"),
+    "qengineer_requirements": ("QENGINEER.md",),
     "internal_research": ("INTERNALRESEARCH.md", "INTERNALREFSEARCH.md"),
     "external_research": ("EXTERIORRESEARCH.md", "EXTERNALRESEARCH.md"),
     "instructions": ("AGENTS.md", "copilot-instructions.md"),
@@ -233,6 +237,9 @@ MARKDOWN_DOCUMENT_FAMILY_PATTERNS = {
     "orchestration": re.compile(r"\b(?:orchestras?|orchestration|orchestrators?|coordination|pipelines?)\b", re.IGNORECASE),
     "tree_inventory": re.compile(r"\b(?:trees?|directory structure|folder structure|file inventory|repository structure|filesystem)\b", re.IGNORECASE),
     "disability_accessibility": re.compile(r"\b(?:disabilit\w*|accessibility|a11y|blind|low vision|deaf|hard of hearing|captions?|screen readers?|assistive technology|dyslex\w*|neurodiverg\w*|motor impairment|cognitive access|epilepsy|reduced motion|switch control)\b", re.IGNORECASE),
+    "evolution": re.compile(r"\b(?:evolv\w*|self[- ]?improv\w*|adapt\w*|capability growth)\b", re.IGNORECASE),
+    "qvillage_model": re.compile(r"\b(?:qvillage|qvs)\b", re.IGNORECASE),
+    "model_comparison": re.compile(r"\b(?:model comparison|compare models|benchmark(?:ing)?|model evaluation)\b", re.IGNORECASE),
 }
 HISTORICAL_PATH_COMPONENT_PATTERN = re.compile(
     r"(?:^|[-_.])(?:19|20)\d{2}(?:[-_.]|$)",
@@ -279,6 +286,33 @@ INSTRUCTION_TEXT_SUFFIXES = frozenset({".md", ".txt", ".rst", ".py", ".js", ".js
 PERCENT_PATTERN = re.compile(r"(?<![\w.])\d+(?:\.\d+)?\s*%")
 CALCULATION_PATTERN = re.compile(r"(?:=|\+|\*|/|\b(?:formula|calculate|calculated|calculation|average|mean|median|sum|ratio|rate)\b)", re.IGNORECASE)
 MARKDOWN_LINK_PATTERN = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+MARKDOWN_FEATURE_DECLARATION_PATTERN = re.compile(
+    r"^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:feature|capability)\s*[:—-]",
+    re.IGNORECASE,
+)
+COMMAND_LINE_CANDIDATE_PATTERN = re.compile(
+    r"^\s*(?:[$>#]\s*)?(?:python(?:\d+(?:\.\d+)*)?(?:\s+-m)?\s+|"
+    r"pytest(?:\s|$)|npm\s+(?:run|test|install|exec)\b|"
+    r"pnpm\s+(?:run|test|install|exec)\b|yarn\s+(?:run|test|install)\b|"
+    r"git\s+(?:status|diff|log|show|branch|rev-parse|fetch|push|pull|merge)\b|"
+    r"gh\s+(?:api|run|workflow|pr|repo)\b|"
+    r"curl\s+|docker\s+(?:build|run|compose)\b)",
+    re.IGNORECASE,
+)
+EVOLUTION_LINE_PATTERN = re.compile(
+    r"\b(?:evol\w*|self[- ]?improv\w*|adapt\w*|capability growth)\b",
+    re.IGNORECASE,
+)
+MODEL_COMPARISON_LINE_PATTERN = re.compile(
+    r"\b(?:model comparison|compare(?:d|s|ing)? models?|benchmark(?:ing)?|"
+    r"model evaluation|model parity|replace(?:ment)? model)\b",
+    re.IGNORECASE,
+)
+QVILLAGE_MODEL_LINE_PATTERN = re.compile(
+    r"\b(?:qvillage|qvs)\b.*\b(?:model|evolv\w*|benchmark|compar\w*)\b|"
+    r"\b(?:model|evolv\w*|benchmark|compar\w*)\b.*\b(?:qvillage|qvs)\b",
+    re.IGNORECASE,
+)
 COMPONENT_SUFFIXES = frozenset({".tsx", ".jsx", ".ts", ".js", ".vue", ".svelte", ".css", ".scss"})
 AUDIT_METRIC_SUFFIXES = frozenset({".py", ".js", ".jsx", ".ts", ".tsx", ".vue", ".svelte", ".css", ".scss", ".json", ".yml", ".yaml", ".toml", ".ini", ".cfg", ".txt", ".sh"})
 
@@ -309,7 +343,100 @@ def _markdown_document_families(relative_path: str, text: str) -> list[str]:
     )
 
 
-def _markdown_sentence_evidence(text: str) -> dict[str, Any]:
+def markdown_document_counts(text: str, *, relative_path: str = "") -> dict[str, Any]:
+    """Return deterministic Markdown counts without preserving document prose."""
+    lines = text.splitlines()
+    in_fence = False
+    fence_marker = ""
+    code_block_count = 0
+    fenced_code_line_count = 0
+    command_line_candidate_count = 0
+    for line in lines:
+        stripped = line.lstrip()
+        fence_match = re.match(r"(```+|~~~+)(.*)$", stripped)
+        if fence_match:
+            marker = fence_match.group(1)[0]
+            if not in_fence:
+                in_fence = True
+                fence_marker = marker
+                code_block_count += 1
+            elif marker == fence_marker:
+                in_fence = False
+                fence_marker = ""
+            continue
+        if in_fence:
+            if stripped and not stripped.startswith(("#", "//", "/*", "*")):
+                fenced_code_line_count += 1
+            if COMMAND_LINE_CANDIDATE_PATTERN.search(line):
+                command_line_candidate_count += 1
+        elif COMMAND_LINE_CANDIDATE_PATTERN.search(line):
+            command_line_candidate_count += 1
+
+    link_targets = [
+        match.group(1).strip().split(maxsplit=1)[0].strip("<>")
+        for match in MARKDOWN_LINK_PATTERN.finditer(text)
+    ]
+    local_link_candidate_count = sum(
+        not urlsplit(target).scheme and not urlsplit(target).netloc
+        for target in link_targets
+    )
+    external_link_candidate_count = len(link_targets) - local_link_candidate_count
+    feature_declaration_count = sum(
+        bool(MARKDOWN_FEATURE_DECLARATION_PATTERN.search(line))
+        for line in lines
+    )
+    evolution_related = bool(
+        EVOLUTION_LINE_PATTERN.search(text)
+        or EVOLUTION_LINE_PATTERN.search(relative_path)
+    )
+    return {
+        "line_count": len(lines),
+        "word_count": len(re.findall(r"\b[\w'-]+\b", text, re.UNICODE)),
+        "sentence_count_heuristic": sum(
+            bool(fragment.strip())
+            for fragment in re.split(r"[.!?]+(?=\s|$)|\n+", text)
+        ),
+        "heading_count": sum(line.lstrip().startswith("#") for line in lines),
+        "markdown_link_count": len(link_targets),
+        "local_link_candidate_count": local_link_candidate_count,
+        "external_link_candidate_count": external_link_candidate_count,
+        "image_candidate_count": sum(
+            bool(re.match(r"!\[", match.group(0)))
+            for match in MARKDOWN_LINK_PATTERN.finditer(text)
+        ),
+        "code_block_count": code_block_count,
+        "fenced_code_line_count": fenced_code_line_count,
+        "inline_code_span_count": len(re.findall(r"(?<!`)`[^`\n]+`(?!`)", text)),
+        "command_line_candidate_count": command_line_candidate_count,
+        "instruction_candidate_line_count": sum(
+            bool(INSTRUCTION_CANDIDATE_PATTERN.search(line))
+            for line in lines
+        ),
+        "feature_declaration_count": feature_declaration_count,
+        "evolution_related": evolution_related,
+        "evolution_candidate_line_count": sum(
+            bool(EVOLUTION_LINE_PATTERN.search(line))
+            for line in lines
+        ),
+        "evolution_feature_declaration_count": (
+            feature_declaration_count if evolution_related else 0
+        ),
+        "model_comparison_candidate_line_count": sum(
+            bool(MODEL_COMPARISON_LINE_PATTERN.search(line))
+            for line in lines
+        ),
+        "qvillage_model_candidate_line_count": sum(
+            bool(QVILLAGE_MODEL_LINE_PATTERN.search(line))
+            for line in lines
+        ),
+    }
+
+
+def _markdown_sentence_evidence(
+    text: str,
+    *,
+    relative_path: str = "",
+) -> dict[str, Any]:
     """Index bounded sentence and word-sequence evidence without persisting source prose."""
     boundaries = [
         match.end()
@@ -381,6 +508,8 @@ def _markdown_sentence_evidence(text: str) -> dict[str, Any]:
             "semantic_status": "unverified_requires_source_and_owner_mapping",
         })
 
+    document_counts = markdown_document_counts(text, relative_path=relative_path)
+
     return {
         "sentence_count_heuristic": len(records) + omitted,
         "sentence_records": records,
@@ -391,6 +520,7 @@ def _markdown_sentence_evidence(text: str) -> dict[str, Any]:
         "completion_claim_candidate_count": completion_claim_candidate_count,
         "unreferenced_metric_claim_candidate_count": unreferenced_metric_claim_candidate_count,
         "unreferenced_completion_claim_candidate_count": unreferenced_completion_claim_candidate_count,
+        **document_counts,
         "semantic_validation": "sentence_and_word_sequence_hashes_are_integrity_metadata_only",
         "source_text_recorded": False,
     }
@@ -641,7 +771,10 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                             words = re.findall(r"\b[\w'-]+\b", text, re.UNICODE)
                             document_families = _markdown_document_families(relative, text)
                             record["document_families"] = document_families
-                            sentence_evidence = _markdown_sentence_evidence(text)
+                            sentence_evidence = _markdown_sentence_evidence(
+                                text,
+                                relative_path=relative,
+                            )
                             headings = sum(line.lstrip().startswith("#") for line in lines)
                             fence_count = sum(line.lstrip().startswith(("```", "~~~")) for line in lines)
                             unresolved = sorted(set(re.findall(r"\b(?:TODO|FIXME|TBD|PLACEHOLDER)\b", text, re.IGNORECASE)))
@@ -731,6 +864,22 @@ def audit_repository_surfaces(roots: Iterable[Path | str]) -> dict[str, Any]:
                                 "completion_claim_candidate_count": sentence_evidence["completion_claim_candidate_count"],
                                 "unreferenced_metric_claim_candidate_count": sentence_evidence["unreferenced_metric_claim_candidate_count"],
                                 "unreferenced_completion_claim_candidate_count": sentence_evidence["unreferenced_completion_claim_candidate_count"],
+                                "heading_count": sentence_evidence["heading_count"],
+                                "markdown_link_count": sentence_evidence["markdown_link_count"],
+                                "local_link_candidate_count": sentence_evidence["local_link_candidate_count"],
+                                "external_link_candidate_count": sentence_evidence["external_link_candidate_count"],
+                                "image_candidate_count": sentence_evidence["image_candidate_count"],
+                                "code_block_count": sentence_evidence["code_block_count"],
+                                "fenced_code_line_count": sentence_evidence["fenced_code_line_count"],
+                                "inline_code_span_count": sentence_evidence["inline_code_span_count"],
+                                "command_line_candidate_count": sentence_evidence["command_line_candidate_count"],
+                                "instruction_candidate_line_count": sentence_evidence["instruction_candidate_line_count"],
+                                "feature_declaration_count": sentence_evidence["feature_declaration_count"],
+                                "evolution_related": sentence_evidence["evolution_related"],
+                                "evolution_candidate_line_count": sentence_evidence["evolution_candidate_line_count"],
+                                "evolution_feature_declaration_count": sentence_evidence["evolution_feature_declaration_count"],
+                                "model_comparison_candidate_line_count": sentence_evidence["model_comparison_candidate_line_count"],
+                                "qvillage_model_candidate_line_count": sentence_evidence["qvillage_model_candidate_line_count"],
                                 "semantic_validation": "integrity_is_hash_checked; each sentence still requires source_and_owner_review",
                                 "heading_count": headings,
                                 "code_fence_count": fence_count,
@@ -1094,7 +1243,12 @@ def write_markdown_sentence_audit(
     ]
     totals = {
         "scan_duration_seconds": float(report.get("scan_duration_seconds", 0.0)),
-        "markdown_file_count": len(markdown_records),
+        "markdown_file_count": int(report.get("markdown_file_count", len(markdown_records))),
+        "metrics_computed_document_count": len(markdown_records),
+        "metrics_unavailable_document_count": max(
+            0,
+            int(report.get("markdown_file_count", len(markdown_records))) - len(markdown_records),
+        ),
         "sentence_count_heuristic": sum(
             int(item.get("sentence_count_heuristic", 0)) for _, item in markdown_records
         ),
@@ -1122,6 +1276,22 @@ def write_markdown_sentence_audit(
             int(item.get("unreferenced_completion_claim_candidate_count", 0))
             for _, item in markdown_records
         ),
+        "heading_count": sum(int(item.get("heading_count", 0)) for _, item in markdown_records),
+        "markdown_link_count": sum(int(item.get("markdown_link_count", 0)) for _, item in markdown_records),
+        "local_link_candidate_count": sum(int(item.get("local_link_candidate_count", 0)) for _, item in markdown_records),
+        "external_link_candidate_count": sum(int(item.get("external_link_candidate_count", 0)) for _, item in markdown_records),
+        "image_candidate_count": sum(int(item.get("image_candidate_count", 0)) for _, item in markdown_records),
+        "code_block_count": sum(int(item.get("code_block_count", 0)) for _, item in markdown_records),
+        "fenced_code_line_count": sum(int(item.get("fenced_code_line_count", 0)) for _, item in markdown_records),
+        "inline_code_span_count": sum(int(item.get("inline_code_span_count", 0)) for _, item in markdown_records),
+        "command_line_candidate_count": sum(int(item.get("command_line_candidate_count", 0)) for _, item in markdown_records),
+        "instruction_candidate_line_count": sum(int(item.get("instruction_candidate_line_count", 0)) for _, item in markdown_records),
+        "feature_declaration_count": sum(int(item.get("feature_declaration_count", 0)) for _, item in markdown_records),
+        "evolution_document_count": sum(bool(item.get("evolution_related")) for _, item in markdown_records),
+        "evolution_candidate_line_count": sum(int(item.get("evolution_candidate_line_count", 0)) for _, item in markdown_records),
+        "evolution_feature_declaration_count": sum(int(item.get("evolution_feature_declaration_count", 0)) for _, item in markdown_records),
+        "model_comparison_candidate_line_count": sum(int(item.get("model_comparison_candidate_line_count", 0)) for _, item in markdown_records),
+        "qvillage_model_candidate_line_count": sum(int(item.get("qvillage_model_candidate_line_count", 0)) for _, item in markdown_records),
     }
 
     def write_jsonl_record(stream: gzip.GzipFile, value: dict[str, Any]) -> None:
@@ -1140,7 +1310,7 @@ def write_markdown_sentence_audit(
             with gzip.GzipFile(fileobj=raw_stream, mode="wb", mtime=0) as compressed:
                 write_jsonl_record(compressed, {
                     "record_type": "manifest",
-                    "schema_version": 4,
+                    "schema_version": 5,
                     "generated_at": report.get("generated_at"),
                     "scan_duration_seconds": report.get("scan_duration_seconds"),
                     "correlation_id": run_id,
@@ -1174,6 +1344,22 @@ def write_markdown_sentence_audit(
                         "word_count": item.get("word_count"),
                         "sentence_count_heuristic": item.get("sentence_count_heuristic"),
                         "sentence_records_omitted_by_bound": item.get("sentence_records_omitted_by_bound"),
+                        "heading_count": item.get("heading_count", 0),
+                        "markdown_link_count": item.get("markdown_link_count", 0),
+                        "local_link_candidate_count": item.get("local_link_candidate_count", 0),
+                        "external_link_candidate_count": item.get("external_link_candidate_count", 0),
+                        "image_candidate_count": item.get("image_candidate_count", 0),
+                        "code_block_count": item.get("code_block_count", 0),
+                        "fenced_code_line_count": item.get("fenced_code_line_count", 0),
+                        "inline_code_span_count": item.get("inline_code_span_count", 0),
+                        "command_line_candidate_count": item.get("command_line_candidate_count", 0),
+                        "instruction_candidate_line_count": item.get("instruction_candidate_line_count", 0),
+                        "feature_declaration_count": item.get("feature_declaration_count", 0),
+                        "evolution_related": item.get("evolution_related", False),
+                        "evolution_candidate_line_count": item.get("evolution_candidate_line_count", 0),
+                        "evolution_feature_declaration_count": item.get("evolution_feature_declaration_count", 0),
+                        "model_comparison_candidate_line_count": item.get("model_comparison_candidate_line_count", 0),
+                        "qvillage_model_candidate_line_count": item.get("qvillage_model_candidate_line_count", 0),
                         "status": item.get("status"),
                         "review_reasons": item.get("review_reasons", []),
                         "local_link_error_count": item.get("local_link_error_count", 0),
@@ -1230,7 +1416,7 @@ def write_markdown_sentence_audit(
         )
     blockers.append("remote_refs_prs_intermediate_trees_and_release_state_not_verified")
     metadata = {
-        "schema_version": 4,
+        "schema_version": 5,
         "correlation_id": run_id,
         "generated_at": report.get("generated_at"),
         "repository": target.name,

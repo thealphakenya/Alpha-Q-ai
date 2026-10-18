@@ -425,6 +425,16 @@ def build_resume_plan(
             task["id"],
         )
     )
+    safe_execution_statuses = {"IN_PROGRESS", "PARTIALLY_COMPLETE", "FAILED", "PENDING"}
+    safe_candidates = [
+        task for task in candidates if task["status"] in safe_execution_statuses
+    ]
+    blocked_ready_task_ids = [
+        task["id"] for task in candidates if task["status"] == "BLOCKED"
+    ]
+    completed_ready_task_ids = [
+        task["id"] for task in candidates if task["status"] == "VERIFIED_COMPLETE"
+    ]
     phase_records = []
     for phase in ledger.get("mission_phase_metrics", []):
         requirements = records_by_phase.get(phase["id"], [])
@@ -505,9 +515,23 @@ def build_resume_plan(
         status = "READY_FOR_AUTHORIZED_EXECUTOR"
     else:
         status = "BLOCKED_NO_DEPENDENCY_READY_TASK"
+    if deadline_expired:
+        safe_execution_status = "PAUSED_EXPIRED_CLOCK"
+    elif safe_candidates:
+        safe_execution_status = "SAFE_LOCAL_TASKS_AVAILABLE"
+    elif blocked_ready_task_ids or completed_ready_task_ids:
+        safe_execution_status = "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
+    else:
+        safe_execution_status = "BLOCKED_NO_DEPENDENCY_READY_TASK"
 
     return {
         "status": status,
+        "safe_execution_status": safe_execution_status,
+        "safe_execution_authorized": False,
+        "safe_execution_task_ids": [task["id"] for task in safe_candidates],
+        "next_safe_task_id": safe_candidates[0]["id"] if safe_candidates else None,
+        "blocked_dependency_ready_task_ids": blocked_ready_task_ids,
+        "completed_dependency_ready_task_ids": completed_ready_task_ids,
         "deadline_expired": deadline_expired,
         "task_transitions_performed": False,
         "execution_authorized": False,
@@ -597,6 +621,7 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
             for field, count in resume_plan["requirement_coverage_mapped_counts"].items()
         ) + ". Missing refs remain unmapped and do not imply missing or present implementations.",
         f"- Resume planner: `{resume_plan['status']}`; dependency-ready task IDs: `{', '.join(resume_plan['dependency_ready_task_ids']) or 'none'}`; next candidate: `{resume_plan['next_task_id'] or 'none'}`; source-line candidates tracked / unreviewed / not assigned to a phase: {resume_plan['requirement_line_count']} / {resume_plan['unreviewed_requirement_line_count']} / {resume_plan['unassigned_requirement_line_count']}; planner authorizes execution: `False`.",
+        f"- Safe local task queue: status `{resume_plan['safe_execution_status']}`; task IDs: `{', '.join(resume_plan['safe_execution_task_ids']) or 'none'}`; next safe task: `{resume_plan['next_safe_task_id'] or 'none'}`; blocked ready IDs: `{', '.join(resume_plan['blocked_dependency_ready_task_ids']) or 'none'}`; completed ready IDs: `{', '.join(resume_plan['completed_dependency_ready_task_ids']) or 'none'}`; authorization: `False`.",
         "- Completion percentage is not inferred from phase count; local PASS preconditions require indexed, reviewed, acceptance-mapped lines, per-dimension coverage refs, and phase evidence. These refs do not prove semantic truth or remote completion. Remote verification remains `False` until independently proven.",
         "",
         "| Phase | Mission scope | Source lines | Status | Recorded wall span (seconds) | Attempts | Requirement lines indexed / acceptance-mapped / pending review | Coverage refs mapped / indexed (owner/implementation/test/security/docs/integration/remote) | Local PASS preconditions | Evidence refs | Blockers | Next action |",

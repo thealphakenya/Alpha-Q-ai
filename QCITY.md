@@ -7,6 +7,23 @@ QCity remains the canonical file-management and platform coordination surface fo
 - all clone/autoclone flows are exposed as platform automation surfaces.
 - the live runtime keeps all platform docs and generated summaries synchronized with the working repo state.
 
+## Feature inventory and master review
+
+Use the local [ALLFEATURES.md](ALLFEATURES.md) catalog and
+[`feature_manifest.json`](ollamatracks/qaudits_all_features/feature_manifest.json)
+as read-only QAUDITS inputs for QCity feature discovery. Map project and
+platform candidates to an owner, implementation, tests, access mode, style and
+universal UI requirements, and a monitoring source before describing them as
+available to master. [ALLTRACKS.md](ALLTRACKS.md) and its machine inventory
+remain the monitoring-mapping evidence; a candidate or metric reference is
+not proof of a live monitor or interactive master dashboard.
+
+QCity may list finance-related feature requirements, but it must not create
+wallets, bank/provider accounts, move funds, or claim balances or realtime
+financial data without separately authorized integrations and verified
+provider evidence. Local inventories do not verify external synchronization,
+deployment, or remote repository state.
+
 
 <!-- BEGIN QMOI MANAGED: repository-surface-audit -->
 ## Agent-managed repository surface audit

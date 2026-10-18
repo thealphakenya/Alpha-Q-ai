@@ -70,23 +70,36 @@ def parse_workflow_runs(
     limit: int = 50,
     branch: str | None = None,
 ) -> list[dict[str, Any]]:
-    stdout, stderr, code = run_gh([
-        "run",
-        "list",
-        "--repo",
-        repo,
-        "--limit",
-        str(limit),
-        "--json",
-        "databaseId,name,headSha,headBranch,conclusion,status,workflowName,createdAt,updatedAt,url,number",
-    ])
+    per_page = min(max(limit, 1), 100)
+    endpoint = f"repos/{repo}/actions/runs?per_page={per_page}"
+    if remote_sha:
+        endpoint += f"&head_sha={remote_sha}"
+    stdout, stderr, code = run_gh(["api", endpoint])
     if code != 0:
         return [{"name": "workflow-runs", "headSha": remote_sha, "conclusion": "unavailable", "status": "unavailable", "error": stderr or "workflow run list failed"}]
     try:
         payload = json.loads(stdout)
     except json.JSONDecodeError:
         return [{"name": "workflow-runs", "headSha": remote_sha, "conclusion": "unavailable", "status": "unavailable", "error": "invalid workflow run response"}]
-    runs = payload if isinstance(payload, list) else []
+    if not isinstance(payload, dict) or not isinstance(payload.get("workflow_runs"), list):
+        return [{"name": "workflow-runs", "headSha": remote_sha, "conclusion": "unavailable", "status": "unavailable", "error": "invalid workflow run response"}]
+    runs = [
+        {
+            "databaseId": run.get("id"),
+            "name": run.get("name"),
+            "workflowName": run.get("name"),
+            "headSha": run.get("head_sha"),
+            "headBranch": run.get("head_branch"),
+            "conclusion": run.get("conclusion"),
+            "status": run.get("status"),
+            "createdAt": run.get("created_at"),
+            "updatedAt": run.get("updated_at"),
+            "url": run.get("html_url"),
+            "number": run.get("run_number"),
+        }
+        for run in payload["workflow_runs"]
+        if isinstance(run, dict)
+    ]
     if remote_sha:
         runs = [run for run in runs if str(run.get("headSha") or "") == str(remote_sha)]
     if branch:
@@ -94,13 +107,53 @@ def parse_workflow_runs(
     return runs
 
 
+def parse_check_runs(repo: str, remote_sha: str | None) -> dict[str, Any]:
+    if not remote_sha:
+        return {"status": "unavailable", "check_runs": [], "error": "remote SHA unavailable"}
+    stdout, stderr, code = run_gh([
+        "api",
+        f"repos/{repo}/commits/{remote_sha}/check-runs?per_page=100",
+    ])
+    if code != 0:
+        return {"status": "unavailable", "check_runs": [], "error": stderr or "check-run query failed"}
+    try:
+        payload = json.loads(stdout)
+    except json.JSONDecodeError:
+        return {"status": "unavailable", "check_runs": [], "error": "invalid check-run response"}
+    if not isinstance(payload, dict) or not isinstance(payload.get("check_runs"), list):
+        return {"status": "unavailable", "check_runs": [], "error": "invalid check-run response"}
+    exact_runs = [
+        run for run in payload["check_runs"]
+        if isinstance(run, dict) and str(run.get("head_sha") or "") == remote_sha
+    ]
+    return {
+        "status": "observed",
+        "remote_sha": remote_sha,
+        "total_count": payload.get("total_count"),
+        "check_runs": exact_runs,
+    }
+
+
 def parse_branch_protection(repo: str, branch: str) -> str:
     stdout, stderr, code = run_gh(["api", f"repos/{repo}/branches/{branch}/protection", "--silent"])
     if code == 0:
         return "verified"
-    if code in (401, 403):
+    if re.search(r"\bHTTP(?:/\d+(?:\.\d+)?)?\s+(?:401|403)\b", stderr or "", re.IGNORECASE):
         return "unknown"
     return "unavailable"
+
+
+def parse_effective_branch_rules(repo: str, branch: str) -> dict[str, Any]:
+    stdout, stderr, code = run_gh(["api", f"repos/{repo}/rules/branches/{branch}"])
+    if code != 0:
+        return {"status": "unavailable", "rules": [], "error": stderr or "branch-rules query failed"}
+    try:
+        rules = json.loads(stdout)
+    except json.JSONDecodeError:
+        return {"status": "unavailable", "rules": [], "error": "invalid branch-rules response"}
+    if not isinstance(rules, list):
+        return {"status": "unavailable", "rules": [], "error": "invalid branch-rules response"}
+    return {"status": "observed", "count": len(rules), "rules": rules}
 
 
 def parse_remote_main_sha(repo: str, branch: str) -> str | None:
@@ -201,10 +254,27 @@ def build_completion_status(
     remote_tree_sha: str | None = None,
     default_branch: str = "main",
     repository_identity_verified: bool = False,
+    check_runs: list[dict[str, Any]] | None = None,
+    check_runs_status: str = "not_observed",
 ) -> dict[str, Any]:
     workflows = workflows or []
     workflow_runs = workflow_runs or []
+    check_runs = check_runs or []
     remote_matches_local = bool(remote_main_sha and remote_main_sha == local_head)
+    exact_sha_check_runs = [
+        run for run in check_runs
+        if isinstance(run, dict)
+        and str(run.get("head_sha") or "") == str(remote_main_sha or "")
+    ]
+    nonterminal_check_runs = [
+        run for run in exact_sha_check_runs
+        if str(run.get("status") or "").casefold() != "completed"
+    ]
+    unsuccessful_check_runs = [
+        run for run in exact_sha_check_runs
+        if str(run.get("status") or "").casefold() == "completed"
+        and str(run.get("conclusion") or "").casefold() not in {"success", "neutral", "skipped"}
+    ]
     matching_workflow_runs = [
         run for run in workflow_runs
         if isinstance(run, dict)
@@ -259,6 +329,13 @@ def build_completion_status(
         blockers.append("No successful target-owned workflow was recorded for the exact remote SHA; remote completion requires workflow proof on that exact commit.")
         next_actions.append("Trigger or confirm a target-owned workflow for the exact remote SHA and verify a successful conclusion before claiming completion.")
 
+    if check_runs_status != "observed":
+        blockers.append("Exact-SHA check-run status is unavailable; required check state is not proven.")
+        next_actions.append("Read check runs for the exact remote commit SHA before evaluating completion.")
+    elif nonterminal_check_runs or unsuccessful_check_runs:
+        blockers.append("Exact-SHA check runs include nonterminal or unsuccessful results.")
+        next_actions.append("Resolve or classify each nonterminal or unsuccessful check run for the exact remote SHA.")
+
     completion_status = "READY" if not blockers else "BLOCKED"
     return {
         "repo": repo,
@@ -271,6 +348,14 @@ def build_completion_status(
         "branch_protection_status": branch_protection_status,
         "workflows": workflows,
         "workflow_runs": workflow_runs,
+        "check_run_observation": {
+            "status": check_runs_status,
+            "remote_sha": remote_main_sha,
+            "exact_sha_count": len(exact_sha_check_runs),
+            "nonterminal_count": len(nonterminal_check_runs),
+            "unsuccessful_count": len(unsuccessful_check_runs),
+            "check_runs": exact_sha_check_runs,
+        },
         "codeql_evidence": summarize_codeql_evidence(
             workflows,
             workflow_runs,
@@ -306,7 +391,9 @@ def verify_live_github_state(repo: str, local_head: str, default_branch: str = "
     remote_main_sha = parse_remote_main_sha(repo, default_branch)
     remote_tree_sha = parse_remote_tree_sha(repo, remote_main_sha)
     workflow_runs = parse_workflow_runs(repo, remote_main_sha, branch=default_branch)
+    check_run_observation = parse_check_runs(repo, remote_main_sha)
     branch_protection_status = parse_branch_protection(repo, default_branch)
+    effective_branch_rules = parse_effective_branch_rules(repo, default_branch)
     result = build_completion_status(
         repo=repo,
         local_head=local_head,
@@ -321,9 +408,14 @@ def verify_live_github_state(repo: str, local_head: str, default_branch: str = "
             repo_meta.get("status") == "verified"
             and str(repo_meta.get("repo", "")).casefold() == repo.casefold()
         ),
+        check_runs=check_run_observation.get("check_runs", []),
+        check_runs_status=check_run_observation.get("status", "unavailable"),
     )
     result["repo_metadata"] = repo_meta
     result["auth_status"] = auth
+    result["effective_branch_rules"] = effective_branch_rules
+    if check_run_observation.get("error"):
+        result["check_run_observation"]["error"] = check_run_observation["error"]
     return result
 
 
