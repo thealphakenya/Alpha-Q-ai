@@ -677,8 +677,8 @@ Generated from the local QVirtualLabs source inventory; a full QAUDITS universe 
 ## QAUDITS evolution and model-comparison evidence
 
 The supported audit records per-Markdown-document word/sentence/heading/link,
-code/command/instruction, feature-declaration, and evolution/model-comparison
-candidate metrics. The evolution plan groups active, historical, and archive
+code/command/instruction, feature-declaration, evolution/model-comparison,
+and dataset-comparison candidate metrics. The evolution plan groups active, historical, and archive
 documents separately and binds candidate counts to source hashes. Phrase and
 feature counts locate review work; they do not establish semantic coverage,
 successful evolution cycles, or model superiority.
@@ -692,6 +692,17 @@ offline-capability, or resource regression. Missing coverage, evidence,
 independent review, rollback testing, authorization, or exact-SHA remote proof
 keeps the replacement blocked. Even a complete local assessment only advances
 to independent review; QAUDITS does not select or replace models.
+
+Dataset comparison and offline independence have a separate, hash-bound
+contract in [DATASETS.md](DATASETS.md), [ALLCOMPARETYPES.md](ALLCOMPARETYPES.md),
+and [QAUDITS.md](QAUDITS.md). QVillage discovery is optional and scoped;
+third-party identity/attribution must be preserved, and an incumbent remains
+in place until its specific QMOI replacement passes legal, quality, privacy,
+compatibility, offline, security, rollback, and approval gates.
+The local dataset assessor reads the optional
+`ollamatracks/dataset_comparison_evidence.json`; absent evidence remains
+`NOT_ELIGIBLE`, candidate provider/surface mention counts remain discovery
+only, and dataset replacement stays disabled.
 
 Content safety must remain a separate gate from evolution metrics. QMOI should
 not proactively seek, create, download, or monitor pornographic or disturbing

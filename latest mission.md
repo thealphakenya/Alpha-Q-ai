@@ -565,6 +565,19 @@ Maintain an evidence ledger containing:
 
 Make status updates atomic and consistent with the authoritative ledger.
 
+At every actual continuation, task or phase transition, and Ollama agent
+cycle, use `.github/instructions/mission-metrics.instructions.md` and the
+supported mission-ledger checkpoint writer to refresh the PH01-PH18
+dashboard and all metrics supported by current evidence in `oe2.txt`,
+`remotecompletion.md`, `remote-completion.json`, and
+`remote-evidence-ledger.jsonl` under one correlation ID. Mark unavailable
+measurements `NOT_MEASURED`; keep `remote_verified` false until terminal
+evidence independently proves the exact repository, ref, SHA, and tree.
+A scheduled trigger is not evidence that a continuation ran or resumed,
+and refreshing metrics must not restart a clock or change phase status.
+Monitoring continues only through actual bounded executions until all
+acceptance criteria pass or an explicit blocker requires a checkpoint.
+
 Report meaningful progress without excessive repeated logging.
 
 Never fabricate telemetry, test results, commit SHAs, remote states,

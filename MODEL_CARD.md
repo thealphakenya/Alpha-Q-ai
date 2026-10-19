@@ -46,11 +46,16 @@ QMOI must recover memory as a first-class capability. The autonomous agent treat
 
 ## Dataset automation and training corpus
 
-The autonomous agent continuously updates model datasets, dataset manifests, and training evidence in parallel with repo evolution.
+This card reports path-only dataset candidates from configured data directories. It does not validate dataset contents, prove that a training job ran, or claim a live refresh service.
 
-- Dataset inventory: Alpha-Q-ai-2025/app/api/datasets/route.ts, Alpha-Q-ai-2025/app/api/datasets/settings/route.ts, Alpha-Q-ai-2025/datasets/trading/trading-dataset-sample.csv, Alpha-Q-ai-2025/hooks/useDatasetManager.ts, Alpha-Q-ai-2025/node_modules/@babel/traverse/lib/path/evaluation.js, Alpha-Q-ai-2025/node_modules/@babel/traverse/lib/path/evaluation.js.map, Alpha-Q-ai-2025/node_modules/caniuse-lite/data/features/dataset.js, Alpha-Q-ai-2025/node_modules/chart.js/dist/chunks/helpers.dataset.cjs, Alpha-Q-ai-2025/node_modules/chart.js/dist/chunks/helpers.dataset.cjs.map, Alpha-Q-ai-2025/node_modules/chart.js/dist/chunks/helpers.dataset.js, Alpha-Q-ai-2025/node_modules/chart.js/dist/chunks/helpers.dataset.js.map, Alpha-Q-ai-2025/node_modules/chart.js/dist/core/core.datasetController.d.ts, Alpha-Q-ai-2025/node_modules/chart.js/dist/helpers/helpers.dataset.d.ts, Alpha-Q-ai-2025/node_modules/next/dist/build/webpack/plugins/wellknown-errors-plugin/parse-dynamic-code-evaluation-error.d.ts, Alpha-Q-ai-2025/node_modules/next/dist/build/webpack/plugins/wellknown-errors-plugin/parse-dynamic-code-evaluation-error.js, Alpha-Q-ai-2025/node_modules/next/dist/build/webpack/plugins/wellknown-errors-plugin/parse-dynamic-code-evaluation-error.js.map, Alpha-Q-ai-2025/node_modules/next/dist/esm/build/webpack/plugins/wellknown-errors-plugin/parse-dynamic-code-evaluation-error.js, Alpha-Q-ai-2025/node_modules/next/dist/esm/build/webpack/plugins/wellknown-errors-plugin/parse-dynamic-code-evaluation-error.js.map, Alpha-Q-ai-2025/node_modules/reusify/benchmarks/createNoCodeFunction.js, Alpha-Q-ai-2025/node_modules/reusify/benchmarks/fib.js, Alpha-Q-ai-2025/node_modules/reusify/benchmarks/reuseNoCodeFunction.js, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/datetime.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/discriminatedUnion.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/index.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/ipv4.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/object.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/primitives.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/realworld.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/string.ts, Alpha-Q-ai-2025/node_modules/zod/src/v3/benchmarks/union.ts, Alpha-Q-ai-2025/scripts/training/advanced_training.py, DATASETS.md, qmoi-enhanced-history-14/_archive_qmoi-enhanced/_app_archived/api/datasets/route.ts, qmoi-enhanced-history-14/_archive_qmoi-enhanced/_app_archived/api/datasets/settings/route.ts, qmoi-enhanced-history-14/_archive_qmoi-enhanced/datasets/trading/trading-dataset-sample.csv, qmoi-enhanced-history-14/_archive_qmoi-enhanced/hooks/useDatasetManager.ts, qmoi-enhanced-history-14/_archive_qmoi-enhanced/scripts/training/advanced_training.py, qmoi-enhanced-history-14/app/api/datasets/route.ts, qmoi-enhanced-history-14/app/api/datasets/settings/route.ts, qmoi-enhanced-history-14/app.backup.20260121144720/api/datasets/route.ts, qmoi-enhanced-history-14/app.backup.20260121144720/api/datasets/settings/route.ts, qmoi-enhanced-history-14/backups/app.backup.20260121144720/api/datasets/route.ts, qmoi-enhanced-history-14/backups/app.backup.20260121144720/api/datasets/settings/route.ts, qmoi-enhanced-history-14/datasets/trading/trading-dataset-sample.csv, qmoi-enhanced-history-14/hooks/useDatasetManager.ts, qmoi-enhanced-history-14/prisma/generated/prisma/models/Dataset.ts, qmoi-enhanced-history-14/scripts/training/advanced_training.py, qmoi-enhanced-history-14/tests/test_advanced_training.py
-- Data policy: keep dataset provenance, versioning, and coverage tied to the repository and model card evidence.
-- Dataset refresh automation must preserve prior knowledge, rehydrate recovered memory, and keep training corpora aligned with the validated repository state.
+- Dataset candidate paths: Alpha-Q-ai-2025/datasets/trading/trading-dataset-sample.csv
+- Dataset path-candidate count: 1; registered/validated dataset count: NOT_MEASURED
+- Per-dataset quality, license, privacy, split/leakage, and benchmark metrics: NOT_MEASURED
+- Dataset comparison evidence: NOT_PRESENT; assessment: NOT_ELIGIBLE; measured metrics: 0/5; blockers: 38
+- Dataset replacements: 0; automatic replacement: disabled; remote verification: false
+- Offline independence from remote dataset providers: NOT_VERIFIED
+- Planned catalog and replacement gates: [DATASETS.md](DATASETS.md), [QAUDITS.md](QAUDITS.md), and [ALLCOMPARETYPES.md](ALLCOMPARETYPES.md)
+- Dataset provenance and versioning must bind to immutable revisions and hashes. External source names and ownership must remain attributable.
 
 ## Model and Merge Evidence
 
@@ -64,15 +69,15 @@ The autonomous agent continuously updates model datasets, dataset manifests, and
 
 ## Model comparison against leading frontier models
 
-The model-card comparison section is intended to provide a benchmark-oriented overview. The top-rank claim is inserted only after a benchmark proof file is present and the validation evidence confirms the claim.
+The table is a comparison roster, not a ranking. No superiority claim is made without a fresh, matched, independently reviewed benchmark and a schema-validated evidence record.
 
-| Model | Primary strength | QMOI advantage |
-| --- | --- | --- |
-| GPT-5 | General-purpose frontier language and multimodal performance | QMOI leads through repository-validated autonomy, memory continuity, multi-platform orchestration, and fail-safe governance. |
-| Claude 4 Opus | Long-context reasoning and coding assistance | QMOI leads by combining persistent memory recovery, dataset automation, autoclone resilience, and repo-level self-healing workflows. |
-| Gemini 2.5 Pro | Multimodal reasoning and large-context synthesis | QMOI leads in multi-platform deployment orchestration, memory continuity, and system-level automation across repos and hosts. |
-| Llama 4 Maverick | Open-weight frontier model capability | QMOI leads through controlled repository evolution, validation-first governance, and production-ready automation loops. |
-| DeepSeek V3 | High-value reasoning and coding efficiency | QMOI leads through fully integrated memory, dataset continuity, and cross-platform self-healing operations. |
+| Comparison target | Independently validated result |
+| --- | --- |
+| GPT-5 | NOT_MEASURED |
+| Claude 4 Opus | NOT_MEASURED |
+| Gemini 2.5 Pro | NOT_MEASURED |
+| Llama 4 Maverick | NOT_MEASURED |
+| DeepSeek V3 | NOT_MEASURED |
 
 ## Best-model validation gate
 

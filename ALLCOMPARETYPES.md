@@ -32,10 +32,14 @@ The model-comparison acceptance rule already encoded in the local assessor is
 the starting point: every required dimension and canonical feature must show
 strict improvement with non-overlapping confidence intervals; matched
 benchmark, dataset, and environment hashes; at least three replicated runs;
-at least 30 samples per dimension and feature; and all hard gates. A complete
+at least 30 samples per dimension and feature; exact run/correlation IDs,
+repository/ref/source SHA/tree SHA; and all hard gates. A complete
 local report is only `ELIGIBLE_FOR_INDEPENDENT_REVIEW`, never replacement
 authorization or remote proof. Any future change to that rule must be an
 explicitly reviewed policy/schema change with regression tests.
+The expanded model evidence contract is schema version 2; schema-v1
+submissions remain ineligible until reconstructed and independently checked
+under the current contract.
 
 ## Comparison taxonomy
 
@@ -55,6 +59,7 @@ record more than once in a unique-run total.
 | Performance and efficiency | What are quality-conditioned latency, throughput, compute, memory, energy, bandwidth, and cost differences? | Same hardware/load/protocol, cold and warm measurements, percentile latency, throughput, peak resource use, cost basis, and successful-task denominator. |
 | Modality, language, and accessibility | Which supported modalities, languages, and accessible workflows work better? | Per-modality/language/accessibility feature IDs, representative datasets, user-impact tests, privacy controls, and confidence bounds. Do not infer coverage from model labels. |
 | Dataset and experiment | Are results attributable to the intended data and repeatable experiment? | Dataset/version/license/provenance, split and leakage checks, experiment configuration, seeds, evaluator version, and artifact hashes. |
+| Engineering and virtual-lab validation | Does a simulated or measured engineering result meet a traceable requirement within validated assumptions and uncertainty? | Requirement/owner/test traceability, units and boundary-condition checks, solver/model versions, convergence and sensitivity, reference cases, uncertainty, calibration, physical-test safety and instrument provenance, and explicit `simulated`/`measured` classification. Simulation is not physical validation. |
 | QVillage catalog discovery | What eligible models, datasets, Spaces, or benchmark records can be considered? | Provider, immutable repository revision, visibility/access scope, metadata freshness, license, pagination/count limits, and source URL/hash. Discovery is not evaluation. |
 | Repository/reference coverage | Where are model/runtime references across configured files, refs, histories, and repositories? | Per-repository/ref/tree and active/archive/remote scope, immutable scan manifest, unique model IDs and occurrence counts, exclusions, inaccessible sources, and exact API/read status. This is inventory, not behavioral comparison. |
 
@@ -130,6 +135,55 @@ case, but must not decide replacement. Show individual measures, uncertainty,
 sample coverage, missing data, hard gates, and conflicting trade-offs. A
 weighted score must never compensate for a safety, privacy, security, license,
 regression, or rollback failure.
+
+### Dataset comparison, QMOI identity, and offline independence
+
+Dataset comparisons are first-class records, separate from model/runtime
+comparisons. Give each QMOI-owned dataset a stable internal ID such as
+`qvillage/<domain>/<task>/<version>` and bind it to an immutable revision,
+manifest/content digest, schema, owner, source lineage, license/allowed use,
+privacy classification, creation method, and retention policy. This internal
+namespace is a naming convention, not evidence that a Hub organization or
+remote repository exists. For derived data, retain the original source
+publisher, repository/name, revision, license, and attribution; never rename a
+third-party artifact to imply QMOI ownership.
+
+For each data version, record the intended purpose and split, task/feature
+coverage, source and collection time, sample/byte/schema counts where safe,
+missing/invalid/duplicate rates, class/label balance where applicable,
+contamination and leakage checks, privacy review, license status, freshness,
+drift, and the tests that validate ingestion and use. Keep train, validation,
+test, benchmark, reference, and synthetic data distinct. Benchmark sets must
+remain held out from training/tuning; document split seeds and contamination
+checks. Do not store raw private examples, user prompts, secrets, or unrestricted
+outputs in comparison telemetry.
+
+Compare an incumbent and proposed QMOI dataset with the same frozen task
+protocol, evaluator, canonical feature registry, model/runtime, and
+environment. Compare dataset quality, downstream model outcomes, serving
+runtime, and operating cost as separate factors; report per-feature values,
+sample sizes, uncertainty, failures, exclusions, and unknowns. Do not select
+or replace a dataset from a path/name match, one aggregate score, a community
+claim, or an incomparable Hub leaderboard.
+
+The offline-independence gate is a measured test: from a clean, documented
+installation with approved local model/assets, disable network access to Hub
+and third-party dataset services, then run the declared core workload and
+regression suite. Record which tasks pass, fail, or require remote data,
+including cold-start, cache-miss, recovery, and stale/missing-asset behavior.
+Until this test and its exact inputs/results are independently reviewed,
+offline independence is `NOT_VERIFIED`; a cached success or local model file
+alone is not proof.
+
+Only a named, legally usable QMOI-owned replacement that is compatible,
+reproducible, and passes the existing comparison and safety gates may enter a
+reversible canary. Keep the incumbent available until health/regression
+thresholds, independent review, owner approval, and rollback are verified.
+If the candidate ties, regresses, is stale, has unknown rights, or lacks
+coverage, retain the incumbent and mark the candidate `BLOCKED` or
+`INELIGIBLE`; never silently substitute or globally rewrite dataset/model
+names. See [QAUDITS.md](./QAUDITS.md) for the dataset metric contract and
+[DATASETS.md](./DATASETS.md) for the registry and staged execution plan.
 
 ## Temporary Ollama execution and QMOI evolution
 
@@ -234,6 +288,62 @@ all future commits.
     or missing evidence, stop promotion, preserve the prior working revision,
     and queue review/rollback. Do not silently retry a denied or protected
     operation.
+
+### Dataset-specific comparison and replacement
+
+Dataset comparisons use their own evidence record and never inherit a model
+comparison pass. Compare one incumbent with one immutable QMOI-owned or
+explicitly authorized candidate using the same frozen tasks, model/runtime,
+splits, evaluator, environment, and collection protocol. Evidence includes
+run and correlation IDs; repository/ref/source SHA/tree SHA; both dataset IDs
+and artifact hashes; provenance, original publisher and
+lineage; rights, license and allowed purpose; schema/parser versions; feature
+registry; split policy/seed; sample counts; contamination/leakage checks;
+privacy/security findings; freshness; and offline/cache availability.
+
+The current local assessor's required score metrics are task quality,
+feature coverage, data quality, offline independence, and resource cost. Each
+uses at least 30 samples, finite scores and valid confidence intervals, and
+the prescribed direction; QMOI must strictly outperform with non-overlapping
+intervals on every metric and every canonical feature. The comparison is
+invalid without at least three replicated runs and matching benchmark,
+evaluator, and environment hashes. These minimums are a floor, not a claim
+that every statistical design is appropriate; reviewers must still verify
+sampling, metric validity, power, and domain-specific risk.
+
+Hard blockers are: ownership/authorization, source provenance, license and
+allowed use, privacy review, schema compatibility, split leakage,
+benchmark contamination, security review, regression suite, offline
+network-denial/cold-start test, tested rollback, and independent reviewer
+approval. Unknown, stale, inaccessible, malformed, tied, or regressing
+evidence rejects eligibility. Do not blend these gates into a weighted score.
+Preserve originals and attribution, use a consumer-scoped dry-run and
+reversible canary, and require explicit owner approval before a separately
+authorized mutation. The local inventory reports
+`datasets_replaced_count=0`; even `ELIGIBLE_FOR_INDEPENDENT_REVIEW` is not
+approval, mutation, or remote verification. No dataset is automatically
+removed or substituted.
+
+QVillage naming such as `qvillage/<domain>/<task>/<version>` is reserved for
+QMOI-owned or explicitly authorized artifacts. It does not create a Hub
+namespace or transfer ownership. Imported datasets, models, apps, and
+discussions keep their provider identity, original name/revision, rights, and
+lineage. Candidate replacement never means global string replacement or
+rebranding.
+
+QVillage platform planning should maintain a named provider/scope registry
+rather than promise "all platform features." Initial documentation discovery
+counts for Hugging Face, Kaggle, DagsHub, GitHub, GitLab, ModelScope, OpenXLab,
+Weights & Biases, and MLflow across models, datasets, apps/Spaces,
+discussions, competitions, notebooks, repositories, experiment tracking,
+automation/events, and access control. Counts are documentation candidates
+only. Per-provider feature status must distinguish `DOCUMENTED`,
+`IMPLEMENTED`, `TEST_VERIFIED`, `LIVE_READ_VERIFIED`, `WRITE_AUTHORIZED`,
+`BLOCKED`, and `NOT_MEASURED`; no state advances from a provider name or
+mention. Record authentication identity/scope, provider API version,
+visibility, pagination, rate limits, freshness, response status, and
+source-revision/hash. Keep writes, publishing, discussion edits, and
+replacement separately approval-gated.
 
 ### Proposed command lifecycle
 

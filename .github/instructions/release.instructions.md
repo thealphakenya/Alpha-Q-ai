@@ -1,6 +1,12 @@
+---
+description: "Use when preparing, validating, publishing, or deploying a release. Covers provenance, authorization, credential safety, and remote verification."
+---
+
 Mission alignment: follow the canonical [latest mission](../../latest%20mission.md), synchronized byte-for-byte to [MISSION.md](../../MISSION.md) and its instruction-directory mirror. Mission phases are `PH01`-`PH18`; legacy requirement task buckets `M01`-`M16` remain distinct. This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
 
 # Release instructions
+
+For the shared mission checkpoint and PH01-PH18 metrics lifecycle, follow [Mission metrics and monitoring](mission-metrics.instructions.md); metrics do not authorize release or establish remote completion.
 
 ## Release policy
 

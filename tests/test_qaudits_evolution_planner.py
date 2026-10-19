@@ -4,12 +4,17 @@ import hashlib
 import json
 
 from scripts.qaudits_evolution_planner import (
+    DATASET_COMPARISON_HARD_GATES,
+    DATASET_COMPARISON_METRICS,
+    DATASET_COMPARISON_EVIDENCE_SCHEMA_VERSION,
+    MODEL_COMPARISON_EVIDENCE_SCHEMA_VERSION,
     MODEL_COMPARISON_DIMENSIONS,
     MODEL_COMPARISON_HARD_GATES,
     QVIRTUAL_LAB_DOMAIN_MARKERS,
     build_evolution_plan,
     build_model_comparison_inventory,
     build_qvirtual_labs_plan,
+    evaluate_dataset_comparison_evidence,
     evaluate_model_comparison_evidence,
 )
 
@@ -77,6 +82,7 @@ def test_build_evolution_plan_discovers_contracts_and_is_deterministic(tmp_path)
         "evolutiono_clean_branch_audit",
         "evolutiono_ofca_metrics",
         "model_comparison",
+        "dataset_comparison",
     }
     assert all(stage["source_sha256"] for stage in first["stages"])
     assert all(stage["state"] == "PLANNED" for stage in first["stages"])
@@ -120,6 +126,8 @@ def test_build_evolution_plan_discovers_contracts_and_is_deterministic(tmp_path)
     assert comparison["automatic_replacement_enabled"] is False
     assert comparison["comparison_assessment"]["status"] == "NOT_ELIGIBLE"
     assert comparison["remote_verified"] is False
+    assert comparison["datasets_replaced_count"] == 0
+    assert comparison["dataset_comparison_assessment"]["status"] == "NOT_ELIGIBLE"
 
 
 def test_model_comparison_inventory_counts_evolution_documents_by_scope(tmp_path):
@@ -149,11 +157,157 @@ def test_model_comparison_inventory_counts_evolution_documents_by_scope(tmp_path
     assert records["Qvillageevolutions.md"]["scope"] == "active_materialized"
     assert records["Alpha-Q-ai-2025/MODELEVOLUTIONO.md"]["scope"] == "historical_or_archive"
     assert all(item["source_text_recorded"] is False for item in records.values())
+    assert inventory["datasets_replaced_count"] == 0
+    assert inventory["automatic_replacement_enabled"] is False
+    assert inventory["qvillage_platform_inventory"]["status"] == "CANDIDATE_DISCOVERY_ONLY"
+    assert all(
+        item["integration_verified"] is False
+        for item in inventory["qvillage_platform_inventory"]["platforms"].values()
+    )
+
+
+def _eligible_dataset_evidence():
+    evidence = {
+        "schema_version": DATASET_COMPARISON_EVIDENCE_SCHEMA_VERSION,
+        "run_id": "dataset-run-001",
+        "correlation_id": "test-correlation",
+        "repository": "thealphakenya/Alpha-Q-ai",
+        "ref": "refs/heads/test",
+        "source_sha256": "1" * 40,
+        "tree_sha256": "2" * 40,
+        "incumbent_dataset_id": "publisher/dataset:rev1",
+        "qmoi_dataset_id": "qvillage/engineering/circuits/v1",
+        "artifact_sha256": {"incumbent": "a" * 64, "qmoi": "b" * 64},
+        "benchmark": {
+            "suite_id": "qvillage-dataset-suite-v1",
+            "suite_sha256": "c" * 64,
+            "evaluator_sha256": "d" * 64,
+            "environment_sha256": "e" * 64,
+            "matched_protocol": True,
+            "replicated_runs": 3,
+        },
+        "metrics": {},
+        "canonical_feature_ids": ["circuit_simulation"],
+        "feature_comparisons": [{
+            "feature_id": "circuit_simulation",
+            "required_direction": "higher",
+            "direction": "higher",
+            "incumbent_score": 0.7,
+            "qmoi_score": 0.9,
+            "incumbent_confidence_interval": [0.68, 0.72],
+            "qmoi_confidence_interval": [0.88, 0.92],
+            "sample_count": 40,
+        }],
+        "canonical_feature_registry_sha256": "f" * 64,
+        "hard_gates": {gate: True for gate in DATASET_COMPARISON_HARD_GATES},
+    }
+    for name, direction in DATASET_COMPARISON_METRICS.items():
+        incumbent = 100 if direction == "lower" else 0.7
+        candidate = 50 if direction == "lower" else 0.9
+        evidence["metrics"][name] = {
+            "direction": direction,
+            "incumbent_score": incumbent,
+            "qmoi_score": candidate,
+            "incumbent_confidence_interval": (
+                [95, 105] if direction == "lower" else [0.68, 0.72]
+            ),
+            "qmoi_confidence_interval": (
+                [45, 55] if direction == "lower" else [0.88, 0.92]
+            ),
+            "sample_count": 40,
+        }
+    return evidence
+
+
+def test_dataset_replacement_assessment_requires_complete_superiority_and_gates():
+    evidence = _eligible_dataset_evidence()
+
+    assessment = evaluate_dataset_comparison_evidence(evidence)
+    assert assessment["status"] == "ELIGIBLE_FOR_INDEPENDENT_REVIEW"
+    assert assessment["replacement_status"] == "NOT_REPLACED"
+    assert assessment["automatic_replacement_enabled"] is False
+    assert assessment["remote_verified"] is False
+
+    evidence["hard_gates"]["license_and_allowed_use_verified"] = False
+    evidence["metrics"]["task_quality"]["qmoi_score"] = 0.7
+    evidence["metrics"]["task_quality"]["qmoi_confidence_interval"] = [0.68, 0.72]
+    evidence["metrics"]["coverage"]["sample_count"] = 10
+    evidence["artifact_sha256"]["qmoi"] = "invalid"
+    evidence["source_sha256"] = "invalid"
+    rejected = evaluate_dataset_comparison_evidence(evidence)
+    assert rejected["status"] == "NOT_ELIGIBLE"
+    assert "dataset_hard_gate_not_passed:license_and_allowed_use_verified" in rejected["blockers"]
+    assert "qmoi_dataset_not_better_on_metric:task_quality" in rejected["blockers"]
+    assert "invalid_or_underpowered_dataset_metric:coverage" in rejected["blockers"]
+    assert "invalid_or_missing_qmoi_dataset_sha256" in rejected["blockers"]
+    assert "invalid_or_missing_dataset_comparison_source_sha256" in rejected["blockers"]
+
+
+def test_dataset_assessment_rejects_unowned_candidate_and_incomplete_feature_coverage():
+    evidence = _eligible_dataset_evidence()
+    evidence["qmoi_dataset_id"] = "publisher/rebranded-dataset"
+    evidence["feature_comparisons"] = []
+    evidence["hard_gates"]["candidate_qmoi_owned_or_explicitly_authorized"] = False
+
+    assessment = evaluate_dataset_comparison_evidence(evidence)
+    assert assessment["status"] == "NOT_ELIGIBLE"
+    assert "candidate_dataset_not_in_qmoi_namespace" in assessment["blockers"]
+    assert (
+        "dataset_hard_gate_not_passed:candidate_qmoi_owned_or_explicitly_authorized"
+        in assessment["blockers"]
+    )
+    assert "dataset_feature_comparison_missing" in assessment["blockers"]
+    assert "dataset_feature_comparison_does_not_cover_canonical_registry" in assessment["blockers"]
+
+
+def test_inventory_reports_dataset_evidence_and_provider_mentions_as_candidates(tmp_path):
+    (tmp_path / "QVILLAGE.md").write_text(
+        "# QVillage\nHugging Face datasets and Kaggle notebooks, models, discussions.\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "DATASETS.md").write_text(
+        "# Dataset comparison\nCompare datasets for provenance, leakage, and offline quality.\n",
+        encoding="utf-8",
+    )
+
+    inventory = build_model_comparison_inventory(tmp_path)
+    providers = inventory["qvillage_platform_inventory"]["platforms"]
+    assert inventory["dataset_comparison_document_count"] == 1
+    assert inventory["dataset_comparison_evidence_status"] == "NOT_PRESENT"
+    assert inventory["dataset_comparison_assessment"]["status"] == "NOT_ELIGIBLE"
+    assert inventory["qvillage_platform_inventory"]["document_candidate_count"] == 1
+    assert len(inventory["qvillage_platform_inventory"]["source_manifest_sha256"]) == 64
+    assert providers["huggingface"]["document_candidate_count"] == 1
+    assert providers["kaggle"]["document_candidate_count"] == 1
+    assert providers["huggingface"]["integration_verified"] is False
+
+
+def test_inventory_assesses_hash_bound_dataset_evidence_without_replacement(tmp_path):
+    evidence_path = tmp_path / "ollamatracks" / "dataset_comparison_evidence.json"
+    evidence_path.parent.mkdir()
+    evidence_path.write_text(
+        json.dumps(_eligible_dataset_evidence()),
+        encoding="utf-8",
+    )
+
+    inventory = build_model_comparison_inventory(tmp_path)
+
+    assert inventory["dataset_comparison_evidence_status"] == "PARSED"
+    assert inventory["dataset_comparison_assessment"]["status"] == "ELIGIBLE_FOR_INDEPENDENT_REVIEW"
+    assert inventory["datasets_replaced_count"] == 0
+    assert inventory["automatic_replacement_enabled"] is False
+    assert inventory["remote_verified"] is False
 
 
 def test_model_replacement_assessment_requires_superiority_on_every_dimension_and_gate():
     evidence = {
-        "schema_version": 1,
+        "schema_version": MODEL_COMPARISON_EVIDENCE_SCHEMA_VERSION,
+        "run_id": "model-run-001",
+        "correlation_id": "test-correlation",
+        "repository": "thealphakenya/Alpha-Q-ai",
+        "ref": "refs/heads/test",
+        "source_sha256": "1" * 40,
+        "tree_sha256": "2" * 40,
         "incumbent_model_id": "incumbent:latest",
         "qmoi_model_id": "QMOI:verified-candidate",
         "benchmark": {
@@ -208,6 +362,10 @@ def test_model_replacement_assessment_requires_superiority_on_every_dimension_an
     rejected = evaluate_model_comparison_evidence(evidence)
     assert rejected["status"] == "NOT_ELIGIBLE"
     assert "candidate_not_better_on_dimension:coding" in rejected["blockers"]
+
+    del evidence["tree_sha256"]
+    rejected_identity = evaluate_model_comparison_evidence(evidence)
+    assert "invalid_or_missing_model_comparison_tree_sha256" in rejected_identity["blockers"]
 
 
 def test_qvirtual_labs_plan_tracks_source_and_separates_simulated_from_physical(tmp_path):

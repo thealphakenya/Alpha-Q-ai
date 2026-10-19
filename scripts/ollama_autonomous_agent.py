@@ -126,8 +126,10 @@ from scripts.qaudit_tracking import (
 )
 from scripts.qaudit_universe import write_qaudit_artifacts
 from scripts.qaudits_evolution_planner import (
+    DATASET_COMPARISON_EVIDENCE_PATH,
     build_evolution_plan,
     build_qvirtual_labs_plan,
+    evaluate_dataset_comparison_evidence,
 )
 from scripts.qaudit_shard_runner import run_bounded_audit_shards
 from scripts.qaudits_parallel_auditor import run_parallel_merge_audit
@@ -2674,6 +2676,7 @@ class ModelCardGenerator:
             ),
             "memory_recovery_sources": self._memory_recovery_sources(),
             "dataset_inventory": self._dataset_inventory(),
+            "dataset_comparison": self._dataset_comparison_evidence(),
             "best_model_proof": self._best_model_proof_status(),
             "language_evolution": language_evolution,
             "qseed_surface": {
@@ -2775,21 +2778,102 @@ class ModelCardGenerator:
 
     def _dataset_inventory(self) -> list[str]:
         dataset_entries: list[str] = []
-        for path in sorted(self.root_dir.rglob("*")):
-            if not path.is_file():
+        dataset_directories = {
+            "dataset",
+            "datasets",
+            "benchmark",
+            "benchmarks",
+            "evaluation",
+            "evaluations",
+            "training",
+            "training-data",
+            "training_data",
+            "corpus",
+            "corpora",
+        }
+        data_suffixes = {
+            ".arrow",
+            ".avro",
+            ".csv",
+            ".db",
+            ".feather",
+            ".h5",
+            ".hdf5",
+            ".json",
+            ".jsonl",
+            ".ndjson",
+            ".parquet",
+            ".sqlite",
+            ".tsv",
+            ".txt",
+        }
+        excluded_directories = {
+            ".git",
+            ".venv",
+            "__pycache__",
+            "archive",
+            "archives",
+            "backup",
+            "backups",
+            "build",
+            "dist",
+            "node_modules",
+            "vendor",
+            "venv",
+        }
+
+        for directory, child_directories, filenames in os.walk(
+            self.root_dir,
+            followlinks=False,
+        ):
+            current = Path(directory)
+            child_directories[:] = sorted(
+                child
+                for child in child_directories
+                if child.lower() not in excluded_directories
+                and not child.lower().startswith("_archive")
+                and "history-" not in child.lower()
+            )
+            relative_directory = current.relative_to(self.root_dir)
+            if not any(
+                part.lower() in dataset_directories
+                for part in relative_directory.parts
+            ):
                 continue
-            lowered = str(path).lower()
-            if ".git" in path.parts:
-                continue
-            if any(token in lowered for token in ("dataset", "datasets", "benchmarks", "training", "evaluation")):
+
+            for filename in filenames:
+                path = current / filename
+                if path.is_symlink() or path.suffix.lower() not in data_suffixes:
+                    continue
                 dataset_entries.append(path.relative_to(self.root_dir).as_posix())
-        return dataset_entries or ["No dataset inventory discovered"]
+
+        return sorted(dataset_entries)
+
+    def _dataset_comparison_evidence(self) -> dict[str, Any]:
+        path = self.root_dir / DATASET_COMPARISON_EVIDENCE_PATH
+        evidence: Any = None
+        status = "NOT_PRESENT"
+        if path.is_symlink():
+            status = "SYMLINK_NOT_FOLLOWED"
+        elif path.exists():
+            try:
+                if path.stat(follow_symlinks=False).st_size > 1_000_000:
+                    status = "OVERSIZED"
+                else:
+                    evidence = json.loads(path.read_text(encoding="utf-8"))
+                    status = "PARSED"
+            except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+                status = "INVALID"
+        return {
+            "evidence_status": status,
+            "assessment": evaluate_dataset_comparison_evidence(evidence),
+        }
 
     def _best_model_proof_status(self) -> str:
-        proof_file = self.root_dir / "QMOI_BEST_MODEL_PROOF.md"
-        if proof_file.exists() and "verified" in proof_file.read_text(encoding="utf-8", errors="ignore").lower():
-            return "QMOI is the best model currently proven by the benchmark gate and the validation evidence in this repository."
-        return "Best-model claim is pending independent benchmark validation; no proven top-rank claim is yet inserted into the model card."
+        return (
+            "Best-model claim is pending independent benchmark validation; "
+            "a free-text proof document is not machine-validated evidence."
+        )
 
     def _project_autoproject_inventory(self) -> list[tuple[str, list[str]]]:
         candidate_files = [
@@ -2871,7 +2955,12 @@ class ModelCardGenerator:
         evidence = self._evidence()
         model_test_paths = evidence["model_test_paths"] or ["No dedicated model-test path discovered"]
         memory_sources = evidence["memory_recovery_sources"] or ["No memory recovery source discovered"]
-        dataset_inventory = evidence["dataset_inventory"] or ["No dataset inventory discovered"]
+        dataset_inventory = (
+            ", ".join(evidence["dataset_inventory"])
+            if evidence["dataset_inventory"]
+            else "none observed in configured data directories"
+        )
+        dataset_candidate_count = len(evidence["dataset_inventory"])
         best_model_status = evidence["best_model_proof"]
         project_coverage = self._project_autoproject_inventory()
         project_coverage_lines = [
@@ -2890,19 +2979,19 @@ class ModelCardGenerator:
         project_coverage_block = "\n".join(project_coverage_lines)
         branch_sync_block = "\n".join(restore_point_memory_markdown(evidence["branch_sync"]))
         comparison_rows = [
-            ("GPT-5", "General-purpose frontier language and multimodal performance", "QMOI leads through repository-validated autonomy, memory continuity, multi-platform orchestration, and fail-safe governance."),
-            ("Claude 4 Opus", "Long-context reasoning and coding assistance", "QMOI leads by combining persistent memory recovery, dataset automation, autoclone resilience, and repo-level self-healing workflows."),
-            ("Gemini 2.5 Pro", "Multimodal reasoning and large-context synthesis", "QMOI leads in multi-platform deployment orchestration, memory continuity, and system-level automation across repos and hosts."),
-            ("Llama 4 Maverick", "Open-weight frontier model capability", "QMOI leads through controlled repository evolution, validation-first governance, and production-ready automation loops."),
-            ("DeepSeek V3", "High-value reasoning and coding efficiency", "QMOI leads through fully integrated memory, dataset continuity, and cross-platform self-healing operations."),
+            ("GPT-5", "NOT_MEASURED"),
+            ("Claude 4 Opus", "NOT_MEASURED"),
+            ("Gemini 2.5 Pro", "NOT_MEASURED"),
+            ("Llama 4 Maverick", "NOT_MEASURED"),
+            ("DeepSeek V3", "NOT_MEASURED"),
         ]
         comparison_table = "\n".join(
             [
-                "| Model | Primary strength | QMOI advantage |",
-                "| --- | --- | --- |",
+                "| Comparison target | Independently validated result |",
+                "| --- | --- |",
                 *[
-                    f"| {name} | {strength} | {advantage} |"
-                    for name, strength, advantage in comparison_rows
+                    f"| {name} | {status} |"
+                    for name, status in comparison_rows
                 ],
             ]
         )
@@ -2955,11 +3044,16 @@ The audit may inventory QSeed metadata and ciphertext hashes without decrypting 
 
 ## Dataset automation and training corpus
 
-The autonomous agent continuously updates model datasets, dataset manifests, and training evidence in parallel with repo evolution.
+This card reports path-only dataset candidates from configured data directories. It does not validate dataset contents, prove that a training job ran, or claim a live refresh service.
 
-- Dataset inventory: {', '.join(dataset_inventory)}
-- Data policy: keep dataset provenance, versioning, and coverage tied to the repository and model card evidence.
-- Dataset refresh automation must preserve prior knowledge, rehydrate recovered memory, and keep training corpora aligned with the validated repository state.
+- Dataset candidate paths: {dataset_inventory}
+- Dataset path-candidate count: {dataset_candidate_count}; registered/validated dataset count: NOT_MEASURED
+- Per-dataset quality, license, privacy, split/leakage, and benchmark metrics: NOT_MEASURED
+- Dataset comparison evidence: {evidence["dataset_comparison"]["evidence_status"]}; assessment: {evidence["dataset_comparison"]["assessment"]["status"]}; measured metrics: {evidence["dataset_comparison"]["assessment"]["measured_metric_count"]}/{evidence["dataset_comparison"]["assessment"]["required_metric_count"]}; blockers: {len(evidence["dataset_comparison"]["assessment"]["blockers"])}
+- Dataset replacements: 0; automatic replacement: disabled; remote verification: false
+- Offline independence from remote dataset providers: NOT_VERIFIED
+- Planned catalog and replacement gates: [DATASETS.md](DATASETS.md), [QAUDITS.md](QAUDITS.md), and [ALLCOMPARETYPES.md](ALLCOMPARETYPES.md)
+- Dataset provenance and versioning must bind to immutable revisions and hashes. External source names and ownership must remain attributable.
 
 ## Model and Merge Evidence
 
@@ -2973,7 +3067,7 @@ The autonomous agent continuously updates model datasets, dataset manifests, and
 
 ## Model comparison against leading frontier models
 
-The model-card comparison section is intended to provide a benchmark-oriented overview. The top-rank claim is inserted only after a benchmark proof file is present and the validation evidence confirms the claim.
+The table is a comparison roster, not a ranking. No superiority claim is made without a fresh, matched, independently reviewed benchmark and a schema-validated evidence record.
 
 {comparison_table}
 

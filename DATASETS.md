@@ -1,6 +1,6 @@
 # QMOI Dataset Automation and Memory Recovery
 
-This dataset ledger is the operational inventory that keeps the QMOI model, repository, and autonomous agent aligned across all models, apps, clone surfaces, and memory checkpoints.
+This document defines the intended QMOI dataset and memory evidence contract. It is not proof of a live catalog, continuous synchronization, or validated training data.
 
 ## Memory provenance and recovery
 
@@ -21,23 +21,108 @@ Recovery rules:
 
 ## Dataset inventory
 
-The autonomous agent must keep a live dataset inventory that includes the curated training, evaluation, benchmark, and dataset manifest inputs used by QMOI.
+The intended catalog covers the curated training, validation, test, benchmark, reference, and synthetic inputs used by QMOI. This document is a design contract, not proof of a live catalog or scheduled refresh. Keep materialized worktree, configured Hub scopes, historical snapshots, dependencies, and remote observations as separate populations.
 
 Primary metadata sources:
 
 - repository dataset manifests and evaluation folders
 - model-training metadata under `models` and `datasets` surfaces
 - benchmark logs and comparison files for model evolution
-- QMOI memory snapshots and training validation evidence
+- separately scoped QMOI memory/recovery evidence; memory artifacts are not
+  training/evaluation datasets unless explicitly classified and approved
 
 ## Autonomous dataset automation
 
-The QMOI dataset automation path should:
+The planned QMOI dataset automation path should:
 
 - refresh dataset manifests automatically after repository changes
 - preserve working memory and historical checkpoints before overwriting a dataset artifact
 - validate dataset provenance, coverage, and integrity before publishing a dataset update
 - keep the benchmark and model card aligned with the exact dataset version in use
+
+## Canonical QMOI dataset registry
+
+Assign QMOI-owned datasets a stable internal ID and version, for example
+`qvillage/<domain>/<task>/<version>`. This convention does not assert that an
+external Hugging Face namespace exists. Each manifest record should include:
+
+Registry implementation and per-dataset QAUDITS metrics are
+`NOT_VERIFIED` in this plan; no successful live refresh is inferred.
+
+- immutable dataset ID, revision, schema version, file/manifest SHA-256, and
+  source scope (`active`, `generated`, `archive`, `third_party`, or `remote`);
+- owner, source URL/repository and original name, creator/attribution, license,
+  allowed purpose, consent/rights evidence, privacy class, and retention rule;
+- domain/task, canonical feature IDs, language, dataset role, split method and
+  seed, collection/creation timestamp, freshness limit, and intended consumers;
+- artifact count/bytes and safe sample/row/schema counts, parser/validator
+  version, validation result, omissions, and the exact next action.
+
+Do not treat a matching filename as a dataset record. Exclude dependency,
+cache, generated build, and archive content from the active QMOI dataset
+denominator while retaining separately scoped archival/source lineage where
+needed. Never write raw private examples, prompts, credentials, or financial
+values into manifests or QAUDITS reports.
+
+## Dataset metrics and replacement lifecycle
+
+QAUDITS should emit per-dataset and aggregate metrics with explicit scope,
+source hash, timestamp, formula, numerator/denominator, state, and freshness:
+discovered/read/parsed/validated/excluded/unavailable records; unique IDs and
+revisions; bytes and safe sample counts; schema and feature coverage; split
+sizes; missing/invalid/duplicate rates; applicable label balance;
+contamination/leakage; provenance/license/privacy review; drift and staleness;
+local/cache/provider availability; offline task results; and matched
+benchmark quality, uncertainty, latency, throughput, and resource cost.
+Unsupported or unobserved values are `NOT_MEASURED`/`UNKNOWN`, never zero or a
+pass. The full metric, comparison, and document-refresh plan is in
+[QAUDITS.md](QAUDITS.md), [ALLCOMPARETYPES.md](ALLCOMPARETYPES.md), and
+[QVILLAGE.md](QVILLAGE.md).
+
+Only create QMOI-owned data from owned, licensed, consented, or otherwise
+authorized sources. For each third-party dataset, compare a candidate on the
+same frozen tasks, splits, evaluator, model/runtime, and environment. Keep the
+incumbent until a legal, privacy, compatibility, quality, offline, regression,
+security, independent-review, explicit-approval, and rollback gate passes for
+the specific consumer. Ties, regressions, unknown rights, stale evidence, and
+missing coverage block substitution. Preserve third-party attribution and
+never globally rename or erase source identity.
+
+Offline independence means the approved local model/assets and locally
+available QMOI data can support the declared core workloads from a clean
+installation with network access to Hugging Face and other dataset providers
+disabled. It must be demonstrated by repeatable cold-start, cache-miss,
+network-denial, and recovery tests; it is `NOT_VERIFIED` until those tests and
+their exact inputs/results are independently reviewed.
+
+### Versioned comparison evidence and fail-closed substitution
+
+The existing local evolution planner can read the optional
+`ollamatracks/dataset_comparison_evidence.json` (schema version 1). It checks
+that run/correlation IDs, repository/ref, full source SHA/tree SHA are
+present; that the incumbent and candidate IDs differ, the candidate uses the internal
+`qvillage/` namespace, both dataset artifact hashes and suite/evaluator/
+environment hashes are valid, the protocol is matched, and at least three
+replicated runs are reported. The namespace check is not ownership proof.
+
+The required metrics are `task_quality`, `coverage`, `data_quality`,
+`offline_independence`, and `resource_cost`, with declared higher/lower
+directions, finite scores, at least 30 samples, and confidence intervals that
+show strict candidate improvement. The record must also cover each unique
+canonical feature ID with the expected direction, sufficient sample count,
+and matching registry SHA-256. Hard gates must explicitly pass candidate
+ownership/authorization, provenance, license/allowed use, privacy, schema
+compatibility, split-leakage and benchmark-contamination checks, security,
+regression, offline network-denial, rollback, and independent review.
+
+Every absent, malformed, underpowered, tied, stale, or failing item remains a
+blocker. The assessment is reported local evidence only:
+`datasets_replaced_count` remains zero, automatic replacement remains
+disabled, and `remote_verified` remains false. Eligibility allows independent
+review only; actual consumer-specific migration still requires explicit owner
+authorization, impact review, a reversible canary, and exact-SHA remote
+evidence. This planner does not execute comparisons, switch datasets, rename
+third-party assets, or refresh all documentation itself.
 
 ## Vulnerability automation contract
 

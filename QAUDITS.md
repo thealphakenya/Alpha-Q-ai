@@ -39,6 +39,7 @@ Every audit result must identify the repository, ref, exact source SHA (when Git
 | QStats and evolution planning | Deterministic domain counts, local source-file availability, stage-plan hash, source-manifest binding, and missing/unavailable contract paths. QStats are derived local inventory metrics; planned stages are not executed work, passes, or remote proof. |
 | Markdown and category coverage | All Markdown paths, bytes, lines, words, heuristic sentences, headings, local/external links, images, fenced code blocks/lines, inline code, command and instruction candidates, explicit feature declarations, evolution/model-comparison candidates, structure/link status, duplicates/name collisions, and multi-label `ALLMDFILESREFS.md` categories. Per-document metrics bind to path/hash/scope; oversized, unreadable, invalid-UTF-8, symlinked, excluded, and self-referential files remain explicit omissions. A Markdown document may belong to multiple categories. |
 | QVillage evolution and model comparison | Evolution/QVillage/model-comparison document counts and source hashes; explicit feature declarations; benchmark evidence completeness across required dimensions and canonical feature IDs; uncertainty/sample coverage; safety/privacy/security/license/offline/regression/rollback gates; independent review and exact-SHA status. Mention counts and locally reported scores are candidates, not proof of superiority. |
+| Dataset, corpus, and benchmark coverage | Dataset IDs/revisions and content/manifest hashes; role and split; source/owner/license/privacy; discovered, parsed, excluded, stale, invalid, and unavailable counts; row/sample/byte/schema counts where safe; duplicate/missing/invalid rates; label and feature coverage; leakage/contamination checks; provenance and freshness; per-model/dataset benchmark results, uncertainty, resource cost, offline availability, and dependency status. Candidate paths are not validated datasets; never read or publish raw private examples as audit telemetry. |
 | Product and platform | Registered app/platform denominators, stable feature IDs, source paths, public/authenticated/mixed/master access modes, implementation mapping, version/variant/extension and Lion candidates, and unmapped requirements. Candidate path matches are not implementation evidence. |
 | QLion variations and extensions | Variation, extension/plugin, settings, branding, workflow, and delivery candidates with path/hash/scope, owner, tests, applicability, and exact-SHA state. Candidate counts never imply a validated Lion implementation or release. |
 | UI, style, and universal | Design tokens, components, accessibility, responsive states, user-facing states, universal capabilities, identity/authorization boundaries, clone/platform mappings, and candidate-to-lineage records. |
@@ -94,9 +95,153 @@ Chat, voice, hands-free, undo/redo, restore, heartbeat, and oxygen matches are r
 
 ### Per-document Markdown metrics, evolution, and model replacement
 
-The repository-surface and sentence audits emit path/hash/scope-bound counts per parseable Markdown document: bytes, lines, words, heuristic sentences, headings, local/external link candidates, images, fenced code blocks and lines, inline-code spans, command candidates, instruction-candidate lines, and explicit `Feature:`/`Capability:` declarations. Evolution and QVillage/model-comparison candidate-line counts are also recorded. The gzip JSONL manifest reports the discovered Markdown denominator, metrics-computed documents, and documents without metrics separately. These are deterministic syntactic counts; sentence splitting, shell-command recognition, feature declarations, and content families are heuristics, not semantic validation. No source prose is persisted in these metric rows. `ALLMDFILESREFS.md` receives the richer metrics on its supported refresh path; documentation edits do not mean that every Markdown document was rewritten.
+The repository-surface and sentence audits emit path/hash/scope-bound counts per parseable Markdown document: bytes, lines, words, heuristic sentences, headings, local/external link candidates, images, fenced code blocks and lines, inline-code spans, command candidates, instruction-candidate lines, and explicit `Feature:`/`Capability:` declarations. Evolution and QVillage/model/dataset-comparison candidate-line counts are also recorded. The gzip JSONL manifest reports the discovered Markdown denominator, metrics-computed documents, and documents without metrics separately. These are deterministic syntactic counts; sentence splitting, shell-command recognition, feature declarations, and content families are heuristics, not semantic validation. No source prose is persisted in these metric rows. `ALLMDFILESREFS.md` receives the richer metrics on its supported refresh path; documentation edits do not mean that every Markdown document was rewritten.
 
 `ollamatracks/qaudits_evolution_plan.json` inventories evolution/QVillage/model-comparison documents by active versus historical/archive scope, source SHA-256, candidate lines, and explicit feature declarations. Model replacement assessment is deliberately review-only. A candidate comparison must use a matched, versioned benchmark and data/environment hashes, at least three replicated runs, at least 30 samples per required dimension and feature, non-overlapping confidence intervals showing QMOI strictly better on every required quality/safety/privacy/security/reliability/performance/resource/offline dimension, full canonical feature-registry coverage, all hard safety/license/regression/rollback gates, and independent review. Missing evidence, a tie, or any regression blocks eligibility. Even a complete local record is only `ELIGIBLE_FOR_INDEPENDENT_REVIEW`: it does not prove remote completion, authorize replacement, update a model selector, or count as a replaced model. QAUDITS always reports `models_replaced_count=0` unless a separate independently verified lineage artifact is supplied; the current planner never performs model replacement.
+
+### QMOI-first dataset independence and QVillage evolution plan
+
+This is a future work plan, not a live dataset catalog, completed comparison,
+or authorization to migrate data. Dataset metrics and offline independence
+remain `NOT_MEASURED` until a versioned collector and focused acceptance tests
+produce hash-bound evidence. Do not infer execution from this section or from
+the existing model/evolution planner.
+
+The target is a QMOI-owned, locally usable core for named application
+workloads, with external Hub data and services treated as optional, explicitly
+scoped sources. "Independent" means the core can install, load its approved
+local model/assets, serve its declared core tasks, and pass its acceptance
+suite without network access to Hugging Face or a third-party dataset host.
+It does not mean QMOI can self-authorize, ignore licenses/privacy, or replace
+every external training corpus, pretrained weight, benchmark, runtime, or
+provider. Keep third-party attribution and model/runtime dependencies intact
+unless a separately reviewed, compatible replacement is proven.
+
+The canonical dataset catalog should bind each record to: stable QMOI dataset
+ID and namespace; human-readable name; task/domain and role (`train`,
+`validation`, `test`, `benchmark`, `reference`, or `synthetic`); immutable
+revision and artifact/manifest SHA-256; source owner/URL and source lineage;
+license and allowed use; privacy/retention classification; schema and
+collector versions; feature-registry version; language/domain; split policy;
+creation/update time; active/archive scope; storage/Hub availability; and
+review, owner, and next-action state. A file-path match is only a candidate.
+Do not parse sensitive examples by default; use aggregate, value-free quality
+statistics and explicit approval for any content inspection.
+
+For every supported dataset, report separately and with numerator,
+denominator, formula, scope, status, freshness, source hash, and correlation
+ID: discovered/read/parsed/validated/excluded/unavailable artifacts; unique
+datasets and revisions; bytes and rows/samples when safe; schema/column and
+canonical-feature coverage; split counts; missing, malformed, duplicate, and
+near-duplicate rates; label/class balance where applicable; leakage and
+benchmark contamination results; license/provenance completeness; privacy
+scan state; stale/drift state; download/cache/local-availability status;
+validation duration; and per-task benchmark quality, confidence interval,
+latency, throughput, memory/compute/bandwidth/cost per successful task.
+Unknown values are `UNKNOWN`, unsupported measures `NOT_MEASURED`, and
+denied or invalid inputs remain `BLOCKED`/`FAIL`; none become zero or pass.
+Never publish raw samples, prompts, private user data, secrets, or financial
+values in generated reports.
+
+Use the following bounded sequence, mapped to existing mission/task IDs only
+when a future mission run verifies the current ledger and dependencies:
+
+1. **Baseline and ownership:** inventory active first-party data, configured
+   Hub scopes, local model/runtime dependencies, and dataset-related Markdown.
+   Separate active, generated, dependency, backup, historical, and third-party
+   paths. Record omissions, read permissions, provenance, and source hashes.
+2. **Canonical registry and QAUDITS metrics:** define a versioned schema,
+   deterministic path/manifest collector, per-dataset metric definitions, and
+   privacy-safe artifacts. Test stable IDs, duplicate revisions, malformed
+   files, symlinks, stale hashes, license unknowns, split leakage, inaccessible
+   sources, bounded shards, and deterministic reruns.
+3. **QMOI-owned corpus and local operation:** create or curate QMOI datasets
+   only from owned, licensed, consented, or otherwise authorized inputs.
+   Keep local manifests, approved caches, model/runtime requirements, and a
+   representative offline regression suite. Do not imply that synthetic data
+   is representative until independently evaluated.
+4. **Matched dataset/model comparison:** compare each incumbent and candidate
+   on identical task protocol, splits, evaluator, model/runtime configuration,
+   and environment. Measure per-feature outcomes, sample adequacy, uncertainty,
+   safety/privacy/security/license, leakage, robustness, offline behavior,
+   resource use, and regressions. Keep dataset quality, model quality, and
+   serving/runtime effects distinguishable.
+5. **Staged substitution:** retain the incumbent and a verified restore point;
+   produce a dry-run impact plan; test a reversible canary; require independent
+   review and explicit owner approval. Switch a named consumer only when its
+   QMOI-owned replacement is legally usable, compatible, reproducible, and
+   satisfies all required gates. A failed, tied, unknown, or worse candidate
+   stays a candidate and never displaces a working source.
+6. **QVillage catalog and discussion evidence:** use provider-supported,
+   bounded, read-only discovery for declared scopes. Separate authored
+   community claims, imported metadata, model-generated hypotheses, and
+   independently reproduced results. Namespace QMOI-owned artifacts; preserve
+   source publisher, original repository/name, revision, license, authorship,
+   and lineage for external inputs. Discussion, tagging, and card updates must
+   not rewrite third-party ownership or post/publish without separate
+   authorization.
+7. **Documentation and exact-SHA closeout:** generate QAUDITS dataset metrics,
+   `ALLCOMPARETYPES.md`, `QVILLAGE.md`, `DATASETS.md`, `QMOI_MODEL_CARD.md`,
+   `MODEL_CARD.md`, and registered dataset/model/evolution Markdown views from
+   one validated manifest. Update only unique managed sections; keep
+   historical/archive docs read-only. Validate hashes, links, schemas,
+   markers, tests, and missing-scope denominators. Record local checks
+   separately from authorized terminal workflow and exact remote ref/tree
+   evidence.
+
+The document registry must discover all in-scope Markdown by manifest and
+classify it as active, generated, user-authored, dependency, snapshot/archive,
+or remote-observation material. Discovery does not authorize rewriting every
+`.md` file. Never bulk-rename Hub repositories, discussions, or source labels;
+use a QMOI namespace only for assets QMOI owns or is authorized to publish, and
+retain the immutable source identity for every derived artifact. Missing
+mission IDs, unavailable Hub scopes, unverified ownership, Ollama/bridge
+availability, security/legal review, benchmark evidence, or remote proof stay
+explicit blockers rather than being self-assigned or assumed.
+
+### Dataset comparison and replacement gates
+
+The local evolution planner reads the optional, versioned
+`ollamatracks/dataset_comparison_evidence.json` and emits a review-only
+assessment alongside model-comparison results in
+`ollamatracks/qaudits_evolution_plan.json`. Its deterministic metric contract
+covers task quality, canonical-feature coverage, data quality, offline
+independence, and resource cost. The evidence must bind different incumbent
+and `qvillage/...` candidate IDs, both artifact SHA-256 values, a versioned
+benchmark suite/evaluator/environment, a matched protocol, at least three
+replicated runs, at least 30 samples per metric and canonical feature,
+confidence intervals showing strict improvement in the declared direction,
+the canonical feature-registry hash, and a run ID/correlation ID/repository/
+ref/full source SHA/tree SHA identity tuple. These fields bind a report to a
+claimed source context; the local assessor does not independently authenticate
+them. Report missing, stale, malformed,
+underpowered, tied, and regressing evidence as blockers; do not treat a
+missing evidence file as an empty successful comparison.
+
+Dataset replacement has non-scoring hard gates for explicit QMOI ownership
+or authorization, source provenance, license and allowed use, privacy,
+schema compatibility, split leakage, benchmark contamination, security,
+regression, offline cold-start/network-denial tests, rollback, and independent
+review. Candidate identity in the `qvillage/` namespace is a naming check,
+not proof of ownership. Even a complete report is only
+`ELIGIBLE_FOR_INDEPENDENT_REVIEW`; `datasets_replaced_count` stays zero,
+automatic replacement stays disabled, and remote verification stays false.
+Any actual migration additionally requires consumer-specific owner approval,
+a dry-run impact review, isolated reversible canary, and independently
+verified target-owned terminal evidence for the exact repository/ref/SHA.
+Never remove, rename, overwrite, or misattribute the incumbent or its source.
+
+QVillage provider discovery reports a fixed initial provider scope (including
+Hugging Face, Kaggle, DagsHub, GitHub, GitLab, ModelScope, OpenXLab, Weights &
+Biases, and MLflow) and documentation-only candidate counts across catalog,
+Spaces/apps, discussions, competitions, notebooks, repositories, experiment
+tracking, automation/events, and access-control terms. Such matches do not
+establish adapters, provider access, feature support, or parity. Future
+read-only connector evidence must separately bind authenticated identity and
+scope, provider API/version, visibility, pagination completeness, rate limits,
+freshness, source hashes, and observed response status; unavailable scopes
+remain explicit. Add new providers only as named scopes, not as a claim of
+coverage of every platform.
 
 Content-safety requirements must be measured independently from document mentions: avoid unsolicited or user-prohibited sexual/pornographic and disturbing content, and block assistance that facilitates criminal conduct for every user. A role or claimed master identity must not bypass law, platform safeguards, or safety refusals. Current Markdown inventories do not constitute a production content classifier or enforcement proof; record classifier coverage, false-positive/negative tests, refusal outcomes, appeals/review, and authorization evidence as `NOT_MEASURED` until implemented and tested.
 
@@ -108,7 +253,7 @@ Paired checkpoint appends to `oe2.txt` and `remotecompletion.md` lock both targe
 
 The local QAUDITS source inventory is generated as schema-versioned `ollamatracks/qaudit_universe.json`; the style/universal path-and-hash crosswalk is generated as `QMOItracks/style_universal_candidate_tree.md`. Schema v2 stores one canonical path-keyed record per file, with compact path-only inventory indexes and dependency-edge counts; consumers can reconstruct edges from each record's dependency and consumer paths. It records multi-label candidate categories, byte and hash metadata, active/archive/historical source scope, test/hook state, skipped sources, coverage counts, scan timings, worker/batch settings, and a source-manifest SHA-256 that binds both scanned and unavailable/excluded paths. The artifact's compact representation does not reduce scan scope. The candidate tree is not a replacement ledger. Only an explicit reviewed lineage record with prior/new hashes, owner, reason, tests, hook applicability, rollback, authorization, and exact repo/ref/SHA may increase verified-replacement counts.
 
-Run `python scripts/ollama_autonomous_agent.py qaudit-universe` for the bounded path/hash/category inventory and `python scripts/ollama_autonomous_agent.py qaudit-markdown-sentences` for the bounded per-document/per-sentence Markdown integrity index. The latter writes a gzip-compressed JSONL evidence stream to `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz` and a value-free count/hash manifest to `ollamatracks/qaudit_markdown_sentence_audit.json`. Document records include complete-file and sentence/word-sequence hashes, word/sentence/heading/link counts, code/command/instruction candidate counts, evolution/model-comparison counts, structural and link status, claim-review candidates, and explicit bound omissions; no source prose is persisted. Generated audit reports, telemetry, and the mutable paired checkpoint/ledger files are explicit self-referential exclusions with stable path-only manifest rows; content is not misrepresented as scanned and changing their byte sizes cannot stale the source manifest. Their syntax, artifact hashes, and paired-file hashes are validated/recorded separately. Each QAUDITS CLI operation also appends one correlation-bound, value-free checkpoint to both `oe2.txt` and `remotecompletion.md`, records both resulting file hashes in the local checkpoint and ledger, and atomically refreshes `remote-completion.json`. A failed append/refresh exits as an error; no remote-success state is inferred.
+Run `python scripts/ollama_autonomous_agent.py qaudit-universe` for the bounded path/hash/category inventory and `python scripts/ollama_autonomous_agent.py qaudit-markdown-sentences` for the bounded per-document/per-sentence Markdown integrity index. The latter writes a gzip-compressed JSONL evidence stream to `ollamatracks/qaudit_markdown_sentence_audit.jsonl.gz` and a value-free count/hash manifest to `ollamatracks/qaudit_markdown_sentence_audit.json`. Document records include complete-file and sentence/word-sequence hashes, word/sentence/heading/link counts, code/command/instruction candidate counts, evolution/model/dataset-comparison counts, structural and link status, claim-review candidates, and explicit bound omissions; no source prose is persisted. The evolution planner also records dataset replacement blockers and QVillage provider/surface mention counts without claiming adapter support. Generated audit reports, telemetry, and the mutable paired checkpoint/ledger files are explicit self-referential exclusions with stable path-only manifest rows; content is not misrepresented as scanned and changing their byte sizes cannot stale the source manifest. Their syntax, artifact hashes, and paired-file hashes are validated/recorded separately. Each QAUDITS CLI operation also appends one correlation-bound, value-free checkpoint to both `oe2.txt` and `remotecompletion.md`, records both resulting file hashes in the local checkpoint and ledger, and atomically refreshes `remote-completion.json`. A failed append/refresh exits as an error; no remote-success state is inferred.
 
 For resumable path/hash work, run `python scripts/ollama_autonomous_agent.py audit-inventory-shard --base-path <repository-root> --shard-size 100 --max-shards 1`. `shard-size` is limited to 1–500 files and `max-shards` to 1–10 per invocation. The runner binds deterministic sorted paths to a local HEAD/tree and metadata manifest, writes each shard atomically beneath `ollamatracks/qaudit_shards/`, and resumes the next missing shard only when the manifest matches. Each invocation writes a correlated `IN_PROGRESS` checkpoint before scanning and a terminal local shard status afterward. Completing all path/hash shards is not semantic, feature/test, security, QLion, production, or remote completion; those remain separate gates.
 

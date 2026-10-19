@@ -2533,6 +2533,16 @@ class TestModelCardGenerator:
         (tmp_path / "qmoi-enhanced-history-14" / "abctesting.txt").write_text("memory recovery checkpoint\n", encoding="utf-8")
         (tmp_path / "datasets").mkdir()
         (tmp_path / "datasets" / "dataset_a.json").write_text("{\"name\": \"dataset_a\"}\n", encoding="utf-8")
+        (tmp_path / "node_modules" / "example" / "datasets").mkdir(parents=True)
+        (tmp_path / "node_modules" / "example" / "datasets" / "dependency.csv").write_text(
+            "value\n1\n",
+            encoding="utf-8",
+        )
+        (tmp_path / "archive" / "datasets").mkdir(parents=True)
+        (tmp_path / "archive" / "datasets" / "old.csv").write_text(
+            "value\n1\n",
+            encoding="utf-8",
+        )
         (tmp_path / "QMOI_BEST_MODEL_PROOF.md").write_text("QMOI best-model proof: verified\n", encoding="utf-8")
 
         generator = ModelCardGenerator(tmp_path)
@@ -2543,8 +2553,22 @@ class TestModelCardGenerator:
         assert "abc.txt" in content
         assert "abctesting.txt" in content
         assert "Dataset automation and training corpus" in content
+        assert "datasets/dataset_a.json" in content
+        assert "Dataset path-candidate count: 1; registered/validated dataset count: NOT_MEASURED" in content
+        assert "node_modules" not in content
+        assert "archive/datasets" not in content
+        assert "Per-dataset quality, license, privacy, split/leakage, and benchmark metrics: NOT_MEASURED" in content
+        assert (
+            "Dataset comparison evidence: NOT_PRESENT; assessment: NOT_ELIGIBLE; "
+            "measured metrics: 0/5; blockers: 38"
+        ) in content
+        assert "Dataset replacements: 0; automatic replacement: disabled; remote verification: false" in content
+        assert "Offline independence from remote dataset providers: NOT_VERIFIED" in content
         assert "Model comparison against leading frontier models" in content
-        assert "QMOI is the best model" in content
+        assert "NOT_MEASURED" in content
+        assert "QMOI leads" not in content
+        assert "Best-model claim is pending independent benchmark validation" in content
+        assert "QMOI is the best model currently proven" not in content
         assert "GPT-5" in content
 
     def test_model_card_tracks_project_and_autoproject_coverage(self, tmp_path):

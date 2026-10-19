@@ -1,6 +1,12 @@
+---
+description: "Use when editing, validating, dispatching, or interpreting GitHub Actions workflows. Covers permissions, concurrency, exact-SHA binding, terminal results, and completion evidence."
+---
+
 Mission alignment: follow the canonical [latest mission](../../latest%20mission.md), synchronized byte-for-byte to [MISSION.md](../../MISSION.md) and its instruction-directory mirror. Mission phases are `PH01`-`PH18`; legacy requirement task buckets `M01`-`M16` remain distinct. This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
 
 # Workflow instructions
+
+For the shared mission checkpoint and PH01-PH18 metrics lifecycle, follow [Mission metrics and monitoring](mission-metrics.instructions.md); scheduled workflows are not proof of a running continuation.
 
 ## Default model
 

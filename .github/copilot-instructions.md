@@ -50,6 +50,8 @@ Every operation should leave:
 - verification level; and
 - an explicit blocker or next action when remote proof is unavailable.
 
+For the shared PH01-PH18 metrics and checkpoint lifecycle, follow [.github/instructions/mission-metrics.instructions.md](instructions/mission-metrics.instructions.md).
+
 Phase timing is maintained in `oe2.txt` and `remotecompletion.md`; keep the live-phase clock, checkpoint date, and budget in sync before closing a mission stage or recording a phase as complete.
 
 The Ollama completion engine maintains a resumable, priority-ordered queue for non-passing gates. Retries are bounded and checkpointed. It pauses at explicit authorization or remote-evidence blockers instead of spinning, bypassing policy, or claiming it can replace Copilot Chat or human judgment.

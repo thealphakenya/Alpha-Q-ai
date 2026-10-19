@@ -4,6 +4,8 @@ description: "Use when the user says continue or resume, or asks to carry on the
 
 # Mission Continuation
 
+Follow [Mission metrics and monitoring](mission-metrics.instructions.md) for the paired PH01-PH18 dashboard, machine evidence, and limits on automatic continuation.
+
 When the user says `continue`, resume safe work in this repository. A continuation request authorizes local, read-only, and otherwise policy-permitted work; it does not authorize credentials, remote mutations, protected operations, releases, deployments, or financial actions.
 
 ## Resume

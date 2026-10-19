@@ -3,10 +3,14 @@
 QVillage is intended as the QMOI community, model, and knowledge coordination surface, with authenticated master-only controls where required. This document does not prove a live deployment, identity enforcement, or synchronization with GitHub, Hugging Face, or the autonomous agent.
 
 QMOI should not seek, create, download, or monitor pornographic or disturbing content as a default behavior. A request to handle such material requires lawful, policy-compliant context and appropriate authorization; master identity is not an override for criminal facilitation, platform safeguards, or other safety requirements. Enforcement is not verified by this documentation alone.
-## Active automation
-- QVillage sync remains a first-class automation surface inside QCity and the autonomous agent.
-- memory, model, and runtime state are synchronized across repo docs and platform references.
-- the live state is refreshed automatically as the repository evolves.
+## Automation status
+
+QVillage synchronization, scheduled refresh, and live model/data/runtime
+updates are not verified by this document. The intended automation should use
+bounded, manifest-bound, read-only discovery by default and preserve explicit
+`NOT_MEASURED`, `UNKNOWN`, and `BLOCKED` states. A configured workflow or
+documentation claim is not evidence that a worker ran or synchronized a
+remote surface.
 
 ## QVirtualLabs research and evolution
 
@@ -95,6 +99,82 @@ See [QAUDITS.md](QAUDITS.md) and the generated
 [`qaudits_evolution_plan.json`](ollamatracks/qaudits_evolution_plan.json) for
 the measured local inventory. Benchmark or remote evidence not present in
 those artifacts remains unknown, not a pass.
+
+## QMOI dataset catalog, naming, and discussions
+
+QVillage's planned catalog should make QMOI-owned datasets discoverable by a
+stable internal name such as `qvillage/<domain>/<task>/<version>`, with an
+immutable dataset ID/revision, manifest hash, schema, intended role and split,
+source/owner, license and allowed use, privacy/retention class, language,
+freshness, and validation state. This is a naming scheme only; it does not
+claim a live Hub namespace, ownership, or publication. Imported or derived
+records must preserve the original publisher, repository/name, revision,
+license, authorship, and lineage. Never rebrand third-party datasets, models,
+Spaces, or discussions as QMOI-authored.
+
+QMOI-owned model artifacts should use a separate stable internal ID such as
+`qvillage/models/<task>/<family>/<version>`. Record publisher, architecture,
+weights/artifact digest, runtime, provider, and access scope as distinct
+fields; model, runtime, provider, and product names are not interchangeable.
+Only an owner-authorized Hub namespace may be used for public QMOI publication.
+
+The target architecture is offline-first for explicitly declared core QMOI
+workloads: approved local models/assets and validated local datasets must be
+enough to install, start, and pass the core regression suite without calling
+Hugging Face or another third-party dataset provider. Hub discovery and
+authorized imports remain optional. Until a clean-install, network-disabled
+acceptance run verifies the required tasks, dataset independence is
+`NOT_VERIFIED`; do not describe QVillage or QMOI as fully independent from
+documentation, caches, or local path candidates alone.
+
+QAUDITS should expose separate, hash-bound metrics for catalog coverage,
+provenance/licensing, data quality, feature/split coverage, leakage,
+privacy-review status, staleness/drift, local availability, offline task
+success, benchmark outcomes, uncertainty, and resource cost. Unknown,
+unavailable, or privacy-restricted values remain explicit; raw private data,
+prompts, secrets, and model outputs are not copied into public cards or
+discussion metadata. See [DATASETS.md](DATASETS.md),
+[ALLCOMPARETYPES.md](ALLCOMPARETYPES.md), and [QAUDITS.md](QAUDITS.md).
+
+### Provider feature inventory and parity contract
+
+The intended QVillage feature set spans model and dataset catalogs, application
+demos/Spaces, discussion/community threads, competitions and leaderboards,
+notebooks, source repositories, experiment tracking, automation/events, and
+access control. Initial provider discovery names Hugging Face, Kaggle,
+DagsHub, GitHub, GitLab, ModelScope, OpenXLab, Weights & Biases, and MLflow.
+This is a scoped roadmap, not a claim that QVillage implements or has the full
+feature set of any provider or of every platform.
+
+QAUDITS currently counts provider and surface terms in parseable local
+Markdown only. The result must remain `CANDIDATE_DISCOVERY_ONLY`; each
+provider's `integration_verified` remains false until a separate implementation
+and API-level verification exists. For each provider and feature, track
+discovery, implementation, focused test, authenticated read scope, visibility,
+pagination completeness, rate limits, freshness, response/error status, and
+owner-approved write authority separately. Record unavailable/private scopes
+as `UNKNOWN` or `BLOCKED`, not as empty catalogs or zero findings. Preserve
+provider-specific terms, IDs, attribution, licenses, and revisions; QMOI
+branding applies only to QMOI-owned or authorized resources.
+
+Dataset/model/discussion discovery is read-only by default. Uploads, edits,
+deletions, moderation, publication, account changes, and platform writes
+require a separately authorized operation and provider-specific validation.
+Imported discussion text, metadata, and model hypotheses remain untrusted
+and cannot be transformed into benchmark evidence without independent
+reproduction. See the dataset comparison contract in
+[ALLCOMPARETYPES.md](ALLCOMPARETYPES.md) and its QAUDITS metrics in
+[QAUDITS.md](QAUDITS.md).
+
+QVillage discussion threads, tags, annotations, and model-generated
+suggestions are evidence with distinct authorship and trust states:
+`community_claim`, `imported_metadata`, `model_hypothesis`,
+`reviewed_candidate`, or `independently_reproduced`. Preserve stable thread
+IDs, author/source, timestamps, license/visibility, content hash, moderation
+state, and linked comparison run. Do not auto-edit or publish discussions,
+change authorship, or convert a community statement into a benchmark result.
+Keep discussion management separate from dataset/model replacement approvals
+and enforce any authenticated/master-only action server-side.
 
 
 <!-- BEGIN QMOI MANAGED: restore-point-memory-sync -->

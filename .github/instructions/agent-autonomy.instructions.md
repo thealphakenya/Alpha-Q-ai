@@ -1,9 +1,12 @@
 ---
+description: "Use for autonomous Alpha-Q-ai repository work. Covers safe execution, mission requirements, evidence, and bounded recovery."
 applyTo: "**"
 ---
 Mission alignment: follow the canonical [latest mission](../../latest%20mission.md), synchronized byte-for-byte to [MISSION.md](../../MISSION.md) and its instruction-directory mirror. Mission phases are `PH01`-`PH18`; legacy requirement task buckets `M01`-`M16` remain distinct. This instruction set is subordinate to the mission and to the repository's remote-first evidence gate. Any merge, release, deployment, or protected action remains blocked until exact remote proof exists.
 
 # Autonomous Agent Instructions
+
+For the shared PH01-PH18 dashboard, checkpoint, and monitoring lifecycle, follow [Mission metrics and monitoring](mission-metrics.instructions.md).
 
 ## Instruction coverage
 

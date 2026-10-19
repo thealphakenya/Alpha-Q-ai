@@ -54,6 +54,7 @@ CONTRACTS = (
     ("evolutiono_clean_branch_audit", ("SYNC.md", "scripts/qaudit_universe.py", "scripts/qaudits_evolution_planner.py")),
     ("evolutiono_ofca_metrics", ("MODELEVOLUTIONO.md", "scripts/qaudits_evolution_planner.py", "scripts/q_version_manager.py")),
     ("model_comparison", ("QAUDITS.md", "QVILLAGE.md", "Qvillageevolutions.md", "QMOI_MODEL_CARD.md", "QMOI_BEST_MODEL_PROOF.md")),
+    ("dataset_comparison", ("QAUDITS.md", "DATASETS.md", "ALLCOMPARETYPES.md", "QVILLAGE.md")),
 )
 
 EVOLUTIONO_TRANSITION_DOMAINS = (
@@ -98,6 +99,13 @@ PLAN_TARGETS = {
         "QMOI_MODEL_CARD.md",
         "QMOI_BEST_MODEL_PROOF.md",
     ),
+    "dataset_comparison": (
+        "QAUDITS.md",
+        "DATASETS.md",
+        "ALLCOMPARETYPES.md",
+        "QVILLAGE.md",
+        "QMOI_MODEL_CARD.md",
+    ),
 }
 
 EVOLUTION_MARKER = re.compile(
@@ -107,6 +115,11 @@ EVOLUTION_MARKER = re.compile(
 MODEL_COMPARISON_MARKER = re.compile(
     r"\b(?:model comparison|compare(?:d|s|ing)? models?|benchmark(?:ing)?|"
     r"model evaluation|model parity|replace(?:ment)? model)\b",
+    re.IGNORECASE,
+)
+DATASET_COMPARISON_MARKER = re.compile(
+    r"\b(?:dataset comparison|compare(?:d|s|ing)? datasets?|dataset replacement|"
+    r"data(?:set)? (?:quality|provenance|leakage|contamination))\b",
     re.IGNORECASE,
 )
 QVILLAGE_MODEL_MARKER = re.compile(
@@ -119,6 +132,9 @@ FEATURE_DECLARATION = re.compile(
     re.IGNORECASE,
 )
 MODEL_COMPARISON_EVIDENCE_PATH = "ollamatracks/model_comparison_evidence.json"
+DATASET_COMPARISON_EVIDENCE_PATH = "ollamatracks/dataset_comparison_evidence.json"
+MODEL_COMPARISON_EVIDENCE_SCHEMA_VERSION = 2
+DATASET_COMPARISON_EVIDENCE_SCHEMA_VERSION = 1
 MODEL_COMPARISON_DIMENSIONS = {
     "task_quality": "higher",
     "reasoning": "higher",
@@ -134,6 +150,8 @@ MODEL_COMPARISON_DIMENSIONS = {
     "resource_cost": "lower",
 }
 MODEL_COMPARISON_HARD_GATES = (
+    "model_artifact_provenance_verified",
+    "model_runtime_compatibility_passed",
     "safety_review_passed",
     "privacy_review_passed",
     "security_review_passed",
@@ -143,11 +161,289 @@ MODEL_COMPARISON_HARD_GATES = (
     "rollback_tested",
     "independent_reviewer_approved",
 )
+DATASET_COMPARISON_METRICS = {
+    "task_quality": "higher",
+    "coverage": "higher",
+    "data_quality": "higher",
+    "offline_independence": "higher",
+    "resource_cost": "lower",
+}
+DATASET_COMPARISON_HARD_GATES = (
+    "candidate_qmoi_owned_or_explicitly_authorized",
+    "source_provenance_verified",
+    "license_and_allowed_use_verified",
+    "privacy_review_passed",
+    "schema_compatibility_passed",
+    "split_leakage_check_passed",
+    "benchmark_contamination_check_passed",
+    "security_review_passed",
+    "regression_suite_passed",
+    "offline_test_passed",
+    "rollback_tested",
+    "independent_reviewer_approved",
+)
+QVILLAGE_PLATFORM_ALIASES = {
+    "huggingface": ("hugging face", "huggingface", "hf hub", "hf.co"),
+    "kaggle": ("kaggle", "kaggle.com"),
+    "dagshub": ("dagshub", "dagshub.com"),
+    "github": ("github", "github.com"),
+    "gitlab": ("gitlab", "gitlab.com"),
+    "modelscope": ("modelscope", "modelscope.cn"),
+    "openxlab": ("openxlab", "openxlab.org.cn"),
+    "weights_and_biases": ("weights & biases", "weights and biases", "wandb"),
+    "mlflow": ("mlflow", "model registry"),
+}
+QVILLAGE_PLATFORM_SURFACES = {
+    "model_catalog": ("model", "models", "model card", "inference"),
+    "dataset_catalog": ("dataset", "datasets", "dataset card"),
+    "app_space": ("space", "spaces", "app demo", "hosted app"),
+    "discussion": ("discussion", "discussions", "community", "thread"),
+    "competition": ("competition", "competitions", "leaderboard", "challenge"),
+    "notebook": ("notebook", "notebooks", "kernel"),
+    "repository": ("repository", "repositories", "git", "source code"),
+    "experiment_tracking": ("experiment", "experiments", "run tracking", "metrics"),
+    "automation_events": ("webhook", "webhooks", "event", "automation"),
+    "access_control": ("authentication", "authorization", "permissions", "access control"),
+}
 MODEL_INVENTORY_EXCLUDED_DIRS = {
     ".git", "node_modules", ".venv", "venv", "__pycache__", ".pytest_cache",
     ".mypy_cache", ".ruff_cache", "dist", "build", "target", "coverage",
 }
 MODEL_INVENTORY_MAX_BYTES = 5_000_000
+
+
+def _load_comparison_evidence(source_root: Path, evidence_path: str) -> tuple[Any, str]:
+    path = source_root / evidence_path
+    if not path.exists():
+        return None, "NOT_PRESENT"
+    if path.is_symlink():
+        return None, "SYMLINK_NOT_FOLLOWED"
+    try:
+        if path.stat(follow_symlinks=False).st_size > 1_000_000:
+            return None, "OVERSIZED"
+        return json.loads(path.read_text(encoding="utf-8")), "PARSED"
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return None, "INVALID"
+
+
+def _comparison_interval_is_valid(interval: Any) -> bool:
+    return (
+        isinstance(interval, list)
+        and len(interval) == 2
+        and all(
+            isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(value)
+            for value in interval
+        )
+        and interval[0] <= interval[1]
+    )
+
+
+def _candidate_is_better(direction: str, candidate_interval: list[Any], incumbent_interval: list[Any]) -> bool:
+    if direction == "higher":
+        return candidate_interval[0] > incumbent_interval[1]
+    return candidate_interval[1] < incumbent_interval[0]
+
+
+def _comparison_run_identity_blockers(evidence: dict[str, Any], subject: str) -> list[str]:
+    blockers = []
+    for field in ("run_id", "correlation_id", "repository", "ref"):
+        value = evidence.get(field)
+        if not isinstance(value, str) or not value.strip():
+            blockers.append(f"missing_{subject}_{field}")
+    repository = evidence.get("repository")
+    if isinstance(repository, str) and not re.fullmatch(r"[^/\s]+/[^/\s]+", repository):
+        blockers.append(f"invalid_{subject}_repository")
+    for field in ("source_sha256", "tree_sha256"):
+        value = evidence.get(field)
+        if not isinstance(value, str) or not re.fullmatch(r"(?:[0-9a-f]{40}|[0-9a-f]{64})", value):
+            blockers.append(f"invalid_or_missing_{subject}_{field}")
+    return blockers
+
+
+def evaluate_dataset_comparison_evidence(evidence: Any) -> dict[str, Any]:
+    """Assess dataset comparison completeness; never authorize a data switch."""
+    blockers: list[str] = []
+    if not isinstance(evidence, dict):
+        evidence = {}
+        blockers.append("dataset_comparison_evidence_missing_or_not_an_object")
+
+    if evidence.get("schema_version") != DATASET_COMPARISON_EVIDENCE_SCHEMA_VERSION:
+        blockers.append("unsupported_or_missing_dataset_evidence_schema")
+    blockers.extend(_comparison_run_identity_blockers(evidence, "dataset_comparison"))
+
+    incumbent_id = evidence.get("incumbent_dataset_id")
+    candidate_id = evidence.get("qmoi_dataset_id")
+    for field, value in (
+        ("incumbent_dataset_id", incumbent_id),
+        ("qmoi_dataset_id", candidate_id),
+    ):
+        if not isinstance(value, str) or not value.strip():
+            blockers.append(f"missing_{field}")
+    if (
+        isinstance(incumbent_id, str)
+        and isinstance(candidate_id, str)
+        and incumbent_id == candidate_id
+    ):
+        blockers.append("incumbent_and_candidate_dataset_ids_must_differ")
+    if isinstance(candidate_id, str) and not candidate_id.casefold().startswith("qvillage/"):
+        blockers.append("candidate_dataset_not_in_qmoi_namespace")
+
+    artifact_hashes = evidence.get("artifact_sha256")
+    artifact_hashes = artifact_hashes if isinstance(artifact_hashes, dict) else {}
+    for key in ("incumbent", "qmoi"):
+        digest = artifact_hashes.get(key)
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            blockers.append(f"invalid_or_missing_{key}_dataset_sha256")
+
+    benchmark = evidence.get("benchmark")
+    benchmark = benchmark if isinstance(benchmark, dict) else {}
+    for field in ("suite_id", "suite_sha256", "evaluator_sha256", "environment_sha256"):
+        value = benchmark.get(field)
+        if field.endswith("_sha256"):
+            if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+                blockers.append(f"invalid_or_missing_benchmark_{field}")
+        elif not isinstance(value, str) or not value.strip():
+            blockers.append(f"missing_benchmark_{field}")
+    if benchmark.get("matched_protocol") is not True:
+        blockers.append("matched_dataset_protocol_not_verified")
+    if not isinstance(benchmark.get("replicated_runs"), int) or benchmark["replicated_runs"] < 3:
+        blockers.append("fewer_than_three_dataset_replicated_runs")
+
+    metrics = evidence.get("metrics")
+    metrics = metrics if isinstance(metrics, dict) else {}
+    missing_metrics = sorted(set(DATASET_COMPARISON_METRICS) - set(metrics))
+    blockers.extend(f"dataset_metric_not_measured:{name}" for name in missing_metrics)
+    failed_metrics: list[str] = []
+    for name, required_direction in DATASET_COMPARISON_METRICS.items():
+        record = metrics.get(name)
+        if not isinstance(record, dict):
+            continue
+        incumbent_interval = record.get("incumbent_confidence_interval")
+        candidate_interval = record.get("qmoi_confidence_interval")
+        valid_scores = all(
+            isinstance(record.get(key), (int, float))
+            and not isinstance(record.get(key), bool)
+            and math.isfinite(record[key])
+            for key in ("incumbent_score", "qmoi_score")
+        )
+        if (
+            record.get("direction") != required_direction
+            or not valid_scores
+            or not _comparison_interval_is_valid(incumbent_interval)
+            or not _comparison_interval_is_valid(candidate_interval)
+            or not isinstance(record.get("sample_count"), int)
+            or isinstance(record.get("sample_count"), bool)
+            or record["sample_count"] < 30
+        ):
+            blockers.append(f"invalid_or_underpowered_dataset_metric:{name}")
+            continue
+        score_improved = (
+            record["qmoi_score"] > record["incumbent_score"]
+            if required_direction == "higher"
+            else record["qmoi_score"] < record["incumbent_score"]
+        )
+        if not score_improved or not _candidate_is_better(
+            required_direction,
+            candidate_interval,
+            incumbent_interval,
+        ):
+            failed_metrics.append(name)
+
+    canonical_feature_ids = evidence.get("canonical_feature_ids")
+    if (
+        not isinstance(canonical_feature_ids, list)
+        or not canonical_feature_ids
+        or any(not isinstance(item, str) or not item for item in canonical_feature_ids)
+        or len(set(canonical_feature_ids)) != len(canonical_feature_ids)
+    ):
+        blockers.append("canonical_feature_registry_feature_list_missing_or_invalid")
+        canonical_feature_ids = []
+    feature_comparisons = evidence.get("feature_comparisons")
+    feature_comparisons = feature_comparisons if isinstance(feature_comparisons, list) else []
+    if not feature_comparisons:
+        blockers.append("dataset_feature_comparison_missing")
+    feature_ids: set[str] = set()
+    failed_features: list[str] = []
+    for feature in feature_comparisons:
+        if not isinstance(feature, dict):
+            blockers.append("malformed_dataset_feature_comparison")
+            continue
+        feature_id = feature.get("feature_id")
+        direction = feature.get("direction")
+        incumbent_interval = feature.get("incumbent_confidence_interval")
+        candidate_interval = feature.get("qmoi_confidence_interval")
+        valid = (
+            isinstance(feature_id, str)
+            and bool(feature_id)
+            and feature_id not in feature_ids
+            and direction in {"higher", "lower"}
+            and direction == feature.get("required_direction")
+            and all(
+                isinstance(feature.get(key), (int, float))
+                and not isinstance(feature.get(key), bool)
+                and math.isfinite(feature[key])
+                for key in ("incumbent_score", "qmoi_score")
+            )
+            and _comparison_interval_is_valid(incumbent_interval)
+            and _comparison_interval_is_valid(candidate_interval)
+            and isinstance(feature.get("sample_count"), int)
+            and not isinstance(feature.get("sample_count"), bool)
+            and feature["sample_count"] >= 30
+        )
+        if not valid:
+            blockers.append("invalid_or_duplicate_dataset_feature_comparison")
+            continue
+        feature_ids.add(feature_id)
+        score_improved = (
+            feature["qmoi_score"] > feature["incumbent_score"]
+            if direction == "higher"
+            else feature["qmoi_score"] < feature["incumbent_score"]
+        )
+        if not score_improved or not _candidate_is_better(
+            direction,
+            candidate_interval,
+            incumbent_interval,
+        ):
+            failed_features.append(feature_id)
+    if feature_ids != set(canonical_feature_ids):
+        blockers.append("dataset_feature_comparison_does_not_cover_canonical_registry")
+    registry_hash = evidence.get("canonical_feature_registry_sha256")
+    if not isinstance(registry_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", registry_hash):
+        blockers.append("canonical_feature_registry_hash_missing_or_invalid")
+
+    hard_gates = evidence.get("hard_gates")
+    hard_gates = hard_gates if isinstance(hard_gates, dict) else {}
+    failed_hard_gates = [
+        name for name in DATASET_COMPARISON_HARD_GATES if hard_gates.get(name) is not True
+    ]
+    blockers.extend(f"dataset_hard_gate_not_passed:{name}" for name in failed_hard_gates)
+    blockers.extend(f"qmoi_dataset_not_better_on_metric:{name}" for name in failed_metrics)
+    blockers.extend(f"qmoi_dataset_not_better_on_feature:{name}" for name in failed_features)
+
+    complete = not blockers
+    return {
+        "status": "ELIGIBLE_FOR_INDEPENDENT_REVIEW" if complete else "NOT_ELIGIBLE",
+        "comparison_evidence_complete": complete,
+        "required_metric_count": len(DATASET_COMPARISON_METRICS),
+        "measured_metric_count": len(set(DATASET_COMPARISON_METRICS) & set(metrics)),
+        "required_feature_comparison_count": len(canonical_feature_ids),
+        "measured_feature_comparison_count": len(feature_ids),
+        "failed_metric_count": len(failed_metrics),
+        "failed_feature_count": len(failed_features),
+        "failed_hard_gate_count": len(failed_hard_gates),
+        "blockers": sorted(set(blockers)),
+        "replacement_status": "NOT_REPLACED",
+        "automatic_replacement_enabled": False,
+        "remote_verified": False,
+        "verification_level": "reported_local_evidence_only",
+        "next_action": (
+            "Obtain independent review and exact-SHA remote proof; replacement still requires separate explicit authorization."
+            if complete
+            else "Collect matched, hash-bound dataset evidence and resolve every metric, feature, rights, privacy, offline, security, and rollback blocker."
+        ),
+    }
 
 
 def evaluate_model_comparison_evidence(evidence: Any) -> dict[str, Any]:
@@ -159,8 +455,9 @@ def evaluate_model_comparison_evidence(evidence: Any) -> dict[str, Any]:
 
     benchmark = evidence.get("benchmark")
     benchmark = benchmark if isinstance(benchmark, dict) else {}
-    if evidence.get("schema_version") != 1:
+    if evidence.get("schema_version") != MODEL_COMPARISON_EVIDENCE_SCHEMA_VERSION:
         blockers.append("unsupported_or_missing_evidence_schema")
+    blockers.extend(_comparison_run_identity_blockers(evidence, "model_comparison"))
     for field in ("incumbent_model_id", "qmoi_model_id"):
         value = evidence.get(field)
         if not isinstance(value, str) or not value.strip():
@@ -346,7 +643,16 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
     source_root = Path(root).resolve()
     records: list[dict[str, Any]] = []
     unavailable: list[dict[str, str]] = []
+    platform_manifest: list[tuple[str, str, str, tuple[str, ...]]] = []
     scanned_markdown_count = 0
+    platform_mentions: dict[str, dict[str, Any]] = {
+        platform: {
+            "document_candidate_count": 0,
+            "surface_candidate_counts": {surface: 0 for surface in QVILLAGE_PLATFORM_SURFACES},
+            "integration_verified": False,
+        }
+        for platform in QVILLAGE_PLATFORM_ALIASES
+    }
     if source_root.is_dir():
         for current, dirnames, filenames in os.walk(source_root, followlinks=False):
             current_path = Path(current)
@@ -378,6 +684,33 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
                     continue
                 scanned_markdown_count += 1
                 lines = text.splitlines()
+                searchable = f"{relative}\n{text}".casefold()
+                matched_platforms: list[str] = []
+                for platform, aliases in QVILLAGE_PLATFORM_ALIASES.items():
+                    if not any(alias in searchable for alias in aliases):
+                        continue
+                    matched_platforms.append(platform)
+                    platform_record = platform_mentions[platform]
+                    platform_record["document_candidate_count"] += 1
+                    for surface, markers in QVILLAGE_PLATFORM_SURFACES.items():
+                        if any(marker in searchable for marker in markers):
+                            platform_record["surface_candidate_counts"][surface] += 1
+                if matched_platforms:
+                    scope = (
+                        "historical_or_archive"
+                        if any(
+                            part.lower().startswith(("alpha-q-ai-2025", "qmoi-enhanced-history"))
+                            or "archive" in part.lower()
+                            for part in Path(relative).parts
+                        )
+                        else "active_materialized"
+                    )
+                    platform_manifest.append((
+                        relative,
+                        hashlib.sha256(data).hexdigest(),
+                        scope,
+                        tuple(sorted(matched_platforms)),
+                    ))
                 evolution_related = bool(EVOLUTION_MARKER.search(relative) or EVOLUTION_MARKER.search(text))
                 qvillage_model = bool(
                     "qvillage" in relative.lower()
@@ -388,7 +721,11 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
                     MODEL_COMPARISON_MARKER.search(relative)
                     or MODEL_COMPARISON_MARKER.search(text)
                 )
-                if not (evolution_related or qvillage_model or model_comparison):
+                dataset_comparison = bool(
+                    DATASET_COMPARISON_MARKER.search(relative)
+                    or DATASET_COMPARISON_MARKER.search(text)
+                )
+                if not (evolution_related or qvillage_model or model_comparison or dataset_comparison):
                     continue
                 declarations = sum(bool(FEATURE_DECLARATION.search(line)) for line in lines)
                 records.append({
@@ -407,6 +744,7 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
                     "evolution_related": evolution_related,
                     "qvillage_model_related": qvillage_model,
                     "model_comparison_related": model_comparison,
+                    "dataset_comparison_related": dataset_comparison,
                     "feature_declaration_count": declarations,
                     "evolution_feature_declaration_count": declarations if evolution_related else 0,
                     "model_comparison_candidate_line_count": sum(
@@ -415,6 +753,9 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
                     "qvillage_model_candidate_line_count": sum(
                         bool(QVILLAGE_MODEL_MARKER.search(line)) for line in lines
                     ),
+                    "dataset_comparison_candidate_line_count": sum(
+                        bool(DATASET_COMPARISON_MARKER.search(line)) for line in lines
+                    ),
                     "source_text_recorded": False,
                 })
     records.sort(key=lambda item: item["path"])
@@ -422,19 +763,17 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
         (item["path"], item["sha256"], item["scope"])
         for item in records
     ]
-    evidence_path = source_root / MODEL_COMPARISON_EVIDENCE_PATH
-    evidence: Any = None
-    evidence_status = "NOT_PRESENT"
-    if evidence_path.exists() and not evidence_path.is_symlink():
-        try:
-            if evidence_path.stat().st_size > 1_000_000:
-                evidence_status = "OVERSIZED"
-            else:
-                evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
-                evidence_status = "PARSED"
-        except (OSError, UnicodeDecodeError, json.JSONDecodeError):
-            evidence_status = "INVALID"
+    platform_manifest.sort()
+    evidence, evidence_status = _load_comparison_evidence(
+        source_root,
+        MODEL_COMPARISON_EVIDENCE_PATH,
+    )
+    dataset_evidence, dataset_evidence_status = _load_comparison_evidence(
+        source_root,
+        DATASET_COMPARISON_EVIDENCE_PATH,
+    )
     assessment = evaluate_model_comparison_evidence(evidence)
+    dataset_assessment = evaluate_dataset_comparison_evidence(dataset_evidence)
     return {
         "status": "NEEDS_REVIEW",
         "source_scope": "materialized_local_markdown_only",
@@ -442,10 +781,31 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
         "evolution_document_count": sum(item["evolution_related"] for item in records),
         "qvillage_model_document_count": sum(item["qvillage_model_related"] for item in records),
         "model_comparison_document_count": sum(item["model_comparison_related"] for item in records),
+        "dataset_comparison_document_count": sum(item["dataset_comparison_related"] for item in records),
         "feature_declaration_count": sum(item["feature_declaration_count"] for item in records),
         "evolution_feature_declaration_count": sum(item["evolution_feature_declaration_count"] for item in records),
         "model_comparison_candidate_line_count": sum(item["model_comparison_candidate_line_count"] for item in records),
         "qvillage_model_candidate_line_count": sum(item["qvillage_model_candidate_line_count"] for item in records),
+        "dataset_comparison_candidate_line_count": sum(item["dataset_comparison_candidate_line_count"] for item in records),
+        "qvillage_platform_inventory": {
+            "status": "CANDIDATE_DISCOVERY_ONLY",
+            "source_scope": "materialized_parseable_local_markdown",
+            "platform_count": len(platform_mentions),
+            "document_candidate_count": len(platform_manifest),
+            "source_manifest_sha256": hashlib.sha256(
+                json.dumps(
+                    platform_manifest,
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ).encode("utf-8")
+            ).hexdigest(),
+            "platforms": platform_mentions,
+            "limitations": [
+                "provider-name and feature-term matches are documentation candidates, not verified adapters or feature parity",
+                "authentication, permissions, visibility, pagination, rate limits, freshness, and live API behavior are not measured",
+                "platform list is an explicit initial scope, not an exhaustive inventory of every possible provider",
+            ],
+        },
         "unavailable_document_count": len(unavailable),
         "unavailable_documents": unavailable,
         "documents": records,
@@ -455,7 +815,11 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
         "comparison_evidence_path": MODEL_COMPARISON_EVIDENCE_PATH,
         "comparison_evidence_status": evidence_status,
         "comparison_assessment": assessment,
+        "dataset_comparison_evidence_path": DATASET_COMPARISON_EVIDENCE_PATH,
+        "dataset_comparison_evidence_status": dataset_evidence_status,
+        "dataset_comparison_assessment": dataset_assessment,
         "models_replaced_count": 0,
+        "datasets_replaced_count": 0,
         "automatic_replacement_enabled": False,
         "remote_verified": False,
         "limitations": [
@@ -463,6 +827,8 @@ def build_model_comparison_inventory(root: Path | str) -> dict[str, Any]:
             "a locally reported benchmark file is not independently verified benchmark or remote evidence",
             "all candidate dimensions and feature IDs must be reconciled to the canonical feature registry",
             "model replacement is never performed by QAUDITS; independent review, explicit authorization, rollback, and exact-SHA remote proof are separate gates",
+            "dataset replacement is never performed by QAUDITS; independent review, rights/privacy checks, explicit authorization, rollback, and exact-SHA remote proof are separate gates",
+            "QVillage platform metrics are local documentation mention counts, not Hugging Face, Kaggle, or cross-platform capability parity",
         ],
     }
 

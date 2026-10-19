@@ -1,5 +1,7 @@
 # Continue Mission
 
+Follow [Mission metrics and monitoring](mission-metrics.instructions.md) for the paired PH01-PH18 dashboard, machine evidence, and limits on automatic continuation.
+
 This file is a human-readable continuation prompt. The workspace instruction that Copilot Chat can discover on a `continue` or `resume` request is [continue.instructions.md](continue.instructions.md).
 
 Use this request to resume the Alpha-Q-ai mission in this workspace:

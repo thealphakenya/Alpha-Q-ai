@@ -30,6 +30,8 @@ This repository is governed by the remote-first completion contract in `remoteco
 
 Remote completion is only valid when the target-owned workflow and exact remote SHA prove the result. Local success alone is never enough.
 
+For the shared PH01-PH18 metrics and checkpoint lifecycle, follow [.github/instructions/mission-metrics.instructions.md](.github/instructions/mission-metrics.instructions.md).
+
 ## QAUDITS execution and evidence
 
 - Use the documented QAUDITS commands for repository-surface, Markdown-integrity, and coverage refreshes. Bind each run to its repository, ref, local commit/tree, correlation ID, measured duration, status, metrics, omissions, unreadable/skipped paths, and next action.
