@@ -127,3 +127,72 @@ but agent execution remains behind its approved hosted-runtime guard. Obtain
 owner/admin-authorized read-only branch-policy evidence and an approved hosted
 runner, then rerun the planner. Do not change task/phase status or start blocked
 work before its dependencies and authorization pass.
+
+## Execution tracking - 2026-10-20 continuation
+
+This entry supersedes earlier runtime availability statements for the current
+container only. It does not change mission task or phase status.
+
+| Checklist area | Status | Evidence and remaining work |
+|---|---|---|
+| Fresh checkout and mission mirrors | PASS LOCALLY | Branch `codespace-sturdy-fishstick-69wxr9jjgw5pfrq65`; HEAD `d2b63fd69c4c2809b882e3ebbc54072a827582fc`; worktree was clean at the start of this continuation. `latest mission.md`, `MISSION.md`, and `.github/instructions/MISSION.md` have identical SHA-256 `9729aa82a14b83a63dde392aa5196ef45bdcf54019ef18a9443ee9eb8bd33bc0`. |
+| Instruction inventory | PASS LOCALLY | `python scripts/ollama_autonomous_agent.py instruction-inventory` read and hashed all 12 instruction sources: `AGENTS.md`, `.github/copilot-instructions.md`, and 10 files under `.github/instructions`; 0 unreadable or invalid. Metadata only, with source contents omitted, is in `ollamatracks/instruction_inventory.json` (SHA-256 `8d929af6d40fc0f7d4eb1be36a0278d809b362377020651635024cd85a7a47fd`). |
+| Ollama runtime and execution | BLOCKED | No `ollama` executable is available on `PATH`, and `http://127.0.0.1:11434/api/tags` refused the connection. No inference, autonomous implementation, or Ollama usage is claimed. The approved hosted runtime was not invoked. |
+| Guarded continuation | BLOCKED ON SAFE TASK | `python scripts/ollama_autonomous_agent.py continue` returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no mission task or phase transition occurred. The ledger remains on run `newmission-120-minute-2026-10-20-a9af2416`, correlation `a9af2416-4a21-4452-9fe6-95e2a70ebebb`, deadline `2026-10-20T04:31:56.194542Z`. At the paired metrics checkpoint (`2026-10-20T03:16:42.299885Z`), 4513.895 seconds remained; process-active time is `NOT_MEASURED`. |
+| PH01-PH18 and paired evidence | REFRESHED LOCALLY | The guarded continuation refreshed `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl` under the current correlation. Statuses remain 5 partial and 13 pending; legacy tasks remain 1 verified complete, 7 partial, 3 blocked, and 5 pending. All 772 mission-line candidates remain unreviewed; `remote_verified` remains false. |
+| Mission blockers and next action | BLOCKED | No safe dependency-ready task is available. M01 still requires owner/admin-authorized read-only branch-protection evidence; dependent work remains blocked. Next action: obtain that evidence and an approved hosted Ollama execution path, then rerun the planner. |
+| Instruction and mission-document updates | NOT PERFORMED | Repository policy requires preserving instruction files; an instruction inventory does not authorize rewriting them. No bulk edits to mission-related Markdown were made because the guarded planner produced no eligible task. |
+
+No remote API mutation, dispatch, push, merge, release, deployment, or credential
+operation was performed. This checkpoint is local evidence only.
+
+## Resume tracking - 2026-10-20 03:24 UTC
+
+The latest guarded resume rechecked the active run and refreshed its paired
+metrics. The instruction inventory again passed for all 12 policy sources with
+0 unreadable or invalid files; policy files were not modified. Local Ollama is
+still unavailable, so no inference or autonomous implementation occurred.
+
+`python scripts/ollama_autonomous_agent.py continue` returned
+`BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no task or phase transition occurred.
+At the metrics checkpoint `2026-10-20T03:24:23.636332Z`, the ledger retained
+correlation `a9af2416-4a21-4452-9fe6-95e2a70ebebb`, 4052.558 seconds on the
+existing clock, 5 partial and 13 pending phases, 772 unreviewed mission lines,
+and `remote_verified: false`. The safe task queue remains empty; M01 still
+requires owner/admin-authorized read-only branch-protection evidence. Continue
+only after that dependency is resolved or a different safe task becomes ready.
+
+## Resume request - 2026-10-20 03:28 UTC
+
+The user requests continuation through all phases. Treat this as authorization
+to continue bounded, eligible local work on later cycles; it does not override
+task dependencies, owner/admin authorization, remote-proof requirements, or the
+continuation retry and execution limits. No always-running process is verified
+or claimed.
+
+The instruction inventory refreshed successfully for 12 sources. The guarded
+`continue` command again returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK` with
+no task or phase transition. Local Ollama remains unavailable. The paired
+checkpoint at `2026-10-20T03:28:48.017941Z` retains correlation
+`a9af2416-4a21-4452-9fe6-95e2a70ebebb`; phase/task status counts are unchanged
+(5 partial, 13 pending; 1 task verified complete, 7 partial, 3 blocked, 5
+pending), 772 mission lines remain unreviewed, and `remote_verified` is false.
+The existing clock deadline is `2026-10-20T04:31:56.194542Z`.
+
+Next action: obtain owner/admin-authorized read-only branch-protection evidence
+for M01 and an approved hosted Ollama runtime; then rerun the planner. Do not
+start blocked dependent tasks or rewrite policy instructions to force progress.
+
+## Resume tracking - 2026-10-20 03:31 UTC
+
+The instruction inventory was refreshed for 12 sources. The local Ollama
+executable and API remain unavailable. The guarded continuation returned
+`BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no mission task or phase transition was
+performed.
+
+The paired checkpoint at `2026-10-20T03:31:23.533179Z` retains correlation
+`a9af2416-4a21-4452-9fe6-95e2a70ebebb` and the existing deadline
+`2026-10-20T04:31:56.194542Z`. It reports 5 partial and 13 pending phases, 772
+unreviewed requirement lines, no safe local task, and `remote_verified: false`.
+M01 remains blocked on owner/admin-authorized read-only branch-protection
+evidence. No protected or remote operation was performed.
