@@ -20,10 +20,10 @@ Status: local continuity work is in progress and remote completion remains block
 ## Mission Phase Metrics
 
 - Canonical source: `latest mission.md`; SHA-256: `9729aa82a14b83a63dde392aa5196ef45bdcf54019ef18a9443ee9eb8bd33bc0`.
-- Generated at: `2026-10-19T22:41:59.040500Z`; ledger correlation ID: `78a166b3-103d-4288-b5e9-ab07140dd033`.
+- Generated at: `2026-10-20T02:53:04.811362Z`; ledger correlation ID: `a9af2416-4a21-4452-9fe6-95e2a70ebebb`.
 - Phase count: 18; PASS: 0; in progress: 0; partial: 5; blocked: 0; failed: 0; pending: 13.
 - Legacy task status counts (M01-M16): verified_complete=1; in_progress=0; partially_complete=7; blocked=3; failed=0; pending=5.
-- Mission clock: status `ACTIVE`; started `2026-10-19T22:27:07.594228Z`; deadline `2026-10-20T00:27:07.594228Z`; UTC wall elapsed=891.446s; remaining=6308.554s; process-active monotonic time `NOT_MEASURED`.
+- Mission clock: status `ACTIVE`; started `2026-10-20T02:31:56.194542Z`; deadline `2026-10-20T04:31:56.194542Z`; UTC wall elapsed=1268.617s; remaining=5931.383s; process-active monotonic time `NOT_MEASURED`.
 - Mission authored content-line candidates indexed: 772; semantic review complete: 0; review pending: 772. Counts are line locators, not semantic requirement completion.
 - Acceptance mapping: 0 lines mapped to acceptance references; 0 reviewed lines still unmapped. This is local ledger metadata, not semantic or test proof.
 - Requirement coverage refs mapped / indexed: owner 0/772; implementation 0/772; test 0/772; security 0/772; documentation 0/772; integration 0/772; remote_evidence 0/772. Missing refs remain unmapped and do not imply missing or present implementations.

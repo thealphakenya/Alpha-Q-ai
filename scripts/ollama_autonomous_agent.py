@@ -13231,10 +13231,12 @@ All timestamps use UTC ISO-8601 format.
         self,
     ) -> int:
         """Resume safely from the latest checkpoint and keep the autonomous loop going until success or the bounded retry limit is reached."""
+        mission_correlation_id: str | None = None
         try:
             mission_ledger = load_ledger(
                 self.root_dir / "ollamatracks" / "mission-task-ledger.json"
             )
+            mission_correlation_id = mission_ledger.get("correlation_id")
             mission_resume_plan = build_resume_plan(mission_ledger)
         except (LedgerError, OSError) as exc:
             mission_resume_plan = {
@@ -13249,6 +13251,36 @@ All timestamps use UTC ISO-8601 format.
         if mission_resume_plan.get("status") == "PAUSED_EXPIRED_CLOCK":
             self.results["continuation_status"] = "PAUSED_EXPIRED_CLOCK"
             return 2
+        safe_task_ids = mission_resume_plan.get("safe_execution_task_ids")
+        if not isinstance(safe_task_ids, list) or not safe_task_ids:
+            recommended_next_action = str(
+                mission_resume_plan.get("recommended_next_action")
+                or "No dependency-ready safe mission task is available."
+            )
+            blocker_status = (
+                "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
+                if isinstance(safe_task_ids, list)
+                else "BLOCKED_LEDGER_UNAVAILABLE"
+            )
+            self.results["continuation_status"] = blocker_status
+            self.results["continuation_checkpoint"] = record_qaudit_checkpoint(
+                self.root_dir,
+                "mission-continuation-no-safe-task",
+                {
+                    "status": blocker_status,
+                    "metrics": {
+                        "safe_execution_status": mission_resume_plan.get("safe_execution_status", "UNKNOWN"),
+                        "safe_execution_task_ids": safe_task_ids if isinstance(safe_task_ids, list) else [],
+                        "recommended_task_id": mission_resume_plan.get("recommended_task_id"),
+                        "task_transitions_performed": False,
+                        "remote_mutation_performed": False,
+                    },
+                    "blockers": [recommended_next_action],
+                    "next_action": recommended_next_action,
+                },
+                correlation_id=mission_correlation_id,
+            )
+            return 3
         managed_surface_contract = self.refresh_managed_surface_documents(
             self.root_dir
         )
@@ -14743,6 +14775,16 @@ def main(
             if continuation_status == "PAUSED_EXPIRED_CLOCK":
                 print(
                     "Continuation cycle paused: PAUSED_EXPIRED_CLOCK; "
+                    "no mission task or phase transition was performed."
+                )
+            elif continuation_status == "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK":
+                print(
+                    "Continuation cycle blocked: BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK; "
+                    "no mission task or phase transition was performed."
+                )
+            elif continuation_status == "BLOCKED_LEDGER_UNAVAILABLE":
+                print(
+                    "Continuation cycle blocked: BLOCKED_LEDGER_UNAVAILABLE; "
                     "no mission task or phase transition was performed."
                 )
             else:

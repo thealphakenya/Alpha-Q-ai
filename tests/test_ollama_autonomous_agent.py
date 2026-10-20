@@ -114,12 +114,27 @@ class TestAutonomousContinuation:
         deadline = started + timedelta(minutes=120)
         ledger["mission_clock"]["started_at"] = started.isoformat().replace("+00:00", "Z")
         ledger["mission_clock"]["deadline_at"] = deadline.isoformat().replace("+00:00", "Z")
+        first_task = next(task for task in ledger["tasks"] if task["id"] == "M01")
+        first_task["status"] = "PARTIALLY_COMPLETE"
+        first_task["blockers"] = []
+        first_task["next_action"] = "Continue its safe local validation."
+        from scripts.mission_task_ledger import build_resume_plan, status_counts
+
+        ledger["status_counts"] = status_counts(ledger)
+        assert build_resume_plan(ledger)["safe_execution_task_ids"] == ["M01"]
         target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         agent = OllamaAutonomousAgent(base_path=tmp_path)
         metric_refreshes = []
         monkeypatch.setattr(
             "ollama_autonomous_agent.refresh_mission_metrics",
             lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.record_qaudit_checkpoint",
+            lambda root, operation, evidence, *, correlation_id=None: {
+                "operation": operation,
+                "correlation_id": correlation_id,
+            },
         )
         lifecycle = QVersionManager(tmp_path)
         execution_id = "continue-cycle-success"
@@ -206,6 +221,50 @@ class TestAutonomousContinuation:
         agent.update_resume_checkpoint.assert_not_called()
         run_loop.assert_not_called()
 
+    def test_run_continue_cycle_blocks_when_no_safe_task_is_ready(self, tmp_path, monkeypatch):
+        source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger.parent.mkdir(parents=True)
+        ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
+        started = datetime.now(timezone.utc)
+        ledger["mission_clock"]["started_at"] = started.isoformat().replace("+00:00", "Z")
+        ledger["mission_clock"]["deadline_at"] = (started + timedelta(minutes=120)).isoformat().replace("+00:00", "Z")
+        target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        metric_refreshes = []
+        checkpoint_records = []
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
+
+        def capture_checkpoint(root, operation, evidence, *, correlation_id=None):
+            checkpoint_records.append((root, operation, evidence, correlation_id))
+            return {"operation": operation, "correlation_id": correlation_id}
+
+        monkeypatch.setattr("ollama_autonomous_agent.record_qaudit_checkpoint", capture_checkpoint)
+        agent.refresh_managed_surface_documents = MagicMock()
+        agent.load_checkpoint = MagicMock()
+        agent.record_tracker_event = MagicMock()
+        agent.update_resume_checkpoint = MagicMock()
+
+        with patch.object(OllamaAutonomousAgent, "run_autonomous_loop") as run_loop:
+            exit_code = agent.run_continue_cycle()
+
+        assert exit_code == 3
+        assert agent.results["continuation_status"] == "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
+        assert agent.results["mission_resume_plan"]["safe_execution_task_ids"] == []
+        assert metric_refreshes == [tmp_path]
+        assert len(checkpoint_records) == 1
+        assert checkpoint_records[0][1] == "mission-continuation-no-safe-task"
+        assert checkpoint_records[0][2]["status"] == "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
+        assert checkpoint_records[0][3] == ledger["correlation_id"]
+        agent.refresh_managed_surface_documents.assert_not_called()
+        agent.load_checkpoint.assert_not_called()
+        agent.record_tracker_event.assert_not_called()
+        agent.update_resume_checkpoint.assert_not_called()
+        run_loop.assert_not_called()
+
     def test_continue_cli_reports_expired_clock_pause(self, tmp_path, monkeypatch, capsys):
         source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
         target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
@@ -238,7 +297,65 @@ class TestAutonomousContinuation:
         assert exit_code == 2
         assert "PAUSED_EXPIRED_CLOCK" in capsys.readouterr().out
 
+    def test_continue_cli_reports_no_safe_task_without_running_agent(self, tmp_path, monkeypatch, capsys):
+        source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger.parent.mkdir(parents=True)
+        ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
+        started = datetime.now(timezone.utc)
+        ledger["mission_clock"]["started_at"] = started.isoformat().replace("+00:00", "Z")
+        ledger["mission_clock"]["deadline_at"] = (started + timedelta(minutes=120)).isoformat().replace("+00:00", "Z")
+        target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
+        metric_refreshes = []
+        checkpoint_records = []
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.refresh_mission_metrics",
+            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+        )
+
+        def capture_checkpoint(root, operation, evidence, *, correlation_id=None):
+            checkpoint_records.append((root, operation, evidence, correlation_id))
+            return {"operation": operation, "correlation_id": correlation_id}
+
+        monkeypatch.setattr("ollama_autonomous_agent.record_qaudit_checkpoint", capture_checkpoint)
+        for method_name in (
+            "refresh_managed_surface_documents",
+            "load_checkpoint",
+            "record_tracker_event",
+            "update_resume_checkpoint",
+            "run_autonomous_loop",
+        ):
+            monkeypatch.setattr(
+                OllamaAutonomousAgent,
+                method_name,
+                MagicMock(side_effect=AssertionError(f"{method_name} must not run")),
+            )
+
+        exit_code = autonomous_agent_main(["continue", "--base-path", str(tmp_path)])
+
+        assert exit_code == 3
+        assert "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK" in capsys.readouterr().out
+        assert metric_refreshes == [tmp_path]
+        assert len(checkpoint_records) == 1
+        assert checkpoint_records[0][1] == "mission-continuation-no-safe-task"
+        assert checkpoint_records[0][2]["metrics"]["task_transitions_performed"] is False
+        assert checkpoint_records[0][3] == ledger["correlation_id"]
+
     def test_ready_checkpoint_does_not_bypass_success_contract(self, tmp_path, monkeypatch):
+        source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger = tmp_path / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger.parent.mkdir(parents=True)
+        ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
+        started = datetime.now(timezone.utc)
+        ledger["mission_clock"]["started_at"] = started.isoformat().replace("+00:00", "Z")
+        ledger["mission_clock"]["deadline_at"] = (started + timedelta(minutes=120)).isoformat().replace("+00:00", "Z")
+        first_task = next(task for task in ledger["tasks"] if task["id"] == "M01")
+        first_task["status"] = "PARTIALLY_COMPLETE"
+        first_task["blockers"] = []
+        from scripts.mission_task_ledger import status_counts
+
+        ledger["status_counts"] = status_counts(ledger)
+        target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         agent = OllamaAutonomousAgent(base_path=tmp_path)
         metric_refreshes = []
         monkeypatch.setattr(
@@ -831,11 +948,33 @@ class TestRestorePointMemoryAndLegacyInventory:
     def test_run_continue_cycle_exhaustion_is_not_a_lifecycle_pass(self, tmp_path, monkeypatch):
         repo = tmp_path / "repo"
         repo.mkdir()
+        source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger = repo / "ollamatracks" / "mission-task-ledger.json"
+        target_ledger.parent.mkdir(parents=True)
+        ledger = json.loads(source_ledger.read_text(encoding="utf-8"))
+        started = datetime.now(timezone.utc)
+        ledger["mission_clock"]["started_at"] = started.isoformat().replace("+00:00", "Z")
+        ledger["mission_clock"]["deadline_at"] = (started + timedelta(minutes=120)).isoformat().replace("+00:00", "Z")
+        first_task = next(task for task in ledger["tasks"] if task["id"] == "M01")
+        first_task["status"] = "PARTIALLY_COMPLETE"
+        first_task["blockers"] = []
+        first_task["next_action"] = "Continue its safe local validation."
+        from scripts.mission_task_ledger import status_counts
+
+        ledger["status_counts"] = status_counts(ledger)
+        target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         agent = OllamaAutonomousAgent(base_path=repo)
         monkeypatch.setenv("AUTO_CONTINUE_MAX", "2")
         monkeypatch.setattr(
             "ollama_autonomous_agent.refresh_mission_metrics",
             lambda root: {"status": "REFRESHED"},
+        )
+        monkeypatch.setattr(
+            "ollama_autonomous_agent.record_qaudit_checkpoint",
+            lambda root, operation, evidence, *, correlation_id=None: {
+                "operation": operation,
+                "correlation_id": correlation_id,
+            },
         )
         lifecycle = QVersionManager(repo)
         execution_id = "continue-cycle-exhausted"
