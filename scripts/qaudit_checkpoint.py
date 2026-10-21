@@ -197,6 +197,115 @@ def _instruction_inventory(root: Path) -> list[dict[str, Any]]:
     return inventory
 
 
+def _safe_markdown_value(value: Any, *, limit: int = 400) -> str:
+    return re.sub(r"\s+", " ", str(value)).replace("`", "'").replace("|", " ")[:limit]
+
+
+def _render_immediate_checkpoint(checkpoint: Mapping[str, Any]) -> str:
+    metrics = checkpoint.get("metrics", {})
+    metrics = metrics if isinstance(metrics, Mapping) else {}
+    phase_counts = metrics.get("mission_phase_status_counts", {})
+    task_counts = metrics.get("mission_status_counts", {})
+    review_counts = metrics.get("mission_requirement_line_review_counts", {})
+    resume_plan = metrics.get("mission_resume_plan", {})
+    dashboard = metrics.get("mission_dashboard_integrity", {})
+    phase_counts = phase_counts if isinstance(phase_counts, Mapping) else {}
+    task_counts = task_counts if isinstance(task_counts, Mapping) else {}
+    review_counts = review_counts if isinstance(review_counts, Mapping) else {}
+    resume_plan = resume_plan if isinstance(resume_plan, Mapping) else {}
+    dashboard = dashboard if isinstance(dashboard, Mapping) else {}
+    inventory = checkpoint.get("instruction_inventory", [])
+    instruction_count = len(inventory) if isinstance(inventory, list) else 0
+    safe_task_ids = resume_plan.get("safe_execution_task_ids")
+    if isinstance(safe_task_ids, list):
+        safe_task_ids_text = ",".join(str(task_id) for task_id in safe_task_ids) or "none"
+    else:
+        safe_task_ids_text = "NOT_MEASURED"
+
+    lines = [
+        "## Latest Mission Checkpoint",
+        "",
+        f"- Generated at: `{_safe_markdown_value(checkpoint.get('generated_at', 'NOT_MEASURED'))}`; correlation ID: `{_safe_markdown_value(checkpoint.get('correlation_id', 'NOT_MEASURED'))}`.",
+        f"- Operation/status: `{_safe_markdown_value(checkpoint.get('operation', 'UNKNOWN'))}` / `{_safe_markdown_value(checkpoint.get('status', 'UNKNOWN'))}`.",
+        f"- Repository/ref/HEAD: `{_safe_markdown_value(checkpoint.get('repository', 'UNKNOWN'))}` / `{_safe_markdown_value(checkpoint.get('ref', 'UNKNOWN'))}` / `{_safe_markdown_value(checkpoint.get('local_head_sha', 'unavailable'))}`.",
+        f"- Mission clock: started `{_safe_markdown_value(metrics.get('mission_start_utc', 'NOT_MEASURED'))}`; deadline `{_safe_markdown_value(metrics.get('deadline_utc', 'NOT_MEASURED'))}`; remaining seconds `{_safe_markdown_value(metrics.get('remaining_seconds', 'NOT_MEASURED'))}`.",
+        f"- Phase count/statuses: `{_safe_markdown_value(metrics.get('mission_phase_count', 'NOT_MEASURED'))}` / `{_safe_markdown_value(json.dumps(phase_counts, sort_keys=True, separators=(',', ':')) if phase_counts else 'NOT_MEASURED')}`.",
+        f"- Legacy task statuses (M01-M16): `{_safe_markdown_value(json.dumps(task_counts, sort_keys=True, separators=(',', ':')) if task_counts else 'NOT_MEASURED')}`.",
+        f"- Mission requirement lines: total `{_safe_markdown_value(metrics.get('mission_requirement_line_count', 'NOT_MEASURED'))}`; review `{_safe_markdown_value(json.dumps(review_counts, sort_keys=True, separators=(',', ':')) if review_counts else 'NOT_MEASURED')}`.",
+        f"- Safe queue: `{_safe_markdown_value(resume_plan.get('safe_execution_status', 'NOT_MEASURED'))}`; task IDs `{_safe_markdown_value(safe_task_ids_text)}`.",
+        f"- Dashboard integrity: `{_safe_markdown_value(dashboard.get('status', 'NOT_MEASURED'))}`; metric block SHA-256 `{_safe_markdown_value(dashboard.get('metric_block_sha256', 'NOT_MEASURED'))}`.",
+        f"- Instruction sources: `{instruction_count}`; inventory SHA-256 `{_safe_markdown_value(checkpoint.get('instruction_inventory_sha256', 'NOT_MEASURED'))}`.",
+        f"- Remote verified: `{checkpoint.get('remote_verified') is True}`; remote mutation performed: `{checkpoint.get('remote_mutation_performed') is True}`.",
+        f"- Blocker count: `{len(checkpoint.get('blockers', [])) if isinstance(checkpoint.get('blockers'), list) else 'NOT_MEASURED'}`; details: see the paired checkpoint in `oe2.txt` and `remotecompletion.md`.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def _update_immediate_checkpoint(root: Path, checkpoint: Mapping[str, Any]) -> dict[str, Any]:
+    path = root / "immediate.md"
+    result: dict[str, Any] = {"status": "BLOCKED", "path": "immediate.md"}
+    if path.is_symlink():
+        result["reason"] = "symlink"
+        return result
+    try:
+        original = path.read_bytes()
+        text = original.decode("utf-8")
+    except FileNotFoundError:
+        result["reason"] = "missing"
+        return result
+    except (OSError, UnicodeDecodeError) as exc:
+        result["reason"] = type(exc).__name__
+        return result
+
+    begin = "<!-- BEGIN QMOI MANAGED: latest mission checkpoint -->"
+    end = "<!-- END QMOI MANAGED: latest mission checkpoint -->"
+    begin_count, end_count = text.count(begin), text.count(end)
+    if begin_count != end_count or begin_count > 1:
+        result["reason"] = "ambiguous_markers"
+        return result
+    managed = f"{begin}\n{_render_immediate_checkpoint(checkpoint)}{end}"
+    if begin_count == 1:
+        start = text.index(begin)
+        finish = text.index(end, start) + len(end)
+        updated = text[:start] + managed + text[finish:]
+    else:
+        updated = text.rstrip() + "\n\n" + managed + "\n"
+
+    temporary = None
+    try:
+        if path.is_symlink() or path.read_bytes() != original:
+            result["reason"] = "changed_during_update"
+            return result
+        descriptor, temporary = tempfile.mkstemp(prefix=".immediate.md.", suffix=".tmp", dir=root)
+        os.fchmod(descriptor, stat.S_IMODE(path.stat().st_mode))
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            stream.write(updated)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+        temporary = None
+        directory_fd = os.open(root, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    except OSError as exc:
+        result["reason"] = type(exc).__name__
+        return result
+    finally:
+        if temporary and os.path.exists(temporary):
+            os.unlink(temporary)
+
+    content = path.read_bytes()
+    return {
+        "status": "UPDATED",
+        "path": "immediate.md",
+        "bytes": len(content),
+        "sha256": hashlib.sha256(content).hexdigest(),
+    }
+
+
 def record_qaudit_checkpoint(
     root: Path | str,
     operation: str,
@@ -302,6 +411,7 @@ def record_qaudit_checkpoint(
         "evidence_refs": [
             "oe2.txt",
             "remotecompletion.md",
+            "immediate.md",
             "remote-completion.json",
             "remote-evidence-ledger.jsonl",
         ],
@@ -332,7 +442,32 @@ def record_qaudit_checkpoint(
         "oe2.txt": _sha256(target / "oe2.txt"),
         "remotecompletion.md": _sha256(target / "remotecompletion.md"),
     }
+    immediate_document = _update_immediate_checkpoint(target, checkpoint)
+    checkpoint["immediate_document"] = immediate_document
+    if immediate_document["status"] != "UPDATED":
+        immediate_blocker = (
+            f"immediate_checkpoint_update_{immediate_document.get('reason', 'blocked')}"
+        )
+        checkpoint["blockers"] = sorted(set(
+            checkpoint["blockers"]
+            + [immediate_blocker]
+        ))
+        failure_note = (
+            f"\n- Automatic `immediate.md` checkpoint update: `BLOCKED`; "
+            f"reason: `{_safe_markdown_value(immediate_document.get('reason', 'blocked'))}`. "
+            f"Correlation ID: `{correlation_id}`.\n"
+        ).encode("utf-8")
+        _append_pair_locked(
+            (target / "oe2.txt", target / "remotecompletion.md"),
+            failure_note,
+        )
+        checkpoint["paired_document_sha256"] = {
+            "oe2.txt": _sha256(target / "oe2.txt"),
+            "remotecompletion.md": _sha256(target / "remotecompletion.md"),
+        }
     ledger_record["result"]["paired_document_sha256"] = checkpoint["paired_document_sha256"]
+    ledger_record["result"]["immediate_document"] = immediate_document
+    ledger_record["diagnosis"] = checkpoint["blockers"]
     _append_locked(
         target / "remote-evidence-ledger.jsonl",
         json.dumps(ledger_record, sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n",

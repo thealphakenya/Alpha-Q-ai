@@ -196,3 +196,91 @@ The paired checkpoint at `2026-10-20T03:31:23.533179Z` retains correlation
 unreviewed requirement lines, no safe local task, and `remote_verified: false`.
 M01 remains blocked on owner/admin-authorized read-only branch-protection
 evidence. No protected or remote operation was performed.
+
+## New authorized run - 2026-10-20 21:41 UTC
+
+The prior run `newmission-120-minute-2026-10-20-a9af2416` expired and was
+archived with its statuses preserved. The user's latest `continue` request
+authorized a distinct run: `newmission-120-minute-2026-10-20-44e3997c`,
+correlation `44e3997c-bae2-435b-93de-9676e7a9631d`, started
+`2026-10-20T21:39:04.945359Z`, deadline `2026-10-20T23:39:04.945359Z`.
+No remote mutation was performed.
+
+The instruction inventory passed: 12 discovered, 12 read, 0 unreadable/invalid;
+source contents were not recorded. The guarded continuation returned
+`BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`, without task/phase transitions. Local
+Ollama remains unavailable, so no inference or autonomous implementation is
+claimed. Metrics at `2026-10-20T21:41:22.141959Z` retain 5 partial and 13 pending
+phases, task counts of 1 verified complete, 7 partial, 3 blocked, and 5 pending,
+772 unreviewed mission lines, and `remote_verified: false`.
+
+Local validation of the existing asset-continuity change passed:
+`pytest -q tests/test_qaudits_evolution_planner.py` -> 9 passed. The worktree
+already contained user edits in `ALLCOMPARETYPES.md`, `QAUDITS.md`,
+`QVERSIONMANAGER.md`, `scripts/qaudits_evolution_planner.py`,
+`tests/test_qaudits_evolution_planner.py`, and untracked `Qstarlink.md`; these
+were inspected and preserved. No broad QAUDITS document refresh was run because
+its writer updates additional managed documents. `git diff --check` passed.
+
+Next action: resolve M01 with owner/admin-authorized read-only branch-policy
+evidence and provide an approved hosted Ollama runtime; then rerun the planner.
+
+## Ollama and metrics verification - 2026-10-20 22:02 UTC
+
+Installed the official Ollama `0.40.6` Linux archive under
+`/home/codespace/.local`; SHA-256 matched the official release metadata
+(`c164ab8b1b28e2a247c29719b8e404c423c5b83ae64c3ab4e59d50c7ff7fc5e0`). The
+loopback-only service is running in this Codespace. Pulled
+`qwen2.5-coder:3b` (model layer digest
+`4a188102020e9c9530b687fd6400f775c45e90a0d7baafe65bd0a36963fbb7ba`) and
+verified real inference returned `OLLAMA_READY`. This verifies local model
+availability only; the autonomous agent's GitHub-hosted runtime guard remains
+enabled, so no local autonomous mission execution is claimed.
+
+Improved `scripts/mission_task_ledger.py` so dashboard refresh reads back and
+verifies exactly one matching PH01-PH18 block in `oe2.txt`, `remotecompletion.md`,
+and `oe2.md`. It records the stable block SHA-256 and per-document integrity
+status in the correlated mission checkpoint; mismatches raise `LedgerError`.
+Validation: `tests/test_mission_task_ledger.py` plus three continuation-finalizer
+regressions -> 38 passed. Ollama reviewed the diff read-only. The live writer
+checkpoint at `2026-10-20T22:02:03.691139Z` reports parity `PASS`; all three
+blocks hash to `4bc23aab6c80bd8f503c65182e4b6f1d2b010724750acb3e0c8a936f21f08a58`.
+`git diff --check` and correlation checks passed.
+
+Mission statuses remain 5 partial phases and 13 pending, 772 mission lines
+unreviewed, and `remote_verified: false`. The guarded continuation still reports
+no safe dependency-ready task; M01 needs owner/admin-authorized read-only
+branch-policy evidence. The Ollama server process is scoped to this Codespace
+session and is not claimed to survive a container restart.
+
+## Continue checkpoint - 2026-10-20 22:07 UTC
+
+The instruction inventory was refreshed, and the guarded Ollama-agent
+continuation again returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no task or
+phase transition occurred. The local Ollama service remains available, but the
+approved hosted-runtime guard remains enabled.
+
+The paired checkpoint at `2026-10-20T22:07:01.860090Z` uses correlation
+`44e3997c-bae2-435b-93de-9676e7a9631d`. Read-back verification passed for the
+PH01-PH18 blocks in `oe2.txt`, `remotecompletion.md`, and `oe2.md`; shared block
+SHA-256: `8526d3745d867c85f9a720a19c6c4e11e6342d31956791cfeb7fddbd0186a34d`.
+Counts remain 5 partial and 13 pending phases, 772 unreviewed mission lines,
+and `remote_verified: false`. M01 still requires owner/admin-authorized
+read-only branch-policy evidence. No remote or protected action was performed.
+
+<!-- BEGIN QMOI MANAGED: latest mission checkpoint -->
+## Latest Mission Checkpoint
+
+- Generated at: `2026-10-21T00:06:54.299563Z`; correlation ID: `2ebc7dba-1e63-45e9-b1fc-f5a626f08600`.
+- Operation/status: `mission-new-run` / `IN_PROGRESS`.
+- Repository/ref/HEAD: `thealphakenya/Alpha-Q-ai` / `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `fb82635fab250cd4a18e96628340e19b958be84b`.
+- Mission clock: started `2026-10-21T00:06:53.736391Z`; deadline `2026-10-21T02:06:53.736391Z`; remaining seconds `7199.962`.
+- Phase count/statuses: `18` / `{"BLOCKED":0,"FAILED":0,"IN_PROGRESS":0,"PARTIALLY_COMPLETE":5,"PASS":0,"PENDING":13}`.
+- Legacy task statuses (M01-M16): `{"blocked":3,"failed":0,"in_progress":0,"partially_complete":7,"pending":5,"verified_complete":1}`.
+- Mission requirement lines: total `772`; review `{"not_reviewed":772,"reviewed":0}`.
+- Safe queue: `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; task IDs `none`.
+- Dashboard integrity: `PASS`; metric block SHA-256 `1d169c08e10112b8d422913a2d83f6bcaed470fd8f834aefbbadf35df7035fa7`.
+- Instruction sources: `12`; inventory SHA-256 `77e2c339fc5fc7128667d3056f55b5d2fd618ba1a1185b25cf26a6f6b72ab43d`.
+- Remote verified: `False`; remote mutation performed: `False`.
+- Blocker count: `8`; details: see the paired checkpoint in `oe2.txt` and `remotecompletion.md`.
+<!-- END QMOI MANAGED: latest mission checkpoint -->

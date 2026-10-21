@@ -807,14 +807,29 @@ def test_dashboard_refresh_replaces_stale_metrics_and_preserves_later_history(tm
     for name in ("oe2.txt", "remotecompletion.md", "oe2.md"):
         (tmp_path / name).write_text(legacy, encoding="utf-8")
 
-    refresh_paired_mission_phase_metrics(tmp_path, ledger)
+    integrity = refresh_paired_mission_phase_metrics(tmp_path, ledger)
+
+    assert integrity["status"] == "PASS"
+    assert set(integrity["documents"]) == {"oe2.txt", "remotecompletion.md", "oe2.md"}
+    metric_blocks = []
 
     for name in ("oe2.txt", "remotecompletion.md", "oe2.md"):
-        refreshed = (tmp_path / name).read_text(encoding="utf-8")
+        path = tmp_path / name
+        refreshed = path.read_text(encoding="utf-8")
         assert refreshed.count("| PH") == 18
         assert "old metrics" not in refreshed
         assert "keep history" in refreshed
         assert "Remote verification remains `False`" in refreshed
+        start = refreshed.index("<!-- BEGIN QMOI MISSION PHASE METRICS -->")
+        end = refreshed.index("<!-- END QMOI MISSION PHASE METRICS -->", start) + len(
+            "<!-- END QMOI MISSION PHASE METRICS -->"
+        )
+        metric_blocks.append(refreshed[start:end])
+        metadata = integrity["documents"][name]
+        assert metadata["metric_block_sha256"] == hashlib.sha256(metric_blocks[-1].encode("utf-8")).hexdigest()
+
+    assert metric_blocks[0] == metric_blocks[1] == metric_blocks[2]
+    assert integrity["metric_block_sha256"] == hashlib.sha256(metric_blocks[0].encode("utf-8")).hexdigest()
 
 
 def test_mission_metrics_include_task_counts_and_elapsed_deadline_state():

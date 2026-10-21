@@ -108,6 +108,57 @@ PLAN_TARGETS = {
     ),
 }
 
+MODEL_COMPARISON_EVIDENCE_PATH = "ollamatracks/model_comparison_evidence.json"
+DATASET_COMPARISON_EVIDENCE_PATH = "ollamatracks/dataset_comparison_evidence.json"
+
+ASSET_CONTINUITY_CONTRACTS = {
+    "model_dataset_replacement": {
+        "documents": ("ALLCOMPARETYPES.md", "QAUDITS.md", "QVERSIONMANAGER.md"),
+        "implementation_sources": (
+            "scripts/qaudits_evolution_planner.py",
+            "scripts/q_version_manager.py",
+        ),
+        "tests": ("tests/test_qaudits_evolution_planner.py",),
+        "evidence_artifacts": (
+            MODEL_COMPARISON_EVIDENCE_PATH,
+            DATASET_COMPARISON_EVIDENCE_PATH,
+        ),
+    },
+    "project_memory_continuity": {
+        "documents": (
+            "MEMORY_INDEX.md",
+            "QMOI_REALTIME_MEMORY_INDEX.md",
+            "projectandautoprojects.md",
+            "projectsandautoprojects.md",
+        ),
+        "implementation_sources": (
+            "Alpha-Q-ai-2025/src/services/QmoiMemory.ts",
+            "Alpha-Q-ai-2025/src/hooks/useAutoProjects.ts",
+            "scripts/ollama_autonomous_agent.py",
+        ),
+        "tests": ("tests/test_ollama_autonomous_agent.py",),
+        "evidence_artifacts": ("ollamatracks/restore_point_memory.json",),
+    },
+    "project_finance_accountability": {
+        "documents": ("FINANCIALMANAGER.md", "projectsandautoprojects.md"),
+        "implementation_sources": ("Alpha-Q-ai-2025/src/hooks/useAutoProjects.ts",),
+        "tests": ("Alpha-Q-ai-2025/tests/integration/test_financial_verification.py",),
+        "evidence_artifacts": (),
+    },
+    "engineering_validation": {
+        "documents": ("QENGINEER.md", "QVIRTUALLABS.md", "ALLCOMPARETYPES.md"),
+        "implementation_sources": ("scripts/qaudits_evolution_planner.py",),
+        "tests": ("tests/test_qaudits_evolution_planner.py",),
+        "evidence_artifacts": (),
+    },
+    "connectivity_starlink": {
+        "documents": ("Qstarlink.md",),
+        "implementation_sources": ("Alpha-Q-ai-2025/src/services/NetworkManager.ts",),
+        "tests": ("Alpha-Q-ai-2025/src/services/NetworkManager.test.ts",),
+        "evidence_artifacts": (),
+    },
+}
+
 EVOLUTION_MARKER = re.compile(
     r"\b(?:evol\w*|self[- ]?improv\w*|adapt\w*|capability growth)\b",
     re.IGNORECASE,
@@ -131,8 +182,6 @@ FEATURE_DECLARATION = re.compile(
     r"^\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(?:feature|capability)\s*[:—-]",
     re.IGNORECASE,
 )
-MODEL_COMPARISON_EVIDENCE_PATH = "ollamatracks/model_comparison_evidence.json"
-DATASET_COMPARISON_EVIDENCE_PATH = "ollamatracks/dataset_comparison_evidence.json"
 MODEL_COMPARISON_EVIDENCE_SCHEMA_VERSION = 2
 DATASET_COMPARISON_EVIDENCE_SCHEMA_VERSION = 1
 MODEL_COMPARISON_DIMENSIONS = {
@@ -1220,6 +1269,68 @@ def _file_evidence(root: Path, relative: str) -> dict[str, Any]:
     }
 
 
+def build_asset_continuity_inventory(root: Path | str) -> dict[str, Any]:
+    """Inventory explicit continuity source paths without claiming feature coverage."""
+    source_root = Path(root).resolve()
+    domains: dict[str, dict[str, Any]] = {}
+    all_files: list[dict[str, Any]] = []
+    for domain, contracts in ASSET_CONTINUITY_CONTRACTS.items():
+        files = {
+            kind: [_file_evidence(source_root, path) for path in paths]
+            for kind, paths in contracts.items()
+        }
+        flattened = [item for group in files.values() for item in group]
+        observed_count = sum(item["status"] == "observed_local" for item in flattened)
+        missing_count = len(flattened) - observed_count
+        domains[domain] = {
+            "status": "CANDIDATE_DISCOVERY_ONLY",
+            "files": files,
+            "metrics": {
+                "required_path_count": len(flattened),
+                "observed_path_count": observed_count,
+                "missing_or_unavailable_path_count": missing_count,
+                "required_test_count": len(files["tests"]),
+                "observed_test_count": sum(
+                    item["status"] == "observed_local" for item in files["tests"]
+                ),
+                "remote_verified": False,
+            },
+        }
+        all_files.extend(flattened)
+
+    observed_count = sum(item["status"] == "observed_local" for item in all_files)
+    missing_count = len(all_files) - observed_count
+    inventory = {
+        "schema_version": 1,
+        "status": "CANDIDATE_DISCOVERY_ONLY",
+        "source_scope": "explicit_local_contract_paths",
+        "domains": domains,
+        "metrics": {
+            "required_domain_count": len(domains),
+            "domain_count_with_all_paths_observed": sum(
+                domain["metrics"]["missing_or_unavailable_path_count"] == 0
+                for domain in domains.values()
+            ),
+            "required_path_count": len(all_files),
+            "observed_path_count": observed_count,
+            "missing_or_unavailable_path_count": missing_count,
+            "remote_verified": False,
+            "automatic_replacement_enabled": False,
+            "financial_actions_authorized": False,
+            "network_changes_authorized": False,
+        },
+        "limitations": [
+            "path presence and hashes do not establish semantic completeness, implementation, test success, ownership, authorization, or synchronization",
+            "file contents are not included; financial, wallet, banking, credential, and private project values are not inspected or recorded",
+            "the fixed path list is a bounded local contract, not an exhaustive project, provider, repository, or remote-history census",
+        ],
+    }
+    inventory["source_manifest_sha256"] = hashlib.sha256(
+        json.dumps(all_files, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return inventory
+
+
 def build_evolution_plan(
     root: Path | str,
     *,
@@ -1290,6 +1401,7 @@ def build_evolution_plan(
         "stages": stages,
         "qstats": qstats,
         "model_comparison": build_model_comparison_inventory(source_root),
+        "asset_continuity": build_asset_continuity_inventory(source_root),
         "qvirtual_labs": build_qvirtual_labs_plan(
             source_root,
         ),

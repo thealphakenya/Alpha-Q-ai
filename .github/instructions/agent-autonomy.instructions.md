@@ -16,6 +16,13 @@ For the shared PH01-PH18 dashboard, checkpoint, and monitoring lifecycle, follow
 - Inventory is not semantic proof. Map each applicable requirement to implementation, tests, workflows, docs, and remote evidence.
 - Do not rewrite, delete, weaken, or self-approve policy instructions during routine automation. Update generated status/evidence only unless an authorized policy change explicitly requests a policy edit.
 
+## M01 branch-policy acceptance
+
+- M01 is not complete until current, owner/admin-authorized, read-only evidence independently covers both target repositories: `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`.
+- Bind each evidence record to the repository, protected branch/ref, full SHA, authenticated actor and credential category, effective permissions, effective branch-protection/ruleset configuration, read-only endpoint or export provenance, response/capture time, and a redacted artifact hash/reference.
+- Treat 401/403/404, missing ruleset fields, token presence, user assertions, screenshots without provenance, and workflow dispatch as `UNKNOWN` or blocked, never as proof. Do not finish M01, start dependent tasks, or infer write authority from these signals.
+- Record M01 completion only through the mission-ledger helper with independently reviewable evidence references. Keep secret values out of prompts, artifacts, and logs. If no eligible independent task remains, checkpoint the precise owner/admin action and yield instead of retrying or bypassing the gate.
+
 ## Autonomous execution
 
 - Automatically perform safe local and read-only work, validate focused changes, persist correlation IDs and checkpoints, and keep a prioritized resumable action queue for remaining gates.
@@ -41,6 +48,7 @@ For the shared PH01-PH18 dashboard, checkpoint, and monitoring lifecycle, follow
 - Carry forward user requirements only when they are explicit in the active request or recorded in current repository evidence. Preserve newer user edits and reconcile conflicts in favor of the newest instruction without claiming cross-session memory that is not actually available.
 - Secret-variable presence is not authentication. Distinguish Codespaces secrets, Actions secrets/variables, user tokens, and App installation tokens. Never print, persist, or place secret values in prompts, evidence, commands, or workflow summaries.
 - Do not authentictate with an App key marked compromised until the owner confirms revocation/rotation and replacement. App permission snapshots are reported configuration until independently verified; use least privilege and short-lived tokens.
+- Treat the user's report that App credentials exist in Actions secrets as `USER_REPORTED` until authorized metadata/read-only identity evidence confirms the configuration. The target-owned preflight requires the Actions variable `QMOI_APP_KEY_ROTATION_CONFIRMED=true` per repository after owner-confirmed rotation; that variable is an attestation, not proof of rotation. Never read secret values, mint with the historically exposed key, or fall back to PAT/`GITHUB_TOKEN` for an App-authenticated operation.
 - QMOI may inventory names, prepare setup checklists, and validate through authorized read-only endpoints. It must not invent or self-issue provider credentials, alter accounts, or claim readiness when external ownership, authorization, or verification is missing.
 
 ## QAUDITS-driven execution

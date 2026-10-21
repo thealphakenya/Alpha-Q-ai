@@ -17,7 +17,11 @@ from scripts.autonomous_completion_engine import (
 from scripts.checkpoint_manager import CheckpointManager
 from scripts.execution_lock import ExecutionLock
 from scripts.live_activity_events import LiveActivity
-from scripts.qaudit_checkpoint import _append_pair_locked, record_qaudit_checkpoint
+from scripts.qaudit_checkpoint import (
+    _append_pair_locked,
+    _update_immediate_checkpoint,
+    record_qaudit_checkpoint,
+)
 from scripts.q_version_manager import QVersionManager
 from scripts.ollama_research import (
     EXTERNAL_RESEARCH_CONTROLS,
@@ -1604,6 +1608,10 @@ def test_qaudit_checkpoint_appends_paired_ledgers_and_keeps_remote_blocked(tmp_p
     root.mkdir()
     for filename in ("oe2.txt", "remotecompletion.md", "remote-evidence-ledger.jsonl"):
         (root / filename).write_text("", encoding="utf-8")
+    (root / "immediate.md").write_text(
+        "# Human mission notes\nKeep this authored paragraph.\n",
+        encoding="utf-8",
+    )
     (root / "remote-completion.json").write_text(
         json.dumps({"schema_version": "1.0", "state": {}, "blockers": []}),
         encoding="utf-8",
@@ -1628,7 +1636,13 @@ def test_qaudit_checkpoint_appends_paired_ledgers_and_keeps_remote_blocked(tmp_p
             "artifact_path": "ollamatracks/audit.json",
             "artifact_sha256": "b" * 64,
             "artifact_bytes": 123,
-            "metrics": {"files": 1},
+            "metrics": {
+                "files": 1,
+                "mission_resume_plan": {
+                    "safe_execution_status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
+                    "safe_execution_task_ids": [],
+                },
+            },
             "blockers": ["incomplete_local_input"],
         },
     )
@@ -1649,6 +1663,23 @@ def test_qaudit_checkpoint_appends_paired_ledgers_and_keeps_remote_blocked(tmp_p
     assert ledger[0]["correlation_id"] == checkpoint["correlation_id"]
     assert ledger[0]["verification"]["terminal"] is False
 
+    first_immediate = (root / "immediate.md").read_text(encoding="utf-8")
+    assert "# Human mission notes\nKeep this authored paragraph.\n" in first_immediate
+    assert checkpoint["correlation_id"] in first_immediate
+    assert "task IDs `none`" in first_immediate
+
+    second_checkpoint = record_qaudit_checkpoint(
+        root,
+        "qaudit-test-second",
+        {"status": "NEEDS_REVIEW", "metrics": {"files": 2}},
+        correlation_id="second-checkpoint-correlation",
+    )
+    second_immediate = (root / "immediate.md").read_text(encoding="utf-8")
+    assert second_checkpoint["correlation_id"] in second_immediate
+    assert second_immediate.count("<!-- BEGIN QMOI MANAGED: latest mission checkpoint -->") == 1
+    assert second_immediate.count("<!-- END QMOI MANAGED: latest mission checkpoint -->") == 1
+    assert "# Human mission notes\nKeep this authored paragraph.\n" in second_immediate
+
 
 def test_qaudit_paired_append_rolls_back_when_one_target_is_a_symlink(tmp_path):
     oe2 = tmp_path / "oe2.txt"
@@ -1663,6 +1694,26 @@ def test_qaudit_paired_append_rolls_back_when_one_target_is_a_symlink(tmp_path):
 
     assert oe2.read_text(encoding="utf-8") == "prior continuation\n"
     assert remote_target.read_text(encoding="utf-8") == "prior remote evidence\n"
+
+
+def test_immediate_checkpoint_writer_fails_closed_for_symlink_and_ambiguous_markers(tmp_path):
+    checkpoint = {"correlation_id": "checkpoint-correlation", "metrics": {}}
+    target = tmp_path / "immediate-target.md"
+    target.write_text("Keep this authored content.\n", encoding="utf-8")
+    symlink = tmp_path / "immediate.md"
+    symlink.symlink_to(target)
+
+    symlink_result = _update_immediate_checkpoint(tmp_path, checkpoint)
+    assert symlink_result == {"status": "BLOCKED", "path": "immediate.md", "reason": "symlink"}
+    assert target.read_text(encoding="utf-8") == "Keep this authored content.\n"
+
+    symlink.unlink()
+    malformed = "<!-- BEGIN QMOI MANAGED: latest mission checkpoint -->\nold\n<!-- BEGIN QMOI MANAGED: latest mission checkpoint -->"
+    symlink.write_text(malformed, encoding="utf-8")
+    malformed_result = _update_immediate_checkpoint(tmp_path, checkpoint)
+    assert malformed_result["status"] == "BLOCKED"
+    assert malformed_result["reason"] == "ambiguous_markers"
+    assert symlink.read_text(encoding="utf-8") == malformed
 
 
 def test_qaudit_paired_append_rolls_back_after_partial_write(tmp_path, monkeypatch):
@@ -1726,10 +1777,22 @@ def test_qaudit_checkpoint_resolves_only_explicitly_closed_run_blockers(tmp_path
     )
 
     completion = json.loads((root / "remote-completion.json").read_text(encoding="utf-8"))
+    oe2 = (root / "oe2.txt").read_text(encoding="utf-8")
+    remote = (root / "remotecompletion.md").read_text(encoding="utf-8")
     assert checkpoint["correlation_id"] == "audit-run-correlation"
+    assert checkpoint["immediate_document"] == {
+        "status": "BLOCKED",
+        "path": "immediate.md",
+        "reason": "missing",
+    }
     assert "audit_inventory_run_not_yet_terminal" not in completion["blockers"]
     assert "historical_remote_blocker" in completion["blockers"]
     assert "local_audit_needs_review" in completion["blockers"]
+    assert "immediate_checkpoint_update_missing" in completion["blockers"]
+    assert "immediate_checkpoint_update_missing" in checkpoint["blockers"]
+    assert oe2 == remote
+    assert "Automatic `immediate.md` checkpoint update: `BLOCKED`" in oe2
+    assert "audit-run-correlation" in oe2
     assert completion["state"]["remote_verified"] is False
 
 

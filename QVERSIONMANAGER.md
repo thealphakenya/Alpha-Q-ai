@@ -80,6 +80,18 @@ The four accountability stages are intentionally explicit between OFCA and Markd
 
 `ollamatracks/qaudits_evolution_plan.json` is a deterministic QStats planning artifact bound to the active QAUDITS source manifest. It reports observed/missing contract paths and a plan hash; all entries remain `PLANNED` until their owning stage writes measured execution evidence. QLion variation/extension totals are candidate counts from the local system-accountability audit and do not pass `LION_AND_EXTENSION_VARIANTS`; that stage still requires complete source mapping, tests, owner/review evidence, and the same exact-SHA gates as the other accountability stages.
 
+The evolution planner emits `asset_continuity`, a fixed-path, value-free
+inventory for model/dataset replacement, project and memory continuity,
+project-finance accountability, engineering validation, and
+Starlink/connectivity. Its expected/observed/missing path and test counts are
+candidate-discovery metrics only. They do not satisfy `PRODUCTION_SCAN` or
+`PRODUCTION_REPLACEMENTS`, and they do not establish project completeness,
+financial ownership, memory synchronization, provider access, or remote
+verification. Q-version finalization must remain blocked until the owning
+stage independently supplies its required lineage, test, authorization, and
+exact-SHA evidence; the current path inventory alone must never be promoted to
+a passing stage.
+
 Every stage is a fail-closed gate. If a required stage is missing, blocked, or unsupported by exact remote evidence, the agent must record the blocker and continue only in read-only or resumable mode; it must never claim final completion without terminal target-owned workflow proof.
 
 `audit_lifecycle()` reports the earliest missing or non-passing required stage as `next_stage`, with a `next_action` to run that stage's QAUDITS check and persist its stage-bound precondition. A missing ledger points to `MERGE_START`; an unreadable or invalid hash chain has no resumable stage and instructs the agent to preserve and verify the existing ledger before recovery. These fields are local recovery guidance, not authorization or evidence that a stage has passed.

@@ -243,6 +243,39 @@ freshness, source hashes, and observed response status; unavailable scopes
 remain explicit. Add new providers only as named scopes, not as a claim of
 coverage of every platform.
 
+### Asset continuity and cross-surface metrics
+
+The evolution planner emits an `asset_continuity` inventory with a fixed,
+schema-versioned path contract for model/dataset replacement, project and
+memory continuity, project-finance accountability, engineering validation,
+and Starlink/connectivity. For each domain it records expected, observed, and
+missing/unavailable document, implementation-source, test, and evidence paths,
+plus path byte counts and hashes. The aggregate includes domain and path
+denominators and a source-manifest hash. This is a local path-presence measure:
+it does not claim that a project, model, dataset, wallet, bank account,
+engineering feature, or network integration works or is synchronized.
+
+The generated metric is
+`ollamatracks/qaudits_evolution_plan.json:asset_continuity` after the supported
+planner refresh; a previously generated artifact may be stale until refreshed.
+Its state remains
+`CANDIDATE_DISCOVERY_ONLY`; remote verification, automatic replacement,
+financial authorization, and network-change authorization remain false.
+Missing contract paths and tests must remain visible rather than being
+interpreted as zero-risk. The inventory hashes files but does not parse or
+record account balances, transaction values, credentials, private project
+content, or source prose. Additions or path-contract changes require focused
+tests and review; counts are not semantic coverage or approval.
+
+Project records and memory should retain stable project IDs, source lineage,
+creation/update timestamps with timezone, current status, dependencies,
+features, and checkpoint references across model/data migrations. Finance
+and deal records require separately authorized, immutable transaction
+evidence and must never be synthesized from project metadata. Connectivity
+metrics distinguish configured, observed, authorized, and actually tested
+providers; a Starlink mention or settings document is not proof of a
+connection.
+
 Content-safety requirements must be measured independently from document mentions: avoid unsolicited or user-prohibited sexual/pornographic and disturbing content, and block assistance that facilitates criminal conduct for every user. A role or claimed master identity must not bypass law, platform safeguards, or safety refusals. Current Markdown inventories do not constitute a production content classifier or enforcement proof; record classifier coverage, false-positive/negative tests, refusal outcomes, appeals/review, and authorization evidence as `NOT_MEASURED` until implemented and tested.
 
 ## Audit artifacts and fail-closed advancement

@@ -13227,11 +13227,114 @@ All timestamps use UTC ISO-8601 format.
             refresh_result = refresh_mission_metrics(self.root_dir)
             self.results["mission_metrics_refresh"] = refresh_result
 
+    def _analyze_blocked_mission(
+        self,
+        ledger: dict[str, Any],
+        resume_plan: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Ask Ollama for bounded, read-only blocker triage; never authorize work."""
+        known_task_ids = {task["id"] for task in ledger.get("tasks", []) if isinstance(task, dict)}
+        task_summary = [
+            {
+                "id": str(task.get("id", "")),
+                "status": str(task.get("status", "UNKNOWN")),
+                "dependencies": [
+                    str(item) for item in task.get("dependencies", [])
+                    if isinstance(item, str)
+                ],
+                "blocker_count": len(task.get("blockers", []))
+                if isinstance(task.get("blockers", []), list) else 0,
+            }
+            for task in ledger.get("tasks", [])
+            if isinstance(task, dict) and isinstance(task.get("id"), str)
+        ]
+        safe_actions = {
+            "REQUEST_OWNER_EVIDENCE",
+            "REVIEW_LOCAL_EVIDENCE",
+            "RESOLVE_DEPENDENCY",
+            "WAIT_FOR_AUTHORITY",
+            "NO_ACTION",
+        }
+        rationale_codes = {
+            "OWNER_AUTHORITY_REQUIRED",
+            "DEPENDENCY_BLOCKED",
+            "LOCAL_EVIDENCE_REVIEW",
+            "NO_ELIGIBLE_TASK",
+        }
+        advisory = {
+            "status": "UNAVAILABLE",
+            "action": "NO_ACTION",
+            "task_ids": [],
+            "rationale_code": "OLLAMA_UNAVAILABLE",
+            "execution_authorized": False,
+            "task_transitions_performed": False,
+            "remote_mutation_performed": False,
+        }
+        try:
+            self.verify_ollama()
+            prompt_data = {
+                "safe_execution_status": str(resume_plan.get("safe_execution_status", "UNKNOWN")),
+                "recommended_task_id": (
+                    resume_plan.get("recommended_task_id")
+                    if resume_plan.get("recommended_task_id") in known_task_ids else None
+                ),
+                "safe_execution_task_ids": [],
+                "unreviewed_requirement_line_count": int(
+                    resume_plan.get("unreviewed_requirement_line_count", 0)
+                ),
+                "tasks": task_summary,
+                "allowed_actions": sorted(safe_actions),
+                "allowed_rationale_codes": sorted(rationale_codes),
+            }
+            prompt = (
+                "Provide read-only blocker triage for this mission plan. "
+                "Return JSON only with exactly these fields: action, task_ids, rationale_code. "
+                "Use only the allowed enum values and listed task IDs. Do not emit commands, "
+                "authorization claims, secret data, task transitions, or completion claims. "
+                "Your output is advisory and will not be executed.\n"
+                + json.dumps(prompt_data, sort_keys=True, separators=(",", ":"))
+            )
+            response = self.ollama.generate(prompt)
+            if not isinstance(response, str) or len(response) > 4096:
+                raise ValueError("invalid_advisory_size")
+            parsed = json.loads(response)
+            if not isinstance(parsed, dict) or set(parsed) != {"action", "task_ids", "rationale_code"}:
+                raise ValueError("invalid_advisory_shape")
+            action = parsed["action"]
+            task_ids = parsed["task_ids"]
+            rationale_code = parsed["rationale_code"]
+            if (
+                not isinstance(action, str)
+                or action not in safe_actions
+                or not isinstance(task_ids, list)
+                or len(task_ids) > 16
+                or any(not isinstance(task_id, str) or task_id not in known_task_ids for task_id in task_ids)
+                or not isinstance(rationale_code, str)
+                or rationale_code not in rationale_codes
+            ):
+                raise ValueError("invalid_advisory_values")
+            advisory = {
+                "status": "ADVISORY_ONLY",
+                "action": action,
+                "task_ids": list(dict.fromkeys(task_ids)),
+                "rationale_code": rationale_code,
+                "execution_authorized": False,
+                "task_transitions_performed": False,
+                "remote_mutation_performed": False,
+            }
+        except (OllamaRuntimeError, OSError, RuntimeError, ValueError, json.JSONDecodeError) as exc:
+            advisory["reason_code"] = (
+                type(exc).__name__ if not isinstance(exc, ValueError)
+                else str(exc)[:80]
+            )
+        return advisory
+
     def _run_continue_cycle(
         self,
     ) -> int:
         """Resume safely from the latest checkpoint and keep the autonomous loop going until success or the bounded retry limit is reached."""
         mission_correlation_id: str | None = None
+        mission_ledger: dict[str, Any] | None = None
         try:
             mission_ledger = load_ledger(
                 self.root_dir / "ollamatracks" / "mission-task-ledger.json"
@@ -13263,6 +13366,20 @@ All timestamps use UTC ISO-8601 format.
                 else "BLOCKED_LEDGER_UNAVAILABLE"
             )
             self.results["continuation_status"] = blocker_status
+            blocker_advisory = (
+                self._analyze_blocked_mission(mission_ledger, mission_resume_plan)
+                if mission_ledger is not None and isinstance(safe_task_ids, list)
+                else {
+                    "status": "UNAVAILABLE",
+                    "action": "NO_ACTION",
+                    "task_ids": [],
+                    "rationale_code": "LEDGER_UNAVAILABLE",
+                    "execution_authorized": False,
+                    "task_transitions_performed": False,
+                    "remote_mutation_performed": False,
+                }
+            )
+            self.results["ollama_blocker_advisory"] = blocker_advisory
             self.results["continuation_checkpoint"] = record_qaudit_checkpoint(
                 self.root_dir,
                 "mission-continuation-no-safe-task",
@@ -13274,6 +13391,7 @@ All timestamps use UTC ISO-8601 format.
                         "recommended_task_id": mission_resume_plan.get("recommended_task_id"),
                         "task_transitions_performed": False,
                         "remote_mutation_performed": False,
+                        "ollama_blocker_advisory": blocker_advisory,
                     },
                     "blockers": [recommended_next_action],
                     "next_action": recommended_next_action,

@@ -60,6 +60,7 @@ record more than once in a unique-run total.
 | Modality, language, and accessibility | Which supported modalities, languages, and accessible workflows work better? | Per-modality/language/accessibility feature IDs, representative datasets, user-impact tests, privacy controls, and confidence bounds. Do not infer coverage from model labels. |
 | Dataset and experiment | Are results attributable to the intended data and repeatable experiment? | Dataset/version/license/provenance, split and leakage checks, experiment configuration, seeds, evaluator version, and artifact hashes. |
 | Engineering and virtual-lab validation | Does a simulated or measured engineering result meet a traceable requirement within validated assumptions and uncertainty? | Requirement/owner/test traceability, units and boundary-condition checks, solver/model versions, convergence and sensitivity, reference cases, uncertainty, calibration, physical-test safety and instrument provenance, and explicit `simulated`/`measured` classification. Simulation is not physical validation. |
+| Asset and project continuity | Does an approved migration preserve the identity, history, features, owners, and references of projects and dependent assets? | Stable project/asset IDs, source and revision lineage, creation/update timestamps, dependency and feature mappings, append-only memory/checkpoint references, and reconciliation counts before/after. This is a cross-cutting migration gate, not a model quality score. |
 | QVillage catalog discovery | What eligible models, datasets, Spaces, or benchmark records can be considered? | Provider, immutable repository revision, visibility/access scope, metadata freshness, license, pagination/count limits, and source URL/hash. Discovery is not evaluation. |
 | Repository/reference coverage | Where are model/runtime references across configured files, refs, histories, and repositories? | Per-repository/ref/tree and active/archive/remote scope, immutable scan manifest, unique model IDs and occurrence counts, exclusions, inaccessible sources, and exact API/read status. This is inventory, not behavioral comparison. |
 
@@ -250,6 +251,33 @@ explicitly named and completely measured scope, never all of the internet or
 all future commits.
 
 ## Replacement policy and `q replace`
+
+### Cross-cutting continuity requirements
+
+Every replacement plan must include a pre/post inventory for the declared
+scope. Preserve stable project, model, dataset, and feature IDs; original
+provider/owner and immutable revisions; project creation and update times in
+UTC with their source; dependencies; active and historical memory/checkpoint
+references; and the relation from each asset to its consumers and tests.
+Compare the inventory digests and counts, explain every addition/removal, and
+block promotion when an item is missing, unowned, inaccessible, or unmapped.
+Do not equate a project-name match with the same project or infer creation
+times, funds, or successful work from filenames.
+
+Project dashboards and master accountability must read from a reconciled
+project registry, not a lossy UI cache. Keep project creation/progress and
+finance/deal/transaction records distinct. Financial audit evidence is
+value-free metadata unless separately authorized; this comparison flow never
+routes, transfers, or claims funds in a wallet or bank account.
+
+The planner emits an `asset_continuity` section in
+`ollamatracks/qaudits_evolution_plan.json` after its supported refresh. It
+reports bounded path presence and hashes for the registered documentation,
+implementation, test, and evidence surfaces. It is a discovery metric only;
+previously generated output may be stale until refreshed. An observed file is
+not proof that memory is synchronized, a test passes, a project is available,
+or a provider is connected. Preserve missing paths and unmeasured semantic
+mappings as blockers.
 
 ### Non-negotiable rules
 

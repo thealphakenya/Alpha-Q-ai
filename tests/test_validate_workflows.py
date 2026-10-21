@@ -71,6 +71,25 @@ def test_main_reports_local_context_without_claiming_remote_readiness(monkeypatc
     assert "ready for GitHub Actions execution" not in output
 
 
+def test_cross_repository_app_preflight_requires_rotation_confirmation():
+    workflow_path = Path(__file__).resolve().parents[1] / ".github/workflows/cross-repo-auth-preflight.yml"
+    workflow = workflow_validator.load_workflow(workflow_path)
+    steps = workflow["jobs"]["authorization-preflight"]["steps"]
+    app_config = next(step for step in steps if step.get("id") == "app-config")
+    token_step = next(step for step in steps if step.get("id") == "app-token")
+    probe = next(step for step in steps if step.get("name") == "Probe repository and workflow access")
+
+    assert app_config["env"]["APP_KEY_ROTATION_CONFIRMED"] == "${{ vars.QMOI_APP_KEY_ROTATION_CONFIRMED }}"
+    assert '"${APP_KEY_ROTATION_CONFIRMED:-}" == "true"' in app_config["run"]
+    assert token_step["if"] == "${{ steps.app-config.outputs.use_app == 'true' }}"
+    assert "MY_CUSTUOM_TOKEN" not in probe["env"]["CREDENTIAL_ROLE"]
+    assert "MY_CUSTOM_TOKEN" not in probe["env"]["CREDENTIAL_ROLE"]
+    assert probe["env"]["APP_TOKEN_AVAILABLE"] == "${{ steps.app-token.outputs.token != '' }}"
+    assert 'process.env.APP_TOKEN_AVAILABLE !== "true"' in probe["with"]["script"]
+    assert 'status: "APP_AUTH_BLOCKED_ROTATION_UNCONFIRMED"' in probe["with"]["script"]
+    assert "AUTH_BLOCKED" in probe["with"]["script"]
+
+
 def test_security_merge_gate_does_not_suppress_npm_audit_failures():
     workflow_path = Path(__file__).resolve().parents[1] / ".github/workflows/security-merge-gates.yml"
     workflow = workflow_validator.load_workflow(workflow_path)

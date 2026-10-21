@@ -1,5 +1,12 @@
 # OR.md - Operations Reference & Progress Tracker (RESET 2026-08-17T23:45:00Z)
 
+## GitHub App credential gate - 2026-10-21
+
+- The user reports App credentials are configured in GitHub Actions secrets for both target repositories. Current authenticated CLI identity is a user `GITHUB_TOKEN`, not App identity; secret-name and `main` protection reads return HTTP 403 for both repos, so configuration/effective permissions remain unknown.
+- The historical App key is still recorded as compromised; owner confirmation of revocation/rotation and replacement installation is required before App authentication. Do not read secret values or mint JWTs/tokens while this remains unverified.
+- The target-owned read-only preflight requires `QMOI_APP_KEY_ROTATION_CONFIRMED=true` as a separate Actions variable in each target repository after confirmed rotation. This is an owner attestation and a workflow gate, not independent rotation proof. Missing confirmation or an unavailable App token remains `APP_AUTH_BLOCKED`; no PAT/`GITHUB_TOKEN` fallback or mutation is allowed in that App preflight.
+- After owner-managed configuration, verify App identity/installations, effective least-privilege permissions, both repositories' protected refs/rulesets, exact SHAs, and terminal read-only preflight evidence. Keep M01 blocked until the mission's full evidence contract passes.
+
 ## MASTER STATUS - LOCAL CREDENTIAL MIGRATION COMPLETE; REMOTE/AUTH GATES BLOCKED
 **Last Updated**: 2026-09-28T02:45:47Z
 **Current Phase**: LOCAL MAIN SYNCHRONIZED; CURRENT-SHA WORKFLOW IN PROGRESS; APP/PROTECTION/PARITY GATES BLOCKED

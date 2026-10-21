@@ -28,9 +28,10 @@ jobs:
           APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID || secrets.QMOI_GITHUB_CLIENT_ID }}
           APP_ID: ${{ secrets.QMOI_GITHUB_APP_ID }}
           APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY || secrets.QMOI_GITHUB_PRIVATE_KEY }}
+          APP_KEY_ROTATION_CONFIRMED: ${{ vars.QMOI_APP_KEY_ROTATION_CONFIRMED }}
         run: |
           set -Eeuo pipefail
-          if [[ -n "${APP_CLIENT_ID:-}" || -n "${APP_ID:-}" ]] && [[ -n "${APP_PRIVATE_KEY:-}" ]]; then
+          if [[ "${APP_KEY_ROTATION_CONFIRMED:-}" == "true" ]] && [[ -n "${APP_CLIENT_ID:-}" || -n "${APP_ID:-}" ]] && [[ -n "${APP_PRIVATE_KEY:-}" ]]; then
             echo "use_app=true" >> "${GITHUB_OUTPUT}"
           else
             echo "use_app=false" >> "${GITHUB_OUTPUT}"
@@ -58,10 +59,29 @@ jobs:
         uses: actions/github-script@v7
         env:
           PEER_REPOSITORY: ${{ github.repository == 'thealphakenya/Alpha-Q-ai' && 'thealphakenya/qmoi-enhanced' || 'thealphakenya/Alpha-Q-ai' }}
-          CREDENTIAL_ROLE: ${{ steps.app-token.outputs.token != '' && 'github_app_installation_token' || secrets.MY_CUSTUOM_TOKEN != '' && 'MY_CUSTUOM_TOKEN' || secrets.MY_CUSTOM_TOKEN != '' && 'MY_CUSTOM_TOKEN' || 'github.token' }}
+          APP_KEY_ROTATION_CONFIRMED: ${{ vars.QMOI_APP_KEY_ROTATION_CONFIRMED }}
+          APP_TOKEN_AVAILABLE: ${{ steps.app-token.outputs.token != '' }}
+          CREDENTIAL_ROLE: ${{ steps.app-token.outputs.token != '' && 'github_app_installation_token' || 'github.token' }}
         with:
-          github-token: ${{ steps.app-token.outputs.token || secrets.MY_CUSTUOM_TOKEN || secrets.MY_CUSTOM_TOKEN || github.token }}
+          github-token: ${{ steps.app-token.outputs.token || github.token }}
           script: |
+            if (process.env.APP_KEY_ROTATION_CONFIRMED !== "true" || process.env.APP_TOKEN_AVAILABLE !== "true") {
+              const payload = {
+                status: "APP_AUTH_BLOCKED_ROTATION_UNCONFIRMED",
+                credential_role: "github.token",
+                app_key_rotation_confirmed: false,
+                remote_mutation_performed: false,
+                timestamp_utc: new Date().toISOString(),
+              };
+              core.summary
+                .addHeading("Cross-repository authorization preflight")
+                .addCodeBlock(JSON.stringify(payload, null, 2), "json")
+                .write();
+              core.setOutput("status", payload.status);
+              core.setFailed("App authentication is blocked until the owner confirms key rotation and an installation token is available.");
+              return;
+            }
+
             const peer = process.env.PEER_REPOSITORY;
             const repositories = [context.repo.owner + "/" + context.repo.repo, peer];
             const results = [];
@@ -87,7 +107,9 @@ jobs:
             const payload = {
               status: results.every((item) => item.repository_access === "PASS" && item.workflow_access === "PASS") ? "AUTH_READY" : "AUTH_BLOCKED",
               credential_role: process.env.CREDENTIAL_ROLE,
+              app_key_rotation_confirmed: true,
               source_repository: context.repo.owner + "/" + context.repo.repo,
+              remote_mutation_performed: false,
               results,
               timestamp_utc: new Date().toISOString(),
             };

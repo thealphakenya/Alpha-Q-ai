@@ -6,6 +6,8 @@ description: "Use when the user says continue or resume, or asks to carry on the
 
 Follow [Mission metrics and monitoring](mission-metrics.instructions.md) for the paired PH01-PH18 dashboard, machine evidence, and limits on automatic continuation.
 
+The canonical mission mirror is [MISSION.md](../../MISSION.md); this continuation instruction does not supersede it.
+
 When the user says `continue`, resume safe work in this repository. A continuation request authorizes local, read-only, and otherwise policy-permitted work; it does not authorize credentials, remote mutations, protected operations, releases, deployments, or financial actions.
 
 ## Resume
@@ -17,6 +19,19 @@ When the user says `continue`, resume safe work in this repository. A continuati
 - Validate mission mirrors and source hashes. If they differ, do not perform phase/task transitions; use `python -m scripts.mission_task_ledger --root . sync-mission` only when adopting the current canonical source is explicitly authorized.
 - Check the actual mission deadline before transitions. Do not restart or extend an expired clock, infer process-active time from wall time, or convert stale `IN_PROGRESS` entries into success.
 - When the user explicitly authorizes continuation after expiry, establish a distinct run with `python -m scripts.mission_task_ledger --root . new-run --authorization-ref <short-non-secret-reference>`. The helper must archive the expired run with its correlation ID and original clock, preserve all task/phase statuses, create a fresh correlation ID and 120-minute clock, and keep remote/protected actions independently gated. Never reset the old clock in place.
+
+## M01 Branch-Policy Gate
+
+- Keep M01 `BLOCKED` until current, owner/admin-authorized, read-only evidence covers both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`.
+- For each repository, bind evidence to the exact repository name, protected branch/ref and full SHA; capture the effective branch protection and organization rulesets, authenticated actor and credential category, effective permissions relevant to the requested action, read-only method/endpoint and response status, capture time, provenance, and evidence artifact hash.
+- An HTTP 403/404, token presence, user assertion, stale screenshot, workflow dispatch, or local test is not proof of policy or permission. Treat unavailable or ambiguous fields as `UNKNOWN`; do not transition M01 or start dependent tasks on that basis.
+- Record only redacted, value-free evidence references through the mission ledger. Never store tokens, private keys, or secret values. If owner/admin evidence is unavailable, checkpoint the exact blocker and continue only independent safe tasks; yield if the safe queue is empty.
+
+## GitHub App Credential Gate
+
+- Treat reported Actions-secret presence as `USER_REPORTED`; the current user `GITHUB_TOKEN` is not App authentication. Never inspect or print secret values.
+- Do not use the historically exposed App key until the owner confirms revocation/rotation and installation of its replacement. Before App-token minting, the target-owned preflight also requires `QMOI_APP_KEY_ROTATION_CONFIRMED=true` in that repository's Actions variables. This variable is an owner attestation, not independent proof of key rotation.
+- Use only the target-owned preflight's short-lived, least-privilege installation token for read-only identity/repository/workflow checks. No PAT or `GITHUB_TOKEN` fallback is allowed for an App-authenticated result. Missing confirmation, failed token mint, or 401/403/404 remains `APP_AUTH_BLOCKED`/`UNKNOWN`; keep M01 and dependent tasks blocked.
 
 ## Execute
 

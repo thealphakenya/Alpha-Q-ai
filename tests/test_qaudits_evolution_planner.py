@@ -166,6 +166,33 @@ def test_model_comparison_inventory_counts_evolution_documents_by_scope(tmp_path
     )
 
 
+def test_evolution_plan_reports_asset_continuity_paths_without_claiming_success(tmp_path):
+    for relative, content in (
+        ("Qstarlink.md", "# Connectivity policy\n"),
+        ("Alpha-Q-ai-2025/src/services/NetworkManager.ts", "export class NetworkManager {}\n"),
+        ("tests/test_qaudits_evolution_planner.py", "def test_contract(): pass\n"),
+    ):
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+
+    continuity = build_evolution_plan(tmp_path)["asset_continuity"]
+    metrics = continuity["metrics"]
+    starlink = continuity["domains"]["connectivity_starlink"]
+
+    assert continuity["schema_version"] == 1
+    assert continuity["status"] == "CANDIDATE_DISCOVERY_ONLY"
+    assert metrics["required_domain_count"] == 5
+    assert metrics["remote_verified"] is False
+    assert metrics["automatic_replacement_enabled"] is False
+    assert metrics["financial_actions_authorized"] is False
+    assert metrics["network_changes_authorized"] is False
+    assert starlink["metrics"]["observed_path_count"] == 2
+    assert starlink["metrics"]["missing_or_unavailable_path_count"] == 1
+    assert starlink["metrics"]["observed_test_count"] == 0
+    assert "export class NetworkManager" not in json.dumps(continuity)
+
+
 def _eligible_dataset_evidence():
     evidence = {
         "schema_version": DATASET_COMPARISON_EVIDENCE_SCHEMA_VERSION,

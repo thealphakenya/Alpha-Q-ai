@@ -20,6 +20,8 @@ Use GitHub Actions for heavy validation, artifact generation, and release workfl
 - Require terminal workflow conclusions before treating runs as success.
 - Record workflow IDs, jobs, and artifact hashes with the evidence ledger.
 
+- For M01, do not use workflow dispatch as a substitute for owner/admin-authorized branch-policy evidence. Any workflow that can write a protected ref, publish, or mutate either target requires separately verified M01 evidence for the exact repository/ref/SHA and explicit operation authority; missing or HTTP 403/404 evidence remains blocked.
+
 ## Completion rule
 
 A workflow run is not completion. A terminal result plus independently verified remote state is required.
@@ -34,6 +36,7 @@ The conceptual Copilot -> local bridge -> Ollama loop may perform bounded local 
 - Keep the `github.token` or user-token fallback explicit and mark the selected credential role in value-free evidence. No fallback converts `AUTH_BLOCKED` into success without identity and endpoint verification.
 - App-key rotation must be confirmed before token minting if the former key was exposed. Never print, persist, or artifact the private key or generated token; allow short-lived tokens to expire/revoke with the job.
 - Copilot Chat should request target-owned workflows or approved integrations, not collect credential values. Every workflow result remains bound to exact repo/ref/SHA and a terminal conclusion.
+- For App preflight, secret presence must not select App auth by itself. Require the target repository's owner-managed `QMOI_APP_KEY_ROTATION_CONFIRMED=true` Actions variable after rotation; mint a short-lived installation token only when that gate and required credential references are present. Do not use PAT/`GITHUB_TOKEN` fallback for an App-authenticated preflight result, and report missing or denied conditions as `APP_AUTH_BLOCKED`.
 
 ## QAUDITS workflow automation
 

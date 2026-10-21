@@ -231,6 +231,12 @@ class TestAutonomousContinuation:
         ledger["mission_clock"]["deadline_at"] = (started + timedelta(minutes=120)).isoformat().replace("+00:00", "Z")
         target_ledger.write_text(json.dumps(ledger), encoding="utf-8")
         agent = OllamaAutonomousAgent(base_path=tmp_path)
+        agent.verify_ollama = MagicMock(return_value={"ollama_healthy": True})
+        agent.ollama.generate = MagicMock(return_value=json.dumps({
+            "action": "REQUEST_OWNER_EVIDENCE",
+            "task_ids": ["M01"],
+            "rationale_code": "OWNER_AUTHORITY_REQUIRED",
+        }))
         metric_refreshes = []
         checkpoint_records = []
         monkeypatch.setattr(
@@ -258,6 +264,20 @@ class TestAutonomousContinuation:
         assert len(checkpoint_records) == 1
         assert checkpoint_records[0][1] == "mission-continuation-no-safe-task"
         assert checkpoint_records[0][2]["status"] == "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
+        advisory = checkpoint_records[0][2]["metrics"]["ollama_blocker_advisory"]
+        assert advisory == {
+            "status": "ADVISORY_ONLY",
+            "action": "REQUEST_OWNER_EVIDENCE",
+            "task_ids": ["M01"],
+            "rationale_code": "OWNER_AUTHORITY_REQUIRED",
+            "execution_authorized": False,
+            "task_transitions_performed": False,
+            "remote_mutation_performed": False,
+        }
+        agent.verify_ollama.assert_called_once()
+        assert agent.ollama.generate.call_count == 1
+        assert "GitHub CLI identity" not in agent.ollama.generate.call_args.args[0]
+        assert agent.results["mission_resume_plan"]["safe_execution_task_ids"] == []
         assert checkpoint_records[0][3] == ledger["correlation_id"]
         agent.refresh_managed_surface_documents.assert_not_called()
         agent.load_checkpoint.assert_not_called()
@@ -296,6 +316,53 @@ class TestAutonomousContinuation:
 
         assert exit_code == 2
         assert "PAUSED_EXPIRED_CLOCK" in capsys.readouterr().out
+
+    def test_blocker_advisory_rejects_untrusted_model_field_types(self, tmp_path):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        agent.verify_ollama = MagicMock(return_value={"ollama_healthy": True})
+        agent.ollama.generate = MagicMock(return_value=json.dumps({
+            "action": [],
+            "task_ids": ["M01"],
+            "rationale_code": {"unexpected": "object"},
+        }))
+
+        advisory = agent._analyze_blocked_mission(
+            {"tasks": [{"id": "M01"}]},
+            {
+                "safe_execution_status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
+                "recommended_task_id": "M01",
+                "unreviewed_requirement_line_count": 1,
+            },
+        )
+
+        assert advisory["status"] == "UNAVAILABLE"
+        assert advisory["action"] == "NO_ACTION"
+        assert advisory["task_ids"] == []
+        assert advisory["execution_authorized"] is False
+        assert advisory["task_transitions_performed"] is False
+        assert advisory["remote_mutation_performed"] is False
+        assert advisory["reason_code"] == "invalid_advisory_values"
+
+    def test_blocker_advisory_does_not_generate_when_runtime_guard_fails(self, tmp_path):
+        agent = OllamaAutonomousAgent(base_path=tmp_path)
+        agent.verify_ollama = MagicMock(side_effect=RuntimeError("hosted runtime required"))
+        agent.ollama.generate = MagicMock()
+
+        advisory = agent._analyze_blocked_mission(
+            {"tasks": [{"id": "M01"}]},
+            {
+                "safe_execution_status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
+                "recommended_task_id": "M01",
+                "unreviewed_requirement_line_count": 1,
+            },
+        )
+
+        assert advisory["status"] == "UNAVAILABLE"
+        assert advisory["rationale_code"] == "OLLAMA_UNAVAILABLE"
+        assert advisory["execution_authorized"] is False
+        assert advisory["task_transitions_performed"] is False
+        agent.verify_ollama.assert_called_once()
+        agent.ollama.generate.assert_not_called()
 
     def test_continue_cli_reports_no_safe_task_without_running_agent(self, tmp_path, monkeypatch, capsys):
         source_ledger = Path(__file__).resolve().parents[1] / "ollamatracks" / "mission-task-ledger.json"

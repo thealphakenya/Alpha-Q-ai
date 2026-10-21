@@ -1,5 +1,13 @@
 # QMOI Dual Repository Agent
 
+## Current credential checkpoint - 2026-10-21
+
+- The user reports GitHub App credentials are configured in GitHub Actions secrets for both target repositories. This remains `USER_REPORTED`; the current Codespaces `GITHUB_TOKEN` cannot list secret names or read `main` branch protection: both endpoints returned HTTP 403. Secret values were not requested or accessed.
+- The historical App private key remains classified as compromised, and owner-confirmed revocation/rotation plus replacement-key installation are not independently verified. No App JWT or installation token was minted.
+- The local `.github/workflows/cross-repo-auth-preflight.yml` now requires the owner-managed Actions variable `QMOI_APP_KEY_ROTATION_CONFIRMED=true` in each repository before attempting to mint a short-lived, read-only installation token. Set it only after the old key is revoked and the replacement is installed in the repository's Actions secret store. The variable is an explicit owner attestation, not cryptographic proof of rotation.
+- With the confirmation variable absent or not exactly `true`, or when token minting fails, the preflight reports `APP_AUTH_BLOCKED` and performs no App-authenticated request. The App-specific preflight does not fall back to PATs or `GITHUB_TOKEN` and does not mutate repository state.
+- After the owner has confirmed rotation and configured the variable, rerun the target-owned preflight and verify App identity, both repository installations, effective read permissions, branch/ruleset endpoints, timestamps, exact refs/SHAs, and terminal result before treating any App capability as available. Current effective App identity, Actions secret presence, and branch policy remain `UNKNOWN`.
+
 ## Current safety status (2026-09-28T02:45:47Z)
 
 - Correlation ID: `3f5e3904-b367-405d-bb0e-fc4d7ef2882d`.

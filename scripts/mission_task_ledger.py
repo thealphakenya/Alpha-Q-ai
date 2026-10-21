@@ -849,8 +849,9 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
     return "\n".join(lines)
 
 
-def refresh_paired_mission_phase_metrics(root: Path, ledger: dict[str, Any]) -> None:
+def refresh_paired_mission_phase_metrics(root: Path, ledger: dict[str, Any]) -> dict[str, Any]:
     block = render_mission_phase_metrics(ledger)
+    block_sha256 = hashlib.sha256(block.encode("utf-8")).hexdigest()
     marker_pattern = re.compile(
         re.escape(MISSION_PHASE_START) + r".*?" + re.escape(MISSION_PHASE_END),
         re.DOTALL,
@@ -890,6 +891,24 @@ def refresh_paired_mission_phase_metrics(root: Path, ledger: dict[str, Any]) -> 
         finally:
             if os.path.exists(temporary):
                 os.unlink(temporary)
+
+    documents: dict[str, dict[str, Any]] = {}
+    for path in updated:
+        rendered = path.read_text(encoding="utf-8")
+        blocks = list(marker_pattern.finditer(rendered))
+        if len(blocks) != 1 or blocks[0].group(0) != block:
+            raise LedgerError(
+                f"Mission metrics read-back verification failed: {path.relative_to(root).as_posix()}"
+            )
+        documents[path.relative_to(root).as_posix()] = {
+            "metric_block_sha256": hashlib.sha256(blocks[0].group(0).encode("utf-8")).hexdigest(),
+        }
+
+    return {
+        "status": "PASS",
+        "metric_block_sha256": block_sha256,
+        "documents": documents,
+    }
 
 
 def refresh_mission_source_hash(root: Path) -> dict[str, Any]:
@@ -1573,7 +1592,8 @@ def _record_checkpoint(
         "next_action": (active.get("next_action") or resume_plan["recommended_next_action"])
         if active else resume_plan["recommended_next_action"],
     }
-    refresh_paired_mission_phase_metrics(root, ledger)
+    dashboard_integrity = refresh_paired_mission_phase_metrics(root, ledger)
+    evidence["metrics"]["mission_dashboard_integrity"] = dashboard_integrity
     return record_qaudit_checkpoint(
         root,
         operation,

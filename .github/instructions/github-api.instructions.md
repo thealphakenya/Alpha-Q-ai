@@ -34,12 +34,19 @@ Record:
 - verification method,
 - and whether the result was terminal or merely observed.
 
+## M01 branch-policy evidence
+
+- For M01, obtain authorized read-only branch-protection/ruleset evidence for both `thealphakenya/Alpha-Q-ai` and `thealphakenya/qmoi-enhanced`; bind each observation to the exact protected branch/ref and full SHA.
+- Record the authenticated actor and credential category, effective repository/action permissions, endpoint or machine-readable export provenance, response status, capture time, and a redacted evidence path/hash. Include organization rulesets that affect the target branch when available.
+- A 401/403/404, user-reported permission, token presence, stale screenshot, or accepted dispatch does not establish effective policy or write authority. Preserve unavailable fields as `UNKNOWN`, keep M01 blocked, and do not dispatch a write-capable workflow until its separate authorization gate passes.
+
 ## GitHub App preflight
 
 - Prefer a target-owned workflow using a short-lived installation token scoped to explicit repositories and minimum permissions. Discover installation context from owner/repository inputs when supported; never fabricate an installation ID.
 - Codespaces secrets are not Actions secrets. Do not infer that a value configured in one store is available in the other; validate each path independently.
 - Before App API use, require owner-confirmed rotation of any historically exposed key, then verify App identity and installation/repository access with read-only calls. A secret-presence check is not proof of authentication.
 - For GitHub App access by Copilot Chat or the Ollama agent, route through an approved tool or target-owned workflow that reads secrets in-process. Never place a private key/token in chat context. Fail closed on 401/403, unknown scopes, or missing endpoint evidence.
+- A report that App credentials exist in Actions secrets is `USER_REPORTED`, not authentication proof. The App preflight requires `QMOI_APP_KEY_ROTATION_CONFIRMED=true` in the target repository's Actions variables before token minting, set by the owner only after revocation/rotation and replacement installation. Treat it as an attestation, not a cryptographic rotation check. Never use the historical compromised key or fall back to PAT/`GITHUB_TOKEN` and call the result App-authenticated.
 
 ## QAUDITS remote-evidence binding
 

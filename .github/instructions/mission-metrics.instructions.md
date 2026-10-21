@@ -4,11 +4,14 @@ description: "Use when continuing the Alpha-Q-ai mission, refreshing PH01-PH18 m
 
 # Mission metrics and monitoring
 
+The canonical mission mirror is [MISSION.md](../../MISSION.md); phase metrics must stay subordinate to its requirements.
+
 ## Authoritative state
 
 - Use `latest mission.md` as the canonical phase source and `ollamatracks/mission-task-ledger.json` as the task, phase, deadline, and checkpoint state.
 - Keep canonical phases `PH01`-`PH18` separate from legacy requirement tasks `M01`-`M16`.
 - Before a continuation or transition, read the current ledger, deadline, branch, worktree, latest checkpoint, and append-only evidence. Verify mission mirrors before source-related transitions.
+- M01 status is controlled by evidence, not dashboard counts: keep it blocked until the owner/admin-authorized, provenance-checked, read-only branch-policy and effective-permission evidence is bound to both target repositories, their protected refs, and full SHAs. A 403/404 or missing field remains unknown; never infer M01 completion or unblock dependents from a refreshed metric.
 
 ## Refresh lifecycle
 
