@@ -1,3 +1,9 @@
 {
-    "workbench.colorCustomizations": {}
+    "workbench.colorCustomizations": {},
+    "chat.tools.terminal.autoApprove": {
+        "/^git --no-pager status --short --branch && echo '---' && ls -1 \\.github && echo '---' && ls -1 \\.github/instructions 2>/dev/null \\|\\| true && echo '---' && ls -1 \\| sed -n '1,40p'$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
 }

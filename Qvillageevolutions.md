@@ -13,11 +13,12 @@ language inventory, [QCITY.md](QCITY.md) for project/platform monitoring, and
 The current local audit produces review-only feature candidates with source
 hashes and active/historical/archive scope. It does not continuously retrieve
 external research, run experiments, invoke Ollama, change application code,
-or promote a candidate. The QENGINEER requirements file is absent from the
-active checkout, so QVirtualLabs remains blocked on source reconciliation.
-Consult [QAUDITS.md](QAUDITS.md) and the generated feature manifest for
-measured local metrics; never infer completed research, implementation, or
-remote verification from a plan or a historical document.
+or promote a candidate. The local [QENGINEER.md](./QENGINEER.md) file is now
+used as the authoritative source-reconciliation contract for the active
+checkout, so QVirtualLabs planning remains evidence-bound rather than
+unbounded. Consult [QAUDITS.md](QAUDITS.md) and the generated feature
+manifest for measured local metrics; never infer completed research,
+implementation, or remote verification from a plan or a historical document.
 
 ---
 

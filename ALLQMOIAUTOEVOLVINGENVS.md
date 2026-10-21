@@ -59,10 +59,12 @@ The feature and documentation handoff is shared across:
   contract plan, which inventories these sources without declaring them
   complete.
 
-The active checkout does not contain `QENGINEER.md`. The
-[QVIRTUALLABS.md](QVIRTUALLABS.md) source-reconciliation gate remains blocked
-until its authoritative requirements are supplied and mapped; historical
-snapshots and ambiguous public lookup failures are not substitutes.
+The local [QENGINEER.md](./QENGINEER.md) file is now the authoritative
+engineering requirement source for this checkout. The
+[QVIRTUALLABS.md](QVIRTUALLABS.md) source-reconciliation gate remains
+review-only until implementation, focused tests, and independent validation
+are present. Historical snapshots and ambiguous public lookup failures are not
+substitutes for local requirement ownership and evidence.
 
 ## Metrics and artifacts
 

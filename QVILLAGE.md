@@ -70,10 +70,13 @@ experiments are independently validated. See
 [ALLQMOIAUTOEVOLVINGENVS.md](ALLQMOIAUTOEVOLVINGENVS.md) for the linked
 language, project-monitoring, and autonomous-evolution contracts.
 
-The canonical `QENGINEER.md` requirements are not present in this active
-checkout. Keep the [QVIRTUALLABS.md](QVIRTUALLABS.md) source-reconciliation
-gate blocked rather than treating historical copies or a public 404 as
-authoritative requirements.
+The local canonical [QENGINEER.md](./QENGINEER.md) requirements are present in
+this active checkout and should be treated as the source-reconciliation
+contract for QVillage and QVirtualLabs work. The requirement file remains a
+local safety and evidence contract only; it does not prove remote execution,
+branch approval, or production deployment. Keep the
+[QVIRTUALLABS.md](QVIRTUALLABS.md) gate evidence-bound and review-only until
+implementation, tests, and independent verification are present.
 
 ## Model comparison and replacement gate
 

@@ -20,17 +20,17 @@ Status: local continuity work is in progress and remote completion remains block
 ## Mission Phase Metrics
 
 - Canonical source: `latest mission.md`; SHA-256: `9729aa82a14b83a63dde392aa5196ef45bdcf54019ef18a9443ee9eb8bd33bc0`.
-- Generated at: `2026-10-21T22:23:50.666073Z`; ledger correlation ID: `cee55e64-a6cd-4b42-be74-43abdc9c27dd`.
+- Generated at: `2026-10-21T23:31:44.174483Z`; ledger correlation ID: `cee55e64-a6cd-4b42-be74-43abdc9c27dd`.
 - Phase count: 18; PASS: 0; in progress: 0; partial: 5; blocked: 0; failed: 0; pending: 13.
 - Legacy task status counts (M01-M16): verified_complete=1; in_progress=0; partially_complete=7; blocked=3; failed=0; pending=5.
-- Mission clock: status `ACTIVE`; started `2026-10-21T21:27:31.395154Z`; deadline `2026-10-21T23:27:31.395154Z`; UTC wall elapsed=3379.271s; remaining=3820.729s; process-active monotonic time `NOT_MEASURED`.
-- Local Ollama loopback health: service `True`; configured model `qwen2.5-coder:3b` available `True`; observed `2026-10-21T22:23:50.586708Z`. This is local API health only, not inference, hosted-runtime approval, or remote evidence.
+- Mission clock: status `EXPIRED`; started `2026-10-21T21:27:31.395154Z`; deadline `2026-10-21T23:27:31.395154Z`; UTC wall elapsed=7452.779s; remaining=0.000s; process-active monotonic time `NOT_MEASURED`.
+- Local Ollama loopback health: service `False`; configured model `qwen2.5-coder:3b` available `False`; observed `2026-10-21T23:31:44.003029Z`. This is local API health only, not inference, hosted-runtime approval, or remote evidence.
 - Mission authored content-line candidates indexed: 772; semantic review complete: 0; review pending: 772. Counts are line locators, not semantic requirement completion.
 - Acceptance mapping: 0 lines mapped to acceptance references; 0 reviewed lines still unmapped. This is local ledger metadata, not semantic or test proof.
 - Requirement coverage refs mapped / indexed: owner 0/772; implementation 0/772; test 0/772; security 0/772; documentation 0/772; integration 0/772; remote_evidence 0/772. Missing refs remain unmapped and do not imply missing or present implementations.
-- Resume planner: `READY_FOR_AUTHORIZED_EXECUTOR`; dependency-ready task IDs: `M01, M04`; next candidate: `M01`; source-line candidates tracked / unreviewed / not assigned to a phase: 772 / 772 / 22; planner authorizes execution: `False`.
-- Safe local task queue: status `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; task IDs: `none`; next safe task: `none`; blocked ready IDs: `M01`; completed ready IDs: `M04`; authorization: `False`.
-- Recommended next action: status `BLOCKED_ON_TASK`; task `M01`; Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.
+- Resume planner: `PAUSED_EXPIRED_CLOCK`; dependency-ready task IDs: `M01, M04`; next candidate: `M01`; source-line candidates tracked / unreviewed / not assigned to a phase: 772 / 772 / 22; planner authorizes execution: `False`.
+- Safe local task queue: status `PAUSED_EXPIRED_CLOCK`; task IDs: `none`; next safe task: `none`; blocked ready IDs: `M01`; completed ready IDs: `M04`; authorization: `False`.
+- Recommended next action: status `PAUSED_EXPIRED_CLOCK`; task `none`; Mission clock expired. Preserve this run and wait for explicit authorization from the user before starting a distinct run; do not transition tasks.
 - Blocker impact rollup: 13 open candidates across 8 blocker-bearing task roots; hard task blocks=6; recorded on partial tasks=7; IDs: `M01-B-36939745432b, M01-B-954ba25a5b3c, M02-B-8b686c129512, M08-B-294d9b284158, M08-B-8a4b2284204a, M08-B-d44670c535c3, M11-B-d0f9aab5f088, M11-B-e13fccab78ac, M13-B-576bd4f54692, M15-B-450d6ac9bc80, M10-B-238872ae2242, M10-B-f5d4cb8d47fd, M09-B-b8197c7c13c7`; impacted downstream tasks: `M02, M03, M05, M06, M07, M08, M09, M10, M11, M12, M13, M14, M15, M16`; blocker owners `NOT_MAPPED`; resolution is not automatic.
 - Completion percentage is not inferred from phase count; local PASS preconditions require indexed, reviewed, acceptance-mapped lines, per-dimension coverage refs, and phase evidence. These refs do not prove semantic truth or remote completion. Remote verification remains `False` until independently proven.
 

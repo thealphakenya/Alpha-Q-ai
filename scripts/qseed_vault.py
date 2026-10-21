@@ -14,7 +14,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Sequence
 
-from cryptography.fernet import Fernet, InvalidToken
+try:
+    from cryptography.fernet import Fernet, InvalidToken
+except ModuleNotFoundError:
+    Fernet = None  # type: ignore[assignment]
+    InvalidToken = Exception  # type: ignore[assignment]
+    _CRYPTOGRAPHY_IMPORT_ERROR = "cryptography is required for QSeed encryption; install it with `python -m pip install -r requirements.txt`."
+else:
+    _CRYPTOGRAPHY_IMPORT_ERROR = None
 
 from scripts.qaudit_checkpoint import record_qaudit_checkpoint
 
@@ -25,6 +32,11 @@ QSEED_SCHEMA_VERSION = 1
 
 class QSeedError(ValueError):
     """A safe, user-actionable QSeed validation or cryptographic error."""
+
+
+def _require_cryptography() -> None:
+    if Fernet is None:
+        raise QSeedError(_CRYPTOGRAPHY_IMPORT_ERROR or "cryptography is required for QSeed operations")
 
 
 def _utc_now() -> str:
@@ -77,7 +89,8 @@ def _read_regular_file(path: Path, purpose: str, *, max_bytes: int) -> bytes:
         os.close(descriptor)
 
 
-def _read_key(raw_path: str | Path, repository_root: Path) -> Fernet:
+def _read_key(raw_path: str | Path, repository_root: Path):
+    _require_cryptography()
     key_path = _external_path(raw_path, repository_root, "key")
     try:
         descriptor = os.open(
@@ -190,6 +203,7 @@ def _git_value(repository_root: Path, *args: str) -> str | None:
 
 
 def generate_key(key_file: str | Path, repository_root: str | Path) -> dict[str, Any]:
+    _require_cryptography()
     root = Path(repository_root).expanduser().resolve()
     target = _external_path(key_file, root, "key")
     _write_new_private_file(target, Fernet.generate_key() + b"\n")

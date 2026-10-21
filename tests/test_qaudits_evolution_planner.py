@@ -436,7 +436,23 @@ def test_qvirtual_labs_plan_tracks_source_and_separates_simulated_from_physical(
     assert first["historical_reference"]["not_authoritative"] is True
     assert any("QENGINEER.md" in blocker for blocker in first["blockers"])
 
-    (tmp_path / "QENGINEER.md").write_text("# Engineering requirements\n", encoding="utf-8")
+    (tmp_path / "QENGINEER.md").write_text("# Engineering requirements\n\n1. Preserve mission evidence.\n2. Keep QVillage research review-only.\n3. Map each requirement to tests.\n", encoding="utf-8")
     reconciled = build_qvirtual_labs_plan(tmp_path, source_manifest_sha256="manifest-qv")
     assert reconciled["status"] == "NEEDS_REVIEW"
+    assert reconciled["metrics"]["source_requirement_count"] == 3
     assert not any("QENGINEER.md" in blocker for blocker in reconciled["blockers"])
+
+
+def test_qengineer_requirement_count_is_detected_for_local_contract(tmp_path):
+    (tmp_path / "QVIRTUALLABS.md").write_text(
+        "# Labs\n\n" + QVIRTUAL_LAB_DOMAIN_MARKERS[0] + "\n1. **Circuit design** — candidate.\n" + QVIRTUAL_LAB_DOMAIN_MARKERS[1] + "\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "QENGINEER.md").write_text(
+        "# QEngineer\n\n## Required safeguards\n\n- Preserve mission state.\n- Keep checkpoints and evidence aligned.\n- Block remote completion without exact SHA proof.\n",
+        encoding="utf-8",
+    )
+
+    plan = build_qvirtual_labs_plan(tmp_path)
+    assert plan["status"] == "NEEDS_REVIEW"
+    assert plan["metrics"]["source_requirement_count"] == 3

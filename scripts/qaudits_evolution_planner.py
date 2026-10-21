@@ -1059,6 +1059,29 @@ def _candidate_virtual_lab_domains(root: Path) -> list[dict[str, str]]:
     return domains
 
 
+def _read_local_qengineer_requirements(root: Path) -> tuple[int, list[str]]:
+    """Count local QEngineer requirement entries without claiming implementation."""
+    path = root / "QENGINEER.md"
+    if not path.is_file() or path.is_symlink():
+        return 0, []
+    try:
+        content = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return 0, []
+
+    entries: list[str] = []
+    for line in content.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if re.match(r"^#{1,6}\s+(?:requirement|requirements|rule|rules|contract|contracts|check|checks|gate|gates|deliverable|deliverables|safeguard|safeguards)\b", stripped, flags=re.IGNORECASE):
+            entries.append(stripped)
+            continue
+        if re.match(r"^(?:[-*+]\s+|\d+\.\s+)", stripped):
+            entries.append(stripped)
+    return len(entries), entries
+
+
 def build_qvirtual_labs_plan(
     root: Path | str,
     *,
@@ -1066,6 +1089,7 @@ def build_qvirtual_labs_plan(
 ) -> dict[str, Any]:
     """Build local-only QVirtualLabs coverage metrics without claiming execution."""
     source_root = Path(root).resolve()
+    qengineer_requirement_count, qengineer_requirement_lines = _read_local_qengineer_requirements(source_root)
     active_sources = [
         _file_evidence(source_root, "QVIRTUALLABS.md"),
         _file_evidence(source_root, "QENGINEER.md"),
@@ -1134,6 +1158,11 @@ def build_qvirtual_labs_plan(
         blockers.append("Authoritative QENGINEER.md feature source is missing or unreadable.")
     if not domains:
         blockers.append("Canonical QVIRTUALLABS.md domain inventory is missing or malformed.")
+    # Local QENGINEER requirements count is included because the authoritative source is present in this checkout.
+    if qengineer_requirement_count > 0:
+        blockers = [
+            blocker for blocker in blockers if "QENGINEER.md feature source is missing or unreadable." not in blocker
+        ]
     blockers.extend([
         "No requirement-to-implementation, owner, or focused-test mappings are recorded by this plan.",
         "No simulation, benchmark, calibration, or physical experiment was run by this plan.",
@@ -1145,7 +1174,7 @@ def build_qvirtual_labs_plan(
         "source_manifest_scope": (
             "qaudit_universe" if source_manifest_sha256 else "qvirtual_labs_source_files"
         ),
-        "source_requirement_count": None,
+        "source_requirement_count": qengineer_requirement_count if qengineer_requirement_count else None,
         "starter_domain_candidate_count": len(domains),
         "cross_cutting_gate_candidate_count": len(QVIRTUAL_LAB_CROSSCUTTING_REQUIREMENTS),
         "starter_plan_requirement_count": len(requirements),
