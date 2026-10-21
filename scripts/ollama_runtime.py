@@ -127,7 +127,11 @@ class OllamaBootstrap:
         configured = os.getenv("OLLAMA_BINARY")
         if configured and Path(configured).is_file():
             return configured
-        for candidate in ("ollama", "/usr/local/bin/ollama"):
+        for candidate in (
+            "ollama",
+            "/usr/local/bin/ollama",
+            str(Path.home() / ".local" / "bin" / "ollama"),
+        ):
             if subprocess.call(["which", candidate], stdout=subprocess.DEVNULL,
                                stderr=subprocess.DEVNULL) == 0:
                 return candidate

@@ -271,16 +271,59 @@ read-only branch-policy evidence. No remote or protected action was performed.
 <!-- BEGIN QMOI MANAGED: latest mission checkpoint -->
 ## Latest Mission Checkpoint
 
-- Generated at: `2026-10-21T00:06:54.299563Z`; correlation ID: `2ebc7dba-1e63-45e9-b1fc-f5a626f08600`.
-- Operation/status: `mission-new-run` / `IN_PROGRESS`.
-- Repository/ref/HEAD: `thealphakenya/Alpha-Q-ai` / `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `fb82635fab250cd4a18e96628340e19b958be84b`.
-- Mission clock: started `2026-10-21T00:06:53.736391Z`; deadline `2026-10-21T02:06:53.736391Z`; remaining seconds `7199.962`.
+- Generated at: `2026-10-21T02:15:03.176430Z`; correlation ID: `4e257134-979e-4b34-9e5d-dfd74e38e97c`.
+- Operation/status: `mission-metrics-refresh` / `IN_PROGRESS`.
+- Repository/ref/HEAD: `thealphakenya/Alpha-Q-ai` / `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `1169d7da6cb2148d49decf0625ce000c6d6bf506`.
+- Mission clock: started `2026-10-21T02:08:49.099385Z`; deadline `2026-10-21T04:08:49.099385Z`; remaining seconds `6826.46`.
 - Phase count/statuses: `18` / `{"BLOCKED":0,"FAILED":0,"IN_PROGRESS":0,"PARTIALLY_COMPLETE":5,"PASS":0,"PENDING":13}`.
 - Legacy task statuses (M01-M16): `{"blocked":3,"failed":0,"in_progress":0,"partially_complete":7,"pending":5,"verified_complete":1}`.
 - Mission requirement lines: total `772`; review `{"not_reviewed":772,"reviewed":0}`.
 - Safe queue: `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; task IDs `none`.
-- Dashboard integrity: `PASS`; metric block SHA-256 `1d169c08e10112b8d422913a2d83f6bcaed470fd8f834aefbbadf35df7035fa7`.
-- Instruction sources: `12`; inventory SHA-256 `77e2c339fc5fc7128667d3056f55b5d2fd618ba1a1185b25cf26a6f6b72ab43d`.
+- Dashboard integrity: `PASS`; metric block SHA-256 `f20ce013987c0184638bbcdb688cb3504769d7f667d8fe1f4c3469ad7ffc18c7`.
+- Instruction sources: `12`; inventory SHA-256 `26697650032ba144de9bd799d28dcf4c5ef7690ba5ecf09a99e12e6582e9f045`.
 - Remote verified: `False`; remote mutation performed: `False`.
 - Blocker count: `8`; details: see the paired checkpoint in `oe2.txt` and `remotecompletion.md`.
 <!-- END QMOI MANAGED: latest mission checkpoint -->
+
+## Continuation checkpoint - 2026-10-21 01:17 UTC
+
+- The active run remains `2ebc7dba-1e63-45e9-b1fc-f5a626f08600`, started `2026-10-21T00:06:53.736391Z` with deadline `2026-10-21T02:06:53.736391Z`. The final paired metrics refresh was at `2026-10-21T01:20:01Z`; the existing clock was preserved and not restarted.
+- The supported instruction inventory read all 12 sources with 0 unreadable/invalid files. Relevant GitHub App guidance was clarified across the root and credential-related instructions, and the inventory was refreshed afterward; no secret values were read.
+- Codespace process checks found the App ID, Client ID, and private-key variable names present and the rotation-confirmation variable absent. This is local process evidence only; Actions configuration in both repositories remains `USER_REPORTED`/unverified. The historically exposed key was not used, and App authentication remains blocked.
+- The guarded continuation returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; M01 requires owner-authorized, provenance-checked read-only branch-policy evidence for both repositories. No task/phase transition or remote mutation occurred. `remote_verified` remains false.
+- Ollama executable and loopback API were unavailable in this container; no Ollama inference or autonomous model execution is claimed. Focused checks passed: mission-ledger suite (35 passed), instruction-inventory command regression (1 passed), continuation/inventory/metrics tests (8 passed), and `git diff --check`.
+- Next action: obtain the owner-authorized M01 evidence and an approved hosted Ollama runtime; otherwise continue only if a new independent safe task becomes dependency-ready. Do not use the present key until owner-confirmed rotation and each repository's preflight gate pass.
+
+## Continue checkpoint - 2026-10-21 01:32 UTC
+
+- Resumed the existing authorized run `2ebc7dba-1e63-45e9-b1fc-f5a626f08600`; its original deadline remains `2026-10-21T02:06:53.736391Z`. The supported continuation refreshed paired metrics at `2026-10-21T01:27:27Z`, recording about 2,367 seconds remaining.
+- The guarded planner returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`. Phase statuses remain 5 partially complete and 13 pending; all 772 mission-line candidates remain unreviewed. M01 remains blocked on owner-authorized read-only branch-policy evidence for both repositories. No task/phase transition or remote mutation occurred; `remote_verified` remains false.
+- Instruction inventory passed for 12 sources with 0 unreadable/invalid files. Ollama executable and loopback API remain unavailable; no inference or autonomous model execution is claimed.
+- Current Git HEAD is `1169d7da6cb2148d49decf0625ce000c6d6bf506`; the ledger's `local_head_sha` remains `2010940eafa895e75247dd230dbac9effb851a8b`, an ancestor of HEAD. The field's baseline semantics were not established, so it was not edited; reconcile through a supported ledger operation before relying on it as current HEAD evidence.
+- Next action: obtain the M01 owner/admin evidence and approved hosted Ollama runtime; if neither arrives and no independent task becomes safe, preserve this run and yield at its existing deadline. Do not restart the clock or use the unverified App key.
+
+## Ollama runtime recovery - 2026-10-21 01:49 UTC
+
+- Restored user-local Ollama `0.40.6` from the official Linux x86_64 archive under `$HOME/.local`; published SHA-256 verification passed (`c164ab8b1b28e2a247c29719b8e404c423c5b83ae64c3ab4e59d50c7ff7fc5e0`). No system package or privileged path was changed.
+- Started the service bound to `127.0.0.1:11434`; `/api/version` reports `0.40.6`. Pulled `qwen2.5-coder:3b` (model digest `f72c60cabf6237b07f6e632b2c48d533cef25eda2efbd34bed21c5e9c01e6225`, 1,929,912,626 bytes) and verified real sentinel inference returned `OLLAMA_QMOI_HEALTH_OK`.
+- Runtime regression suite passed: `pytest -q tests/test_ollama_runtime.py` -> 19 passed, including the user-local binary discovery regression; `git diff --check` passed.
+- Updated `OllamaBootstrap` to discover the verified user-local `~/.local/bin/ollama` path when it is not on `PATH`; a focused regression covers that lookup. The agent's hosted-runtime and task-authorization gates are unchanged.
+- Ran the guarded agent continuation with Ollama available. It returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no task or phase transition occurred. The metrics checkpoint at `2026-10-21T01:48:03Z` retains 5 partially complete and 13 pending phases, 772 unreviewed requirement lines, and `remote_verified: false`.
+- This establishes local Ollama availability only. The mission executor's hosted-runtime guard remains in force, and M01 is still blocked on owner-authorized branch-policy evidence for both repositories. No autonomous mission model execution, GitHub App authentication, or remote mutation is claimed.
+- Existing run correlation remains `2ebc7dba-1e63-45e9-b1fc-f5a626f08600`, with its original deadline `2026-10-21T02:06:53.736391Z`; no clock restart or continuous background agent was started. Next action: obtain the M01 evidence and approved hosted executor, or preserve the blocker at the existing deadline.
+- The mission ledger's `continuation.local_ollama_available` remains `false`; no supported writer for this field was found. Treat the direct service/model/inference checks above as the current local runtime evidence, and reconcile the stale ledger field only through a supported checkpoint change.
+
+## Pre-deadline continuation checkpoint - 2026-10-21 02:04 UTC
+
+- Final paired PH01-PH18 metrics refreshed at `2026-10-21T02:05:55Z` under correlation `2ebc7dba-1e63-45e9-b1fc-f5a626f08600`; dashboard integrity passed. Statuses remain 5 partially complete and 13 pending, 772 requirement lines unreviewed, and `remote_verified: false`.
+- Ollama `0.40.6` and `qwen2.5-coder:3b` remain healthy on loopback; the model passed sentinel inference and `tests/test_ollama_runtime.py` passed all 19 tests. The agent's guarded cycle still reported `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`, with no task/phase transition.
+- The active run deadline is `2026-10-21T02:06:53.736391Z`. M01 remains blocked on owner-authorized branch-policy evidence for both repositories. Preserve the current clock and statuses; do not start a background continuation or infer authorization from local Ollama availability.
+
+## New authorized run - 2026-10-21 02:09 UTC
+
+- The prior run `newmission-120-minute-2026-10-21-2ebc7dba` expired and was archived with its statuses preserved. The explicit continuation request started a distinct run `newmission-120-minute-2026-10-21-4e257134`, correlation `4e257134-979e-4b34-9e5d-dfd74e38e97c`, from `2026-10-21T02:08:49.099385Z` through `2026-10-21T04:08:49.099385Z`.
+- The supported instruction inventory read 12 sources with 0 unreadable/invalid files. The first guarded continuation returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no mission task or phase transition occurred. Statuses remain 5 phases partially complete and 13 pending, 772 requirement lines unreviewed, and `remote_verified: false`.
+- Paired mission metrics were refreshed again at `2026-10-21T02:15:02Z` under the same correlation; all 18 phase entries are present and dashboard integrity is current.
+- User-local Ollama `0.40.6` and `qwen2.5-coder:3b` remain available on loopback; sentinel inference and all 19 `tests/test_ollama_runtime.py` tests passed. `OllamaBootstrap` now discovers the user-local binary. This is local runtime evidence, not authorization to execute the blocked mission or proof of a hosted resume.
+- M01 remains blocked on owner-authorized read-only branch-policy evidence for both repositories. No remote mutation or App authentication was performed. The ledger's `continuation.local_ollama_available=false` has no identified supported writer and remains stale; direct health evidence is recorded above instead.
+- Next action: obtain M01 evidence and an approved hosted execution path; continue only if the canonical planner identifies an independent safe task. Do not run a permanent background loop, restart the clock again without a distinct authorization, or bypass the hosted-runtime/authorization guards.

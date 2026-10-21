@@ -32,6 +32,7 @@ For the shared mission checkpoint and PH01-PH18 metrics lifecycle, follow [Missi
 
 - Confirm the authenticated actor, credential type, repository scope, and exact source SHA before release preparation or publication. Codespaces secret presence and user-reported App permissions are not authentication or authorization proof.
 - Use only owner-confirmed rotated App keys and short-lived installation tokens. Keep Actions and Codespaces secret stores separate, and use the least permission needed by the target-owned workflow.
+- A local Codespace environment-variable presence check does not verify Actions secrets/variables in either target repository and cannot satisfy release authentication or rotation gates.
 - Never pass a credential value through Copilot Chat, shell command text, release metadata, logs, or artifacts. Keep releases, deployments, and signing operations blocked when auth, rotation, required checks, or provenance is unresolved.
 - App credentials reported in Actions secrets remain `USER_REPORTED` until authorized read-only identity and repository checks succeed. Do not use the historically exposed App key; require owner-confirmed rotation and the target-owned preflight's `QMOI_APP_KEY_ROTATION_CONFIRMED=true` variable before minting a scoped token. A PAT or `GITHUB_TOKEN` fallback is not App authentication and cannot unblock release gates.
 

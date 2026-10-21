@@ -11,5 +11,7 @@ Use this request to resume the Alpha-Q-ai mission in this workspace:
 > M01 remains blocked until owner/admin-authorized, provenance-checked read-only branch-policy evidence is recorded for both target repositories, bound to each protected ref and full SHA. A 403/404, reported permission, stale attachment, or dispatch is not proof. Use the ledger transition helper only after evidence exists; otherwise retain the blocker and proceed only with independent safe tasks.
 
 > GitHub App credentials reported in Actions secrets are not verified by presence claims. Never use the historically exposed App key before owner-confirmed rotation. Set `QMOI_APP_KEY_ROTATION_CONFIRMED=true` separately in each repository's Actions variables only after rotation and replacement installation; this is an owner attestation. The target-owned read-only preflight must mint a short-lived App installation token and verify identity and repository access. No PAT or `GITHUB_TOKEN` fallback may be labeled App authentication; any missing/denied step remains blocked.
+>
+> A name-only environment check is scoped to the current process. Codespace variable presence does not verify either repository's Actions secrets/variables and does not establish that a present key is the rotated replacement.
 
 If this repository is not open in the current workspace, Copilot cannot inspect its local mission state; open the repository or provide the correct workspace rather than assuming prior-session context is available.

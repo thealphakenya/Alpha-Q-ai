@@ -37,6 +37,7 @@ The conceptual Copilot -> local bridge -> Ollama loop may perform bounded local 
 - App-key rotation must be confirmed before token minting if the former key was exposed. Never print, persist, or artifact the private key or generated token; allow short-lived tokens to expire/revoke with the job.
 - Copilot Chat should request target-owned workflows or approved integrations, not collect credential values. Every workflow result remains bound to exact repo/ref/SHA and a terminal conclusion.
 - For App preflight, secret presence must not select App auth by itself. Require the target repository's owner-managed `QMOI_APP_KEY_ROTATION_CONFIRMED=true` Actions variable after rotation; mint a short-lived installation token only when that gate and required credential references are present. Do not use PAT/`GITHUB_TOKEN` fallback for an App-authenticated preflight result, and report missing or denied conditions as `APP_AUTH_BLOCKED`.
+- Report Codespace variable presence as local process evidence only; it does not confirm Actions configuration or permit a workflow to bypass the per-repository rotation gate.
 
 ## QAUDITS workflow automation
 

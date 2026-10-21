@@ -6,6 +6,7 @@
 - The historical App key is still recorded as compromised; owner confirmation of revocation/rotation and replacement installation is required before App authentication. Do not read secret values or mint JWTs/tokens while this remains unverified.
 - The target-owned read-only preflight requires `QMOI_APP_KEY_ROTATION_CONFIRMED=true` as a separate Actions variable in each target repository after confirmed rotation. This is an owner attestation and a workflow gate, not independent rotation proof. Missing confirmation or an unavailable App token remains `APP_AUTH_BLOCKED`; no PAT/`GITHUB_TOKEN` fallback or mutation is allowed in that App preflight.
 - After owner-managed configuration, verify App identity/installations, effective least-privilege permissions, both repositories' protected refs/rulesets, exact SHAs, and terminal read-only preflight evidence. Keep M01 blocked until the mission's full evidence contract passes.
+- Codespace process observation at `2026-10-21T01:11:32Z`: `QMOI_GITHUB_APP_ID`, `QMOI_GITHUB_CLIENT_ID`, and `QMOI_GITHUB_PRIVATE_KEY` were present by name only; their values were not read. `QMOI_APP_KEY_ROTATION_CONFIRMED` was absent from this process environment. This does not verify repository Actions configuration or key rotation, so App use remains `APP_AUTH_BLOCKED`.
 
 ## MASTER STATUS - LOCAL CREDENTIAL MIGRATION COMPLETE; REMOTE/AUTH GATES BLOCKED
 **Last Updated**: 2026-09-28T02:45:47Z

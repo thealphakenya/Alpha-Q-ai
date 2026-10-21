@@ -7,6 +7,7 @@
 - The target-owned `cross-repo-auth-preflight.yml` requires the repository Actions variable `QMOI_APP_KEY_ROTATION_CONFIRMED=true` before App-token creation. The owner must set it separately in each repository only after rotating/revoking the exposed key and installing its replacement in Actions secrets. This variable is an owner attestation and does not itself prove key freshness.
 - The preflight is read-only and App-only: missing confirmation, failed token minting, 401/403/404, or incomplete permission/policy fields remain `APP_AUTH_BLOCKED`/`UNKNOWN`; it does not fall back to PAT or `GITHUB_TOKEN` and never mutates refs.
 - Current state: `APP_KEY_ROTATION_UNVERIFIED`, `ACTIONS_SECRET_PRESENCE_USER_REPORTED`, `SECRET_NAME_INVENTORY_BLOCKED_403`, `APP_IDENTITY_NOT_VERIFIED`.
+- Codespace process observation at `2026-10-21T01:11:32Z`: `QMOI_GITHUB_APP_ID`, `QMOI_GITHUB_CLIENT_ID`, and `QMOI_GITHUB_PRIVATE_KEY` were present by name only; no values were read. `QMOI_APP_KEY_ROTATION_CONFIRMED` was absent from this process environment. Neither observation verifies the separate Actions secret/variable configuration in either repository or that the present key is a rotated replacement; App use remains blocked.
 
 ## Current evidence
 

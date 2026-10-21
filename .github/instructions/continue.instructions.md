@@ -30,6 +30,7 @@ When the user says `continue`, resume safe work in this repository. A continuati
 ## GitHub App Credential Gate
 
 - Treat reported Actions-secret presence as `USER_REPORTED`; the current user `GITHUB_TOKEN` is not App authentication. Never inspect or print secret values.
+- If App variable names are present in the current Codespace, record that as local process evidence only; do not infer Actions-secret availability, key rotation, or App identity from it.
 - Do not use the historically exposed App key until the owner confirms revocation/rotation and installation of its replacement. Before App-token minting, the target-owned preflight also requires `QMOI_APP_KEY_ROTATION_CONFIRMED=true` in that repository's Actions variables. This variable is an owner attestation, not independent proof of key rotation.
 - Use only the target-owned preflight's short-lived, least-privilege installation token for read-only identity/repository/workflow checks. No PAT or `GITHUB_TOKEN` fallback is allowed for an App-authenticated result. Missing confirmation, failed token mint, or 401/403/404 remains `APP_AUTH_BLOCKED`/`UNKNOWN`; keep M01 and dependent tasks blocked.
 

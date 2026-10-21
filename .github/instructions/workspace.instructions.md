@@ -32,6 +32,7 @@ Use a verified, bounded sequence from developer input through Copilot planning a
 - Keep `or.md`, `oe2.txt`, `githubapp.md`, `github.md`, `CREDENTIAL_READINESS.md`, and `remotecompletion.md` aligned on current App variable presence, installation-ID availability, rotation state, secret-list access, and exact local/remote SHA.
 - Do not claim Copilot Chat or Ollama can authenticate merely because a Codespaces secret is present. Use a value-free preflight, approved secret source, short-lived scoped token, and independent identity/API evidence; preserve `AUTH_BLOCKED` when any gate is unavailable.
 - Treat the user's statement that App credentials are in GitHub Actions secrets as `USER_REPORTED` until read-only evidence confirms names/identity. Do not inspect secret values. The App preflight is gated by owner-managed `QMOI_APP_KEY_ROTATION_CONFIRMED=true` per repository after rotation, but this flag is an attestation, not proof; use no App key until its prior exposure is owner-confirmed resolved.
+- Record current Codespace variable-name presence separately from per-repository Actions secret/variable evidence; neither local presence nor absence proves the remote configuration.
 - Never overwrite dirty user work or replace missing remote configuration with inferred credentials. QMOI may automate inventories and setup checklists, but provider-issued values require authorized owner/provider action.
 
 ## Required files

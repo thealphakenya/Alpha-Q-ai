@@ -61,6 +61,7 @@ The Ollama completion engine maintains a resumable, priority-ordered queue for n
 - Local App identifiers are stored outside the checkout in `$HOME/.config/alpha-q-ai/github-app/credentials.env` (directory mode `700`, file mode `600`).
 - A replacement private key belongs at `$HOME/.config/alpha-q-ai/github-app/private-key.pem` with mode `600`; the previously tracked key is compromised and has been removed locally. Rotate it in GitHub App settings before further App authentication.
 - Never print, quote, commit, or paste credential values into chat or logs. Load them only into the process that needs them, use short-lived tokens, and prefer read-only requests unless an explicitly authorized operation requires more.
+- On credential tasks, report environment-variable presence as local to the current process and distinguish it from Actions secrets/variables in each repository. Name-only presence never proves App identity, rotation, validity, repository access, or authorization; do not use a historically exposed key without owner-confirmed rotation and the target-owned preflight gate.
 
 ## QAUDITS and remote-completion workflow
 

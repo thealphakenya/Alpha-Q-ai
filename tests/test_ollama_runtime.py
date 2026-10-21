@@ -60,6 +60,21 @@ def test_bootstrap_reuses_healthy_server():
     assert OllamaBootstrap(client).ensure_server() is True
 
 
+def test_find_binary_discovers_user_local_install(monkeypatch, tmp_path):
+    user_binary = tmp_path / ".local" / "bin" / "ollama"
+    user_binary.parent.mkdir(parents=True)
+    user_binary.write_text("ollama")
+    user_binary.chmod(0o755)
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)
+    monkeypatch.delenv("OLLAMA_BINARY", raising=False)
+    monkeypatch.setattr(
+        "scripts.ollama_runtime.subprocess.call",
+        lambda command, **kwargs: 0 if command[1] == str(user_binary) else 1,
+    )
+
+    assert OllamaBootstrap._find_binary() == str(user_binary)
+
+
 def test_bootstrap_reports_missing_binary(monkeypatch):
     session = FakeSession([ConnectionError("offline")])
     client = OllamaClient(session=session, retries=1)

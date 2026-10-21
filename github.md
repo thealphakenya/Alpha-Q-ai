@@ -1,5 +1,11 @@
 # GitHub Automation & Live Job Links
 
+## Current GitHub App credential observation - 2026-10-21T01:11:32Z
+
+- The user reports GitHub App credentials are in Actions secrets for both target repositories; this remains `USER_REPORTED` because this session did not verify repository secret metadata.
+- In this Codespace process, `QMOI_GITHUB_APP_ID`, `QMOI_GITHUB_CLIENT_ID`, and `QMOI_GITHUB_PRIVATE_KEY` were present by name only; values were not read. `QMOI_APP_KEY_ROTATION_CONFIRMED` was absent from this process environment, which says nothing about either repository's Actions variables.
+- The historically exposed key remains unverified as revoked/rotated and replaced. Do not use the present key or mint an App token until the owner confirms rotation and the target-owned preflight gate passes; no App authentication is established by local variable presence.
+
 ## Current read-only remote checkpoint (2026-09-27T20:33:40Z)
 
 - Correlation ID: `e0809d88-9e0a-42fa-9c5c-adaa18d554d2`.
