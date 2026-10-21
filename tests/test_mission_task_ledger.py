@@ -12,6 +12,7 @@ import pytest
 from scripts.mission_task_ledger import (
     LedgerError,
     _record_checkpoint,
+    _LoopbackOnlyRedirectHandler,
     _verify_repository,
     build_resume_plan,
     begin_new_mission_run,
@@ -20,6 +21,7 @@ from scripts.mission_task_ledger import (
     load_ledger,
     mission_phase_status_counts,
     refresh_paired_mission_phase_metrics,
+    _refresh_local_ollama_observation,
     render_mission_phase_metrics,
     refresh_mission_source_hash,
     summarize_action_plan,
@@ -34,6 +36,36 @@ from scripts.mission_task_ledger import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+class _OllamaTagsResponse:
+    status = 200
+
+    def __init__(self, payload):
+        self.payload = payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_args):
+        return None
+
+    def read(self, _limit):
+        return json.dumps(self.payload).encode("utf-8")
+
+
+class _OllamaTagsOpener:
+    def __init__(self, response=None, error=None):
+        self.response = response
+        self.error = error
+        self.timeout = None
+
+    def open(self, request, timeout):
+        assert request.full_url == "http://127.0.0.1:11434/api/tags"
+        self.timeout = timeout
+        if self.error:
+            raise self.error
+        return self.response
 
 
 def _ledger() -> dict:
@@ -63,6 +95,60 @@ def test_ledger_contains_all_sixteen_sections_and_consistent_counts():
     assert [task["id"] for task in ledger["tasks"]] == [f"M{i:02d}" for i in range(1, 17)]
     assert ledger["status_counts"] == status_counts(ledger)
     assert ledger["remote_verified"] is False
+
+
+def test_local_ollama_observation_is_bounded_and_never_authorizes_work(monkeypatch):
+    ledger = _ledger()
+    original_status = copy.deepcopy(ledger["status_counts"])
+    monkeypatch.setenv("OLLAMA_MODEL", "untrusted-test-value")
+    opener = _OllamaTagsOpener(_OllamaTagsResponse({"models": [{"name": "qwen2.5-coder:3b"}]}))
+    monkeypatch.setattr(
+        "scripts.mission_task_ledger.urllib.request.build_opener",
+        lambda *handlers: opener,
+    )
+
+    observation = _refresh_local_ollama_observation(ledger)
+
+    assert observation["scope"] == "local_loopback"
+    assert observation["service_available"] is True
+    assert observation["model_available"] is True
+    assert observation["model_name"] == "qwen2.5-coder:3b"
+    assert observation["endpoint"] == "http://127.0.0.1:11434/api/tags"
+    assert opener.timeout == 1.0
+    assert ledger["continuation"]["local_ollama_available"] is True
+    assert ledger["continuation"]["local_ollama_model_available"] is True
+    assert ledger["status_counts"] == original_status
+    assert ledger["remote_verified"] is False
+    assert observation.get("execution_authorized", False) is False
+
+
+def test_local_ollama_observation_fails_closed_when_service_is_unavailable(monkeypatch):
+    ledger = _ledger()
+    monkeypatch.setattr(
+        "scripts.mission_task_ledger.urllib.request.build_opener",
+        lambda *_args: _OllamaTagsOpener(error=TimeoutError("offline")),
+    )
+
+    observation = _refresh_local_ollama_observation(ledger)
+
+    assert observation["service_available"] is False
+    assert observation["model_available"] is False
+    assert ledger["continuation"]["local_ollama_available"] is False
+    assert ledger["continuation"]["local_ollama_model_available"] is False
+    assert ledger["remote_verified"] is False
+
+
+def test_local_ollama_redirect_handler_refuses_external_redirects():
+    handler = _LoopbackOnlyRedirectHandler()
+
+    assert handler.redirect_request(
+        None,
+        None,
+        302,
+        "Found",
+        {},
+        "https://remote.example/api/tags",
+    ) is None
 
 
 def test_task_transitions_record_actual_elapsed_time_and_require_evidence():

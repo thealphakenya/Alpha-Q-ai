@@ -19,6 +19,7 @@ The canonical mission mirror is [MISSION.md](../../MISSION.md); phase metrics mu
 - The Ollama `continue`, `autonomous`, and audit-first paths refresh metrics after each agent cycle, including failed cycles. A refresh failure is a failed invocation, not a successful handoff.
 - Use the mission-ledger helper for task and phase transitions; its checkpoint writer keeps `oe2.txt`, `remotecompletion.md`, `remote-completion.json`, and `remote-evidence-ledger.jsonl` correlated. Do not manually edit generated metric regions or create a second checkpoint writer.
 - A metrics refresh updates the phase catalog and paired evidence; it does not change phase/task status, authorize work, restart a clock, or prove completion.
+- The supported metrics refresh may probe only the fixed local Ollama loopback tags endpoint with a bounded timeout and record service/model availability. This observation is not inference, hosted-runtime approval, task authorization, or remote evidence; do not probe external Ollama endpoints from this refresh.
 
 ## Evidence and monitoring limits
 

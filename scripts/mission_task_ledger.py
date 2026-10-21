@@ -10,6 +10,8 @@ import re
 import subprocess
 import sys
 import tempfile
+import urllib.error
+import urllib.request
 import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -25,6 +27,9 @@ MISSION_SOURCE_PATH = Path("latest mission.md")
 MISSION_PHASE_START = "<!-- BEGIN QMOI MISSION PHASE METRICS -->"
 MISSION_PHASE_END = "<!-- END QMOI MISSION PHASE METRICS -->"
 MISSION_PHASE_COUNT = 18
+LOCAL_OLLAMA_TAGS_URL = "http://127.0.0.1:11434/api/tags"
+LOCAL_OLLAMA_DEFAULT_MODEL = "qwen2.5-coder:3b"
+LOCAL_OLLAMA_PROBE_TIMEOUT_SECONDS = 1.0
 MISSION_MIRROR_PATHS = (
     Path("MISSION.md"),
     Path("NEWMISSION.md"),
@@ -811,6 +816,7 @@ def render_mission_phase_metrics(ledger: dict[str, Any], *, now: datetime | None
         f"- Phase count: {len(phases)}; PASS: {counts['PASS']}; in progress: {counts['IN_PROGRESS']}; partial: {counts['PARTIALLY_COMPLETE']}; blocked: {counts['BLOCKED']}; failed: {counts['FAILED']}; pending: {counts['PENDING']}.",
         f"- Legacy task status counts (M01-M16): verified_complete={task_counts['verified_complete']}; in_progress={task_counts['in_progress']}; partially_complete={task_counts['partially_complete']}; blocked={task_counts['blocked']}; failed={task_counts['failed']}; pending={task_counts['pending']}.",
         f"- Mission clock: status `{mission_clock_status}`; started `{mission_clock['started_at']}`; deadline `{mission_clock['deadline_at']}`; UTC wall elapsed={mission_elapsed:.3f}s; remaining={mission_remaining:.3f}s; process-active monotonic time `NOT_MEASURED`.",
+        f"- Local Ollama loopback health: service `{ledger.get('continuation', {}).get('local_ollama_available', 'NOT_MEASURED')}`; configured model `{ledger.get('continuation', {}).get('local_ollama_model_name', 'NOT_MEASURED')}` available `{ledger.get('continuation', {}).get('local_ollama_model_available', 'NOT_MEASURED')}`; observed `{ledger.get('continuation', {}).get('local_ollama_observed_at', 'NOT_MEASURED')}`. This is local API health only, not inference, hosted-runtime approval, or remote evidence.",
         f"- Mission authored content-line candidates indexed: {ledger.get('mission_requirement_line_count', 0)}; semantic review complete: {ledger.get('mission_requirement_line_review_counts', {}).get('reviewed', 0)}; review pending: {ledger.get('mission_requirement_line_review_counts', {}).get('not_reviewed', 0)}. Counts are line locators, not semantic requirement completion.",
         f"- Acceptance mapping: {resume_plan['acceptance_mapped_requirement_line_count']} lines mapped to acceptance references; {resume_plan['reviewed_unmapped_requirement_line_count']} reviewed lines still unmapped. This is local ledger metadata, not semantic or test proof.",
         "- Requirement coverage refs mapped / indexed: " + "; ".join(
@@ -1092,6 +1098,7 @@ def refresh_mission_metrics(root: Path) -> dict[str, Any]:
         _verify_repository(root, ledger)
         source_text = (root / MISSION_SOURCE_PATH).read_text(encoding="utf-8")
         sync_mission_phase_catalog(ledger, source_text)
+        local_ollama = _refresh_local_ollama_observation(ledger)
         ledger["updated_at"] = utc_now()
         validate_ledger(ledger)
         _atomic_write(ledger_path, ledger)
@@ -1101,11 +1108,60 @@ def refresh_mission_metrics(root: Path) -> dict[str, Any]:
             "phase_count": len(ledger["mission_phase_metrics"]),
             "phase_status_counts": mission_phase_status_counts(ledger),
             "resume_plan": build_resume_plan(ledger),
+            "local_ollama": local_ollama,
             "checkpoint_timestamp": checkpoint["generated_at"],
             "remote_verified": False,
         }
     finally:
         lock.release(invocation_id)
+
+
+def _refresh_local_ollama_observation(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Record bounded loopback API/model availability without inference or authorization."""
+    model_name = LOCAL_OLLAMA_DEFAULT_MODEL
+    observation = {
+        "scope": "local_loopback",
+        "endpoint": LOCAL_OLLAMA_TAGS_URL,
+        "observed_at": utc_now(),
+        "service_available": False,
+        "model_name": model_name,
+        "model_available": False,
+    }
+    request = urllib.request.Request(
+        LOCAL_OLLAMA_TAGS_URL,
+        headers={"Accept": "application/json"},
+    )
+    try:
+        opener = urllib.request.build_opener(_LoopbackOnlyRedirectHandler())
+        with opener.open(request, timeout=LOCAL_OLLAMA_PROBE_TIMEOUT_SECONDS) as response:
+            if getattr(response, "status", 200) != 200:
+                raise ValueError("Ollama tags endpoint returned a non-200 response")
+            payload = json.loads(response.read(2_000_000))
+        models = payload.get("models", []) if isinstance(payload, dict) else None
+        if not isinstance(models, list):
+            raise ValueError("Ollama tags response has no model list")
+        model_names = {
+            item.get("name")
+            for item in models
+            if isinstance(item, dict) and isinstance(item.get("name"), str)
+        }
+        observation["service_available"] = True
+        observation["model_available"] = model_name in model_names
+    except (OSError, TimeoutError, ValueError, urllib.error.URLError):
+        pass
+
+    continuation = ledger.setdefault("continuation", {})
+    continuation["local_ollama_available"] = observation["service_available"]
+    continuation["local_ollama_model_available"] = observation["model_available"]
+    continuation["local_ollama_model_name"] = model_name
+    continuation["local_ollama_observed_at"] = observation["observed_at"]
+    continuation["local_ollama_observation_scope"] = observation["scope"]
+    return observation
+
+
+class _LoopbackOnlyRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, _request, _file, _code, _message, _headers, _new_url):
+        return None
 
 
 def begin_new_mission_run(

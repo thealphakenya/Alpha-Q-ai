@@ -271,16 +271,16 @@ read-only branch-policy evidence. No remote or protected action was performed.
 <!-- BEGIN QMOI MANAGED: latest mission checkpoint -->
 ## Latest Mission Checkpoint
 
-- Generated at: `2026-10-21T02:15:03.176430Z`; correlation ID: `4e257134-979e-4b34-9e5d-dfd74e38e97c`.
+- Generated at: `2026-10-21T22:23:51.245175Z`; correlation ID: `cee55e64-a6cd-4b42-be74-43abdc9c27dd`.
 - Operation/status: `mission-metrics-refresh` / `IN_PROGRESS`.
-- Repository/ref/HEAD: `thealphakenya/Alpha-Q-ai` / `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `1169d7da6cb2148d49decf0625ce000c6d6bf506`.
-- Mission clock: started `2026-10-21T02:08:49.099385Z`; deadline `2026-10-21T04:08:49.099385Z`; remaining seconds `6826.46`.
+- Repository/ref/HEAD: `thealphakenya/Alpha-Q-ai` / `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `7e0925d0c9bb1a5ba8030585ca7138d152fbb1b1`.
+- Mission clock: started `2026-10-21T21:27:31.395154Z`; deadline `2026-10-21T23:27:31.395154Z`; remaining seconds `3820.735`.
 - Phase count/statuses: `18` / `{"BLOCKED":0,"FAILED":0,"IN_PROGRESS":0,"PARTIALLY_COMPLETE":5,"PASS":0,"PENDING":13}`.
 - Legacy task statuses (M01-M16): `{"blocked":3,"failed":0,"in_progress":0,"partially_complete":7,"pending":5,"verified_complete":1}`.
 - Mission requirement lines: total `772`; review `{"not_reviewed":772,"reviewed":0}`.
 - Safe queue: `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; task IDs `none`.
-- Dashboard integrity: `PASS`; metric block SHA-256 `f20ce013987c0184638bbcdb688cb3504769d7f667d8fe1f4c3469ad7ffc18c7`.
-- Instruction sources: `12`; inventory SHA-256 `26697650032ba144de9bd799d28dcf4c5ef7690ba5ecf09a99e12e6582e9f045`.
+- Dashboard integrity: `PASS`; metric block SHA-256 `82e964182368bb47b858b0df364ef1f91bbeaa216d46487c1000e5860d9f0e1d`.
+- Instruction sources: `12`; inventory SHA-256 `0c46a3b619c1f301ffc3163eee26799c293f582bac829b4a82b8d69803834e2e`.
 - Remote verified: `False`; remote mutation performed: `False`.
 - Blocker count: `8`; details: see the paired checkpoint in `oe2.txt` and `remotecompletion.md`.
 <!-- END QMOI MANAGED: latest mission checkpoint -->
@@ -327,3 +327,24 @@ read-only branch-policy evidence. No remote or protected action was performed.
 - User-local Ollama `0.40.6` and `qwen2.5-coder:3b` remain available on loopback; sentinel inference and all 19 `tests/test_ollama_runtime.py` tests passed. `OllamaBootstrap` now discovers the user-local binary. This is local runtime evidence, not authorization to execute the blocked mission or proof of a hosted resume.
 - M01 remains blocked on owner-authorized read-only branch-policy evidence for both repositories. No remote mutation or App authentication was performed. The ledger's `continuation.local_ollama_available=false` has no identified supported writer and remains stale; direct health evidence is recorded above instead.
 - Next action: obtain M01 evidence and an approved hosted execution path; continue only if the canonical planner identifies an independent safe task. Do not run a permanent background loop, restart the clock again without a distinct authorization, or bypass the hosted-runtime/authorization guards.
+
+## Mission runtime and blocker automation - 2026-10-21 22:02 UTC
+
+- On the active run `cee55e64-a6cd-4b42-be74-43abdc9c27dd`, extended the supported mission metrics refresh with a value-free, one-second probe of the fixed `127.0.0.1:11434/api/tags` endpoint. It records local service/model availability and timestamp in the ledger and paired PH01-PH18 dashboards; it performs no inference, model pull, task authorization, or external request.
+- Hardened the probe against redirects so a loopback health check cannot follow a server-supplied external URL. The probe fails closed to unavailable on timeout, malformed response, non-200 response, or redirect.
+- Current observed runtime: Ollama `0.40.6`, model `qwen2.5-coder:3b` available on loopback at `2026-10-21T22:05:18Z`; paired metrics refreshed at `2026-10-21T22:05:18Z`. The `continue` cycle still returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no task/phase transition occurred. Phase counts remain 5 partially complete, 13 pending; 772 requirement lines unreviewed; `remote_verified` false.
+- Validation: `pytest -q tests/test_mission_task_ledger.py` -> 38 passed; `git diff --check` passed. Local Ollama reviewed the earlier probe diff as advisory; a redirect risk was then independently identified and fixed with the added regression test.
+- QVillage/QVirtualLabs documentation continues to mark authoritative QENGINEER requirements as missing and source reconciliation blocked; no placeholder requirements or unsupported engineering features were invented. M01 still needs owner-authorized read-only branch-policy evidence for both repositories, and the hosted mission resume remains unverified.
+- Next action: obtain the canonical QENGINEER source and M01 evidence through their authorized owners; continue only on tasks the safe planner marks eligible. No remote mutation, protected operation, release, deployment, or GitHub App authentication occurred.
+
+## Continue checkpoint - 2026-10-21 22:13 UTC
+
+- Continued the active run `cee55e64-a6cd-4b42-be74-43abdc9c27dd`; original deadline remains `2026-10-21T23:27:31.395154Z`. The guarded continuation refreshed paired metrics at `2026-10-21T22:11:54Z` and returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`; no task/phase transition occurred.
+- Statuses remain 5 partially complete and 13 pending phases, 772 requirement lines unreviewed, and `remote_verified: false`. The Ollama loopback service and configured model were observed available by the bounded metrics probe.
+- M01 still requires owner-authorized branch-policy evidence for both repositories; QENGINEER authoritative source reconciliation remains blocked. Next action is unchanged: obtain those owner inputs, or continue only when the planner identifies independent safe work. Do not infer remote completion or bypass guards.
+
+## Continue checkpoint - 2026-10-21 22:18 UTC
+
+- Refreshed all 12 instruction-source records and ran one guarded continuation under correlation `cee55e64-a6cd-4b42-be74-43abdc9c27dd`. Paired metrics were refreshed at `2026-10-21T22:17:34Z`; the planner returned `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`, with no task/phase transition.
+- Mission state remains 5 partially complete and 13 pending phases, 772 requirement lines unreviewed, and `remote_verified: false`. The bounded loopback observation still reports Ollama `0.40.6` and the configured model available; this is local health, not hosted execution or remote proof.
+- The active run deadline remains `2026-10-21T23:27:31.395154Z`. M01 owner/admin evidence for both repositories and the canonical QENGINEER source remain external blockers. Continue only if independent safe work becomes eligible; do not restart the clock or bypass gates.

@@ -131,7 +131,11 @@
   },
   "continuation": {
     "independent_checkpoint_resume_demonstrated": false,
-    "local_ollama_available": false,
+    "local_ollama_available": true,
+    "local_ollama_model_available": true,
+    "local_ollama_model_name": "qwen2.5-coder:3b",
+    "local_ollama_observation_scope": "local_loopback",
+    "local_ollama_observed_at": "2026-10-21T22:23:50.586708Z",
     "next_action": "Determine a safe, tested way for the authorized hosted runner to load this ledger and resume the next eligible task; do not claim continuation from schedule configuration alone.",
     "observed_workflows": [
       {
@@ -148,7 +152,7 @@
       }
     ]
   },
-  "correlation_id": "4e257134-979e-4b34-9e5d-dfd74e38e97c",
+  "correlation_id": "cee55e64-a6cd-4b42-be74-43abdc9c27dd",
   "current_phase": "PH01",
   "inventory_coverage": {
     "instruction_files_discovered_and_read": 9,
@@ -646,15 +650,15 @@
     "weighted_completion_percent": null,
     "weighting_method": "Not calculated until measurable acceptance evidence and defensible per-requirement weights are established; section counts are tracking only."
   },
-  "ledger_id": "newmission-120-minute-2026-10-21-4e257134",
+  "ledger_id": "newmission-120-minute-2026-10-21-cee55e64",
   "ledger_type": "canonical_mission_section_execution_ledger",
   "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
   "mission_clock": {
     "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
     "clock_source": "explicit_user_authorized_new_run",
-    "deadline_at": "2026-10-21T04:08:49.099385Z",
+    "deadline_at": "2026-10-21T23:27:31.395154Z",
     "monotonic_continuity_available": false,
-    "started_at": "2026-10-21T02:08:49.099385Z"
+    "started_at": "2026-10-21T21:27:31.395154Z"
   },
   "mission_phase_catalog": {
     "phase_count": 18,
@@ -17421,8 +17425,8 @@
     "reviewed": 0
   },
   "mission_run_authorization": {
-    "authorized_at": "2026-10-21T02:08:49.099385Z",
-    "reference": "immediate.md-2026-10-21-user-continue-ollama-available",
+    "authorized_at": "2026-10-21T21:27:31.395154Z",
+    "reference": "immediate.md-2026-10-21-user-continue-autonomous-evolution",
     "scope": "local and read-only continuation; protected and remote actions remain gated",
     "source": "explicit_user_request"
   },
@@ -17814,6 +17818,39 @@
       "started_at": "2026-10-21T00:06:53.736391Z",
       "superseded_by_correlation_id": "4e257134-979e-4b34-9e5d-dfd74e38e97c",
       "superseded_by_ledger_id": "newmission-120-minute-2026-10-21-4e257134",
+      "task_status_counts": {
+        "blocked": 3,
+        "failed": 0,
+        "in_progress": 0,
+        "partially_complete": 7,
+        "pending": 5,
+        "verified_complete": 1
+      }
+    },
+    {
+      "archived_at": "2026-10-21T21:27:31.395154Z",
+      "authorization_ref": "immediate.md-2026-10-21-user-continue-autonomous-evolution",
+      "correlation_id": "4e257134-979e-4b34-9e5d-dfd74e38e97c",
+      "deadline_at": "2026-10-21T04:08:49.099385Z",
+      "ledger_id": "newmission-120-minute-2026-10-21-4e257134",
+      "mission_clock": {
+        "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
+        "clock_source": "explicit_user_authorized_new_run",
+        "deadline_at": "2026-10-21T04:08:49.099385Z",
+        "monotonic_continuity_available": false,
+        "started_at": "2026-10-21T02:08:49.099385Z"
+      },
+      "phase_status_counts": {
+        "BLOCKED": 0,
+        "FAILED": 0,
+        "IN_PROGRESS": 0,
+        "PARTIALLY_COMPLETE": 5,
+        "PASS": 0,
+        "PENDING": 13
+      },
+      "started_at": "2026-10-21T02:08:49.099385Z",
+      "superseded_by_correlation_id": "cee55e64-a6cd-4b42-be74-43abdc9c27dd",
+      "superseded_by_ledger_id": "newmission-120-minute-2026-10-21-cee55e64",
       "task_status_counts": {
         "blocked": 3,
         "failed": 0,
@@ -18751,7 +18788,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-21T02:15:02.597712Z",
+  "updated_at": "2026-10-21T22:23:50.609562Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",
