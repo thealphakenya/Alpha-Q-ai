@@ -1,5 +1,16 @@
 {
     "workbench.colorCustomizations": {},
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "files.hotExit": "onExitAndWindowClose",
+    "extensions.autoUpdate": false,
+    "extensions.autoCheckUpdates": false,
+    "git.autofetch": false,
+    "git.confirmSync": true,
+    "telemetry.telemetryLevel": "off",
+    "editor.minimap.enabled": false,
+    "workbench.startupEditor": "none",
+    "terminal.integrated.enablePersistentSessions": true,
     "chat.tools.terminal.autoApprove": {
         "/^git --no-pager status --short --branch && echo '---' && ls -1 \\.github && echo '---' && ls -1 \\.github/instructions 2>/dev/null \\|\\| true && echo '---' && ls -1 \\| sed -n '1,40p'$/": {
             "approve": true,

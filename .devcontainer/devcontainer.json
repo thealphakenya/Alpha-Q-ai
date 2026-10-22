@@ -1,0 +1,27 @@
+{
+  "name": "Alpha-Q-ai Low-Bandwidth Codespace",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "remoteEnv": {
+    "PIP_CACHE_DIR": "/home/vscode/.cache/pip",
+    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+    "GIT_TERMINAL_PROMPT": "0"
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 1000,
+        "files.hotExit": "onExitAndWindowClose",
+        "extensions.autoUpdate": false,
+        "extensions.autoCheckUpdates": false,
+        "git.autofetch": false,
+        "git.confirmSync": true,
+        "telemetry.telemetryLevel": "off",
+        "editor.minimap.enabled": false,
+        "workbench.startupEditor": "none",
+        "terminal.integrated.enablePersistentSessions": true
+      }
+    }
+  }
+}
