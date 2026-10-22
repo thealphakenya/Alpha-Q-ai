@@ -131,11 +131,11 @@
   },
   "continuation": {
     "independent_checkpoint_resume_demonstrated": false,
-    "local_ollama_available": true,
-    "local_ollama_model_available": true,
+    "local_ollama_available": false,
+    "local_ollama_model_available": false,
     "local_ollama_model_name": "qwen2.5-coder:3b",
     "local_ollama_observation_scope": "local_loopback",
-    "local_ollama_observed_at": "2026-10-22T18:52:17.079415Z",
+    "local_ollama_observed_at": "2026-10-22T22:47:02.214471Z",
     "next_action": "Determine a safe, tested way for the authorized hosted runner to load this ledger and resume the next eligible task; do not claim continuation from schedule configuration alone.",
     "observed_workflows": [
       {
@@ -152,7 +152,7 @@
       }
     ]
   },
-  "correlation_id": "08427f56-6c56-4ac9-b778-765ab4de8947",
+  "correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
   "current_phase": "PH01",
   "inventory_coverage": {
     "instruction_files_discovered_and_read": 9,
@@ -650,15 +650,15 @@
     "weighted_completion_percent": null,
     "weighting_method": "Not calculated until measurable acceptance evidence and defensible per-requirement weights are established; section counts are tracking only."
   },
-  "ledger_id": "newmission-120-minute-2026-10-22-08427f56",
+  "ledger_id": "newmission-120-minute-2026-10-22-ccf2009e",
   "ledger_type": "canonical_mission_section_execution_ledger",
   "local_head_sha": "2010940eafa895e75247dd230dbac9effb851a8b",
   "mission_clock": {
     "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
     "clock_source": "explicit_user_authorized_new_run",
-    "deadline_at": "2026-10-22T19:38:30.730741Z",
+    "deadline_at": "2026-10-23T00:37:38.700253Z",
     "monotonic_continuity_available": false,
-    "started_at": "2026-10-22T17:38:30.730741Z"
+    "started_at": "2026-10-22T22:37:38.700253Z"
   },
   "mission_phase_catalog": {
     "phase_count": 18,
@@ -17425,8 +17425,8 @@
     "reviewed": 0
   },
   "mission_run_authorization": {
-    "authorized_at": "2026-10-22T17:38:30.730741Z",
-    "reference": "user-continue-2026-10-22T1738Z",
+    "authorized_at": "2026-10-22T22:37:38.700253Z",
+    "reference": "user-continue-2026-10-22T2237Z",
     "scope": "local and read-only continuation; protected and remote actions remain gated",
     "source": "explicit_user_request"
   },
@@ -17917,6 +17917,39 @@
       "started_at": "2026-10-22T00:07:09.335500Z",
       "superseded_by_correlation_id": "08427f56-6c56-4ac9-b778-765ab4de8947",
       "superseded_by_ledger_id": "newmission-120-minute-2026-10-22-08427f56",
+      "task_status_counts": {
+        "blocked": 3,
+        "failed": 0,
+        "in_progress": 0,
+        "partially_complete": 7,
+        "pending": 5,
+        "verified_complete": 1
+      }
+    },
+    {
+      "archived_at": "2026-10-22T22:37:38.700253Z",
+      "authorization_ref": "user-continue-2026-10-22T2237Z",
+      "correlation_id": "08427f56-6c56-4ac9-b778-765ab4de8947",
+      "deadline_at": "2026-10-22T19:38:30.730741Z",
+      "ledger_id": "newmission-120-minute-2026-10-22-08427f56",
+      "mission_clock": {
+        "checkpoint_cadence": "phase/task start and finish, material outcomes, and at least every two minutes during active work when supported",
+        "clock_source": "explicit_user_authorized_new_run",
+        "deadline_at": "2026-10-22T19:38:30.730741Z",
+        "monotonic_continuity_available": false,
+        "started_at": "2026-10-22T17:38:30.730741Z"
+      },
+      "phase_status_counts": {
+        "BLOCKED": 0,
+        "FAILED": 0,
+        "IN_PROGRESS": 0,
+        "PARTIALLY_COMPLETE": 5,
+        "PASS": 0,
+        "PENDING": 13
+      },
+      "started_at": "2026-10-22T17:38:30.730741Z",
+      "superseded_by_correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
+      "superseded_by_ledger_id": "newmission-120-minute-2026-10-22-ccf2009e",
       "task_status_counts": {
         "blocked": 3,
         "failed": 0,
@@ -18854,7 +18887,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-22T18:52:17.102057Z",
+  "updated_at": "2026-10-22T22:47:02.237255Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

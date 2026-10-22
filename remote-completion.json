@@ -131,6 +131,7 @@
     "Cross-repository refs diverge and required branch policy remains unknown after HTTP 403",
     "Cross-repository sync remains blocked because QMOI source commit is unavailable in Alpha target checkout",
     "Current gh CLI is unauthenticated, so repository Actions secret/variable names and App identity cannot be verified from this session.",
+    "Current local Ollama loopback check is unavailable; no inference is claimed. Hosted Ollama authorization and independent ledger resume are unverified.",
     "Current metrics refresh observed the local Ollama loopback service/model unavailable; no inference was run.",
     "Current push response reports 51 vulnerabilities (28 high, 19 moderate, 4 low); main-protection and Dependabot details remain inaccessible with HTTP 403.",
     "Current-SHA failed checks include autosync in both repositories and three Alpha Pages checks.",
@@ -149,6 +150,7 @@
     "Further requirement sources referenced by historical logs remain to be inventoried and reconciled.",
     "GitHub API identity, branch protection, write authority, issues/PRs, and remote checks remain unverified.",
     "GitHub App key rotation is not verified; do not authenticate with the current local key material.",
+    "GitHub App key rotation/replacement and Actions configuration remain unknown; do not use key material or mint tokens.",
     "GitHub App key rotation/revocation and both repositories\u2019 Actions secret/variable configuration remain unverified; no key was used, no token was minted, and no workflow was dispatched.",
     "GitHub App key rotation/revocation is not owner-confirmed; although the private-key variable is present by name in this process, policy prohibits using it or minting an App token until rotation is confirmed.",
     "GitHub App key rotation/revocation is not owner-confirmed; local variable presence is name-only and the key was not used.",
@@ -162,6 +164,7 @@
     "GitHub CLI is unauthenticated; this process has no gh account login, and non-interactive execution cannot complete the user-owned browser/device sign-in.",
     "GitHub CLI remains unauthenticated in this environment; `gh auth status` returned exit 1 after the user-reported login command, where `-h` is the help flag.",
     "GitHub CLI remains unauthenticated in this workspace; the claimed username and push permission are not independently verified by gh.",
+    "GitHub CLI remains unauthenticated; user identity, effective permissions, and current remote refs cannot be verified.",
     "GitHub CLI unauthenticated",
     "GitHub authentication, branch protections/rulesets, credential rotation, exact-SHA terminal workflow evidence, and remote state remain unverified.",
     "GitHub authorization, branch protection, exact-SHA terminal workflow and remote tree evidence remain unavailable; no remote mutation occurred.",
@@ -187,6 +190,7 @@
     "Local Ollama endpoint availability remains unavailable/unverified.",
     "Local Ollama endpoint availability remains unverified/unavailable.",
     "Local Ollama executable exists but no local Ollama service is responding.",
+    "Local Ollama executable exists, but the refreshed fixed loopback probe at 2026-10-22T22:40:56.952181Z found no responding service; no inference was performed.",
     "Local Ollama inference and agent bridge remain unverified/not measured.",
     "Local Ollama inference and bridge availability are not measured/verified.",
     "Local Ollama inference and the local agent bridge are not verified/measured.",
@@ -200,6 +204,7 @@
     "Local Ollama service/model are available, but approved hosted-runtime authorization and remote exact-SHA evidence remain unverified.",
     "Local Ollama service/model availability does not verify the approved hosted runtime; no inference or autonomous task execution was performed.",
     "Local Ollama service/model presence does not authorize the autonomous agent runtime; no inference was performed because the approved hosted runtime is unverified.",
+    "Local branch is one commit ahead of its tracking ref; remote publication and exact-SHA completion are unverified.",
     "Local main is 0 ahead/56 behind and has user/generated modifications; whole-worktree publication is unsafe.",
     "Local master-orchestrator report fix and guide are not present on QMOI current main SHA",
     "Local master-orchestrator report fix is not published to QMOI current main SHA",
@@ -225,6 +230,7 @@
     "M01 remains blocked by divergent repository refs, missing effective branch-policy access, and failed remote checks",
     "M01 remains blocked on owner/admin-authorized read-only branch-policy evidence for both target repositories; prior HTTP 403 responses leave policy unknown.",
     "M01 remains blocked pending owner-authorized read-only branch-protection evidence for both repositories.",
+    "M01 remains blocked pending owner/admin-authorized read-only effective branch-policy and permission evidence bound to both target repositories, protected refs, and full SHAs; previous 403s are UNKNOWN.",
     "M01 remains blocked: owner-authorized read-only branch-protection evidence is unavailable; prior main protection GETs returned HTTP 403 for both repositories.",
     "M01 requires current owner/admin-authorized read-only branch-policy and effective-permission evidence for both target repositories; prior HTTP 403 observations remain UNKNOWN, and GitHub CLI authentication is unavailable.",
     "M01 requires current owner/admin-authorized read-only branch-policy and effective-permission evidence for both target repositories; prior HTTP 403 observations remain UNKNOWN.",
@@ -366,6 +372,8 @@
     "PR_54_netlify_deployment_failed_three_contexts_and_provider_logs_unavailable",
     "Per-feature monitoring signals and access assignments have not been independently mapped or verified.",
     "Planner automation cannot authorize task transitions or protected/remote actions.",
+    "Planner exposes no safe dependency-ready task: M01 is blocked on owner/admin branch-policy and effective-permission evidence; M04 is already verified complete; remaining tasks depend on blocked or incomplete prerequisites.",
+    "Planner exposes no safe dependency-ready task: M01 is blocked, M04 is complete, and other incomplete tasks require blocked or incomplete prerequisites.",
     "Planner has no dependency-ready authorized task; M01 remains blocked and M08/M13 remain blocked.",
     "Planner has no dependency-ready safe local task; M01 is blocked on owner/admin-authorized branch-policy evidence; M08 and M13 also remain blocked.",
     "Planner has no dependency-ready safe task; M01, M08, and M13 remain blocked.",
@@ -437,6 +445,7 @@
     "Test job 117300845275 failed; annotation only says process exit code 1 and test counts are unavailable",
     "Tests do not exercise the cross-repo-autosync workflow-level counterpart contract push; its authorization alignment remains a policy review item.",
     "The 85-operation count applies only to checkpoint sections timestamped at or before the recorded 2026-10-13T23:24:41.113138Z cutoff; the same Git snapshot contains 6 later sections and 91 operation names overall.",
+    "The App key is still considered exposed; owner-confirmed rotation/replacement is not evidenced. Do not use it or mint an App token.",
     "The Ollama agent CLI remains protected by its hosted-runtime guard; no local bypass or autonomous cycle was performed.",
     "The Ollama agent CLI requires an approved hosted runtime; no local autonomous cycle was performed.",
     "The Ollama agent CLI requires an approved hosted runtime; no local guard bypass or autonomous cycle was performed.",
@@ -482,10 +491,12 @@
     "The ledger test fixture reads persisted M04 elapsed/retry state and two existing assertions fail independently of the new deadline guard.",
     "The local Ollama advisory identifies M01 owner authority as the blocker; an advisory does not authorize execution.",
     "The local agent bridge and independent hosted mission-ledger resume are not verified; the reviewed workflows do not reference the canonical mission ledger.",
+    "The local branch is one commit ahead with a dirty worktree; do not publish or overwrite user changes. Remote state and terminal exact-SHA verification remain unverified.",
     "The mission clock is expired; no task or phase transition was made.",
     "The mission planner has no dependency-ready authorized task; M01 branch-policy authority remains blocked by HTTP 403 on both repositories.",
     "The mission planner reports no dependency-ready safe task.",
     "The planner exposes no dependency-ready authorized task; M01 is blocked and downstream tasks depend on M01/M03/M07.",
+    "The prior 2026-10-22T17:38:30.730741Z run expired at 2026-10-22T19:38:30.730741Z; it was archived with task/phase statuses preserved. Current separate run authorization is recorded under correlation ccf2009e-158b-44c8-aadd-7b761fc8f4b4.",
     "The rechecked `gh auth status` is unauthenticated (exit 1); the reported command fails with `accepts 0 arg(s), received 1` because `-h` is the help flag and the command also supplies a positional hostname.",
     "The recorded 120-minute mission deadline expired; no phase/task transition or clock reset is permitted.",
     "The recorded mission deadline expired; phase/task transitions remain paused until a separately authorized run is established.",
@@ -653,6 +664,7 @@
     "full_surface_and_remote_history_refresh_not_verified",
     "full_surface_coverage_requires_bounded_resumable_shards",
     "generated ALLMDFILESREFS and related document metrics have not been refreshed for the newly added comparison plan",
+    "gh auth status is unauthenticated; no authenticated account identity or remote read evidence is available.",
     "gh auth status remains unauthenticated in this workspace; no GitHub account identity or remote configuration is verified.",
     "gh auth status still reports unauthenticated; repo Actions credentials and remote identity cannot be verified from this workspace.",
     "github_cli_authentication_unavailable",
@@ -882,18 +894,18 @@
     "worktree_dirty_preserved",
     "worktree_user_changes_preserved"
   ],
-  "correlation_id": "08427f56-6c56-4ac9-b778-765ab4de8947",
+  "correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
   "current_local_checkpoint": {
-    "artifact_bytes": 636315,
+    "artifact_bytes": 637601,
     "artifact_path": "ollamatracks/mission-task-ledger.json",
     "artifact_refs": {
       "mission_task_ledger": {
-        "bytes": 636315,
+        "bytes": 637601,
         "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "8934e13b2fc57beb1fb7dfbb14c9177e33f23a0416cefab19076a6c723492c54"
+        "sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42"
       }
     },
-    "artifact_sha256": "8934e13b2fc57beb1fb7dfbb14c9177e33f23a0416cefab19076a6c723492c54",
+    "artifact_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
     "blockers": [
       "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
       "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
@@ -904,12 +916,12 @@
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
-    "correlation_id": "08427f56-6c56-4ac9-b778-765ab4de8947",
-    "generated_at": "2026-10-22T18:52:17.836833Z",
+    "correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
+    "generated_at": "2026-10-22T22:47:03.335611Z",
     "immediate_document": {
       "bytes": 52638,
       "path": "immediate.md",
-      "sha256": "33a3d37bdb6afb3417ba4d810818ed0b53d03938814c43f398c12e1b1d86c89c",
+      "sha256": "43b8b5ede3102fe4dfc204df03a82a3d8043a424cbf82c7cfa6681161e161fb2",
       "status": "UPDATED"
     },
     "instruction_inventory": [
@@ -999,31 +1011,31 @@
       }
     ],
     "instruction_inventory_sha256": "0c46a3b619c1f301ffc3163eee26799c293f582bac829b4a82b8d69803834e2e",
-    "local_head_sha": "8b3bd6f59848bf76e1b24ce5711fcaff8b36aa1c",
-    "local_tree_sha": "ffe259d164582671300802a75c030940fbf72ba8",
+    "local_head_sha": "0001525fe94a673d9c810b55f94540e50cde1d97",
+    "local_tree_sha": "754f7c372e768fad5df72b28fab59388a6400b4b",
     "metrics": {
       "active_phase_id": "PH01",
       "active_task_id": null,
       "active_task_status": null,
-      "checkpoint_utc": "2026-10-22T18:52:17.141553+00:00",
-      "deadline_utc": "2026-10-22T19:38:30.730741Z",
-      "elapsed_seconds": 4426.411,
-      "ledger_id": "newmission-120-minute-2026-10-22-08427f56",
-      "ledger_sha256": "8934e13b2fc57beb1fb7dfbb14c9177e33f23a0416cefab19076a6c723492c54",
+      "checkpoint_utc": "2026-10-22T22:47:02.309029+00:00",
+      "deadline_utc": "2026-10-23T00:37:38.700253Z",
+      "elapsed_seconds": 563.609,
+      "ledger_id": "newmission-120-minute-2026-10-22-ccf2009e",
+      "ledger_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
       "ledger_version": "1.0",
       "mission_dashboard_integrity": {
         "documents": {
           "oe2.md": {
-            "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09"
+            "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
           },
           "oe2.txt": {
-            "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09"
+            "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
           },
           "remotecompletion.md": {
-            "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09"
+            "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
           }
         },
-        "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09",
+        "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52",
         "status": "PASS"
       },
       "mission_phase_count": 18,
@@ -3996,7 +4008,7 @@
         ],
         "unreviewed_requirement_line_count": 772
       },
-      "mission_start_utc": "2026-10-22T17:38:30.730741Z",
+      "mission_start_utc": "2026-10-22T22:37:38.700253Z",
       "mission_status_counts": {
         "blocked": 3,
         "failed": 0,
@@ -4006,15 +4018,15 @@
         "verified_complete": 1
       },
       "monotonic_duration_available": false,
-      "remaining_seconds": 2773.589,
+      "remaining_seconds": 6636.391,
       "remote_verified": false,
       "task_elapsed_seconds": null
     },
     "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
     "operation": "mission-metrics-refresh",
     "paired_document_sha256": {
-      "oe2.txt": "3d783d37b82c24cd9e711979d8cfbcd58e1d808f42cfe921a60d4be3d63cff13",
-      "remotecompletion.md": "f48f891c7b428081dde320400be1c39b5e1d5f91670c04a7d223fb8b977d4afe"
+      "oe2.txt": "54270e748836cf6876a7f27dd236872d12d922b31b54531c86960e399212e161",
+      "remotecompletion.md": "33a100cbfc240c258a34d773dffaf0760687ef6b468c7d4ae48f1871b9f51958"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
@@ -4039,7 +4051,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-22T18:52:17.836833Z",
+  "generated_at": "2026-10-22T22:47:03.335611Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -4370,16 +4382,16 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 636315,
+      "artifact_bytes": 637601,
       "artifact_path": "ollamatracks/mission-task-ledger.json",
       "artifact_refs": {
         "mission_task_ledger": {
-          "bytes": 636315,
+          "bytes": 637601,
           "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "8934e13b2fc57beb1fb7dfbb14c9177e33f23a0416cefab19076a6c723492c54"
+          "sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42"
         }
       },
-      "artifact_sha256": "8934e13b2fc57beb1fb7dfbb14c9177e33f23a0416cefab19076a6c723492c54",
+      "artifact_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
       "blockers": [
         "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
         "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
@@ -4390,12 +4402,12 @@
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
-      "correlation_id": "08427f56-6c56-4ac9-b778-765ab4de8947",
-      "generated_at": "2026-10-22T18:52:17.836833Z",
+      "correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
+      "generated_at": "2026-10-22T22:47:03.335611Z",
       "immediate_document": {
         "bytes": 52638,
         "path": "immediate.md",
-        "sha256": "33a3d37bdb6afb3417ba4d810818ed0b53d03938814c43f398c12e1b1d86c89c",
+        "sha256": "43b8b5ede3102fe4dfc204df03a82a3d8043a424cbf82c7cfa6681161e161fb2",
         "status": "UPDATED"
       },
       "instruction_inventory": [
@@ -4485,31 +4497,31 @@
         }
       ],
       "instruction_inventory_sha256": "0c46a3b619c1f301ffc3163eee26799c293f582bac829b4a82b8d69803834e2e",
-      "local_head_sha": "8b3bd6f59848bf76e1b24ce5711fcaff8b36aa1c",
-      "local_tree_sha": "ffe259d164582671300802a75c030940fbf72ba8",
+      "local_head_sha": "0001525fe94a673d9c810b55f94540e50cde1d97",
+      "local_tree_sha": "754f7c372e768fad5df72b28fab59388a6400b4b",
       "metrics": {
         "active_phase_id": "PH01",
         "active_task_id": null,
         "active_task_status": null,
-        "checkpoint_utc": "2026-10-22T18:52:17.141553+00:00",
-        "deadline_utc": "2026-10-22T19:38:30.730741Z",
-        "elapsed_seconds": 4426.411,
-        "ledger_id": "newmission-120-minute-2026-10-22-08427f56",
-        "ledger_sha256": "8934e13b2fc57beb1fb7dfbb14c9177e33f23a0416cefab19076a6c723492c54",
+        "checkpoint_utc": "2026-10-22T22:47:02.309029+00:00",
+        "deadline_utc": "2026-10-23T00:37:38.700253Z",
+        "elapsed_seconds": 563.609,
+        "ledger_id": "newmission-120-minute-2026-10-22-ccf2009e",
+        "ledger_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
         "ledger_version": "1.0",
         "mission_dashboard_integrity": {
           "documents": {
             "oe2.md": {
-              "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09"
+              "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
             },
             "oe2.txt": {
-              "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09"
+              "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
             },
             "remotecompletion.md": {
-              "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09"
+              "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
             }
           },
-          "metric_block_sha256": "361dddb7c2a5919e77becaa0b9797c1d4b7a6439b71a0b6b5a384acdf27ebe09",
+          "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52",
           "status": "PASS"
         },
         "mission_phase_count": 18,
@@ -7482,7 +7494,7 @@
           ],
           "unreviewed_requirement_line_count": 772
         },
-        "mission_start_utc": "2026-10-22T17:38:30.730741Z",
+        "mission_start_utc": "2026-10-22T22:37:38.700253Z",
         "mission_status_counts": {
           "blocked": 3,
           "failed": 0,
@@ -7492,15 +7504,15 @@
           "verified_complete": 1
         },
         "monotonic_duration_available": false,
-        "remaining_seconds": 2773.589,
+        "remaining_seconds": 6636.391,
         "remote_verified": false,
         "task_elapsed_seconds": null
       },
       "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
       "operation": "mission-metrics-refresh",
       "paired_document_sha256": {
-        "oe2.txt": "3d783d37b82c24cd9e711979d8cfbcd58e1d808f42cfe921a60d4be3d63cff13",
-        "remotecompletion.md": "f48f891c7b428081dde320400be1c39b5e1d5f91670c04a7d223fb8b977d4afe"
+        "oe2.txt": "54270e748836cf6876a7f27dd236872d12d922b31b54531c86960e399212e161",
+        "remotecompletion.md": "33a100cbfc240c258a34d773dffaf0760687ef6b468c7d4ae48f1871b9f51958"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
@@ -7584,7 +7596,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "8b3bd6f59848bf76e1b24ce5711fcaff8b36aa1c",
+    "local_head_sha": "0001525fe94a673d9c810b55f94540e50cde1d97",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",
