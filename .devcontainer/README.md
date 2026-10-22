@@ -88,11 +88,21 @@ tunnel root cause is claimed.
 ## Prebuilds, region, and measurements
 
 Codespaces prebuilds and region selection are managed in GitHub, not by this
-repository file. They were not enabled or changed; prebuilds can incur
-additional compute and storage charges and require repository-owner approval.
-This configuration has no dependency-install startup step to precompute, so
-evaluate prebuilds only if repeated measurements show the image preparation
-time is a material bottleneck.
+repository file. They were not enabled or changed. GitHub's
+[prebuild guidance](https://docs.github.com/en/codespaces/prebuilding-your-codespaces/about-github-codespaces-prebuilds)
+suggests considering them when creation takes more than two minutes, but
+prebuild updates use Actions minutes and the snapshots consume Codespaces
+storage. Prebuild snapshots do not run `postCreateCommand`, and this setup has
+no dependency-install step to precompute. Consider one only after comparable
+measurements show image preparation or repository creation is a material
+bottleneck and the repository owner approves the possible charges.
+
+GitHub selects a default Codespaces region automatically based on location;
+users can select a default region in their
+[Codespaces profile settings](https://docs.github.com/en/codespaces/setting-your-user-preferences/setting-your-default-region-for-github-codespaces).
+The repository cannot set this preference. Compare client-side tunnel behavior
+and Codespaces creation time separately before changing it; a region choice
+must also respect the user's data-location requirements.
 
 Record create/rebuild duration, reconnect duration, approximate transferred
 bytes, selected region, and client network type across comparable runs before
