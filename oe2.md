@@ -20,11 +20,11 @@ Status: local continuity work is in progress and remote completion remains block
 ## Mission Phase Metrics
 
 - Canonical source: `latest mission.md`; SHA-256: `9729aa82a14b83a63dde392aa5196ef45bdcf54019ef18a9443ee9eb8bd33bc0`.
-- Generated at: `2026-10-22T18:48:48.538303Z`; ledger correlation ID: `08427f56-6c56-4ac9-b778-765ab4de8947`.
+- Generated at: `2026-10-22T18:52:17.149982Z`; ledger correlation ID: `08427f56-6c56-4ac9-b778-765ab4de8947`.
 - Phase count: 18; PASS: 0; in progress: 0; partial: 5; blocked: 0; failed: 0; pending: 13.
 - Legacy task status counts (M01-M16): verified_complete=1; in_progress=0; partially_complete=7; blocked=3; failed=0; pending=5.
-- Mission clock: status `ACTIVE`; started `2026-10-22T17:38:30.730741Z`; deadline `2026-10-22T19:38:30.730741Z`; UTC wall elapsed=4217.808s; remaining=2982.192s; process-active monotonic time `NOT_MEASURED`.
-- Local Ollama loopback health: service `True`; configured model `qwen2.5-coder:3b` available `True`; observed `2026-10-22T18:48:48.466348Z`. This is local API health only, not inference, hosted-runtime approval, or remote evidence.
+- Mission clock: status `ACTIVE`; started `2026-10-22T17:38:30.730741Z`; deadline `2026-10-22T19:38:30.730741Z`; UTC wall elapsed=4426.419s; remaining=2773.581s; process-active monotonic time `NOT_MEASURED`.
+- Local Ollama loopback health: service `True`; configured model `qwen2.5-coder:3b` available `True`; observed `2026-10-22T18:52:17.079415Z`. This is local API health only, not inference, hosted-runtime approval, or remote evidence.
 - Mission authored content-line candidates indexed: 772; semantic review complete: 0; review pending: 772. Counts are line locators, not semantic requirement completion.
 - Acceptance mapping: 0 lines mapped to acceptance references; 0 reviewed lines still unmapped. This is local ledger metadata, not semantic or test proof.
 - Requirement coverage refs mapped / indexed: owner 0/772; implementation 0/772; test 0/772; security 0/772; documentation 0/772; integration 0/772; remote_evidence 0/772. Missing refs remain unmapped and do not imply missing or present implementations.
