@@ -271,18 +271,18 @@ read-only branch-policy evidence. No remote or protected action was performed.
 <!-- BEGIN QMOI MANAGED: latest mission checkpoint -->
 ## Latest Mission Checkpoint
 
-- Generated at: `2026-10-21T23:58:44.808739Z`; correlation ID: `qengineer-qvillage-local-checkpoint`.
-- Operation/status: `qengineer_qvillage_alignment` / `LOCAL_PROGRESS`.
-- Repository/ref/HEAD: `thealphakenya/Alpha-Q-ai` / `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `a565612b164bcd07b1d4d6b2ee6ad059a831ab3d`.
-- Mission clock: started `2026-10-20T02:31:56Z`; deadline `2026-10-20T04:31:56Z`; remaining seconds `5940`.
-- Phase count/statuses: `NOT_MEASURED` / `{"PH01":"done","PH02":"done","PH03":"in_progress"}`.
-- Legacy task statuses (M01-M16): `{"M01":"blocked","M02":"blocked"}`.
-- Mission requirement lines: total `NOT_MEASURED`; review `{"remaining":772,"reviewed":1}`.
-- Safe queue: `checkpointed`; task IDs `NOT_MEASURED`.
-- Dashboard integrity: `valid_local`; metric block SHA-256 `NOT_MEASURED`.
+- Generated at: `2026-10-22T00:12:46.302684Z`; correlation ID: `254deda5-b882-408e-9fce-0369ed477165`.
+- Operation/status: `mission-continue-queue-recheck` / `BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK`.
+- Repository/ref/HEAD: `thealphakenya/Alpha-Q-ai` / `refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65` / `d436412dbe996b9f12d52c6fcf636cca52d50bb6`.
+- Mission clock: started `NOT_MEASURED`; deadline `NOT_MEASURED`; remaining seconds `NOT_MEASURED`.
+- Phase count/statuses: `NOT_MEASURED` / `NOT_MEASURED`.
+- Legacy task statuses (M01-M16): `NOT_MEASURED`.
+- Mission requirement lines: total `NOT_MEASURED`; review `NOT_MEASURED`.
+- Safe queue: `NOT_MEASURED`; task IDs `NOT_MEASURED`.
+- Dashboard integrity: `NOT_MEASURED`; metric block SHA-256 `NOT_MEASURED`.
 - Instruction sources: `12`; inventory SHA-256 `0c46a3b619c1f301ffc3163eee26799c293f582bac829b4a82b8d69803834e2e`.
 - Remote verified: `False`; remote mutation performed: `False`.
-- Blocker count: `4`; details: see the paired checkpoint in `oe2.txt` and `remotecompletion.md`.
+- Blocker count: `6`; details: see the paired checkpoint in `oe2.txt` and `remotecompletion.md`.
 <!-- END QMOI MANAGED: latest mission checkpoint -->
 
 ## Continuation checkpoint - 2026-10-21 01:17 UTC
