@@ -135,7 +135,7 @@
     "local_ollama_model_available": false,
     "local_ollama_model_name": "qwen2.5-coder:3b",
     "local_ollama_observation_scope": "local_loopback",
-    "local_ollama_observed_at": "2026-10-22T22:47:02.214471Z",
+    "local_ollama_observed_at": "2026-10-22T23:23:21.849804Z",
     "next_action": "Determine a safe, tested way for the authorized hosted runner to load this ledger and resume the next eligible task; do not claim continuation from schedule configuration alone.",
     "observed_workflows": [
       {
@@ -18887,7 +18887,7 @@
       "workflow_evidence": []
     }
   ],
-  "updated_at": "2026-10-22T22:47:02.237255Z",
+  "updated_at": "2026-10-22T23:23:21.870786Z",
   "verification_results": [
     {
       "command": "python -m pytest tests/test_control_plane.py -k mission_mirror_and_instruction_links_stay_synchronized -q --tb=short",

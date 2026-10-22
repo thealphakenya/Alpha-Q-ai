@@ -13224,8 +13224,55 @@ All timestamps use UTC ISO-8601 format.
         try:
             return self._run_continue_cycle()
         finally:
-            refresh_result = refresh_mission_metrics(self.root_dir)
-            self.results["mission_metrics_refresh"] = refresh_result
+            try:
+                refresh_result = refresh_mission_metrics(self.root_dir)
+                self.results["mission_metrics_refresh"] = refresh_result
+            finally:
+                checkpoint_request = self.results.pop(
+                    "pending_continuation_checkpoint",
+                    None,
+                )
+                if isinstance(checkpoint_request, dict):
+                    checkpoint_evidence = checkpoint_request["evidence"]
+                    checkpoint_metrics = checkpoint_evidence.setdefault("metrics", {})
+                    mission_state = checkpoint_request.pop("mission_state", {})
+                    if isinstance(mission_state, dict):
+                        mission_clock = mission_state.get("mission_clock", {})
+                        if isinstance(mission_clock, dict):
+                            start_utc = mission_clock.get("started_at")
+                            deadline_utc = mission_clock.get("deadline_at")
+                            if isinstance(start_utc, str):
+                                checkpoint_metrics["mission_start_utc"] = start_utc
+                            if isinstance(deadline_utc, str):
+                                checkpoint_metrics["deadline_utc"] = deadline_utc
+                                deadline = datetime.fromisoformat(deadline_utc.replace("Z", "+00:00"))
+                                checkpoint_metrics["remaining_seconds"] = max(
+                                    0.0,
+                                    (deadline - datetime.now(timezone.utc)).total_seconds(),
+                                )
+                        for source, target in (
+                            ("status_counts", "mission_status_counts"),
+                            ("mission_requirement_line_count", "mission_requirement_line_count"),
+                            ("mission_requirement_line_review_counts", "mission_requirement_line_review_counts"),
+                        ):
+                            if source in mission_state:
+                                checkpoint_metrics[target] = mission_state[source]
+                    refreshed_metrics = self.results.get("mission_metrics_refresh")
+                    if isinstance(refreshed_metrics, dict):
+                        for source, target in (
+                            ("phase_count", "mission_phase_count"),
+                            ("phase_status_counts", "mission_phase_status_counts"),
+                            ("resume_plan", "mission_resume_plan"),
+                            ("mission_dashboard_integrity", "mission_dashboard_integrity"),
+                        ):
+                            if source in refreshed_metrics:
+                                checkpoint_metrics[target] = refreshed_metrics[source]
+                    self.results["continuation_checkpoint"] = record_qaudit_checkpoint(
+                        self.root_dir,
+                        checkpoint_request["operation"],
+                        checkpoint_evidence,
+                        correlation_id=checkpoint_request["correlation_id"],
+                    )
 
     def _analyze_blocked_mission(
         self,
@@ -13380,10 +13427,9 @@ All timestamps use UTC ISO-8601 format.
                 }
             )
             self.results["ollama_blocker_advisory"] = blocker_advisory
-            self.results["continuation_checkpoint"] = record_qaudit_checkpoint(
-                self.root_dir,
-                "mission-continuation-no-safe-task",
-                {
+            self.results["pending_continuation_checkpoint"] = {
+                "operation": "mission-continuation-no-safe-task",
+                "evidence": {
                     "status": blocker_status,
                     "metrics": {
                         "safe_execution_status": mission_resume_plan.get("safe_execution_status", "UNKNOWN"),
@@ -13396,8 +13442,20 @@ All timestamps use UTC ISO-8601 format.
                     "blockers": [recommended_next_action],
                     "next_action": recommended_next_action,
                 },
-                correlation_id=mission_correlation_id,
-            )
+                "mission_state": {
+                    "mission_clock": mission_ledger.get("mission_clock", {}),
+                    "status_counts": mission_ledger.get("status_counts", {}),
+                    "mission_requirement_line_count": mission_ledger.get(
+                        "mission_requirement_line_count",
+                        0,
+                    ),
+                    "mission_requirement_line_review_counts": mission_ledger.get(
+                        "mission_requirement_line_review_counts",
+                        {},
+                    ),
+                } if mission_ledger is not None else {},
+                "correlation_id": mission_correlation_id,
+            }
             return 3
         managed_surface_contract = self.refresh_managed_surface_documents(
             self.root_dir

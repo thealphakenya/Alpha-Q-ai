@@ -896,32 +896,57 @@
   ],
   "correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
   "current_local_checkpoint": {
-    "artifact_bytes": 637601,
-    "artifact_path": "ollamatracks/mission-task-ledger.json",
+    "artifact_bytes": null,
+    "artifact_path": null,
     "artifact_refs": {
-      "mission_task_ledger": {
-        "bytes": 637601,
-        "path": "ollamatracks/mission-task-ledger.json",
-        "sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42"
+      "local_sources": {
+        "scripts/mission_task_ledger.py": {
+          "bytes": 90094,
+          "path": "scripts/mission_task_ledger.py",
+          "sha256": "8a8332158c465e8f99a059ce01fdf04df49f2cfcbe77cf661b4a98f94866172c"
+        },
+        "scripts/ollama_autonomous_agent.py": {
+          "bytes": 737175,
+          "path": "scripts/ollama_autonomous_agent.py",
+          "sha256": "d588569bd7b061e3473a6fda56f0d1789ce7ef77f7a42a2cbc25f366086a302a"
+        },
+        "tests/test_ollama_autonomous_agent.py": {
+          "bytes": 182391,
+          "path": "tests/test_ollama_autonomous_agent.py",
+          "sha256": "2cf9be4628a9db9e7af5395d876bcf2216cd04085f24066d82608907fbba2f8e"
+        }
+      },
+      "test_generated_managed_artifacts": {
+        "QMOIMASKS.md": {
+          "bytes": 155960,
+          "path": "QMOIMASKS.md",
+          "sha256": "66e9ae668ec4dca909d3f0569e0e1ed65686eba672b04c82385ef8838af4693b"
+        },
+        "bankandbankaccounts.md": {
+          "bytes": 64042,
+          "path": "bankandbankaccounts.md",
+          "sha256": "1b9135d923d6159152fa8d053f2656502bc7506e6b3001b3fb07628c4668cd3c"
+        },
+        "ollamatracks/bank_automation_status.json": {
+          "bytes": 1639,
+          "path": "ollamatracks/bank_automation_status.json",
+          "sha256": "8cc09d2f41a58a0085d256ad27f37917d1230f36f091c64cdb2c9fc8ffcd1cf0"
+        }
       }
     },
-    "artifact_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
+    "artifact_sha256": null,
     "blockers": [
       "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
       "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
-      "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
-      "No independent mission-ledger resume has been demonstrated.",
-      "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial.",
-      "Remote target ref and write authority are not verified; worktree contains existing user changes.",
       "target_owned_terminal_remote_sha_proof_unavailable",
       "worktree_dirty_or_status_unavailable"
     ],
     "correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
-    "generated_at": "2026-10-22T22:47:03.335611Z",
+    "generated_at": "2026-10-22T23:23:22.845226Z",
     "immediate_document": {
-      "bytes": 52638,
+      "bytes": 52681,
       "path": "immediate.md",
-      "sha256": "43b8b5ede3102fe4dfc204df03a82a3d8043a424cbf82c7cfa6681161e161fb2",
+      "sha256": "0fd0b67ee9c8b0ed5fb3f9d41d21e3d02a53cbd7bcda57aa8ca5d6d3d9c3d4da",
       "status": "UPDATED"
     },
     "instruction_inventory": [
@@ -1011,185 +1036,43 @@
       }
     ],
     "instruction_inventory_sha256": "0c46a3b619c1f301ffc3163eee26799c293f582bac829b4a82b8d69803834e2e",
-    "local_head_sha": "0001525fe94a673d9c810b55f94540e50cde1d97",
-    "local_tree_sha": "754f7c372e768fad5df72b28fab59388a6400b4b",
+    "local_head_sha": "4e9b03196a397d7d977c10afee98b1f7c0c24859",
+    "local_tree_sha": "e4bbd22c2402ca6793f9466a446c5b4a714b8028",
     "metrics": {
-      "active_phase_id": "PH01",
-      "active_task_id": null,
-      "active_task_status": null,
-      "checkpoint_utc": "2026-10-22T22:47:02.309029+00:00",
       "deadline_utc": "2026-10-23T00:37:38.700253Z",
-      "elapsed_seconds": 563.609,
-      "ledger_id": "newmission-120-minute-2026-10-22-ccf2009e",
-      "ledger_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
-      "ledger_version": "1.0",
+      "local_ollama": {
+        "endpoint": "http://127.0.0.1:11434/api/tags",
+        "model_available": false,
+        "model_name": "qwen2.5-coder:3b",
+        "observed_at": "2026-10-22T23:23:21.849804Z",
+        "scope": "local_loopback",
+        "service_available": false
+      },
+      "local_validation": {
+        "command": "python -m pytest -q tests/test_ollama_autonomous_agent.py tests/test_mission_task_ledger.py",
+        "duration_seconds": 394.96,
+        "failed": 0,
+        "passed": 183,
+        "skip_reason": "CLI full-validation subprocess timed out in headless runner; test skipped by its existing timeout handler.",
+        "skipped": 1,
+        "status": "PASS_WITH_SKIP"
+      },
       "mission_dashboard_integrity": {
         "documents": {
           "oe2.md": {
-            "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
+            "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5"
           },
           "oe2.txt": {
-            "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
+            "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5"
           },
           "remotecompletion.md": {
-            "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
+            "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5"
           }
         },
-        "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52",
+        "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5",
         "status": "PASS"
       },
       "mission_phase_count": 18,
-      "mission_phase_metrics": [
-        {
-          "attempt_count": 6,
-          "elapsed_seconds": 200.088,
-          "id": "PH01",
-          "requirement_bullet_candidates": 10,
-          "source_ref": "latest mission.md#L34-L71",
-          "status": "PARTIALLY_COMPLETE"
-        },
-        {
-          "attempt_count": 1,
-          "elapsed_seconds": 0.215,
-          "id": "PH02",
-          "requirement_bullet_candidates": 13,
-          "source_ref": "latest mission.md#L72-L115",
-          "status": "PARTIALLY_COMPLETE"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH03",
-          "requirement_bullet_candidates": 26,
-          "source_ref": "latest mission.md#L116-L165",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH04",
-          "requirement_bullet_candidates": 13,
-          "source_ref": "latest mission.md#L166-L205",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH05",
-          "requirement_bullet_candidates": 17,
-          "source_ref": "latest mission.md#L206-L255",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH06",
-          "requirement_bullet_candidates": 24,
-          "source_ref": "latest mission.md#L256-L308",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH07",
-          "requirement_bullet_candidates": 20,
-          "source_ref": "latest mission.md#L309-L350",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH08",
-          "requirement_bullet_candidates": 22,
-          "source_ref": "latest mission.md#L351-L389",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 1,
-          "elapsed_seconds": 13.759,
-          "id": "PH09",
-          "requirement_bullet_candidates": 34,
-          "source_ref": "latest mission.md#L390-L446",
-          "status": "PARTIALLY_COMPLETE"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH10",
-          "requirement_bullet_candidates": 8,
-          "source_ref": "latest mission.md#L447-L475",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH11",
-          "requirement_bullet_candidates": 10,
-          "source_ref": "latest mission.md#L476-L512",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 3,
-          "elapsed_seconds": 14.974,
-          "id": "PH12",
-          "requirement_bullet_candidates": 11,
-          "source_ref": "latest mission.md#L513-L541",
-          "status": "PARTIALLY_COMPLETE"
-        },
-        {
-          "attempt_count": 5,
-          "elapsed_seconds": 2131.617,
-          "id": "PH13",
-          "requirement_bullet_candidates": 16,
-          "source_ref": "latest mission.md#L542-L586",
-          "status": "PARTIALLY_COMPLETE"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH14",
-          "requirement_bullet_candidates": 16,
-          "source_ref": "latest mission.md#L587-L621",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH15",
-          "requirement_bullet_candidates": 7,
-          "source_ref": "latest mission.md#L622-L661",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH16",
-          "requirement_bullet_candidates": 0,
-          "source_ref": "latest mission.md#L662-L689",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH17",
-          "requirement_bullet_candidates": 53,
-          "source_ref": "latest mission.md#L690-L956",
-          "status": "PENDING"
-        },
-        {
-          "attempt_count": 0,
-          "elapsed_seconds": 0,
-          "id": "PH18",
-          "requirement_bullet_candidates": 36,
-          "source_ref": "latest mission.md#L957-L1060",
-          "status": "PENDING"
-        }
-      ],
-      "mission_phase_source": {
-        "path": "latest mission.md",
-        "phase_count": 18,
-        "sha256": "9729aa82a14b83a63dde392aa5196ef45bdcf54019ef18a9443ee9eb8bd33bc0"
-      },
       "mission_phase_status_counts": {
         "BLOCKED": 0,
         "FAILED": 0,
@@ -4017,24 +3900,33 @@
         "pending": 5,
         "verified_complete": 1
       },
-      "monotonic_duration_available": false,
-      "remaining_seconds": 6636.391,
-      "remote_verified": false,
-      "task_elapsed_seconds": null
+      "remaining_seconds": 4455.855067,
+      "remote_mutation_performed": false,
+      "task_transitions_performed": false,
+      "test_generated_managed_artifacts": {
+        "correlation_id": "d546f7081ead4b6d94683b7d376fdfe8",
+        "paths": [
+          "QMOIMASKS.md",
+          "bankandbankaccounts.md",
+          "ollamatracks/bank_automation_status.json"
+        ],
+        "raw_financial_values_recorded": false,
+        "status": "OBSERVED_AND_PRESERVED"
+      }
     },
     "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
-    "operation": "mission-metrics-refresh",
+    "operation": "mission-continuation-local-validation",
     "paired_document_sha256": {
-      "oe2.txt": "54270e748836cf6876a7f27dd236872d12d922b31b54531c86960e399212e161",
-      "remotecompletion.md": "33a100cbfc240c258a34d773dffaf0760687ef6b468c7d4ae48f1871b9f51958"
+      "oe2.txt": "401758288374851b003ab8032b7ce3af62017bdccec84bea09c1ab43817e4773",
+      "remotecompletion.md": "e4bf00b093ac7f2a1685fe7dea5aa2ece9151e31e00ab52f4d1d3eb6ed74b5c1"
     },
     "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
     "remote_mutation_performed": false,
     "remote_verified": false,
     "repository": "thealphakenya/Alpha-Q-ai",
     "repository_identity_verified": true,
-    "source_manifest_sha256": null,
-    "status": "IN_PROGRESS",
+    "source_manifest_sha256": "a08de135fc6a8e484ebd7f291ef914f5bbdb78115531ac3a47c0ddfccf341b5d",
+    "status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
     "verification_level": "local_artifact_integrity_only",
     "worktree_dirty": true
   },
@@ -4051,7 +3943,7 @@
     "bankandbankaccounts.md",
     "ollamatracks/bank_automation_status.json"
   ],
-  "generated_at": "2026-10-22T22:47:03.335611Z",
+  "generated_at": "2026-10-22T23:23:22.845226Z",
   "repository": "thealphakenya/Alpha-Q-ai",
   "schema_version": "1.0",
   "state": {
@@ -4382,32 +4274,57 @@
       "workflow_validation": "17 workflows and false-success contracts passed"
     },
     "latest_qaudit_checkpoint": {
-      "artifact_bytes": 637601,
-      "artifact_path": "ollamatracks/mission-task-ledger.json",
+      "artifact_bytes": null,
+      "artifact_path": null,
       "artifact_refs": {
-        "mission_task_ledger": {
-          "bytes": 637601,
-          "path": "ollamatracks/mission-task-ledger.json",
-          "sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42"
+        "local_sources": {
+          "scripts/mission_task_ledger.py": {
+            "bytes": 90094,
+            "path": "scripts/mission_task_ledger.py",
+            "sha256": "8a8332158c465e8f99a059ce01fdf04df49f2cfcbe77cf661b4a98f94866172c"
+          },
+          "scripts/ollama_autonomous_agent.py": {
+            "bytes": 737175,
+            "path": "scripts/ollama_autonomous_agent.py",
+            "sha256": "d588569bd7b061e3473a6fda56f0d1789ce7ef77f7a42a2cbc25f366086a302a"
+          },
+          "tests/test_ollama_autonomous_agent.py": {
+            "bytes": 182391,
+            "path": "tests/test_ollama_autonomous_agent.py",
+            "sha256": "2cf9be4628a9db9e7af5395d876bcf2216cd04085f24066d82608907fbba2f8e"
+          }
+        },
+        "test_generated_managed_artifacts": {
+          "QMOIMASKS.md": {
+            "bytes": 155960,
+            "path": "QMOIMASKS.md",
+            "sha256": "66e9ae668ec4dca909d3f0569e0e1ed65686eba672b04c82385ef8838af4693b"
+          },
+          "bankandbankaccounts.md": {
+            "bytes": 64042,
+            "path": "bankandbankaccounts.md",
+            "sha256": "1b9135d923d6159152fa8d053f2656502bc7506e6b3001b3fb07628c4668cd3c"
+          },
+          "ollamatracks/bank_automation_status.json": {
+            "bytes": 1639,
+            "path": "ollamatracks/bank_automation_status.json",
+            "sha256": "8cc09d2f41a58a0085d256ad27f37917d1230f36f091c64cdb2c9fc8ffcd1cf0"
+          }
         }
       },
-      "artifact_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
+      "artifact_sha256": null,
       "blockers": [
         "Authenticated user identity is confirmed, but both main branch-protection GETs returned HTTP 403; policy and write authority remain unknown.",
         "GitHub CLI identity, branch protection, write authority, and workflow state remain unverified.",
-        "Neither reviewed Ollama workflow references the canonical mission ledger or task selector; the autonomous workflow checks out the default branch and persists separate resume files.",
-        "No independent mission-ledger resume has been demonstrated.",
-        "No supported independent runner currently loads the canonical mission ledger or demonstrates resume; M03 and M07 remain partial.",
-        "Remote target ref and write authority are not verified; worktree contains existing user changes.",
         "target_owned_terminal_remote_sha_proof_unavailable",
         "worktree_dirty_or_status_unavailable"
       ],
       "correlation_id": "ccf2009e-158b-44c8-aadd-7b761fc8f4b4",
-      "generated_at": "2026-10-22T22:47:03.335611Z",
+      "generated_at": "2026-10-22T23:23:22.845226Z",
       "immediate_document": {
-        "bytes": 52638,
+        "bytes": 52681,
         "path": "immediate.md",
-        "sha256": "43b8b5ede3102fe4dfc204df03a82a3d8043a424cbf82c7cfa6681161e161fb2",
+        "sha256": "0fd0b67ee9c8b0ed5fb3f9d41d21e3d02a53cbd7bcda57aa8ca5d6d3d9c3d4da",
         "status": "UPDATED"
       },
       "instruction_inventory": [
@@ -4497,185 +4414,43 @@
         }
       ],
       "instruction_inventory_sha256": "0c46a3b619c1f301ffc3163eee26799c293f582bac829b4a82b8d69803834e2e",
-      "local_head_sha": "0001525fe94a673d9c810b55f94540e50cde1d97",
-      "local_tree_sha": "754f7c372e768fad5df72b28fab59388a6400b4b",
+      "local_head_sha": "4e9b03196a397d7d977c10afee98b1f7c0c24859",
+      "local_tree_sha": "e4bbd22c2402ca6793f9466a446c5b4a714b8028",
       "metrics": {
-        "active_phase_id": "PH01",
-        "active_task_id": null,
-        "active_task_status": null,
-        "checkpoint_utc": "2026-10-22T22:47:02.309029+00:00",
         "deadline_utc": "2026-10-23T00:37:38.700253Z",
-        "elapsed_seconds": 563.609,
-        "ledger_id": "newmission-120-minute-2026-10-22-ccf2009e",
-        "ledger_sha256": "7b94744189b08f77968a61e8c0f7c618e78447914948a00ae7410a61766c0a42",
-        "ledger_version": "1.0",
+        "local_ollama": {
+          "endpoint": "http://127.0.0.1:11434/api/tags",
+          "model_available": false,
+          "model_name": "qwen2.5-coder:3b",
+          "observed_at": "2026-10-22T23:23:21.849804Z",
+          "scope": "local_loopback",
+          "service_available": false
+        },
+        "local_validation": {
+          "command": "python -m pytest -q tests/test_ollama_autonomous_agent.py tests/test_mission_task_ledger.py",
+          "duration_seconds": 394.96,
+          "failed": 0,
+          "passed": 183,
+          "skip_reason": "CLI full-validation subprocess timed out in headless runner; test skipped by its existing timeout handler.",
+          "skipped": 1,
+          "status": "PASS_WITH_SKIP"
+        },
         "mission_dashboard_integrity": {
           "documents": {
             "oe2.md": {
-              "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
+              "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5"
             },
             "oe2.txt": {
-              "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
+              "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5"
             },
             "remotecompletion.md": {
-              "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52"
+              "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5"
             }
           },
-          "metric_block_sha256": "98c224e4634836c7e76b7284355917097c6b07677fa760d88463878079614b52",
+          "metric_block_sha256": "fa2f337cd29a9cd401f50c2139f86c6d2b8b8dfed865fa1aa8ba2043ed8086e5",
           "status": "PASS"
         },
         "mission_phase_count": 18,
-        "mission_phase_metrics": [
-          {
-            "attempt_count": 6,
-            "elapsed_seconds": 200.088,
-            "id": "PH01",
-            "requirement_bullet_candidates": 10,
-            "source_ref": "latest mission.md#L34-L71",
-            "status": "PARTIALLY_COMPLETE"
-          },
-          {
-            "attempt_count": 1,
-            "elapsed_seconds": 0.215,
-            "id": "PH02",
-            "requirement_bullet_candidates": 13,
-            "source_ref": "latest mission.md#L72-L115",
-            "status": "PARTIALLY_COMPLETE"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH03",
-            "requirement_bullet_candidates": 26,
-            "source_ref": "latest mission.md#L116-L165",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH04",
-            "requirement_bullet_candidates": 13,
-            "source_ref": "latest mission.md#L166-L205",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH05",
-            "requirement_bullet_candidates": 17,
-            "source_ref": "latest mission.md#L206-L255",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH06",
-            "requirement_bullet_candidates": 24,
-            "source_ref": "latest mission.md#L256-L308",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH07",
-            "requirement_bullet_candidates": 20,
-            "source_ref": "latest mission.md#L309-L350",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH08",
-            "requirement_bullet_candidates": 22,
-            "source_ref": "latest mission.md#L351-L389",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 1,
-            "elapsed_seconds": 13.759,
-            "id": "PH09",
-            "requirement_bullet_candidates": 34,
-            "source_ref": "latest mission.md#L390-L446",
-            "status": "PARTIALLY_COMPLETE"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH10",
-            "requirement_bullet_candidates": 8,
-            "source_ref": "latest mission.md#L447-L475",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH11",
-            "requirement_bullet_candidates": 10,
-            "source_ref": "latest mission.md#L476-L512",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 3,
-            "elapsed_seconds": 14.974,
-            "id": "PH12",
-            "requirement_bullet_candidates": 11,
-            "source_ref": "latest mission.md#L513-L541",
-            "status": "PARTIALLY_COMPLETE"
-          },
-          {
-            "attempt_count": 5,
-            "elapsed_seconds": 2131.617,
-            "id": "PH13",
-            "requirement_bullet_candidates": 16,
-            "source_ref": "latest mission.md#L542-L586",
-            "status": "PARTIALLY_COMPLETE"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH14",
-            "requirement_bullet_candidates": 16,
-            "source_ref": "latest mission.md#L587-L621",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH15",
-            "requirement_bullet_candidates": 7,
-            "source_ref": "latest mission.md#L622-L661",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH16",
-            "requirement_bullet_candidates": 0,
-            "source_ref": "latest mission.md#L662-L689",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH17",
-            "requirement_bullet_candidates": 53,
-            "source_ref": "latest mission.md#L690-L956",
-            "status": "PENDING"
-          },
-          {
-            "attempt_count": 0,
-            "elapsed_seconds": 0,
-            "id": "PH18",
-            "requirement_bullet_candidates": 36,
-            "source_ref": "latest mission.md#L957-L1060",
-            "status": "PENDING"
-          }
-        ],
-        "mission_phase_source": {
-          "path": "latest mission.md",
-          "phase_count": 18,
-          "sha256": "9729aa82a14b83a63dde392aa5196ef45bdcf54019ef18a9443ee9eb8bd33bc0"
-        },
         "mission_phase_status_counts": {
           "BLOCKED": 0,
           "FAILED": 0,
@@ -7503,24 +7278,33 @@
           "pending": 5,
           "verified_complete": 1
         },
-        "monotonic_duration_available": false,
-        "remaining_seconds": 6636.391,
-        "remote_verified": false,
-        "task_elapsed_seconds": null
+        "remaining_seconds": 4455.855067,
+        "remote_mutation_performed": false,
+        "task_transitions_performed": false,
+        "test_generated_managed_artifacts": {
+          "correlation_id": "d546f7081ead4b6d94683b7d376fdfe8",
+          "paths": [
+            "QMOIMASKS.md",
+            "bankandbankaccounts.md",
+            "ollamatracks/bank_automation_status.json"
+          ],
+          "raw_financial_values_recorded": false,
+          "status": "OBSERVED_AND_PRESERVED"
+        }
       },
       "next_action": "Obtain owner-authorized read-only branch-protection evidence for both repositories; do not dispatch or mutate until authority is verified.",
-      "operation": "mission-metrics-refresh",
+      "operation": "mission-continuation-local-validation",
       "paired_document_sha256": {
-        "oe2.txt": "54270e748836cf6876a7f27dd236872d12d922b31b54531c86960e399212e161",
-        "remotecompletion.md": "33a100cbfc240c258a34d773dffaf0760687ef6b468c7d4ae48f1871b9f51958"
+        "oe2.txt": "401758288374851b003ab8032b7ce3af62017bdccec84bea09c1ab43817e4773",
+        "remotecompletion.md": "e4bf00b093ac7f2a1685fe7dea5aa2ece9151e31e00ab52f4d1d3eb6ed74b5c1"
       },
       "ref": "refs/heads/codespace-sturdy-fishstick-69wxr9jjgw5pfrq65",
       "remote_mutation_performed": false,
       "remote_verified": false,
       "repository": "thealphakenya/Alpha-Q-ai",
       "repository_identity_verified": true,
-      "source_manifest_sha256": null,
-      "status": "IN_PROGRESS",
+      "source_manifest_sha256": "a08de135fc6a8e484ebd7f291ef914f5bbdb78115531ac3a47c0ddfccf341b5d",
+      "status": "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK",
       "verification_level": "local_artifact_integrity_only",
       "worktree_dirty": true
     },
@@ -7596,7 +7380,7 @@
       "q_lifecycle_stage": "MERGE_APPLY",
       "status": "BLOCKED"
     },
-    "local_head_sha": "0001525fe94a673d9c810b55f94540e50cde1d97",
+    "local_head_sha": "4e9b03196a397d7d977c10afee98b1f7c0c24859",
     "local_validation": "Requested branch codespace-orange-space-train-x5gp965wppgv39qvj at source SHA 0e81aef21f6015745fa616f26f92c9d490f89c7c is being reconciled with main SHA fc0bdf7197ad572ba7593983356c0e4a94466c91 using a local normal merge. Both affected test modules: 150 passed, 1 skipped (existing headless CLI timeout guard). All 17 workflows and false-success contracts passed; touched Python compilation and staged/unstaged diff checks passed. Markdown inventory lists 2,407 paths but is incomplete because ten Ollama-named paths are normalized by the documentation sanitizer. This is local evidence only.",
     "observation_2026_10_03T000113Z": {
       "actor": "themegakenya GitHub CLI user; not verified as GitHub App",

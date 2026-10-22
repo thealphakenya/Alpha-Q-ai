@@ -239,13 +239,25 @@ class TestAutonomousContinuation:
         }))
         metric_refreshes = []
         checkpoint_records = []
+        checkpoint_order = []
         monkeypatch.setattr(
             "ollama_autonomous_agent.refresh_mission_metrics",
-            lambda root: metric_refreshes.append(root) or {"status": "REFRESHED"},
+            lambda root: (
+                metric_refreshes.append(root),
+                checkpoint_order.append("metrics"),
+                {
+                    "status": "REFRESHED",
+                    "phase_count": 18,
+                    "phase_status_counts": {"PARTIALLY_COMPLETE": 5, "PENDING": 13},
+                    "resume_plan": {"safe_execution_task_ids": []},
+                    "mission_dashboard_integrity": {"status": "PASS"},
+                },
+            )[-1],
         )
 
         def capture_checkpoint(root, operation, evidence, *, correlation_id=None):
             checkpoint_records.append((root, operation, evidence, correlation_id))
+            checkpoint_order.append("checkpoint")
             return {"operation": operation, "correlation_id": correlation_id}
 
         monkeypatch.setattr("ollama_autonomous_agent.record_qaudit_checkpoint", capture_checkpoint)
@@ -261,9 +273,20 @@ class TestAutonomousContinuation:
         assert agent.results["continuation_status"] == "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
         assert agent.results["mission_resume_plan"]["safe_execution_task_ids"] == []
         assert metric_refreshes == [tmp_path]
+        assert checkpoint_order == ["metrics", "checkpoint"]
         assert len(checkpoint_records) == 1
         assert checkpoint_records[0][1] == "mission-continuation-no-safe-task"
         assert checkpoint_records[0][2]["status"] == "BLOCKED_NO_SAFE_DEPENDENCY_READY_TASK"
+        checkpoint_metrics = checkpoint_records[0][2]["metrics"]
+        assert checkpoint_metrics["mission_phase_count"] == 18
+        assert checkpoint_metrics["mission_phase_status_counts"] == {
+            "PARTIALLY_COMPLETE": 5,
+            "PENDING": 13,
+        }
+        assert checkpoint_metrics["mission_status_counts"] == ledger["status_counts"]
+        assert checkpoint_metrics["mission_requirement_line_count"] == ledger["mission_requirement_line_count"]
+        assert checkpoint_metrics["mission_requirement_line_review_counts"] == ledger["mission_requirement_line_review_counts"]
+        assert checkpoint_metrics["mission_dashboard_integrity"] == {"status": "PASS"}
         advisory = checkpoint_records[0][2]["metrics"]["ollama_blocker_advisory"]
         assert advisory == {
             "status": "ADVISORY_ONLY",

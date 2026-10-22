@@ -1109,6 +1109,7 @@ def refresh_mission_metrics(root: Path) -> dict[str, Any]:
             "phase_status_counts": mission_phase_status_counts(ledger),
             "resume_plan": build_resume_plan(ledger),
             "local_ollama": local_ollama,
+            "mission_dashboard_integrity": checkpoint["metrics"]["mission_dashboard_integrity"],
             "checkpoint_timestamp": checkpoint["generated_at"],
             "remote_verified": False,
         }
